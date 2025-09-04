@@ -14,6 +14,7 @@ import { useAuth } from '@/lib/auth-context'
 import { Home, FileQuestion, BarChart3, Menu, X, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeSwitcher } from './theme-switcher'
+import { ShareModal } from './ShareModal'
 
 export function Navigation() {
   const pathname = usePathname()
@@ -111,6 +112,7 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center gap-2">
+            {isAuthenticated && <ShareModal />}
             <ThemeSwitcher />
             {isAuthenticated && (
               <Button

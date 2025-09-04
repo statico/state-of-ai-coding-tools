@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { TabbedSurvey } from '@/components/TabbedSurvey'
-import { ShareModal } from '@/components/ShareModal'
 import {
   Card,
   CardDescription,
@@ -159,27 +158,24 @@ export default function SurveyPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="mb-8">
           <CardHeader className="text-center">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <CardTitle className="text-3xl">
-                  {survey?.title || 'AI Coding Tools Weekly Survey'}
-                </CardTitle>
-                {survey?.description && (
-                  <CardDescription className="text-lg mt-2">
-                    {survey.description}
-                  </CardDescription>
-                )}
-                {hasSubmitted && (
-                  <Alert className="mt-4 border-green-600/20 bg-green-600/10">
-                    <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                    <AlertDescription className="text-green-900 dark:text-green-100">
-                      {submissionMessage ||
-                        'You have already submitted your responses for this week'}
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </div>
-              <ShareModal />
+            <div>
+              <CardTitle className="text-3xl">
+                {survey?.title || 'AI Coding Tools Weekly Survey'}
+              </CardTitle>
+              {survey?.description && (
+                <CardDescription className="text-lg mt-2">
+                  {survey.description}
+                </CardDescription>
+              )}
+              {hasSubmitted && (
+                <Alert className="mt-4 border-green-600/20 bg-green-600/10">
+                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <AlertDescription className="text-green-900 dark:text-green-100">
+                    {submissionMessage ||
+                      'You have already submitted your responses for this week'}
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           </CardHeader>
         </Card>
