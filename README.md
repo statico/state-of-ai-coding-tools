@@ -1,16 +1,18 @@
-# State of AI Coding Tools Survey System
+# AI Coding Tools Weekly Survey
 
-A modern, responsive survey platform built with Next.js and shadcn/ui for collecting insights about AI coding tool usage and preferences in private Slack communities.
+A comprehensive weekly survey platform for tracking AI coding tool adoption and preferences in the development community. Built with Next.js, featuring automatic password rotation, State of JS style questions, and real-time results visualization.
 
 ## 🌟 Features
 
-- **Beautiful UI** - Built with shadcn/ui components and Tailwind CSS for a modern, accessible interface
-- **Multiple Question Types** - Support for single choice, multiple choice, rating, and text responses
-- **Secure Access** - Password-protected surveys with configurable weekly passwords
-- **Real-time Navigation** - Easy navigation between survey sections with persistent navigation bar
-- **Response Validation** - Built-in validation for required questions with helpful error messages
-- **Results Visualization** - Interactive charts and graphs for viewing aggregated survey results
-- **LocalStorage Persistence** - Honor-system user tracking with response history
+- **Weekly Password Rotation** - Automatic password rotation every Monday at 00:00 UTC with 3 years of pre-generated passwords
+- **State of JS Style Questions** - 4-option experience scale (Never heard / Heard not interested / Used won't use again / Used would use again)
+- **Tabbed Survey Interface** - Multi-section survey organized into Demographics, AI Tools, Preferences, Challenges, and Feedback
+- **Server-Side Authentication** - Secure iron-session based authentication with middleware protection
+- **Share Functionality** - Built-in share modal with current week's password for easy distribution
+- **Write-in Support** - Optional custom tool entries for experience questions
+- **Beautiful UI** - Built with shadcn/ui components and Tailwind CSS
+- **Real-time Results** - Interactive charts for viewing aggregated survey data
+- **Progressive Disclosure** - Tab-based navigation with validation between sections
 - **Fully Responsive** - Works seamlessly on desktop, tablet, and mobile devices
 
 ## 🚀 Quick Start
@@ -51,10 +53,13 @@ SURVEY_PASSWORD="your-secure-password-here"
 4. **Set up the database:**
 ```bash
 # Push the schema to your database
-pnpm db:push
+DATABASE_URL="your-db-url" pnpm db:push
 
-# Seed with sample questions (optional)
-pnpm seed
+# Seed with sample questions
+DATABASE_URL="your-db-url" SURVEY_PASSWORD="initial-password" pnpm seed
+
+# Generate weekly passwords (3 years worth)
+DATABASE_URL="your-db-url" pnpm tsx src/lib/seed-passwords.ts
 ```
 
 5. **Start the development server:**
@@ -64,42 +69,38 @@ PORT=4001 pnpm dev
 
 Visit `http://localhost:4001` to see the application.
 
-## 🔐 Password Configuration
+## 🔐 Password System
 
-### Setting the Survey Password
+### Automatic Weekly Password Rotation
 
-The survey requires a password for access. This can be configured in several ways:
+The system automatically rotates passwords every Monday at 00:00 UTC:
 
-1. **Environment Variable (Recommended):**
-   - Set `SURVEY_PASSWORD` in your `.env.local` file for development
-   - Set it in your hosting platform's environment settings for production
+1. **Initial Setup:**
+```bash
+# Generate 3 years of weekly passwords
+DATABASE_URL="your-db-url" pnpm tsx src/lib/seed-passwords.ts
+```
 
-2. **Default Password:**
-   - If no password is set, the system defaults to `survey2024`
-   - **Important:** Always set a custom password in production
+2. **Password Management:**
+   - Passwords are stored in the `weekly_passwords` table
+   - Current week's password is automatically activated
+   - Use faker.js to generate readable, memorable passwords
 
-### Changing the Password
+3. **Sharing Passwords:**
+   - Click the "Share Survey" button in the survey interface
+   - Modal displays current URL and weekly password
+   - One-click copy for both URL and password
 
-1. **Local Development:**
-   - Edit the `SURVEY_PASSWORD` value in `.env.local`
-   - Restart the development server
+4. **Session Management:**
+   - Uses iron-session for secure server-side sessions
+   - Sessions persist for 7 days
+   - Middleware protects API routes
 
-2. **Production (Vercel):**
-   - Go to your Vercel project settings
-   - Navigate to Environment Variables
-   - Update the `SURVEY_PASSWORD` value
-   - Redeploy your application
+### Manual Password Override (Optional)
 
-3. **Production (Other Platforms):**
-   - Update the environment variable in your platform's settings
-   - Restart or redeploy as required by your platform
-
-### Weekly Password Rotation
-
-For weekly rotating passwords in Slack communities:
-1. Update the `SURVEY_PASSWORD` environment variable weekly
-2. Share the new password in your Slack channel
-3. Previous survey responses remain accessible
+For custom passwords, you can still use environment variables:
+- Set `SURVEY_PASSWORD` in `.env.local` for development
+- This will override the weekly password system if needed
 
 ## 🗂️ Project Structure
 
@@ -232,11 +233,13 @@ pnpm start
 ### Question Types
 
 The system supports various question types:
+- **Experience** - State of JS style 4-option scale with optional write-in
 - **Single Choice** - Radio button selection
-- **Multiple Choice** - Checkbox selection
+- **Multiple Choice** - Checkbox selection  
 - **Rating** - 1-5 star rating
 - **Text** - Open-ended text responses
 - **Demographic** - Special single-choice for demographic data
+- **Write-in** - Optional custom entries for tools not listed
 
 ### Managing Questions
 
@@ -285,7 +288,37 @@ For issues, questions, or suggestions, please:
 
 This survey system follows the design philosophy of State of JavaScript:
 - Clean, modern interface with excellent UX
-- Progressive disclosure of information
+- Progressive disclosure through tabbed sections
+- State of JS style experience questions
 - Mobile-first responsive design
 - Accessible to all users
 - Fast, lightweight, and performant
+
+## 📋 Survey Structure
+
+The survey is organized into 5 progressive sections:
+
+1. **Demographics Tab**
+   - Background information
+   - Experience level
+   - Role and company size
+
+2. **AI Tools Tab**
+   - Tool usage and experience ratings
+   - State of JS style 4-option scale
+   - Optional write-in for custom tools
+
+3. **Preferences Tab**
+   - Workflow preferences
+   - Integration preferences
+   - Feature priorities
+
+4. **Challenges Tab**
+   - Pain points
+   - Adoption obstacles
+   - Missing features
+
+5. **Feedback Tab**
+   - Open feedback
+   - Suggestions
+   - Final submit button
