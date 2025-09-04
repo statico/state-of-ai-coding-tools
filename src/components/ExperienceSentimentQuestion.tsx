@@ -1,6 +1,4 @@
 'use client'
-
-import { useState } from 'react'
 import {
   Card,
   CardContent,
@@ -104,8 +102,6 @@ export function ExperienceSentimentQuestion({
   onChange,
   error,
 }: ExperienceSentimentQuestionProps) {
-  const [showWriteIn, setShowWriteIn] = useState(!!value?.writeInValue)
-
   const handleExperienceClick = (experienceLevel: ExperienceLevel) => {
     onChange({
       ...value,
@@ -212,31 +208,21 @@ export function ExperienceSentimentQuestion({
           </div>
         )}
 
-        {/* Optional Write-in for context */}
-        {showSentiment && (
-          <div className="space-y-2 pt-2 border-t animate-in slide-in-from-bottom-2 duration-300">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">
-                Why do you feel this way? (optional)
-              </Label>
-              <button
-                type="button"
-                onClick={() => setShowWriteIn(!showWriteIn)}
-                className="text-xs text-muted-foreground hover:text-foreground"
-              >
-                {showWriteIn ? 'Hide' : 'Add context'}
-              </button>
-            </div>
-            {showWriteIn && (
-              <Textarea
-                placeholder="Share your thoughts about this tool..."
-                value={value?.writeInValue || ''}
-                onChange={e => handleWriteInChange(e.target.value)}
-                className="min-h-[80px]"
-              />
-            )}
-          </div>
-        )}
+        {/* Notes section - always visible */}
+        <div className="space-y-2 pt-2 border-t">
+          <Label className="text-sm font-medium">
+            Notes & Feedback (optional)
+          </Label>
+          <Textarea
+            placeholder={`Share your experience with ${question.title}...`}
+            value={value?.writeInValue || ''}
+            onChange={e => handleWriteInChange(e.target.value)}
+            className="min-h-[80px] resize-y"
+          />
+          <p className="text-xs text-muted-foreground">
+            Any specific thoughts, use cases, or feedback about this tool
+          </p>
+        </div>
 
         {error && <p className="text-sm text-destructive mt-2">{error}</p>}
       </CardContent>

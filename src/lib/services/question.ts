@@ -2,6 +2,13 @@ import { prisma } from '@/lib/prisma'
 import type { Question, QuestionOption, QuestionType } from '@prisma/client'
 
 export class QuestionService {
+  static async clearAll(): Promise<void> {
+    // Delete all question options first (due to foreign key constraints)
+    await prisma.questionOption.deleteMany({})
+    // Then delete all questions
+    await prisma.question.deleteMany({})
+  }
+
   static async create(data: {
     title: string
     description?: string

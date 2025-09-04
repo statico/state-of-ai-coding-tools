@@ -52,23 +52,37 @@ const TAB_SECTIONS = [
   {
     id: 'demographics',
     label: 'Demographics',
-    categories: ['demographics', 'experience'],
-  },
-  { id: 'tools', label: 'AI Tools', categories: ['ai_tools', 'tools'] },
-  {
-    id: 'preferences',
-    label: 'Preferences',
-    categories: ['preferences', 'workflow'],
+    categories: ['demographics'],
   },
   {
-    id: 'challenges',
-    label: 'Challenges',
-    categories: ['challenges', 'pain_points'],
+    id: 'ides',
+    label: 'IDEs',
+    categories: ['ides'],
   },
   {
-    id: 'feedback',
-    label: 'Feedback',
-    categories: ['feedback', 'suggestions', 'other'],
+    id: 'completion',
+    label: 'Completion',
+    categories: ['completion_tools'],
+  },
+  {
+    id: 'review',
+    label: 'Code Review',
+    categories: ['code_review'],
+  },
+  {
+    id: 'refactoring',
+    label: 'Refactoring',
+    categories: ['refactoring'],
+  },
+  {
+    id: 'models',
+    label: 'AI Models',
+    categories: ['models'],
+  },
+  {
+    id: 'usage',
+    label: 'Usage & Impact',
+    categories: ['usage', 'concerns', 'impact', 'feedback'],
   },
 ]
 
