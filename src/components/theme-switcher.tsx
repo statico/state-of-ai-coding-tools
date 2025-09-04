@@ -14,13 +14,16 @@ type Theme = 'light' | 'dark' | 'system'
 
 export function ThemeSwitcher() {
   const [theme, setTheme] = React.useState<Theme>('system')
+  const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
+    setMounted(true)
     const savedTheme = localStorage.getItem('theme') as Theme | null
     if (savedTheme) {
       setTheme(savedTheme)
       applyTheme(savedTheme)
     } else {
+      setTheme('system')
       applyTheme('system')
     }
   }, [])
@@ -58,12 +61,37 @@ export function ThemeSwitcher() {
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [theme])
 
+  // Don't render until mounted to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <Button variant="outline" size="icon" disabled>
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    )
+  }
+
+  // Determine actual current theme (considering system preference)
+  const getCurrentTheme = () => {
+    if (theme === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+    }
+    return theme
+  }
+
+  const currentTheme = getCurrentTheme()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          {currentTheme === 'dark' ? (
+            <Moon className="h-[1.2rem] w-[1.2rem]" />
+          ) : (
+            <Sun className="h-[1.2rem] w-[1.2rem]" />
+          )}
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
