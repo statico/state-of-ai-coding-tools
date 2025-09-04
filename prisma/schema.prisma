@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Survey {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  password    String
+  startDate   DateTime @map("start_date")
+  endDate     DateTime @map("end_date")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  responses    Response[]
+  userSessions UserSession[]
+
+  @@map("surveys")
+}
+
+model Question {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  type        QuestionType
+  category    String
+  orderIndex  Int     @map("order_index")
+  isRequired  Boolean @default(false) @map("is_required")
+  isActive    Boolean @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  options   QuestionOption[]
+  responses Response[]
+
+  @@map("questions")
+}
+
+model QuestionOption {
+  id          Int      @id @default(autoincrement())
+  questionId  Int      @map("question_id")
+  value       String
+  label       String
+  description String?
+  orderIndex  Int      @map("order_index")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  question  Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  responses Response[]
+
+  @@map("question_options")
+}
+
+model UserSession {
+  id              String   @id
+  surveyId        Int?     @map("survey_id")
+  demographicData Json?    @map("demographic_data")
+  progress        Json?
+  completedAt     DateTime? @map("completed_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  survey    Survey?    @relation(fields: [surveyId], references: [id], onDelete: SetNull)
+  responses Response[]
+
+  @@map("user_sessions")
+}
+
+model Response {
+  id           Int      @id @default(autoincrement())
+  surveyId     Int      @map("survey_id")
+  sessionId    String   @map("session_id")
+  questionId   Int      @map("question_id")
+  optionId     Int?     @map("option_id")
+  textValue    String?  @map("text_value")
+  ratingValue  Int?     @map("rating_value")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  survey    Survey         @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  session   UserSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question  Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  option    QuestionOption? @relation(fields: [optionId], references: [id], onDelete: SetNull)
+
+  @@map("responses")
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  RATING
+  TEXT
+  DEMOGRAPHIC
+}

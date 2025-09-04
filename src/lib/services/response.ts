@@ -1,122 +1,95 @@
-import { db } from '@/lib/db'
-import type { Response, NewResponse, UserSession, NewUserSession } from '@/types/database'
+import { prisma } from '@/lib/prisma'
+import type { Response, UserSession } from '@prisma/client'
 
 export class ResponseService {
-  static async create(data: NewResponse): Promise<Response> {
-    return await db
-      .insertInto('responses')
-      .values(data)
-      .returning([
-        'id',
-        'survey_id',
-        'session_id',
-        'question_id',
-        'option_id',
-        'text_value',
-        'rating_value',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+  static async create(data: {
+    surveyId: number
+    sessionId: string
+    questionId: number
+    optionId?: number
+    textValue?: string
+    ratingValue?: number
+  }): Promise<Response> {
+    return await prisma.response.create({
+      data,
+    })
   }
 
-  static async createOrUpdate(data: NewResponse): Promise<Response> {
-    // First try to find existing response
-    const existing = await db
-      .selectFrom('responses')
-      .selectAll()
-      .where('survey_id', '=', data.survey_id)
-      .where('session_id', '=', data.session_id)
-      .where('question_id', '=', data.question_id)
-      .executeTakeFirst()
+  static async createOrUpdate(data: {
+    surveyId: number
+    sessionId: string
+    questionId: number
+    optionId?: number
+    textValue?: string
+    ratingValue?: number
+  }): Promise<Response> {
+    const existing = await prisma.response.findFirst({
+      where: {
+        surveyId: data.surveyId,
+        sessionId: data.sessionId,
+        questionId: data.questionId,
+      },
+    })
 
     if (existing) {
-      // Update existing response
-      return await db
-        .updateTable('responses')
-        .set({
-          option_id: data.option_id,
-          text_value: data.text_value,
-          rating_value: data.rating_value,
-          updated_at: new Date(),
-        })
-        .where('id', '=', existing.id)
-        .returning([
-          'id',
-          'survey_id',
-          'session_id',
-          'question_id',
-          'option_id',
-          'text_value',
-          'rating_value',
-          'created_at',
-          'updated_at',
-        ])
-        .executeTakeFirstOrThrow()
+      return await prisma.response.update({
+        where: { id: existing.id },
+        data: {
+          optionId: data.optionId,
+          textValue: data.textValue,
+          ratingValue: data.ratingValue,
+        },
+      })
     } else {
-      // Create new response
       return this.create(data)
     }
   }
 
   static async findBySurvey(surveyId: number): Promise<Response[]> {
-    return await db
-      .selectFrom('responses')
-      .selectAll()
-      .where('survey_id', '=', surveyId)
-      .orderBy('created_at', 'asc')
-      .execute()
+    return await prisma.response.findMany({
+      where: { surveyId },
+      orderBy: { createdAt: 'asc' },
+    })
   }
 
   static async findBySession(sessionId: string): Promise<Response[]> {
-    return await db
-      .selectFrom('responses')
-      .selectAll()
-      .where('session_id', '=', sessionId)
-      .orderBy('created_at', 'asc')
-      .execute()
+    return await prisma.response.findMany({
+      where: { sessionId },
+      orderBy: { createdAt: 'asc' },
+    })
   }
 
   static async getAggregatedResults(surveyId: number): Promise<Array<{
-    question_id: number
-    question_title: string
-    question_type: string
+    questionId: number
+    questionTitle: string
+    questionType: string
     results: Array<{
-      option_id?: number
-      option_label?: string
+      optionId?: number
+      optionLabel?: string
       count: number
       percentage: number
     }>
   }>> {
-    // Get all responses with question and option details
-    const results = await db
-      .selectFrom('responses')
-      .innerJoin('questions', 'responses.question_id', 'questions.id')
-      .leftJoin('question_options', 'responses.option_id', 'question_options.id')
-      .select([
-        'responses.question_id',
-        'questions.title as question_title',
-        'questions.type as question_type',
-        'responses.option_id',
-        'question_options.label as option_label',
-        'responses.text_value',
-        'responses.rating_value',
-      ])
-      .where('responses.survey_id', '=', surveyId)
-      .execute()
+    const responses = await prisma.response.findMany({
+      where: { surveyId },
+      include: {
+        question: true,
+        option: true,
+      },
+    })
 
-    // Group by question and aggregate results
-    const grouped = results.reduce((acc, row) => {
-      const key = row.question_id
-      if (!acc[key]) {
-        acc[key] = {
-          question_id: row.question_id,
-          question_title: row.question_title,
-          question_type: row.question_type,
+    // Group by question
+    const grouped = responses.reduce((acc, response) => {
+      const questionId = response.questionId
+      if (!acc[questionId]) {
+        acc[questionId] = {
+          questionId,
+          questionTitle: response.question.title,
+          questionType: response.question.type,
           responses: [],
         }
       }
-      acc[key].responses.push(row)
+      acc[questionId].responses.push(response)
       return acc
     }, {} as Record<number, any>)
 
@@ -124,14 +97,14 @@ export class ResponseService {
     return Object.values(grouped).map((group: any) => {
       const totalResponses = group.responses.length
       
-      if (group.question_type === 'single_choice' || group.question_type === 'multiple_choice') {
+      if (group.questionType === 'SINGLE_CHOICE' || group.questionType === 'MULTIPLE_CHOICE') {
         // Count by option
         const optionCounts = group.responses.reduce((acc: Record<string, any>, response: any) => {
-          const key = response.option_id?.toString() || 'null'
+          const key = response.optionId?.toString() || 'null'
           if (!acc[key]) {
             acc[key] = {
-              option_id: response.option_id,
-              option_label: response.option_label || 'No answer',
+              optionId: response.optionId,
+              optionLabel: response.option?.label || 'No answer',
               count: 0,
             }
           }
@@ -145,15 +118,15 @@ export class ResponseService {
         }))
 
         return {
-          question_id: group.question_id,
-          question_title: group.question_title,
-          question_type: group.question_type,
+          questionId: group.questionId,
+          questionTitle: group.questionTitle,
+          questionType: group.questionType,
           results,
         }
-      } else if (group.question_type === 'rating') {
+      } else if (group.questionType === 'RATING') {
         // Calculate rating distribution
         const ratingCounts = group.responses.reduce((acc: Record<number, number>, response: any) => {
-          const rating = response.rating_value
+          const rating = response.ratingValue
           if (rating !== null) {
             acc[rating] = (acc[rating] || 0) + 1
           }
@@ -161,26 +134,26 @@ export class ResponseService {
         }, {})
 
         const results = Object.entries(ratingCounts).map(([rating, count]) => ({
-          option_id: parseInt(rating),
-          option_label: `${rating} stars`,
+          optionId: parseInt(rating),
+          optionLabel: `${rating} stars`,
           count: count as number,
           percentage: totalResponses > 0 ? ((count as number) / totalResponses) * 100 : 0,
         }))
 
         return {
-          question_id: group.question_id,
-          question_title: group.question_title,
-          question_type: group.question_type,
+          questionId: group.questionId,
+          questionTitle: group.questionTitle,
+          questionType: group.questionType,
           results,
         }
       } else {
         // For text questions, just return count
         return {
-          question_id: group.question_id,
-          question_title: group.question_title,
-          question_type: group.question_type,
+          questionId: group.questionId,
+          questionTitle: group.questionTitle,
+          questionType: group.questionType,
           results: [{
-            option_label: 'Text responses',
+            optionLabel: 'Text responses',
             count: totalResponses,
             percentage: 100,
           }],
@@ -191,61 +164,34 @@ export class ResponseService {
 }
 
 export class UserSessionService {
-  static async create(data: NewUserSession): Promise<UserSession> {
-    return await db
-      .insertInto('user_sessions')
-      .values(data)
-      .returning([
-        'id',
-        'survey_id',
-        'demographic_data',
-        'progress',
-        'completed_at',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+  static async create(data: {
+    id: string
+    surveyId?: number
+    demographicData?: any
+    progress?: any
+  }): Promise<UserSession> {
+    return await prisma.userSession.create({
+      data,
+    })
   }
 
-  static async findById(id: string): Promise<UserSession | undefined> {
-    return await db
-      .selectFrom('user_sessions')
-      .selectAll()
-      .where('id', '=', id)
-      .executeTakeFirst()
+  static async findById(id: string): Promise<UserSession | null> {
+    return await prisma.userSession.findUnique({
+      where: { id },
+    })
   }
 
-  static async updateProgress(id: string, progress: Record<string, any>): Promise<UserSession> {
-    return await db
-      .updateTable('user_sessions')
-      .set({ progress, updated_at: new Date() })
-      .where('id', '=', id)
-      .returning([
-        'id',
-        'survey_id',
-        'demographic_data',
-        'progress',
-        'completed_at',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+  static async updateProgress(id: string, progress: any): Promise<UserSession> {
+    return await prisma.userSession.update({
+      where: { id },
+      data: { progress },
+    })
   }
 
   static async markCompleted(id: string): Promise<UserSession> {
-    return await db
-      .updateTable('user_sessions')
-      .set({ completed_at: new Date(), updated_at: new Date() })
-      .where('id', '=', id)
-      .returning([
-        'id',
-        'survey_id',
-        'demographic_data',
-        'progress',
-        'completed_at',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+    return await prisma.userSession.update({
+      where: { id },
+      data: { completedAt: new Date() },
+    })
   }
 }

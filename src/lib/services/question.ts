@@ -1,110 +1,119 @@
-import { db } from '@/lib/db'
-import type { Question, NewQuestion, QuestionOption, NewQuestionOption } from '@/types/database'
+import { prisma } from '@/lib/prisma'
+import type { Question, QuestionOption, QuestionType } from '@prisma/client'
 
 export class QuestionService {
-  static async create(data: NewQuestion): Promise<Question> {
-    return await db
-      .insertInto('questions')
-      .values(data)
-      .returning([
-        'id',
-        'title',
-        'description',
-        'type',
-        'category',
-        'order_index',
-        'is_required',
-        'is_active',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+  static async create(data: {
+    title: string
+    description?: string
+    type: QuestionType
+    category: string
+    orderIndex: number
+    isRequired?: boolean
+    isActive?: boolean
+  }): Promise<Question> {
+    return await prisma.question.create({
+      data,
+    })
   }
 
   static async findByCategory(category: string): Promise<Question[]> {
-    return await db
-      .selectFrom('questions')
-      .selectAll()
-      .where('category', '=', category)
-      .where('is_active', '=', true)
-      .orderBy('order_index', 'asc')
-      .execute()
+    return await prisma.question.findMany({
+      where: {
+        category,
+        isActive: true,
+      },
+      orderBy: { orderIndex: 'asc' },
+    })
   }
 
   static async findAll(): Promise<Question[]> {
-    return await db
-      .selectFrom('questions')
-      .selectAll()
-      .where('is_active', '=', true)
-      .orderBy('category', 'asc')
-      .orderBy('order_index', 'asc')
-      .execute()
+    return await prisma.question.findMany({
+      where: { isActive: true },
+      orderBy: [
+        { category: 'asc' },
+        { orderIndex: 'asc' },
+      ],
+    })
   }
 
   static async findWithOptions(questionId: number): Promise<{
     question: Question
     options: QuestionOption[]
-  } | undefined> {
-    const question = await db
-      .selectFrom('questions')
-      .selectAll()
-      .where('id', '=', questionId)
-      .where('is_active', '=', true)
-      .executeTakeFirst()
+  } | null> {
+    const question = await prisma.question.findUnique({
+      where: { id: questionId, isActive: true },
+      include: {
+        options: {
+          where: { isActive: true },
+          orderBy: { orderIndex: 'asc' },
+        },
+      },
+    })
 
-    if (!question) {
-      return undefined
+    if (!question) return null
+
+    return {
+      question: {
+        id: question.id,
+        title: question.title,
+        description: question.description,
+        type: question.type,
+        category: question.category,
+        orderIndex: question.orderIndex,
+        isRequired: question.isRequired,
+        isActive: question.isActive,
+        createdAt: question.createdAt,
+        updatedAt: question.updatedAt,
+      },
+      options: question.options,
     }
-
-    const options = await db
-      .selectFrom('question_options')
-      .selectAll()
-      .where('question_id', '=', questionId)
-      .where('is_active', '=', true)
-      .orderBy('order_index', 'asc')
-      .execute()
-
-    return { question, options }
   }
 
   static async getAllWithOptions(): Promise<Array<{
     question: Question
     options: QuestionOption[]
   }>> {
-    const questions = await this.findAll()
-    
-    const questionsWithOptions = await Promise.all(
-      questions.map(async (question) => {
-        const options = await db
-          .selectFrom('question_options')
-          .selectAll()
-          .where('question_id', '=', question.id)
-          .where('is_active', '=', true)
-          .orderBy('order_index', 'asc')
-          .execute()
+    const questions = await prisma.question.findMany({
+      where: { isActive: true },
+      include: {
+        options: {
+          where: { isActive: true },
+          orderBy: { orderIndex: 'asc' },
+        },
+      },
+      orderBy: [
+        { category: 'asc' },
+        { orderIndex: 'asc' },
+      ],
+    })
 
-        return { question, options }
-      })
-    )
-
-    return questionsWithOptions
+    return questions.map((question) => ({
+      question: {
+        id: question.id,
+        title: question.title,
+        description: question.description,
+        type: question.type,
+        category: question.category,
+        orderIndex: question.orderIndex,
+        isRequired: question.isRequired,
+        isActive: question.isActive,
+        createdAt: question.createdAt,
+        updatedAt: question.updatedAt,
+      },
+      options: question.options,
+    }))
   }
 
-  static async createOption(data: NewQuestionOption): Promise<QuestionOption> {
-    return await db
-      .insertInto('question_options')
-      .values(data)
-      .returning([
-        'id',
-        'question_id',
-        'value',
-        'label',
-        'description',
-        'order_index',
-        'is_active',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+  static async createOption(data: {
+    questionId: number
+    value: string
+    label: string
+    description?: string
+    orderIndex: number
+    isActive?: boolean
+  }): Promise<QuestionOption> {
+    return await prisma.questionOption.create({
+      data,
+    })
   }
 }

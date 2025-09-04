@@ -1,80 +1,62 @@
-import { db } from '@/lib/db'
-import type { Survey, NewSurvey, SurveyUpdate } from '@/types/database'
+import { prisma } from '@/lib/prisma'
+import type { Survey } from '@prisma/client'
 
 export class SurveyService {
-  static async create(data: NewSurvey): Promise<Survey> {
-    return await db
-      .insertInto('surveys')
-      .values(data)
-      .returning([
-        'id',
-        'title',
-        'description',
-        'password',
-        'start_date',
-        'end_date',
-        'is_active',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+  static async create(data: {
+    title: string
+    description?: string
+    password: string
+    startDate: Date
+    endDate: Date
+    isActive?: boolean
+  }): Promise<Survey> {
+    return await prisma.survey.create({
+      data,
+    })
   }
 
-  static async findById(id: number): Promise<Survey | undefined> {
-    return await db
-      .selectFrom('surveys')
-      .selectAll()
-      .where('id', '=', id)
-      .executeTakeFirst()
+  static async findById(id: number): Promise<Survey | null> {
+    return await prisma.survey.findUnique({
+      where: { id },
+    })
   }
 
   static async findActive(): Promise<Survey[]> {
-    return await db
-      .selectFrom('surveys')
-      .selectAll()
-      .where('is_active', '=', true)
-      .where('start_date', '<=', new Date())
-      .where('end_date', '>=', new Date())
-      .orderBy('created_at', 'desc')
-      .execute()
+    const now = new Date()
+    return await prisma.survey.findMany({
+      where: {
+        isActive: true,
+        startDate: { lte: now },
+        endDate: { gte: now },
+      },
+      orderBy: { createdAt: 'desc' },
+    })
   }
 
-  static async getCurrentSurvey(): Promise<Survey | undefined> {
-    return await db
-      .selectFrom('surveys')
-      .selectAll()
-      .where('is_active', '=', true)
-      .where('start_date', '<=', new Date())
-      .where('end_date', '>=', new Date())
-      .orderBy('created_at', 'desc')
-      .executeTakeFirst()
+  static async getCurrentSurvey(): Promise<Survey | null> {
+    const now = new Date()
+    return await prisma.survey.findFirst({
+      where: {
+        isActive: true,
+        startDate: { lte: now },
+        endDate: { gte: now },
+      },
+      orderBy: { createdAt: 'desc' },
+    })
   }
 
-  static async update(id: number, data: SurveyUpdate): Promise<Survey> {
-    return await db
-      .updateTable('surveys')
-      .set({ ...data, updated_at: new Date() })
-      .where('id', '=', id)
-      .returning([
-        'id',
-        'title',
-        'description',
-        'password',
-        'start_date',
-        'end_date',
-        'is_active',
-        'created_at',
-        'updated_at',
-      ])
-      .executeTakeFirstOrThrow()
+  static async update(id: number, data: Partial<Survey>): Promise<Survey> {
+    return await prisma.survey.update({
+      where: { id },
+      data,
+    })
   }
 
   static async verifyPassword(id: number, password: string): Promise<boolean> {
-    const survey = await db
-      .selectFrom('surveys')
-      .select(['password'])
-      .where('id', '=', id)
-      .executeTakeFirst()
+    const survey = await prisma.survey.findUnique({
+      where: { id },
+      select: { password: true },
+    })
 
     return survey?.password === password
   }

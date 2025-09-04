@@ -1,6 +1,6 @@
-import { db } from './db'
 import { QuestionService } from './services/question'
 import { SurveyService } from './services/survey'
+import { QuestionType } from '@prisma/client'
 
 const aiCodingTools = [
   'GitHub Copilot',
@@ -57,9 +57,9 @@ export async function seedDatabase() {
     title: 'State of AI Coding Tools 2024',
     description: 'Weekly survey about AI coding tool usage and preferences',
     password: 'ai2024',
-    start_date: new Date('2024-01-01'),
-    end_date: new Date('2024-12-31'),
-    is_active: true,
+    startDate: new Date('2024-01-01'),
+    endDate: new Date('2024-12-31'),
+    isActive: true,
   })
 
   console.log(`Created survey: ${survey.title}`)
@@ -68,42 +68,42 @@ export async function seedDatabase() {
   const experienceQuestion = await QuestionService.create({
     title: 'How many years of programming experience do you have?',
     description: 'Please select your total years of professional programming experience',
-    type: 'single_choice',
+    type: QuestionType.SINGLE_CHOICE,
     category: 'demographics',
-    order_index: 1,
-    is_required: true,
-    is_active: true,
+    orderIndex: 1,
+    isRequired: true,
+    isActive: true,
   })
 
   for (let i = 0; i < experienceLevels.length; i++) {
     await QuestionService.createOption({
-      question_id: experienceQuestion.id,
+      questionId: experienceQuestion.id,
       value: experienceLevels[i].toLowerCase().replace(/\s+/g, '_'),
       label: experienceLevels[i],
-      description: null,
-      order_index: i + 1,
-      is_active: true,
+      description: undefined,
+      orderIndex: i + 1,
+      isActive: true,
     })
   }
 
   const companySizeQuestion = await QuestionService.create({
     title: 'What is the size of your current company/organization?',
     description: 'Please select the size that best describes your current workplace',
-    type: 'single_choice',
+    type: QuestionType.SINGLE_CHOICE,
     category: 'demographics',
-    order_index: 2,
-    is_required: true,
-    is_active: true,
+    orderIndex: 2,
+    isRequired: true,
+    isActive: true,
   })
 
   for (let i = 0; i < companySizes.length; i++) {
     await QuestionService.createOption({
-      question_id: companySizeQuestion.id,
+      questionId: companySizeQuestion.id,
       value: companySizes[i].toLowerCase().replace(/\s+/g, '_').replace(/[()]/g, ''),
       label: companySizes[i],
-      description: null,
-      order_index: i + 1,
-      is_active: true,
+      description: undefined,
+      orderIndex: i + 1,
+      isActive: true,
     })
   }
 
@@ -111,75 +111,75 @@ export async function seedDatabase() {
   const toolUsageQuestion = await QuestionService.create({
     title: 'Which AI coding tools do you currently use? (Select all that apply)',
     description: 'Please select all the AI coding tools that you actively use in your development workflow',
-    type: 'multiple_choice',
+    type: QuestionType.MULTIPLE_CHOICE,
     category: 'tools',
-    order_index: 1,
-    is_required: true,
-    is_active: true,
+    orderIndex: 1,
+    isRequired: true,
+    isActive: true,
   })
 
   for (let i = 0; i < aiCodingTools.length; i++) {
     await QuestionService.createOption({
-      question_id: toolUsageQuestion.id,
+      questionId: toolUsageQuestion.id,
       value: aiCodingTools[i].toLowerCase().replace(/\s+/g, '_'),
       label: aiCodingTools[i],
-      description: null,
-      order_index: i + 1,
-      is_active: true,
+      description: undefined,
+      orderIndex: i + 1,
+      isActive: true,
     })
   }
 
   const primaryLanguageQuestion = await QuestionService.create({
     title: 'What is your primary programming language?',
     description: 'Please select the programming language you use most frequently',
-    type: 'single_choice',
+    type: QuestionType.SINGLE_CHOICE,
     category: 'tools',
-    order_index: 2,
-    is_required: true,
-    is_active: true,
+    orderIndex: 2,
+    isRequired: true,
+    isActive: true,
   })
 
   for (let i = 0; i < programmingLanguages.length; i++) {
     await QuestionService.createOption({
-      question_id: primaryLanguageQuestion.id,
+      questionId: primaryLanguageQuestion.id,
       value: programmingLanguages[i].toLowerCase().replace(/[\/\s]/g, '_'),
       label: programmingLanguages[i],
-      description: null,
-      order_index: i + 1,
-      is_active: true,
+      description: undefined,
+      orderIndex: i + 1,
+      isActive: true,
     })
   }
 
   const satisfactionQuestion = await QuestionService.create({
     title: 'How satisfied are you with AI coding tools overall?',
     description: 'Rate your overall satisfaction with AI coding tools on a scale of 1-5',
-    type: 'rating',
+    type: QuestionType.RATING,
     category: 'satisfaction',
-    order_index: 1,
-    is_required: true,
-    is_active: true,
+    orderIndex: 1,
+    isRequired: true,
+    isActive: true,
   })
 
   // For rating questions, we don't need options as they're handled differently
   for (let i = 1; i <= 5; i++) {
     await QuestionService.createOption({
-      question_id: satisfactionQuestion.id,
+      questionId: satisfactionQuestion.id,
       value: i.toString(),
       label: `${i} star${i > 1 ? 's' : ''}`,
-      description: i === 1 ? 'Very dissatisfied' : i === 5 ? 'Very satisfied' : null,
-      order_index: i,
-      is_active: true,
+      description: i === 1 ? 'Very dissatisfied' : i === 5 ? 'Very satisfied' : undefined,
+      orderIndex: i,
+      isActive: true,
     })
   }
 
   const feedbackQuestion = await QuestionService.create({
     title: 'What improvements would you like to see in AI coding tools?',
     description: 'Please share any feedback or suggestions for improving AI coding tools',
-    type: 'text',
+    type: QuestionType.TEXT,
     category: 'feedback',
-    order_index: 1,
-    is_required: false,
-    is_active: true,
+    orderIndex: 1,
+    isRequired: false,
+    isActive: true,
   })
 
   console.log('Database seeding completed successfully!')
