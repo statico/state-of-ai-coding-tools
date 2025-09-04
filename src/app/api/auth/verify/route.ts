@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { SurveyService } from '@/lib/services/survey'
 import { validateWeeklyPassword, getActiveWeeklyPassword } from '@/lib/password-manager'
+import { getIronSession } from 'iron-session'
+import { SessionData, sessionOptions } from '@/lib/session'
+import { cookies } from 'next/headers'
 
 const verifyPasswordSchema = z.object({
   password: z.string().min(1, 'Password is required'),
@@ -35,12 +38,13 @@ export async function POST(request: NextRequest) {
     // Get the current password for the session data
     const currentPassword = await getActiveWeeklyPassword()
 
-    // Create session token (simple JWT-like structure for this demo)
-    const sessionData = {
-      surveyId: currentSurvey.id,
-      weeklyPassword: currentPassword,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-    }
+    // Create iron-session
+    const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+    session.isAuthenticated = true
+    session.surveyId = currentSurvey.id
+    session.weeklyPassword = currentPassword
+    session.authenticatedAt = new Date().toISOString()
+    await session.save()
 
     return NextResponse.json({
       success: true,
@@ -49,7 +53,6 @@ export async function POST(request: NextRequest) {
         title: currentSurvey.title,
         description: currentSurvey.description,
       },
-      session: sessionData,
       currentPassword, // Include password for share functionality
     })
 

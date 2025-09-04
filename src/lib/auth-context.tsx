@@ -17,6 +17,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   survey: Survey | null
   session: SessionData | null
+  currentPassword: string | null
   login: (password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
   loading: boolean
@@ -30,30 +31,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [survey, setSurvey] = useState<Survey | null>(null)
   const [session, setSession] = useState<SessionData | null>(null)
+  const [currentPassword, setCurrentPassword] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Load session from localStorage on mount
+  // Check session with server on mount
   useEffect(() => {
-    const savedSession = localStorage.getItem(AUTH_STORAGE_KEY)
-    if (savedSession) {
+    const checkSession = async () => {
       try {
-        const sessionData = JSON.parse(savedSession)
-        const expiresAt = new Date(sessionData.session.expiresAt)
+        const response = await fetch('/api/auth/session')
+        const data = await response.json()
         
-        if (expiresAt > new Date()) {
+        if (data.isAuthenticated) {
           setIsAuthenticated(true)
-          setSurvey(sessionData.survey)
-          setSession(sessionData.session)
+          setSurvey(data.survey)
+          setCurrentPassword(data.currentPassword)
+          // Store in localStorage for client-side checks
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+            survey: data.survey,
+            currentPassword: data.currentPassword
+          }))
         } else {
-          // Session expired, clear it
           localStorage.removeItem(AUTH_STORAGE_KEY)
         }
       } catch (error) {
-        console.error('Error parsing stored session:', error)
+        console.error('Session check error:', error)
         localStorage.removeItem(AUTH_STORAGE_KEY)
+      } finally {
+        setLoading(false)
       }
     }
-    setLoading(false)
+    
+    checkSession()
   }, [])
 
   const login = async (password: string): Promise<{ success: boolean; error?: string }> => {
@@ -75,14 +83,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Store session data
       const sessionData = {
         survey: data.survey,
-        session: data.session,
+        currentPassword: data.currentPassword,
       }
 
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionData))
       
       setIsAuthenticated(true)
       setSurvey(data.survey)
-      setSession(data.session)
+      setCurrentPassword(data.currentPassword)
+      setSession(data.session || {})
 
       return { success: true }
     } catch (error) {
@@ -91,11 +100,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+    
     localStorage.removeItem(AUTH_STORAGE_KEY)
     setIsAuthenticated(false)
     setSurvey(null)
     setSession(null)
+    setCurrentPassword(null)
   }
 
   return (
@@ -104,6 +120,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated,
         survey,
         session,
+        currentPassword,
         login,
         logout,
         loading,
