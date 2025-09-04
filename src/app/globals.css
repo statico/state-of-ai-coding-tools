@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@import 'tailwindcss' with (
+  --color-mode: class
+);
 
 :root {
   --radius: 0.5rem;
