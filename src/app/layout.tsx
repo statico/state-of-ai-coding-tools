@@ -4,8 +4,8 @@ import { Navigation } from '@/components/Navigation'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'State of AI Coding Tools',
-  description: 'A survey system for gauging interest and usage of AI coding tools',
+  title: 'AI Coding Tools Weekly Survey',
+  description: 'Weekly survey for gauging interest and usage of AI coding tools',
 }
 
 export default function RootLayout({

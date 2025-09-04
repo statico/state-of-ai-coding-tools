@@ -28,7 +28,7 @@ export function Navigation() {
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
               <BarChart3 className="h-6 w-6" />
-              <span>AI Coding Tools Survey</span>
+              <span>AI Coding Tools Weekly Survey</span>
             </Link>
             
             <NavigationMenu className="hidden md:flex">

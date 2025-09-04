@@ -39,7 +39,7 @@ export default function AuthPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Enter Weekly Password</CardTitle>
           <CardDescription>
-            Enter the password to access the State of AI Coding Tools survey
+            Enter the password to access the AI Coding Tools Weekly Survey
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

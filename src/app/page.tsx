@@ -36,10 +36,10 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tight mb-4">
-            State of AI Coding Tools
+            AI Coding Tools Weekly Survey
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Help shape the future of AI coding tools by sharing your experiences and preferences
+            Help shape the future of AI coding tools by sharing your experiences and preferences in our weekly survey
           </p>
         </div>
         
