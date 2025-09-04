@@ -60,7 +60,7 @@ export async function seedAIToolQuestions() {
     await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'ai_tools',
       orderIndex: orderIndex++,
       isRequired: false,
@@ -74,7 +74,7 @@ export async function seedAIToolQuestions() {
     await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'tools',
       orderIndex: orderIndex++,
       isRequired: false,
@@ -88,7 +88,7 @@ export async function seedAIToolQuestions() {
     await QuestionService.create({
       title: framework.name,
       description: framework.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'frameworks',
       orderIndex: orderIndex++,
       isRequired: false,

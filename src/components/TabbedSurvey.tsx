@@ -9,7 +9,7 @@ import { MultipleChoiceQuestion } from '@/components/MultipleChoiceQuestion'
 import { RatingQuestion } from '@/components/RatingQuestion'
 import { TextQuestion } from '@/components/TextQuestion'
 import { ExperienceQuestion } from '@/components/ExperienceQuestion'
-import { ExperienceSentimentQuestion } from '@/components/ExperienceSentimentQuestion'
+import { SelectQuestion } from '@/components/SelectQuestion'
 import {
   AlertCircle,
   ChevronLeft,
@@ -18,12 +18,7 @@ import {
   Loader2,
   CheckCircle,
 } from 'lucide-react'
-import type {
-  Question,
-  QuestionOption,
-  ExperienceLevel,
-  SentimentScore,
-} from '@prisma/client'
+import type { Question, QuestionOption, Experience } from '@prisma/client'
 
 interface QuestionWithOptions {
   question: Question
@@ -37,8 +32,7 @@ interface SurveyResponse {
   textValue?: string
   ratingValue?: number
   writeInValue?: string
-  experienceLevel?: string
-  sentimentScore?: string
+  experience?: string
 }
 
 interface TabbedSurveyProps {
@@ -55,34 +49,34 @@ const TAB_SECTIONS = [
     categories: ['demographics'],
   },
   {
-    id: 'ides',
-    label: 'IDEs',
-    categories: ['ides'],
+    id: 'ai_tools',
+    label: 'AI Tools',
+    categories: ['ai_tools'],
   },
   {
-    id: 'completion',
-    label: 'Completion',
-    categories: ['completion_tools'],
+    id: 'tools',
+    label: 'Dev Tools',
+    categories: ['tools'],
   },
   {
-    id: 'review',
-    label: 'Code Review',
-    categories: ['code_review'],
+    id: 'frameworks',
+    label: 'Frameworks',
+    categories: ['frameworks'],
   },
   {
-    id: 'refactoring',
-    label: 'Refactoring',
-    categories: ['refactoring'],
+    id: 'preferences',
+    label: 'Preferences',
+    categories: ['preferences'],
   },
   {
-    id: 'models',
-    label: 'AI Models',
-    categories: ['models'],
+    id: 'challenges',
+    label: 'Challenges',
+    categories: ['challenges'],
   },
   {
-    id: 'usage',
-    label: 'Usage & Impact',
-    categories: ['usage', 'concerns', 'impact', 'feedback'],
+    id: 'workflow',
+    label: 'Workflow',
+    categories: ['workflow'],
   },
 ]
 
@@ -188,10 +182,7 @@ export function TabbedSurvey({
         ) {
           newErrors[question.id] = 'Please provide a response'
           isValid = false
-        } else if (
-          question.type === 'EXPERIENCE_SENTIMENT' &&
-          !response.experienceLevel
-        ) {
+        } else if (question.type === 'EXPERIENCE' && !response.experience) {
           newErrors[question.id] = 'Please select your experience level'
           isValid = false
         }
@@ -245,6 +236,19 @@ export function TabbedSurvey({
     switch (question.type) {
       case 'SINGLE_CHOICE':
       case 'DEMOGRAPHIC':
+        // Use SelectQuestion for questions with more than 10 options
+        if (options.length > 10) {
+          return (
+            <SelectQuestion
+              key={question.id}
+              question={question}
+              options={options}
+              value={response?.optionId}
+              onChange={optionId => updateResponse(question.id, { optionId })}
+              error={error}
+            />
+          )
+        }
         return (
           <SingleChoiceQuestion
             key={question.id}
@@ -297,36 +301,13 @@ export function TabbedSurvey({
           <ExperienceQuestion
             key={question.id}
             question={question}
-            options={options}
             value={{
-              optionId: response?.optionId,
+              experience: response?.experience as Experience | undefined,
               writeInValue: response?.writeInValue,
             }}
-            onChange={({ optionId, writeInValue }) =>
-              updateResponse(question.id, { optionId, writeInValue })
-            }
-            error={error}
-          />
-        )
-
-      case 'EXPERIENCE_SENTIMENT':
-        return (
-          <ExperienceSentimentQuestion
-            key={question.id}
-            question={question}
-            value={{
-              experienceLevel: response?.experienceLevel as
-                | ExperienceLevel
-                | undefined,
-              sentimentScore: response?.sentimentScore as
-                | SentimentScore
-                | undefined,
-              writeInValue: response?.writeInValue,
-            }}
-            onChange={({ experienceLevel, sentimentScore, writeInValue }) =>
+            onChange={({ experience, writeInValue }) =>
               updateResponse(question.id, {
-                experienceLevel: experienceLevel as string,
-                sentimentScore: sentimentScore as string,
+                experience: experience as string,
                 writeInValue,
               })
             }

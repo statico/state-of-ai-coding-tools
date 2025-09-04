@@ -96,9 +96,8 @@ model Response {
   ratingValue  Int?            @map("rating_value")
   writeInValue String?         @map("write_in_value")
   
-  // New fields for enhanced experience/sentiment
-  experienceLevel ExperienceLevel? @map("experience_level")
-  sentimentScore  SentimentScore?  @map("sentiment_score")
+  // Single experience field that combines awareness, usage, and sentiment
+  experience      Experience?      @map("experience")
   
   createdAt    DateTime        @default(now()) @map("created_at")
   updatedAt    DateTime        @updatedAt @map("updated_at")
@@ -118,18 +117,17 @@ model ExperienceMetric {
   toolName        String   @map("tool_name")
   category        String   // ai_tools, tools, frameworks
   
-  // Experience counts
-  neverHeardCount       Int @default(0) @map("never_heard_count")
-  heardOfCount         Int @default(0) @map("heard_of_count")
-  usedBeforeCount      Int @default(0) @map("used_before_count")
-  currentlyUsingCount  Int @default(0) @map("currently_using_count")
+  // Experience counts (single axis)
+  neverHeardCount      Int @default(0) @map("never_heard_count")
+  wantToTryCount       Int @default(0) @map("want_to_try_count")
+  notInterestedCount   Int @default(0) @map("not_interested_count")
   wouldUseAgainCount   Int @default(0) @map("would_use_again_count")
+  wouldNotUseCount     Int @default(0) @map("would_not_use_count")
   
-  // Sentiment aggregates
-  avgSentimentScore    Float?   @map("avg_sentiment_score")
-  positiveCount        Int @default(0) @map("positive_count")
-  neutralCount         Int @default(0) @map("neutral_count")
-  negativeCount        Int @default(0) @map("negative_count")
+  // Derived metrics
+  awarenessRate        Float?   @map("awareness_rate")     // % who have heard of it
+  adoptionRate         Float?   @map("adoption_rate")      // % who have used it
+  satisfactionRate     Float?   @map("satisfaction_rate")  // % of users who would use again
   
   totalResponses       Int @default(0) @map("total_responses")
   calculatedAt         DateTime @default(now()) @map("calculated_at")
@@ -142,25 +140,27 @@ model ExperienceMetric {
   @@map("experience_metrics")
 }
 
-model SentimentTrend {
+model ExperienceTrend {
   id              Int      @id @default(autoincrement())
   toolName        String   @map("tool_name")
   category        String
   
   // Monthly snapshot
   month           DateTime @map("month")
-  avgSentiment    Float    @map("avg_sentiment")
+  awarenessRate   Float    @map("awareness_rate")
+  adoptionRate    Float    @map("adoption_rate")
+  satisfactionRate Float   @map("satisfaction_rate")
   changeFromPrev  Float?   @map("change_from_prev")
   
-  // User segments
-  byExperienceLevel Json?  @map("by_experience_level") // JSON object with sentiment by experience
-  byDemographic     Json?  @map("by_demographic")     // JSON object with sentiment by demographics
+  // Distribution snapshot
+  distribution    Json?    @map("distribution")       // JSON object with count per experience level
+  byDemographic   Json?    @map("by_demographic")     // JSON object with rates by demographics
   
   createdAt       DateTime @default(now()) @map("created_at")
   
   @@unique([toolName, month])
   @@index([category, month])
-  @@map("sentiment_trends")
+  @@map("experience_trends")
 }
 
 enum QuestionType {
@@ -169,23 +169,14 @@ enum QuestionType {
   RATING
   TEXT
   DEMOGRAPHIC
-  EXPERIENCE // State of JS style: Never heard/Heard not interested/Used wouldn't use again/Used would use again
-  EXPERIENCE_SENTIMENT // Enhanced experience + sentiment tracking
+  EXPERIENCE // Single axis: Never heard/Want to try/Not interested/Would use again/Would not use again
   WRITE_IN    // Optional write-in field
 }
 
-enum ExperienceLevel {
-  NEVER_HEARD       // Never heard of it
-  HEARD_OF          // Heard of it but never used
-  USED_BEFORE       // Used it before but not currently
-  CURRENTLY_USING   // Currently using
-  WOULD_USE_AGAIN   // Would use again / recommend
-}
-
-enum SentimentScore {
-  VERY_NEGATIVE     // Strong negative sentiment
-  NEGATIVE          // Negative sentiment
-  NEUTRAL           // Neutral / no opinion
-  POSITIVE          // Positive sentiment
-  VERY_POSITIVE     // Strong positive sentiment
+enum Experience {
+  NEVER_HEARD       // 🤷 Never heard of it / not sure what it is
+  WANT_TO_TRY       // ✅ Heard of it, would like to try it
+  NOT_INTERESTED    // 🚫 Heard of it, not interested
+  WOULD_USE_AGAIN   // 👍 Used it, would use again
+  WOULD_NOT_USE     // 👎 Used it, would not use again
 }

@@ -1,11 +1,8 @@
 -- CreateEnum
-CREATE TYPE "public"."QuestionType" AS ENUM ('SINGLE_CHOICE', 'MULTIPLE_CHOICE', 'RATING', 'TEXT', 'DEMOGRAPHIC', 'EXPERIENCE', 'EXPERIENCE_SENTIMENT', 'WRITE_IN');
+CREATE TYPE "public"."QuestionType" AS ENUM ('SINGLE_CHOICE', 'MULTIPLE_CHOICE', 'RATING', 'TEXT', 'DEMOGRAPHIC', 'EXPERIENCE', 'WRITE_IN');
 
 -- CreateEnum
-CREATE TYPE "public"."ExperienceLevel" AS ENUM ('NEVER_HEARD', 'HEARD_OF', 'USED_BEFORE', 'CURRENTLY_USING', 'WOULD_USE_AGAIN');
-
--- CreateEnum
-CREATE TYPE "public"."SentimentScore" AS ENUM ('VERY_NEGATIVE', 'NEGATIVE', 'NEUTRAL', 'POSITIVE', 'VERY_POSITIVE');
+CREATE TYPE "public"."Experience" AS ENUM ('NEVER_HEARD', 'WANT_TO_TRY', 'NOT_INTERESTED', 'WOULD_USE_AGAIN', 'WOULD_NOT_USE');
 
 -- CreateTable
 CREATE TABLE "public"."weekly_passwords" (
@@ -89,8 +86,7 @@ CREATE TABLE "public"."responses" (
     "text_value" TEXT,
     "rating_value" INTEGER,
     "write_in_value" TEXT,
-    "experience_level" "public"."ExperienceLevel",
-    "sentiment_score" "public"."SentimentScore",
+    "experience" "public"."Experience",
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -104,14 +100,13 @@ CREATE TABLE "public"."experience_metrics" (
     "tool_name" TEXT NOT NULL,
     "category" TEXT NOT NULL,
     "never_heard_count" INTEGER NOT NULL DEFAULT 0,
-    "heard_of_count" INTEGER NOT NULL DEFAULT 0,
-    "used_before_count" INTEGER NOT NULL DEFAULT 0,
-    "currently_using_count" INTEGER NOT NULL DEFAULT 0,
+    "want_to_try_count" INTEGER NOT NULL DEFAULT 0,
+    "not_interested_count" INTEGER NOT NULL DEFAULT 0,
     "would_use_again_count" INTEGER NOT NULL DEFAULT 0,
-    "avg_sentiment_score" DOUBLE PRECISION,
-    "positive_count" INTEGER NOT NULL DEFAULT 0,
-    "neutral_count" INTEGER NOT NULL DEFAULT 0,
-    "negative_count" INTEGER NOT NULL DEFAULT 0,
+    "would_not_use_count" INTEGER NOT NULL DEFAULT 0,
+    "awareness_rate" DOUBLE PRECISION,
+    "adoption_rate" DOUBLE PRECISION,
+    "satisfaction_rate" DOUBLE PRECISION,
     "total_responses" INTEGER NOT NULL DEFAULT 0,
     "calculated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -119,18 +114,20 @@ CREATE TABLE "public"."experience_metrics" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."sentiment_trends" (
+CREATE TABLE "public"."experience_trends" (
     "id" SERIAL NOT NULL,
     "tool_name" TEXT NOT NULL,
     "category" TEXT NOT NULL,
     "month" TIMESTAMP(3) NOT NULL,
-    "avg_sentiment" DOUBLE PRECISION NOT NULL,
+    "awareness_rate" DOUBLE PRECISION NOT NULL,
+    "adoption_rate" DOUBLE PRECISION NOT NULL,
+    "satisfaction_rate" DOUBLE PRECISION NOT NULL,
     "change_from_prev" DOUBLE PRECISION,
-    "by_experience_level" JSONB,
+    "distribution" JSONB,
     "by_demographic" JSONB,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "sentiment_trends_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "experience_trends_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -146,10 +143,10 @@ CREATE INDEX "experience_metrics_category_idx" ON "public"."experience_metrics"(
 CREATE UNIQUE INDEX "experience_metrics_survey_id_tool_name_key" ON "public"."experience_metrics"("survey_id", "tool_name");
 
 -- CreateIndex
-CREATE INDEX "sentiment_trends_category_month_idx" ON "public"."sentiment_trends"("category", "month");
+CREATE INDEX "experience_trends_category_month_idx" ON "public"."experience_trends"("category", "month");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "sentiment_trends_tool_name_month_key" ON "public"."sentiment_trends"("tool_name", "month");
+CREATE UNIQUE INDEX "experience_trends_tool_name_month_key" ON "public"."experience_trends"("tool_name", "month");
 
 -- AddForeignKey
 ALTER TABLE "public"."question_options" ADD CONSTRAINT "question_options_question_id_fkey" FOREIGN KEY ("question_id") REFERENCES "public"."questions"("id") ON DELETE CASCADE ON UPDATE CASCADE;

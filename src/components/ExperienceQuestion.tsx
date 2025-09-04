@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 import {
   Card,
@@ -8,155 +7,167 @@ import {
   CardHeader,
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import type { Question, QuestionOption } from '@prisma/client'
+import { Textarea } from '@/components/ui/textarea'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import type { Question, Experience } from '@prisma/client'
 
 interface ExperienceQuestionProps {
   question: Question
-  options: QuestionOption[]
-  value?: { optionId?: number; writeInValue?: string }
-  onChange: (value: { optionId?: number; writeInValue?: string }) => void
+  value?: {
+    experience?: Experience
+    writeInValue?: string
+  }
+  onChange: (value: { experience?: Experience; writeInValue?: string }) => void
   error?: string
 }
 
 const EXPERIENCE_OPTIONS = [
-  { id: 1, value: 'never_heard', label: 'Never heard of it', emoji: '❓' },
   {
-    id: 2,
-    value: 'heard_not_interested',
-    label: "Heard of it, but I'm not interested",
+    value: 'NEVER_HEARD' as Experience,
+    emoji: '🤷',
+    label: 'Never heard of it',
+    shortLabel: 'Never heard',
+    activeClass: 'bg-muted/50 border-muted-foreground/50',
+  },
+  {
+    value: 'WANT_TO_TRY' as Experience,
+    emoji: '✅',
+    label: 'Heard of it, would like to try',
+    shortLabel: 'Want to try',
+    activeClass:
+      'bg-green-100 dark:bg-green-950 border-green-600 dark:border-green-400',
+  },
+  {
+    value: 'NOT_INTERESTED' as Experience,
     emoji: '🚫',
+    label: 'Heard of it, not interested',
+    shortLabel: 'Not interested',
+    activeClass:
+      'bg-orange-100 dark:bg-orange-950 border-orange-600 dark:border-orange-400',
   },
   {
-    id: 3,
-    value: 'used_wont_use_again',
-    label: "Used it, but wouldn't use it again",
-    emoji: '👎',
-  },
-  {
-    id: 4,
-    value: 'used_would_use_again',
-    label: 'Used it and would use it again',
+    value: 'WOULD_USE_AGAIN' as Experience,
     emoji: '👍',
+    label: 'Used it, would use again',
+    shortLabel: 'Would use again',
+    activeClass:
+      'bg-blue-100 dark:bg-blue-950 border-blue-600 dark:border-blue-400',
+  },
+  {
+    value: 'WOULD_NOT_USE' as Experience,
+    emoji: '👎',
+    label: 'Used it, would not use again',
+    shortLabel: 'Would not use',
+    activeClass:
+      'bg-red-100 dark:bg-red-950 border-red-600 dark:border-red-400',
   },
 ]
 
 export function ExperienceQuestion({
   question,
-  options,
   value,
   onChange,
   error,
 }: ExperienceQuestionProps) {
-  const [showWriteIn, setShowWriteIn] = useState(false)
-  const [writeInValue, setWriteInValue] = useState(value?.writeInValue || '')
+  const [showNotes, setShowNotes] = useState(false)
 
-  const handleOptionChange = (optionValue: string) => {
-    const option = EXPERIENCE_OPTIONS.find(o => o.value === optionValue)
-    if (option) {
-      onChange({
-        optionId: option.id,
-        writeInValue: showWriteIn ? writeInValue : undefined,
-      })
-    }
+  const handleExperienceClick = (experience: Experience) => {
+    onChange({
+      ...value,
+      experience,
+    })
   }
 
-  const handleWriteInChange = (text: string) => {
-    setWriteInValue(text)
-    if (value?.optionId) {
-      onChange({
-        optionId: value.optionId,
-        writeInValue: text,
-      })
-    }
+  const handleWriteInChange = (writeInValue: string) => {
+    onChange({
+      ...value,
+      writeInValue,
+    })
   }
-
-  const selectedOption = value?.optionId
-    ? EXPERIENCE_OPTIONS.find(o => o.id === value.optionId)
-    : null
 
   return (
-    <Card className={cn(error && 'border-destructive')}>
-      <CardHeader>
+    <Card className={cn('overflow-hidden', error && 'border-destructive')}>
+      <CardHeader className="pb-2 pt-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <Label className="text-base font-medium">
+            <Label className="text-lg font-medium">
               {question.title}
               {question.isRequired && (
                 <span className="text-destructive ml-1">*</span>
               )}
             </Label>
             {question.description && (
-              <CardDescription className="mt-1">
+              <CardDescription className="mt-0.5">
                 {question.description}
               </CardDescription>
             )}
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <RadioGroup
-          value={selectedOption?.value || ''}
-          onValueChange={handleOptionChange}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {EXPERIENCE_OPTIONS.map(option => (
-              <div
-                key={option.id}
+      <CardContent className="pt-2 pb-3">
+        {/* Experience Selection - Compact horizontal buttons */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5">
+          {EXPERIENCE_OPTIONS.map(option => {
+            const isSelected = value?.experience === option.value
+            return (
+              <Button
+                key={option.value}
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleExperienceClick(option.value)}
                 className={cn(
-                  'flex items-start space-x-3 rounded-lg border p-3 transition-colors cursor-pointer',
-                  selectedOption?.id === option.id
-                    ? 'border-primary bg-primary/5'
-                    : 'hover:border-primary/50'
+                  'h-auto py-2 px-2 flex flex-col items-center justify-center text-center',
+                  'min-h-[60px]',
+                  'border-2',
+                  isSelected ? option.activeClass : 'bg-background'
                 )}
-                onClick={() => handleOptionChange(option.value)}
               >
-                <RadioGroupItem
-                  value={option.value}
-                  id={`${question.id}-${option.value}`}
-                  className="mt-1"
-                />
-                <Label
-                  htmlFor={`${question.id}-${option.value}`}
-                  className="flex-1 cursor-pointer"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{option.emoji}</span>
-                    <span className="text-sm font-medium">{option.label}</span>
-                  </div>
-                </Label>
-              </div>
-            ))}
-          </div>
-        </RadioGroup>
+                <div className="text-base leading-none mb-1">
+                  {option.emoji}
+                </div>
+                <div className="text-[11px] leading-tight font-normal">
+                  <div className="sm:hidden">{option.shortLabel}</div>
+                  <div className="hidden sm:block">{option.label}</div>
+                </div>
+              </Button>
+            )
+          })}
+        </div>
 
-        {/* Optional write-in section for custom tools */}
-        {question.title.toLowerCase().includes('other') && (
-          <div className="space-y-2 pt-2 border-t">
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id={`${question.id}-write-in`}
-                checked={showWriteIn}
-                onChange={e => setShowWriteIn(e.target.checked)}
-                className="rounded border-gray-300"
-              />
-              <Label htmlFor={`${question.id}-write-in`} className="text-sm">
-                Add a custom tool or specify details
-              </Label>
-            </div>
-            {showWriteIn && (
-              <Input
-                placeholder="Enter tool name or additional details..."
-                value={writeInValue}
-                onChange={e => handleWriteInChange(e.target.value)}
-                className="mt-2"
-              />
+        {/* Notes section - collapsible with more space */}
+        <div className="mt-3 pt-1">
+          <button
+            type="button"
+            onClick={() => setShowNotes(!showNotes)}
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {showNotes ? (
+              <>
+                <ChevronUp className="h-3 w-3" />
+                Hide notes/feedback
+              </>
+            ) : (
+              <>
+                <ChevronDown className="h-3 w-3" />
+                Add notes/feedback...
+              </>
             )}
-          </div>
-        )}
+          </button>
+
+          {showNotes && (
+            <div className="mt-2 animate-in slide-in-from-top-2 duration-200">
+              <Textarea
+                placeholder={`Share your thoughts about ${question.title}...`}
+                value={value?.writeInValue || ''}
+                onChange={e => handleWriteInChange(e.target.value)}
+                className="min-h-[60px] text-sm resize-y"
+              />
+            </div>
+          )}
+        </div>
 
         {error && <p className="text-sm text-destructive mt-2">{error}</p>}
       </CardContent>
