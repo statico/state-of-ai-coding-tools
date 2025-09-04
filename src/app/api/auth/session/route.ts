@@ -7,7 +7,11 @@ import { getActiveWeeklyPassword } from '@/lib/password-manager'
 
 export async function GET() {
   try {
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+    const cookieStore = await cookies()
+    const session = await getIronSession<SessionData>(
+      cookieStore,
+      sessionOptions
+    )
 
     if (!session.isAuthenticated) {
       return NextResponse.json({

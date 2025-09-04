@@ -39,7 +39,11 @@ export async function POST(request: NextRequest) {
     const currentPassword = await getActiveWeeklyPassword()
 
     // Create iron-session
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+    const cookieStore = await cookies()
+    const session = await getIronSession<SessionData>(
+      cookieStore,
+      sessionOptions
+    )
     session.isAuthenticated = true
     session.surveyId = currentSurvey.id
     session.weeklyPassword = currentPassword

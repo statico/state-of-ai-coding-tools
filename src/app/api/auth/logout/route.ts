@@ -5,7 +5,11 @@ import { cookies } from 'next/headers'
 
 export async function POST() {
   try {
-    const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+    const cookieStore = await cookies()
+    const session = await getIronSession<SessionData>(
+      cookieStore,
+      sessionOptions
+    )
     session.destroy()
 
     return NextResponse.json({

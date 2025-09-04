@@ -71,6 +71,7 @@ export default function SurveyPage() {
       }
 
       if (response.optionId) formatted.optionId = response.optionId
+      if (response.optionIds) formatted.optionIds = response.optionIds
       if (response.textValue) formatted.textValue = response.textValue
       if (response.ratingValue) formatted.ratingValue = response.ratingValue
       if (response.writeInValue) formatted.writeInValue = response.writeInValue
