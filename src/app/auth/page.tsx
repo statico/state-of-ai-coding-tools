@@ -6,7 +6,14 @@ import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, LogIn, Info, AlertCircle } from 'lucide-react'
 
@@ -37,30 +44,23 @@ export default function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-background py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Enter Weekly Password</CardTitle>
+          <CardTitle className="text-2xl">Enter Password</CardTitle>
           <CardDescription>
             Enter the password to access the AI Coding Tools Weekly Survey
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription className="ml-2">
-              Please enter the weekly password to access the survey. Contact your administrator if you need the password.
-            </AlertDescription>
-          </Alert>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
+                autoFocus
                 required
                 placeholder="Enter the weekly password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 disabled={isLoading}
                 data-1p-ignore="true"
                 data-lpignore="true"
@@ -71,7 +71,6 @@ export default function AuthPage() {
 
             {error && (
               <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -88,10 +87,7 @@ export default function AuthPage() {
                   Verifying...
                 </>
               ) : (
-                <>
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Enter Survey
-                </>
+                <>Continue</>
               )}
             </Button>
           </form>
