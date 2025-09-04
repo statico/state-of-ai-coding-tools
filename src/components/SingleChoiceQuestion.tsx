@@ -36,26 +36,27 @@ export function SingleChoiceQuestion({
           value={value?.toString()}
           onValueChange={(val) => onChange(parseInt(val))}
         >
-          <div className="space-y-3">
+          <div className="space-y-2">
             {options.map((option) => (
-              <div key={option.id} className="flex items-start space-x-3">
+              <Label
+                key={option.id}
+                htmlFor={`option-${option.id}`}
+                className="flex items-start space-x-3 p-4 rounded-lg border border-transparent hover:border-border hover:bg-accent/50 transition-all cursor-pointer -mx-2"
+              >
                 <RadioGroupItem
                   value={option.id.toString()}
                   id={`option-${option.id}`}
-                  className="mt-0.5"
+                  className="mt-0.5 h-5 w-5"
                 />
-                <Label
-                  htmlFor={`option-${option.id}`}
-                  className="flex-1 cursor-pointer"
-                >
-                  <span className="font-medium">{option.label}</span>
+                <div className="flex-1">
+                  <span className="font-medium block">{option.label}</span>
                   {option.description && (
                     <p className="text-sm text-muted-foreground mt-1">
                       {option.description}
                     </p>
                   )}
-                </Label>
-              </div>
+                </div>
+              </Label>
             ))}
           </div>
         </RadioGroup>

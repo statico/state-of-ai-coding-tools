@@ -30,7 +30,7 @@ describe('SurveyService', () => {
         description: 'A test survey',
         password: 'test123',
         startDate: new Date('2024-01-01'),
-        endDate: new Date('2024-12-31'),
+        endDate: new Date('2030-12-31'),
         isActive: true,
       }
 
@@ -102,7 +102,7 @@ describe('SurveyService', () => {
         title: 'Current Survey',
         isActive: true,
         startDate: new Date('2024-01-01'),
-        endDate: new Date('2024-12-31'),
+        endDate: new Date('2030-12-31'),
       }
       mockPrisma.survey.findFirst.mockResolvedValue(mockSurvey as any)
 
