@@ -39,7 +39,7 @@ export function RatingQuestion({
               variant="ghost"
               size="lg"
               onClick={() => onChange(rating)}
-              className="p-2 hover:scale-110 transition-all cursor-pointer"
+              className="p-2 hover:scale-110 transition-all"
             >
               <Star
                 className={cn(
