@@ -13,8 +13,8 @@ interface BarChartProps {
 
 export function BarChart({ data, title }: BarChartProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">{title}</h3>
+    <div className="bg-card p-6 rounded-lg shadow">
+      <h3 className="text-lg font-medium text-card-foreground mb-4">{title}</h3>
       <ResponsiveContainer width="100%" height={300}>
         <RechartsBarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -29,7 +29,7 @@ export function BarChart({ data, title }: BarChartProps) {
           <Tooltip 
             formatter={(value) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.value, 0) * 100).toFixed(1)}%)`, 'Count']}
           />
-          <Bar dataKey="value" fill="#4F46E5" />
+          <Bar dataKey="value" fill="hsl(var(--primary))" />
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>

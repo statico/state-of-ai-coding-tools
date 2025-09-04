@@ -55,21 +55,21 @@ export default function ResultsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error</h1>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Error</h1>
+          <p className="text-muted-foreground mb-4">{error}</p>
           <Link
             href="/"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-primary-foreground bg-primary hover:bg-primary/90"
           >
             Return Home
           </Link>
@@ -80,13 +80,13 @@ export default function ResultsPage() {
 
   if (!survey || results.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">No Results</h1>
-          <p className="text-gray-600 mb-4">No survey responses have been submitted yet.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">No Results</h1>
+          <p className="text-muted-foreground mb-4">No survey responses have been submitted yet.</p>
           <Link
             href="/"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-primary-foreground bg-primary hover:bg-primary/90"
           >
             Return Home
           </Link>
@@ -122,15 +122,15 @@ export default function ResultsPage() {
     Math.max(...results.map(r => r.results.reduce((sum, res) => sum + res.count, 0))) : 0
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{survey.title} - Results</h1>
+          <h1 className="text-3xl font-bold text-foreground">{survey.title} - Results</h1>
           {survey.description && (
-            <p className="mt-2 text-lg text-gray-600">{survey.description}</p>
+            <p className="mt-2 text-lg text-muted-foreground">{survey.description}</p>
           )}
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Total responses: {totalResponses}
           </p>
         </div>
@@ -139,7 +139,7 @@ export default function ResultsPage() {
         <div className="mb-8 flex justify-center">
           <Link
             href="/"
-            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-4 py-2 border border-border shadow-sm text-sm font-medium rounded-md text-foreground bg-card hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
           >
             ← Return Home
           </Link>
@@ -148,7 +148,7 @@ export default function ResultsPage() {
         {/* Results by Category */}
         {Object.entries(resultsByCategory).map(([category, categoryResults]) => (
           <div key={category} className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 capitalize">
+            <h2 className="text-2xl font-bold text-foreground mb-6 capitalize">
               {category.replace('_', ' ')}
             </h2>
             
@@ -191,15 +191,15 @@ export default function ResultsPage() {
 
                   case 'TEXT':
                     return (
-                      <div key={result.questionId} className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">
+                      <div key={result.questionId} className="bg-card p-6 rounded-lg shadow">
+                        <h3 className="text-lg font-medium text-card-foreground mb-4">
                           {result.questionTitle}
                         </h3>
                         <div className="text-center py-8">
-                          <div className="text-3xl font-bold text-indigo-600 mb-2">
+                          <div className="text-3xl font-bold text-primary mb-2">
                             {result.results[0]?.count || 0}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             Text responses submitted
                           </div>
                         </div>

@@ -11,12 +11,23 @@ interface PieChartProps {
   title: string
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1', '#d084d0']
+const COLORS = [
+  'hsl(var(--primary))',
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--primary) / 0.8)',
+  'hsl(var(--primary) / 0.6)',
+  'hsl(var(--primary) / 0.4)',
+  'hsl(var(--primary) / 0.2)'
+]
 
 export function PieChart({ data, title }: PieChartProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">{title}</h3>
+    <div className="bg-card p-6 rounded-lg shadow">
+      <h3 className="text-lg font-medium text-card-foreground mb-4">{title}</h3>
       <ResponsiveContainer width="100%" height={400}>
         <RechartsPieChart>
           <Pie

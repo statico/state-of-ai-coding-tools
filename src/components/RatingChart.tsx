@@ -24,11 +24,11 @@ export function RatingChart({ data, title }: RatingChartProps) {
                        data.reduce((sum, item) => sum + item.count, 0)
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
+    <div className="bg-card p-6 rounded-lg shadow">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+        <h3 className="text-lg font-medium text-card-foreground">{title}</h3>
         <div className="flex items-center">
-          <span className="text-2xl font-bold text-yellow-500 mr-2">
+          <span className="text-2xl font-bold text-primary mr-2">
             {averageRating.toFixed(1)}
           </span>
           <div className="flex">
@@ -37,8 +37,8 @@ export function RatingChart({ data, title }: RatingChartProps) {
                 key={star}
                 className={`h-5 w-5 ${
                   star <= Math.round(averageRating) 
-                    ? 'text-yellow-400 fill-current' 
-                    : 'text-gray-300'
+                    ? 'text-primary fill-current' 
+                    : 'text-muted-foreground'
                 }`}
               />
             ))}
@@ -57,7 +57,7 @@ export function RatingChart({ data, title }: RatingChartProps) {
           <Tooltip 
             formatter={(value) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.count, 0) * 100).toFixed(1)}%)`, 'Count']}
           />
-          <Bar dataKey="count" fill="#FBBF24" />
+          <Bar dataKey="count" fill="hsl(var(--primary))" />
         </BarChart>
       </ResponsiveContainer>
     </div>
