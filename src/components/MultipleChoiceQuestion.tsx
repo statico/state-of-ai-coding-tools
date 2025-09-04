@@ -1,7 +1,13 @@
 import type { Question, QuestionOption } from '@prisma/client'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 
@@ -24,7 +30,7 @@ export function MultipleChoiceQuestion({
     if (checked) {
       onChange([...value, optionId])
     } else {
-      onChange(value.filter((id) => id !== optionId))
+      onChange(value.filter(id => id !== optionId))
     }
   }
 
@@ -41,7 +47,7 @@ export function MultipleChoiceQuestion({
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {options.map((option) => (
+          {options.map(option => (
             <Label
               key={option.id}
               htmlFor={`option-${option.id}`}
@@ -50,7 +56,7 @@ export function MultipleChoiceQuestion({
               <Checkbox
                 id={`option-${option.id}`}
                 checked={value.includes(option.id)}
-                onCheckedChange={(checked) => handleChange(option.id, !!checked)}
+                onCheckedChange={checked => handleChange(option.id, !!checked)}
                 className="h-5 w-5 flex-shrink-0"
               />
               <div className="flex-1">
@@ -64,7 +70,7 @@ export function MultipleChoiceQuestion({
             </Label>
           ))}
         </div>
-        
+
         {error && (
           <Alert variant="destructive" className="mt-4">
             <AlertCircle className="h-4 w-4" />

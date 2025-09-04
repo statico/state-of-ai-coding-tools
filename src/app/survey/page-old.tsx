@@ -6,7 +6,12 @@ import { useAuth } from '@/lib/auth-context'
 import { TabbedSurvey } from '@/components/TabbedSurvey'
 import { ShareModal } from '@/components/ShareModal'
 import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
 import type { Question, QuestionOption } from '@prisma/client'
 
@@ -48,7 +53,7 @@ export default function SurveyPage() {
     try {
       const response = await fetch('/api/survey/questions')
       const data = await response.json()
-      
+
       if (data.success) {
         setQuestions(data.questions)
       } else {
@@ -61,14 +66,17 @@ export default function SurveyPage() {
     }
   }
 
-  const updateResponse = (questionId: number, responseData: Partial<SurveyResponse>) => {
+  const updateResponse = (
+    questionId: number,
+    responseData: Partial<SurveyResponse>
+  ) => {
     setResponses(prev => ({
       ...prev,
       [questionId]: {
         ...prev[questionId],
         questionId,
         ...responseData,
-      }
+      },
     }))
 
     // Clear error for this question
@@ -95,13 +103,19 @@ export default function SurveyPage() {
         if (question.type === 'SINGLE_CHOICE' && !response.optionId) {
           newErrors[question.id] = 'Please select an option'
           isValid = false
-        } else if (question.type === 'MULTIPLE_CHOICE' && (!response.optionIds || response.optionIds.length === 0)) {
+        } else if (
+          question.type === 'MULTIPLE_CHOICE' &&
+          (!response.optionIds || response.optionIds.length === 0)
+        ) {
           newErrors[question.id] = 'Please select at least one option'
           isValid = false
         } else if (question.type === 'RATING' && !response.ratingValue) {
           newErrors[question.id] = 'Please provide a rating'
           isValid = false
-        } else if (question.type === 'TEXT' && (!response.textValue || response.textValue.trim() === '')) {
+        } else if (
+          question.type === 'TEXT' &&
+          (!response.textValue || response.textValue.trim() === '')
+        ) {
           newErrors[question.id] = 'Please provide a response'
           isValid = false
         }
@@ -114,7 +128,7 @@ export default function SurveyPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateResponses() || !survey || !session) {
       return
     }
@@ -130,13 +144,16 @@ export default function SurveyPage() {
         if (response.optionId) formatted.optionId = response.optionId
         if (response.textValue) formatted.textValue = response.textValue
         if (response.ratingValue) formatted.ratingValue = response.ratingValue
-        if (response.writeInValue) formatted.writeInValue = response.writeInValue
+        if (response.writeInValue)
+          formatted.writeInValue = response.writeInValue
 
         return formatted
       })
 
       // Generate a session ID from localStorage or create one
-      const sessionId = localStorage.getItem('survey_session_id') || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      const sessionId =
+        localStorage.getItem('survey_session_id') ||
+        `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       if (!localStorage.getItem('survey_session_id')) {
         localStorage.setItem('survey_session_id', sessionId)
       }
@@ -155,7 +172,10 @@ export default function SurveyPage() {
 
       const data = await response.json()
 
-      if (response.ok && (data.success || data.message === 'Responses submitted successfully')) {
+      if (
+        response.ok &&
+        (data.success || data.message === 'Responses submitted successfully')
+      ) {
         router.push('/survey/thank-you')
       } else {
         console.error('Failed to submit survey:', data.error || 'Unknown error')
@@ -181,14 +201,17 @@ export default function SurveyPage() {
   }
 
   // Group questions by category
-  const questionsByCategory = questions.reduce((acc, questionWithOptions) => {
-    const category = questionWithOptions.question.category
-    if (!acc[category]) {
-      acc[category] = []
-    }
-    acc[category].push(questionWithOptions)
-    return acc
-  }, {} as Record<string, QuestionWithOptions[]>)
+  const questionsByCategory = questions.reduce(
+    (acc, questionWithOptions) => {
+      const category = questionWithOptions.question.category
+      if (!acc[category]) {
+        acc[category] = []
+      }
+      acc[category].push(questionWithOptions)
+      return acc
+    },
+    {} as Record<string, QuestionWithOptions[]>
+  )
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -197,9 +220,13 @@ export default function SurveyPage() {
           <CardHeader className="text-center">
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
-                <CardTitle className="text-3xl">{survey?.title || 'Survey'}</CardTitle>
+                <CardTitle className="text-3xl">
+                  {survey?.title || 'Survey'}
+                </CardTitle>
                 {survey?.description && (
-                  <CardDescription className="text-lg mt-2">{survey.description}</CardDescription>
+                  <CardDescription className="text-lg mt-2">
+                    {survey.description}
+                  </CardDescription>
                 )}
               </div>
               <ShareModal />
@@ -208,127 +235,145 @@ export default function SurveyPage() {
         </Card>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-              {Object.entries(questionsByCategory).map(([category, categoryQuestions], index) => (
-                <div key={category}>
-                  {index > 0 && <Separator className="my-8" />}
-                  <div className="mb-6">
-                    <h2 className="text-xl font-semibold capitalize">
-                      {category.replace(/_/g, ' ')}
-                    </h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {categoryQuestions.filter(q => q.question.isRequired).length} required questions
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    {categoryQuestions.map(({ question, options }) => {
-                      const response = responses[question.id]
-                      const error = errors[question.id]
-
-                      switch (question.type) {
-                        case 'SINGLE_CHOICE':
-                        case 'DEMOGRAPHIC':
-                          return (
-                            <SingleChoiceQuestion
-                              key={question.id}
-                              question={question}
-                              options={options}
-                              value={response?.optionId}
-                              onChange={(optionId) => updateResponse(question.id, { optionId })}
-                              error={error}
-                            />
-                          )
-
-                        case 'MULTIPLE_CHOICE':
-                          return (
-                            <MultipleChoiceQuestion
-                              key={question.id}
-                              question={question}
-                              options={options}
-                              value={response?.optionIds}
-                              onChange={(optionIds) => updateResponse(question.id, { optionIds })}
-                              error={error}
-                            />
-                          )
-
-                        case 'RATING':
-                          return (
-                            <RatingQuestion
-                              key={question.id}
-                              question={question}
-                              value={response?.ratingValue}
-                              onChange={(ratingValue) => updateResponse(question.id, { ratingValue })}
-                              error={error}
-                            />
-                          )
-
-                        case 'TEXT':
-                          return (
-                            <TextQuestion
-                              key={question.id}
-                              question={question}
-                              value={response?.textValue}
-                              onChange={(textValue) => updateResponse(question.id, { textValue })}
-                              error={error}
-                            />
-                          )
-
-                        case 'EXPERIENCE':
-                          return (
-                            <ExperienceQuestion
-                              key={question.id}
-                              question={question}
-                              options={options}
-                              value={{
-                                optionId: response?.optionId,
-                                writeInValue: response?.writeInValue
-                              }}
-                              onChange={({ optionId, writeInValue }) => 
-                                updateResponse(question.id, { optionId, writeInValue })
-                              }
-                              error={error}
-                            />
-                          )
-
-                        default:
-                          return null
-                      }
-                    })}
-                  </div>
+          {Object.entries(questionsByCategory).map(
+            ([category, categoryQuestions], index) => (
+              <div key={category}>
+                {index > 0 && <Separator className="my-8" />}
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold capitalize">
+                    {category.replace(/_/g, ' ')}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {
+                      categoryQuestions.filter(q => q.question.isRequired)
+                        .length
+                    }{' '}
+                    required questions
+                  </p>
                 </div>
-              ))}
 
-              {Object.keys(errors).length > 0 && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Please complete all required questions</AlertTitle>
-                  <AlertDescription>
-                    There are {Object.keys(errors).length} questions that need your attention.
-                  </AlertDescription>
-                </Alert>
-              )}
+                <div className="space-y-6">
+                  {categoryQuestions.map(({ question, options }) => {
+                    const response = responses[question.id]
+                    const error = errors[question.id]
 
-              <div className="flex justify-end pt-6">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  size="lg"
-                  className="min-w-[200px]"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      Submit Survey
-                    </>
-                  )}
-                </Button>
+                    switch (question.type) {
+                      case 'SINGLE_CHOICE':
+                      case 'DEMOGRAPHIC':
+                        return (
+                          <SingleChoiceQuestion
+                            key={question.id}
+                            question={question}
+                            options={options}
+                            value={response?.optionId}
+                            onChange={optionId =>
+                              updateResponse(question.id, { optionId })
+                            }
+                            error={error}
+                          />
+                        )
+
+                      case 'MULTIPLE_CHOICE':
+                        return (
+                          <MultipleChoiceQuestion
+                            key={question.id}
+                            question={question}
+                            options={options}
+                            value={response?.optionIds}
+                            onChange={optionIds =>
+                              updateResponse(question.id, { optionIds })
+                            }
+                            error={error}
+                          />
+                        )
+
+                      case 'RATING':
+                        return (
+                          <RatingQuestion
+                            key={question.id}
+                            question={question}
+                            value={response?.ratingValue}
+                            onChange={ratingValue =>
+                              updateResponse(question.id, { ratingValue })
+                            }
+                            error={error}
+                          />
+                        )
+
+                      case 'TEXT':
+                        return (
+                          <TextQuestion
+                            key={question.id}
+                            question={question}
+                            value={response?.textValue}
+                            onChange={textValue =>
+                              updateResponse(question.id, { textValue })
+                            }
+                            error={error}
+                          />
+                        )
+
+                      case 'EXPERIENCE':
+                        return (
+                          <ExperienceQuestion
+                            key={question.id}
+                            question={question}
+                            options={options}
+                            value={{
+                              optionId: response?.optionId,
+                              writeInValue: response?.writeInValue,
+                            }}
+                            onChange={({ optionId, writeInValue }) =>
+                              updateResponse(question.id, {
+                                optionId,
+                                writeInValue,
+                              })
+                            }
+                            error={error}
+                          />
+                        )
+
+                      default:
+                        return null
+                    }
+                  })}
+                </div>
               </div>
-            </form>
+            )
+          )}
+
+          {Object.keys(errors).length > 0 && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Please complete all required questions</AlertTitle>
+              <AlertDescription>
+                There are {Object.keys(errors).length} questions that need your
+                attention.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <div className="flex justify-end pt-6">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              size="lg"
+              className="min-w-[200px]"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Submit Survey
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   )

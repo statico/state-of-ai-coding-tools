@@ -29,10 +29,7 @@ export class QuestionService {
   static async findAll(): Promise<Question[]> {
     return await prisma.question.findMany({
       where: { isActive: true },
-      orderBy: [
-        { category: 'asc' },
-        { orderIndex: 'asc' },
-      ],
+      orderBy: [{ category: 'asc' }, { orderIndex: 'asc' }],
     })
   }
 
@@ -69,10 +66,12 @@ export class QuestionService {
     }
   }
 
-  static async getAllWithOptions(): Promise<Array<{
-    question: Question
-    options: QuestionOption[]
-  }>> {
+  static async getAllWithOptions(): Promise<
+    Array<{
+      question: Question
+      options: QuestionOption[]
+    }>
+  > {
     const questions = await prisma.question.findMany({
       where: { isActive: true },
       include: {
@@ -81,13 +80,10 @@ export class QuestionService {
           orderBy: { orderIndex: 'asc' },
         },
       },
-      orderBy: [
-        { category: 'asc' },
-        { orderIndex: 'asc' },
-      ],
+      orderBy: [{ category: 'asc' }, { orderIndex: 'asc' }],
     })
 
-    return questions.map((question) => ({
+    return questions.map(question => ({
       question: {
         id: question.id,
         title: question.title,

@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { SurveyService } from '@/lib/services/survey'
-import { validateWeeklyPassword, getActiveWeeklyPassword } from '@/lib/password-manager'
+import {
+  validateWeeklyPassword,
+  getActiveWeeklyPassword,
+} from '@/lib/password-manager'
 import { getIronSession } from 'iron-session'
 import { SessionData, sessionOptions } from '@/lib/session'
 import { cookies } from 'next/headers'
@@ -17,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     // Get the current active survey
     const currentSurvey = await SurveyService.getCurrentSurvey()
-    
+
     if (!currentSurvey) {
       return NextResponse.json(
         { error: 'No active survey found' },
@@ -27,14 +30,11 @@ export async function POST(request: NextRequest) {
 
     // Verify weekly password instead of survey password
     const isValid = await validateWeeklyPassword(password)
-    
+
     if (!isValid) {
-      return NextResponse.json(
-        { error: 'Invalid password' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
     }
-    
+
     // Get the current password for the session data
     const currentPassword = await getActiveWeeklyPassword()
 
@@ -55,7 +55,6 @@ export async function POST(request: NextRequest) {
       },
       currentPassword, // Include password for share functionality
     })
-
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

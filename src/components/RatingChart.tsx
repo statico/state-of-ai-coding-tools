@@ -1,6 +1,14 @@
 'use client'
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 import { StarIcon } from '@radix-ui/react-icons'
 
 interface RatingChartProps {
@@ -14,14 +22,17 @@ interface RatingChartProps {
 }
 
 export function RatingChart({ data, title }: RatingChartProps) {
-  const chartData = data.map(item => ({
-    rating: item.optionId || 0,
-    count: item.count,
-    percentage: item.percentage,
-  })).sort((a, b) => a.rating - b.rating)
+  const chartData = data
+    .map(item => ({
+      rating: item.optionId || 0,
+      count: item.count,
+      percentage: item.percentage,
+    }))
+    .sort((a, b) => a.rating - b.rating)
 
-  const averageRating = data.reduce((sum, item) => sum + (item.optionId || 0) * item.count, 0) / 
-                       data.reduce((sum, item) => sum + item.count, 0)
+  const averageRating =
+    data.reduce((sum, item) => sum + (item.optionId || 0) * item.count, 0) /
+    data.reduce((sum, item) => sum + item.count, 0)
 
   return (
     <div className="bg-card p-6 rounded-lg shadow">
@@ -32,12 +43,12 @@ export function RatingChart({ data, title }: RatingChartProps) {
             {averageRating.toFixed(1)}
           </span>
           <div className="flex">
-            {[1, 2, 3, 4, 5].map((star) => (
+            {[1, 2, 3, 4, 5].map(star => (
               <StarIcon
                 key={star}
                 className={`h-5 w-5 ${
-                  star <= Math.round(averageRating) 
-                    ? 'text-primary fill-current' 
+                  star <= Math.round(averageRating)
+                    ? 'text-primary fill-current'
                     : 'text-muted-foreground'
                 }`}
               />
@@ -45,17 +56,17 @@ export function RatingChart({ data, title }: RatingChartProps) {
           </div>
         </div>
       </div>
-      
+
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            dataKey="rating"
-            tickFormatter={(value) => `${value} ⭐`}
-          />
+          <XAxis dataKey="rating" tickFormatter={value => `${value} ⭐`} />
           <YAxis />
-          <Tooltip 
-            formatter={(value) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.count, 0) * 100).toFixed(1)}%)`, 'Count']}
+          <Tooltip
+            formatter={value => [
+              `${value} responses (${(((value as number) / data.reduce((sum, item) => sum + item.count, 0)) * 100).toFixed(1)}%)`,
+              'Count',
+            ]}
           />
           <Bar dataKey="count" fill="hsl(var(--primary))" />
         </BarChart>

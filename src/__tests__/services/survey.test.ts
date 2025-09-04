@@ -34,12 +34,19 @@ describe('SurveyService', () => {
         isActive: true,
       }
 
-      const mockSurvey = { id: 1, ...surveyData, createdAt: new Date(), updatedAt: new Date() }
+      const mockSurvey = {
+        id: 1,
+        ...surveyData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
       mockPrisma.survey.create.mockResolvedValue(mockSurvey)
 
       const result = await SurveyService.create(surveyData)
 
-      expect(mockPrisma.survey.create).toHaveBeenCalledWith({ data: surveyData })
+      expect(mockPrisma.survey.create).toHaveBeenCalledWith({
+        data: surveyData,
+      })
       expect(result).toEqual(mockSurvey)
     })
   })
@@ -56,7 +63,9 @@ describe('SurveyService', () => {
 
       const result = await SurveyService.findById(1)
 
-      expect(mockPrisma.survey.findUnique).toHaveBeenCalledWith({ where: { id: 1 } })
+      expect(mockPrisma.survey.findUnique).toHaveBeenCalledWith({
+        where: { id: 1 },
+      })
       expect(result).toEqual(mockSurvey)
     })
 

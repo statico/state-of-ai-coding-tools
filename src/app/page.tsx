@@ -5,7 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { FileQuestion, BarChart3, Loader2, ArrowRight } from 'lucide-react'
 
 export default function Home() {
@@ -39,10 +45,11 @@ export default function Home() {
             AI Coding Tools Weekly Survey
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Help shape the future of AI coding tools by sharing your experiences and preferences in our weekly survey
+            Help shape the future of AI coding tools by sharing your experiences
+            and preferences in our weekly survey
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
@@ -52,15 +59,18 @@ export default function Home() {
               </div>
               <CardTitle>Take the Survey</CardTitle>
               <CardDescription>
-                Share your insights on AI coding tools in our comprehensive survey
+                Share your insights on AI coding tools in our comprehensive
+                survey
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                • Takes approximately 10-15 minutes<br />
-                • Covers tool usage, preferences, and experiences<br />
-                • Completely anonymous responses<br />
-                • Password required for access
+                • Takes approximately 10-15 minutes
+                <br />
+                • Covers tool usage, preferences, and experiences
+                <br />
+                • Completely anonymous responses
+                <br />• Password required for access
               </p>
               <Link href="/auth">
                 <Button className="w-full" size="lg">
@@ -84,10 +94,12 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                • Real-time data visualization<br />
-                • Tool adoption trends<br />
-                • Community preferences<br />
-                • Publicly accessible results
+                • Real-time data visualization
+                <br />
+                • Tool adoption trends
+                <br />
+                • Community preferences
+                <br />• Publicly accessible results
               </p>
               <Link href="/results">
                 <Button variant="outline" className="w-full" size="lg">

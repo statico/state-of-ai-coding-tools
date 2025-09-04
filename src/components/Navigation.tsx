@@ -4,7 +4,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu'
 import { useAuth } from '@/lib/auth-context'
 import { Home, FileQuestion, BarChart3, Menu, X, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -15,7 +20,7 @@ export function Navigation() {
   const router = useRouter()
   const { isAuthenticated, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  
+
   const handleLogout = () => {
     logout()
     router.push('/')
@@ -26,45 +31,57 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+            <Link
+              href="/"
+              className="flex items-center gap-2 font-semibold text-lg"
+            >
               <BarChart3 className="h-6 w-6" />
               <span>AI Coding Tools Weekly Survey</span>
             </Link>
-            
+
             <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
-                    <Link href="/" className={cn(
-                      "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-                      pathname === '/' && "bg-accent"
-                    )}>
+                    <Link
+                      href="/"
+                      className={cn(
+                        'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50',
+                        pathname === '/' && 'bg-accent'
+                      )}
+                    >
                       <Home className="mr-2 h-4 w-4" />
                       Home
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-                
+
                 {isAuthenticated && (
                   <>
                     <NavigationMenuItem>
                       <NavigationMenuLink asChild>
-                        <Link href="/survey" className={cn(
-                          "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
-                          pathname === '/survey' && "bg-accent"
-                        )}>
+                        <Link
+                          href="/survey"
+                          className={cn(
+                            'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none',
+                            pathname === '/survey' && 'bg-accent'
+                          )}
+                        >
                           <FileQuestion className="mr-2 h-4 w-4" />
                           Survey
                         </Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
-                    
+
                     <NavigationMenuItem>
                       <NavigationMenuLink asChild>
-                        <Link href="/results" className={cn(
-                          "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
-                          pathname === '/results' && "bg-accent"
-                        )}>
+                        <Link
+                          href="/results"
+                          className={cn(
+                            'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none',
+                            pathname === '/results' && 'bg-accent'
+                          )}
+                        >
                           <BarChart3 className="mr-2 h-4 w-4" />
                           Results
                         </Link>
@@ -72,14 +89,17 @@ export function Navigation() {
                     </NavigationMenuItem>
                   </>
                 )}
-                
+
                 {!isAuthenticated && (
                   <NavigationMenuItem>
                     <NavigationMenuLink asChild>
-                      <Link href="/results" className={cn(
-                        "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
-                        pathname === '/results' && "bg-accent"
-                      )}>
+                      <Link
+                        href="/results"
+                        className={cn(
+                          'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none',
+                          pathname === '/results' && 'bg-accent'
+                        )}
+                      >
                         <BarChart3 className="mr-2 h-4 w-4" />
                         Results
                       </Link>
@@ -89,11 +109,11 @@ export function Navigation() {
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <ThemeSwitcher />
             {isAuthenticated && (
-              <Button 
+              <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
@@ -104,7 +124,7 @@ export function Navigation() {
               </Button>
             )}
             {!isAuthenticated && (
-              <Button 
+              <Button
                 onClick={() => router.push('/auth')}
                 variant="default"
                 size="sm"
@@ -120,53 +140,57 @@ export function Navigation() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
           </div>
         </div>
-        
+
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t py-4 px-4 space-y-2">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                pathname === '/' && "bg-accent"
+                'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
+                pathname === '/' && 'bg-accent'
               )}
               onClick={() => setMobileMenuOpen(false)}
             >
               <Home className="h-4 w-4" />
               Home
             </Link>
-            
+
             {isAuthenticated && (
               <>
-                <Link 
-                  href="/survey" 
+                <Link
+                  href="/survey"
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                    pathname === '/survey' && "bg-accent"
+                    'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
+                    pathname === '/survey' && 'bg-accent'
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <FileQuestion className="h-4 w-4" />
                   Survey
                 </Link>
-                
-                <Link 
-                  href="/results" 
+
+                <Link
+                  href="/results"
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                    pathname === '/results' && "bg-accent"
+                    'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
+                    pathname === '/results' && 'bg-accent'
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <BarChart3 className="h-4 w-4" />
                   Results
                 </Link>
-                
-                <Button 
+
+                <Button
                   onClick={() => {
                     handleLogout()
                     setMobileMenuOpen(false)
@@ -180,22 +204,22 @@ export function Navigation() {
                 </Button>
               </>
             )}
-            
+
             {!isAuthenticated && (
               <>
-                <Link 
-                  href="/results" 
+                <Link
+                  href="/results"
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                    pathname === '/results' && "bg-accent"
+                    'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
+                    pathname === '/results' && 'bg-accent'
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <BarChart3 className="h-4 w-4" />
                   Results
                 </Link>
-                
-                <Button 
+
+                <Button
                   onClick={() => {
                     router.push('/auth')
                     setMobileMenuOpen(false)

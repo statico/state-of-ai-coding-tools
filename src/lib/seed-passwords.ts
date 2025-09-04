@@ -28,16 +28,16 @@ async function seedWeeklyPasswords() {
   // Generate passwords for 3 years (156 weeks)
   const passwords = []
   const startDate = getWeekStart(new Date())
-  
+
   for (let i = 0; i < 156; i++) {
     const weekStart = new Date(startDate)
-    weekStart.setUTCDate(weekStart.getUTCDate() + (i * 7))
-    
+    weekStart.setUTCDate(weekStart.getUTCDate() + i * 7)
+
     const weekEnd = getWeekEnd(weekStart)
-    
+
     // Generate a readable password using faker
     const password = faker.word.words(2).toLowerCase().replace(/\s+/g, '-')
-    
+
     passwords.push({
       password,
       weekStart,
@@ -64,7 +64,7 @@ seedWeeklyPasswords()
   .then(async () => {
     await prisma.$disconnect()
   })
-  .catch(async (e) => {
+  .catch(async e => {
     console.error(e)
     await prisma.$disconnect()
     process.exit(1)

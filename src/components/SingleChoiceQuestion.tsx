@@ -1,7 +1,13 @@
 import type { Question, QuestionOption } from '@prisma/client'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 
@@ -34,10 +40,10 @@ export function SingleChoiceQuestion({
       <CardContent>
         <RadioGroup
           value={value?.toString()}
-          onValueChange={(val) => onChange(parseInt(val))}
+          onValueChange={val => onChange(parseInt(val))}
         >
           <div className="space-y-2">
-            {options.map((option) => (
+            {options.map(option => (
               <Label
                 key={option.id}
                 htmlFor={`option-${option.id}`}
@@ -60,7 +66,7 @@ export function SingleChoiceQuestion({
             ))}
           </div>
         </RadioGroup>
-        
+
         {error && (
           <Alert variant="destructive" className="mt-4">
             <AlertCircle className="h-4 w-4" />

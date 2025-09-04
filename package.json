@@ -17,7 +17,11 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "seed": "tsx src/lib/seed.ts"
+    "seed": "tsx src/lib/seed.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   },
   "dependencies": {
     "@faker-js/faker": "^10.0.0",
@@ -60,7 +64,9 @@
     "@vitejs/plugin-react": "^5.0.2",
     "eslint": "^8.0.0",
     "eslint-config-next": "^15.0.0",
+    "husky": "^9.1.7",
     "jsdom": "^26.1.0",
+    "lint-staged": "^16.1.6",
     "prettier": "^3.0.0",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
@@ -68,3 +74,4 @@
     "vitest": "^1.0.0"
   }
 }
+

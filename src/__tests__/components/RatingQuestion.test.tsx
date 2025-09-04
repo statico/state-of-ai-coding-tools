@@ -25,36 +25,23 @@ describe('RatingQuestion', () => {
   })
 
   it('renders question title and description', () => {
-    render(
-      <RatingQuestion
-        question={mockQuestion}
-        onChange={mockOnChange}
-      />
-    )
+    render(<RatingQuestion question={mockQuestion} onChange={mockOnChange} />)
 
-    expect(screen.getByText('How satisfied are you with AI tools?')).toBeInTheDocument()
+    expect(
+      screen.getByText('How satisfied are you with AI tools?')
+    ).toBeInTheDocument()
     expect(screen.getByText('Rate from 1 to 5 stars')).toBeInTheDocument()
   })
 
   it('renders 5 star buttons', () => {
-    render(
-      <RatingQuestion
-        question={mockQuestion}
-        onChange={mockOnChange}
-      />
-    )
+    render(<RatingQuestion question={mockQuestion} onChange={mockOnChange} />)
 
     const starButtons = screen.getAllByRole('button')
     expect(starButtons).toHaveLength(5)
   })
 
   it('calls onChange when a star is clicked', () => {
-    render(
-      <RatingQuestion
-        question={mockQuestion}
-        onChange={mockOnChange}
-      />
-    )
+    render(<RatingQuestion question={mockQuestion} onChange={mockOnChange} />)
 
     const starButtons = screen.getAllByRole('button')
     fireEvent.click(starButtons[2]) // Click 3rd star (rating 3)

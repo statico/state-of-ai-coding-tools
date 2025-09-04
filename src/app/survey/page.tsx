@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { TabbedSurvey } from '@/components/TabbedSurvey'
 import { ShareModal } from '@/components/ShareModal'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
 import type { Question, QuestionOption } from '@prisma/client'
 
@@ -44,7 +49,7 @@ export default function SurveyPage() {
     try {
       const response = await fetch('/api/survey/questions')
       const data = await response.json()
-      
+
       if (data.success) {
         setQuestions(data.questions)
       } else {
@@ -74,9 +79,10 @@ export default function SurveyPage() {
     })
 
     // Generate a session ID
-    const sessionId = localStorage.getItem('survey_session_id') || 
+    const sessionId =
+      localStorage.getItem('survey_session_id') ||
       `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     if (!localStorage.getItem('survey_session_id')) {
       localStorage.setItem('survey_session_id', sessionId)
     }
@@ -95,7 +101,10 @@ export default function SurveyPage() {
 
     const data = await response.json()
 
-    if (response.ok && (data.success || data.message === 'Responses submitted successfully')) {
+    if (
+      response.ok &&
+      (data.success || data.message === 'Responses submitted successfully')
+    ) {
       router.push('/survey/thank-you')
     } else {
       throw new Error(data.error || 'Failed to submit survey')
@@ -121,9 +130,13 @@ export default function SurveyPage() {
           <CardHeader className="text-center">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <CardTitle className="text-3xl">{survey?.title || 'AI Coding Tools Weekly Survey'}</CardTitle>
+                <CardTitle className="text-3xl">
+                  {survey?.title || 'AI Coding Tools Weekly Survey'}
+                </CardTitle>
                 {survey?.description && (
-                  <CardDescription className="text-lg mt-2">{survey.description}</CardDescription>
+                  <CardDescription className="text-lg mt-2">
+                    {survey.description}
+                  </CardDescription>
                 )}
               </div>
               <ShareModal />
@@ -132,10 +145,7 @@ export default function SurveyPage() {
         </Card>
 
         <Card className="p-6">
-          <TabbedSurvey 
-            questions={questions} 
-            onSubmit={handleSubmit}
-          />
+          <TabbedSurvey questions={questions} onSubmit={handleSubmit} />
         </Card>
       </div>
     </div>

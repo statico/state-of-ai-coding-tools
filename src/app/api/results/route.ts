@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const surveyIdParam = searchParams.get('surveyId')
 
     let surveyId: number
-    
+
     if (surveyIdParam) {
       surveyId = parseInt(surveyIdParam, 10)
       if (isNaN(surveyId)) {
@@ -32,10 +32,7 @@ export async function GET(request: NextRequest) {
     // Get survey details
     const survey = await SurveyService.findById(surveyId)
     if (!survey) {
-      return NextResponse.json(
-        { error: 'Survey not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Survey not found' }, { status: 404 })
     }
 
     // Get aggregated results
@@ -50,7 +47,6 @@ export async function GET(request: NextRequest) {
       },
       results,
     })
-
   } catch (error) {
     console.error('Error fetching results:', error)
     return NextResponse.json(

@@ -67,7 +67,8 @@ export async function seedDatabase() {
   // Create demographic questions
   const experienceQuestion = await QuestionService.create({
     title: 'How many years of programming experience do you have?',
-    description: 'Please select your total years of professional programming experience',
+    description:
+      'Please select your total years of professional programming experience',
     type: QuestionType.SINGLE_CHOICE,
     category: 'demographics',
     orderIndex: 1,
@@ -88,7 +89,8 @@ export async function seedDatabase() {
 
   const companySizeQuestion = await QuestionService.create({
     title: 'What is the size of your current company/organization?',
-    description: 'Please select the size that best describes your current workplace',
+    description:
+      'Please select the size that best describes your current workplace',
     type: QuestionType.SINGLE_CHOICE,
     category: 'demographics',
     orderIndex: 2,
@@ -99,7 +101,10 @@ export async function seedDatabase() {
   for (let i = 0; i < companySizes.length; i++) {
     await QuestionService.createOption({
       questionId: companySizeQuestion.id,
-      value: companySizes[i].toLowerCase().replace(/\s+/g, '_').replace(/[()]/g, ''),
+      value: companySizes[i]
+        .toLowerCase()
+        .replace(/\s+/g, '_')
+        .replace(/[()]/g, ''),
       label: companySizes[i],
       description: undefined,
       orderIndex: i + 1,
@@ -109,8 +114,10 @@ export async function seedDatabase() {
 
   // Create AI tool usage questions
   const toolUsageQuestion = await QuestionService.create({
-    title: 'Which AI coding tools do you currently use? (Select all that apply)',
-    description: 'Please select all the AI coding tools that you actively use in your development workflow',
+    title:
+      'Which AI coding tools do you currently use? (Select all that apply)',
+    description:
+      'Please select all the AI coding tools that you actively use in your development workflow',
     type: QuestionType.MULTIPLE_CHOICE,
     category: 'tools',
     orderIndex: 1,
@@ -131,7 +138,8 @@ export async function seedDatabase() {
 
   const primaryLanguageQuestion = await QuestionService.create({
     title: 'What is your primary programming language?',
-    description: 'Please select the programming language you use most frequently',
+    description:
+      'Please select the programming language you use most frequently',
     type: QuestionType.SINGLE_CHOICE,
     category: 'tools',
     orderIndex: 2,
@@ -152,7 +160,8 @@ export async function seedDatabase() {
 
   const satisfactionQuestion = await QuestionService.create({
     title: 'How satisfied are you with AI coding tools overall?',
-    description: 'Rate your overall satisfaction with AI coding tools on a scale of 1-5',
+    description:
+      'Rate your overall satisfaction with AI coding tools on a scale of 1-5',
     type: QuestionType.RATING,
     category: 'satisfaction',
     orderIndex: 1,
@@ -166,7 +175,8 @@ export async function seedDatabase() {
       questionId: satisfactionQuestion.id,
       value: i.toString(),
       label: `${i} star${i > 1 ? 's' : ''}`,
-      description: i === 1 ? 'Very dissatisfied' : i === 5 ? 'Very satisfied' : undefined,
+      description:
+        i === 1 ? 'Very dissatisfied' : i === 5 ? 'Very satisfied' : undefined,
       orderIndex: i,
       isActive: true,
     })
@@ -174,7 +184,8 @@ export async function seedDatabase() {
 
   await QuestionService.create({
     title: 'What improvements would you like to see in AI coding tools?',
-    description: 'Please share any feedback or suggestions for improving AI coding tools',
+    description:
+      'Please share any feedback or suggestions for improving AI coding tools',
     type: QuestionType.TEXT,
     category: 'feedback',
     orderIndex: 1,
@@ -188,11 +199,13 @@ export async function seedDatabase() {
 }
 
 if (require.main === module) {
-  seedDatabase().then(() => {
-    console.log('Seeding finished!')
-    process.exit(0)
-  }).catch((error) => {
-    console.error('Seeding failed:', error)
-    process.exit(1)
-  })
+  seedDatabase()
+    .then(() => {
+      console.log('Seeding finished!')
+      process.exit(0)
+    })
+    .catch(error => {
+      console.error('Seeding failed:', error)
+      process.exit(1)
+    })
 }

@@ -9,7 +9,14 @@ import { MultipleChoiceQuestion } from '@/components/MultipleChoiceQuestion'
 import { RatingQuestion } from '@/components/RatingQuestion'
 import { TextQuestion } from '@/components/TextQuestion'
 import { ExperienceQuestion } from '@/components/ExperienceQuestion'
-import { AlertCircle, ChevronLeft, ChevronRight, Send, Loader2, CheckCircle } from 'lucide-react'
+import {
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  Send,
+  Loader2,
+  CheckCircle,
+} from 'lucide-react'
 import type { Question, QuestionOption } from '@prisma/client'
 
 interface QuestionWithOptions {
@@ -32,11 +39,27 @@ interface TabbedSurveyProps {
 }
 
 const TAB_SECTIONS = [
-  { id: 'demographics', label: 'Demographics', categories: ['demographics', 'experience'] },
+  {
+    id: 'demographics',
+    label: 'Demographics',
+    categories: ['demographics', 'experience'],
+  },
   { id: 'tools', label: 'AI Tools', categories: ['ai_tools', 'tools'] },
-  { id: 'preferences', label: 'Preferences', categories: ['preferences', 'workflow'] },
-  { id: 'challenges', label: 'Challenges', categories: ['challenges', 'pain_points'] },
-  { id: 'feedback', label: 'Feedback', categories: ['feedback', 'suggestions', 'other'] },
+  {
+    id: 'preferences',
+    label: 'Preferences',
+    categories: ['preferences', 'workflow'],
+  },
+  {
+    id: 'challenges',
+    label: 'Challenges',
+    categories: ['challenges', 'pain_points'],
+  },
+  {
+    id: 'feedback',
+    label: 'Feedback',
+    categories: ['feedback', 'suggestions', 'other'],
+  },
 ]
 
 export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
@@ -56,34 +79,40 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
   const isFirstTab = currentTabIndex === 0
 
   // Group questions by category
-  const questionsByCategory = questions.reduce((acc, q) => {
-    const category = q.question.category.toLowerCase()
-    if (!acc[category]) acc[category] = []
-    acc[category].push(q)
-    return acc
-  }, {} as Record<string, QuestionWithOptions[]>)
+  const questionsByCategory = questions.reduce(
+    (acc, q) => {
+      const category = q.question.category.toLowerCase()
+      if (!acc[category]) acc[category] = []
+      acc[category].push(q)
+      return acc
+    },
+    {} as Record<string, QuestionWithOptions[]>
+  )
 
   // Get questions for current tab
   const getCurrentTabQuestions = () => {
     const currentTab = TAB_SECTIONS[currentTabIndex]
     const tabQuestions: QuestionWithOptions[] = []
-    
+
     currentTab.categories.forEach(category => {
       const categoryQuestions = questionsByCategory[category] || []
       tabQuestions.push(...categoryQuestions)
     })
-    
+
     return tabQuestions
   }
 
-  const updateResponse = (questionId: number, responseData: Partial<SurveyResponse>) => {
+  const updateResponse = (
+    questionId: number,
+    responseData: Partial<SurveyResponse>
+  ) => {
     setResponses(prev => ({
       ...prev,
       [questionId]: {
         ...prev[questionId],
         questionId,
         ...responseData,
-      }
+      },
     }))
 
     // Clear error for this question
@@ -108,16 +137,26 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
 
       const response = responses[question.id]
       if (question.isRequired && response) {
-        if ((question.type === 'SINGLE_CHOICE' || question.type === 'EXPERIENCE') && !response.optionId) {
+        if (
+          (question.type === 'SINGLE_CHOICE' ||
+            question.type === 'EXPERIENCE') &&
+          !response.optionId
+        ) {
           newErrors[question.id] = 'Please select an option'
           isValid = false
-        } else if (question.type === 'MULTIPLE_CHOICE' && (!response.optionIds || response.optionIds.length === 0)) {
+        } else if (
+          question.type === 'MULTIPLE_CHOICE' &&
+          (!response.optionIds || response.optionIds.length === 0)
+        ) {
           newErrors[question.id] = 'Please select at least one option'
           isValid = false
         } else if (question.type === 'RATING' && !response.ratingValue) {
           newErrors[question.id] = 'Please provide a rating'
           isValid = false
-        } else if (question.type === 'TEXT' && (!response.textValue || response.textValue.trim() === '')) {
+        } else if (
+          question.type === 'TEXT' &&
+          (!response.textValue || response.textValue.trim() === '')
+        ) {
           newErrors[question.id] = 'Please provide a response'
           isValid = false
         }
@@ -177,7 +216,7 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
             question={question}
             options={options}
             value={response?.optionId}
-            onChange={(optionId) => updateResponse(question.id, { optionId })}
+            onChange={optionId => updateResponse(question.id, { optionId })}
             error={error}
           />
         )
@@ -189,7 +228,7 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
             question={question}
             options={options}
             value={response?.optionIds}
-            onChange={(optionIds) => updateResponse(question.id, { optionIds })}
+            onChange={optionIds => updateResponse(question.id, { optionIds })}
             error={error}
           />
         )
@@ -200,7 +239,9 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
             key={question.id}
             question={question}
             value={response?.ratingValue}
-            onChange={(ratingValue) => updateResponse(question.id, { ratingValue })}
+            onChange={ratingValue =>
+              updateResponse(question.id, { ratingValue })
+            }
             error={error}
           />
         )
@@ -211,7 +252,7 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
             key={question.id}
             question={question}
             value={response?.textValue}
-            onChange={(textValue) => updateResponse(question.id, { textValue })}
+            onChange={textValue => updateResponse(question.id, { textValue })}
             error={error}
           />
         )
@@ -224,9 +265,9 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
             options={options}
             value={{
               optionId: response?.optionId,
-              writeInValue: response?.writeInValue
+              writeInValue: response?.writeInValue,
             }}
-            onChange={({ optionId, writeInValue }) => 
+            onChange={({ optionId, writeInValue }) =>
               updateResponse(question.id, { optionId, writeInValue })
             }
             error={error}
@@ -245,12 +286,17 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-      <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${TAB_SECTIONS.length}, 1fr)` }}>
+      <TabsList
+        className="grid w-full"
+        style={{ gridTemplateColumns: `repeat(${TAB_SECTIONS.length}, 1fr)` }}
+      >
         {TAB_SECTIONS.map((section, index) => (
-          <TabsTrigger 
-            key={section.id} 
+          <TabsTrigger
+            key={section.id}
             value={section.id}
-            disabled={index > 0 && !completedTabs.has(TAB_SECTIONS[index - 1].id)}
+            disabled={
+              index > 0 && !completedTabs.has(TAB_SECTIONS[index - 1].id)
+            }
             className="relative"
           >
             {completedTabs.has(section.id) && (
@@ -262,7 +308,11 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
       </TabsList>
 
       {TAB_SECTIONS.map(section => (
-        <TabsContent key={section.id} value={section.id} className="space-y-6 mt-6">
+        <TabsContent
+          key={section.id}
+          value={section.id}
+          className="space-y-6 mt-6"
+        >
           <div className="space-y-6">
             {getCurrentTabQuestions().map(renderQuestion)}
           </div>
@@ -272,7 +322,8 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Please complete all required questions</AlertTitle>
               <AlertDescription>
-                There are {Object.keys(errors).length} questions that need your attention in this section.
+                There are {Object.keys(errors).length} questions that need your
+                attention in this section.
               </AlertDescription>
             </Alert>
           )}
@@ -308,10 +359,7 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
                 )}
               </Button>
             ) : (
-              <Button
-                type="button"
-                onClick={handleNext}
-              >
+              <Button type="button" onClick={handleNext}>
                 Next
                 <ChevronRight className="h-4 w-4 ml-2" />
               </Button>

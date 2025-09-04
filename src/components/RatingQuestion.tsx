@@ -1,6 +1,12 @@
 import { Star } from 'lucide-react'
 import type { Question } from '@prisma/client'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -32,7 +38,7 @@ export function RatingQuestion({
       </CardHeader>
       <CardContent>
         <div className="flex items-center space-x-2">
-          {[1, 2, 3, 4, 5].map((rating) => (
+          {[1, 2, 3, 4, 5].map(rating => (
             <Button
               key={rating}
               type="button"
@@ -43,10 +49,10 @@ export function RatingQuestion({
             >
               <Star
                 className={cn(
-                  "h-10 w-10 transition-colors",
+                  'h-10 w-10 transition-colors',
                   value && value >= rating
-                    ? "fill-primary text-primary"
-                    : "text-muted-foreground hover:text-primary/70"
+                    ? 'fill-primary text-primary'
+                    : 'text-muted-foreground hover:text-primary/70'
                 )}
               />
             </Button>
@@ -57,7 +63,7 @@ export function RatingQuestion({
             </span>
           )}
         </div>
-        
+
         {error && (
           <Alert variant="destructive" className="mt-4">
             <AlertCircle className="h-4 w-4" />

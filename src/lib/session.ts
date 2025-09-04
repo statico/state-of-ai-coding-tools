@@ -8,7 +8,9 @@ export interface SessionData {
 }
 
 export const sessionOptions: SessionOptions = {
-  password: process.env.SESSION_SECRET || 'complex-password-at-least-32-characters-long-for-iron-session',
+  password:
+    process.env.SESSION_SECRET ||
+    'complex-password-at-least-32-characters-long-for-iron-session',
   cookieName: 'ai-coding-tools-survey-session',
   ttl: 60 * 60 * 24 * 7, // 7 days
   cookieOptions: {

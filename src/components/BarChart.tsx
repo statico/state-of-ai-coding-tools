@@ -1,6 +1,14 @@
 'use client'
 
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import {
+  BarChart as RechartsBarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 interface BarChartProps {
   data: Array<{
@@ -18,16 +26,19 @@ export function BarChart({ data, title }: BarChartProps) {
       <ResponsiveContainer width="100%" height={300}>
         <RechartsBarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            dataKey="name" 
+          <XAxis
+            dataKey="name"
             angle={-45}
             textAnchor="end"
             height={80}
             interval={0}
           />
           <YAxis />
-          <Tooltip 
-            formatter={(value) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.value, 0) * 100).toFixed(1)}%)`, 'Count']}
+          <Tooltip
+            formatter={value => [
+              `${value} responses (${(((value as number) / data.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}%)`,
+              'Count',
+            ]}
           />
           <Bar dataKey="value" fill="hsl(var(--primary))" />
         </RechartsBarChart>

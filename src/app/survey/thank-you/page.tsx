@@ -20,15 +20,14 @@ export default function ThankYouPage() {
               />
             </svg>
           </div>
-          
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Thank You!
-          </h1>
-          
+
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Thank You!</h1>
+
           <p className="text-gray-600 mb-6">
-            Your responses have been submitted successfully. Thank you for participating in the State of AI Coding Tools survey.
+            Your responses have been submitted successfully. Thank you for
+            participating in the State of AI Coding Tools survey.
           </p>
-          
+
           <div className="space-y-3">
             <Link
               href="/results"
@@ -36,7 +35,7 @@ export default function ThankYouPage() {
             >
               View Results
             </Link>
-            
+
             <Link
               href="/"
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

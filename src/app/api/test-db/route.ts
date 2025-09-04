@@ -11,7 +11,7 @@ export async function GET() {
         isActive: true,
       },
     })
-    
+
     return NextResponse.json({
       success: true,
       count: surveys.length,
@@ -19,7 +19,8 @@ export async function GET() {
     })
   } catch (error: unknown) {
     console.error('Database test error:', error)
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
     const errorCode = (error as { errorCode?: string })?.errorCode
     return NextResponse.json(
       {

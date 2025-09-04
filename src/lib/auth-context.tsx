@@ -40,16 +40,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const response = await fetch('/api/auth/session')
         const data = await response.json()
-        
+
         if (data.isAuthenticated) {
           setIsAuthenticated(true)
           setSurvey(data.survey)
           setCurrentPassword(data.currentPassword)
           // Store in localStorage for client-side checks
-          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
-            survey: data.survey,
-            currentPassword: data.currentPassword
-          }))
+          localStorage.setItem(
+            AUTH_STORAGE_KEY,
+            JSON.stringify({
+              survey: data.survey,
+              currentPassword: data.currentPassword,
+            })
+          )
         } else {
           localStorage.removeItem(AUTH_STORAGE_KEY)
         }
@@ -60,11 +63,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false)
       }
     }
-    
+
     checkSession()
   }, [])
 
-  const login = async (password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch('/api/auth/verify', {
         method: 'POST',
@@ -87,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionData))
-      
+
       setIsAuthenticated(true)
       setSurvey(data.survey)
       setCurrentPassword(data.currentPassword)
@@ -106,7 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Logout error:', error)
     }
-    
+
     localStorage.removeItem(AUTH_STORAGE_KEY)
     setIsAuthenticated(false)
     setSurvey(null)

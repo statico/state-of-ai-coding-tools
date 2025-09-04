@@ -8,26 +8,26 @@ import { getActiveWeeklyPassword } from '@/lib/password-manager'
 export async function GET() {
   try {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions)
-    
+
     if (!session.isAuthenticated) {
       return NextResponse.json({
-        isAuthenticated: false
+        isAuthenticated: false,
       })
     }
-    
+
     // Get current survey
     const currentSurvey = await SurveyService.getCurrentSurvey()
-    
+
     if (!currentSurvey) {
       return NextResponse.json({
         isAuthenticated: false,
-        error: 'No active survey'
+        error: 'No active survey',
       })
     }
-    
+
     // Get current password for sharing
     const currentPassword = await getActiveWeeklyPassword()
-    
+
     return NextResponse.json({
       isAuthenticated: true,
       survey: {
@@ -36,13 +36,16 @@ export async function GET() {
         description: currentSurvey.description,
       },
       currentPassword,
-      authenticatedAt: session.authenticatedAt
+      authenticatedAt: session.authenticatedAt,
     })
   } catch (error) {
     console.error('Session check error:', error)
-    return NextResponse.json({
-      isAuthenticated: false,
-      error: 'Session check failed'
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        isAuthenticated: false,
+        error: 'Session check failed',
+      },
+      { status: 500 }
+    )
   }
 }

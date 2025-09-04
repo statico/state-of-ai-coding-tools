@@ -6,12 +6,16 @@ import { SessionData, sessionOptions } from '@/lib/session'
 export async function middleware(request: NextRequest) {
   const protectedPaths = ['/api/survey/questions', '/api/survey/submit']
   const pathname = request.nextUrl.pathname
-  
+
   // Check if the request is for a protected API route
   if (protectedPaths.some(path => pathname.startsWith(path))) {
     const response = NextResponse.next()
-    const session = await getIronSession<SessionData>(request, response, sessionOptions)
-    
+    const session = await getIronSession<SessionData>(
+      request,
+      response,
+      sessionOptions
+    )
+
     if (!session.isAuthenticated) {
       return NextResponse.json(
         { error: 'Unauthorized - Please login first' },
@@ -19,7 +23,7 @@ export async function middleware(request: NextRequest) {
       )
     }
   }
-  
+
   return NextResponse.next()
 }
 

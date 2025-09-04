@@ -1,6 +1,13 @@
 'use client'
 
-import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import {
+  PieChart as RechartsPieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from 'recharts'
 
 interface PieChartProps {
   data: Array<{
@@ -21,7 +28,7 @@ const COLORS = [
   'hsl(var(--primary) / 0.8)',
   'hsl(var(--primary) / 0.6)',
   'hsl(var(--primary) / 0.4)',
-  'hsl(var(--primary) / 0.2)'
+  'hsl(var(--primary) / 0.2)',
 ]
 
 export function PieChart({ data, title }: PieChartProps) {
@@ -41,10 +48,13 @@ export function PieChart({ data, title }: PieChartProps) {
             dataKey="value"
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
             ))}
           </Pie>
-          <Tooltip formatter={(value) => [`${value} responses`, 'Count']} />
+          <Tooltip formatter={value => [`${value} responses`, 'Count']} />
           <Legend />
         </RechartsPieChart>
       </ResponsiveContainer>

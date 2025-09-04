@@ -104,7 +104,9 @@ describe('MultipleChoiceQuestion', () => {
       />
     )
 
-    const copilotCheckbox = screen.getByRole('checkbox', { name: /GitHub Copilot/i })
+    const copilotCheckbox = screen.getByRole('checkbox', {
+      name: /GitHub Copilot/i,
+    })
     const chatgptCheckbox = screen.getByRole('checkbox', { name: /ChatGPT/i })
 
     expect(copilotCheckbox).toBeChecked()

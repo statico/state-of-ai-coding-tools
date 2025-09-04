@@ -58,7 +58,9 @@ describe('SingleChoiceQuestion', () => {
       />
     )
 
-    expect(screen.getByText('What is your favorite programming language?')).toBeInTheDocument()
+    expect(
+      screen.getByText('What is your favorite programming language?')
+    ).toBeInTheDocument()
     expect(screen.getByText('Please select one option')).toBeInTheDocument()
     expect(screen.getByText('*')).toBeInTheDocument() // Required indicator
   })
