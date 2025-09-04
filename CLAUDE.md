@@ -1,5 +1,17 @@
 # AGENTS.md
 
+## Database Management
+
+- **Local Database Reset**: You can always blow away the local database and re-seed data without asking for permission
+- The local development database at `localhost:5433` can be reset freely
+- Use `npx prisma migrate reset --force` when needed for schema changes
+
+## Git Commits
+
+- **Commit frequently**: Make commits often to save progress
+- Commit after completing significant features or fixes
+- Use descriptive commit messages
+
 ## Setup
 
 - NEVER use `npm` or `yarn`. ALWAYS use `pnpm`.
@@ -39,3 +51,9 @@
 - Always specify `onDelete` behavior for foreign keys
 - Use `cascade` or `set null` as appropriate
 - Add indexes when appropriate
+
+## Docs
+
+- Prisma: https://www.prisma.io/llms.txt
+- shadcn: https://ui.shadcn.com/
+- Tailwind: https://tailwindcss.com/

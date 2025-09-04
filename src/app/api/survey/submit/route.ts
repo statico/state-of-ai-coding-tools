@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { ResponseService, UserSessionService } from '@/lib/services/response'
+import type { ExperienceLevel, SentimentScore } from '@prisma/client'
 
 const submitResponseSchema = z.object({
   sessionId: z.string().min(1, 'Session ID is required'),
@@ -13,6 +14,8 @@ const submitResponseSchema = z.object({
       textValue: z.string().optional(),
       ratingValue: z.number().min(1).max(5).optional(),
       writeInValue: z.string().optional(),
+      experienceLevel: z.string().optional(),
+      sentimentScore: z.string().optional(),
     })
   ),
 })
@@ -75,6 +78,10 @@ export async function POST(request: NextRequest) {
           textValue: response.textValue,
           ratingValue: response.ratingValue,
           writeInValue: response.writeInValue,
+          experienceLevel: response.experienceLevel as
+            | ExperienceLevel
+            | undefined,
+          sentimentScore: response.sentimentScore as SentimentScore | undefined,
         })
       }
     }

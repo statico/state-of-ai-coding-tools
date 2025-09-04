@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -24,95 +21,146 @@ model WeeklyPassword {
 }
 
 model Survey {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  password    String
-  startDate   DateTime @map("start_date")
-  endDate     DateTime @map("end_date")
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String?
+  password     String
+  startDate    DateTime      @map("start_date")
+  endDate      DateTime      @map("end_date")
+  isActive     Boolean       @default(true) @map("is_active")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  
   // Relations
   responses    Response[]
   userSessions UserSession[]
+  experienceMetrics ExperienceMetric[]
 
   @@map("surveys")
 }
 
 model Question {
-  id          Int     @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   title       String
   description String?
   type        QuestionType
   category    String
-  orderIndex  Int     @map("order_index")
-  isRequired  Boolean @default(false) @map("is_required")
-  isActive    Boolean @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  options   QuestionOption[]
-  responses Response[]
+  orderIndex  Int              @map("order_index")
+  isRequired  Boolean          @default(false) @map("is_required")
+  isActive    Boolean          @default(true) @map("is_active")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  options     QuestionOption[]
+  responses   Response[]
 
   @@map("questions")
 }
 
 model QuestionOption {
-  id          Int      @id @default(autoincrement())
-  questionId  Int      @map("question_id")
+  id          Int        @id @default(autoincrement())
+  questionId  Int        @map("question_id")
   value       String
   label       String
   description String?
-  orderIndex  Int      @map("order_index")
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  question  Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  responses Response[]
+  orderIndex  Int        @map("order_index")
+  isActive    Boolean    @default(true) @map("is_active")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  question    Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  responses   Response[]
 
   @@map("question_options")
 }
 
 model UserSession {
-  id              String   @id
-  surveyId        Int?     @map("survey_id")
-  demographicData Json?    @map("demographic_data")
+  id              String     @id
+  surveyId        Int?       @map("survey_id")
+  demographicData Json?      @map("demographic_data")
   progress        Json?
-  completedAt     DateTime? @map("completed_at")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  survey    Survey?    @relation(fields: [surveyId], references: [id], onDelete: SetNull)
-  responses Response[]
+  completedAt     DateTime?  @map("completed_at")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  responses       Response[]
+  survey          Survey?    @relation(fields: [surveyId], references: [id])
 
   @@map("user_sessions")
 }
 
 model Response {
-  id           Int      @id @default(autoincrement())
-  surveyId     Int      @map("survey_id")
-  sessionId    String   @map("session_id")
-  questionId   Int      @map("question_id")
-  optionId     Int?     @map("option_id")
-  textValue    String?  @map("text_value")
-  ratingValue  Int?     @map("rating_value")
-  writeInValue String?  @map("write_in_value")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
+  id           Int             @id @default(autoincrement())
+  surveyId     Int             @map("survey_id")
+  sessionId    String          @map("session_id")
+  questionId   Int             @map("question_id")
+  optionId     Int?            @map("option_id")
+  textValue    String?         @map("text_value")
+  ratingValue  Int?            @map("rating_value")
+  writeInValue String?         @map("write_in_value")
+  
+  // New fields for enhanced experience/sentiment
+  experienceLevel ExperienceLevel? @map("experience_level")
+  sentimentScore  SentimentScore?  @map("sentiment_score")
+  
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  
   // Relations
-  survey    Survey         @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  session   UserSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  question  Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  option    QuestionOption? @relation(fields: [optionId], references: [id], onDelete: SetNull)
+  option       QuestionOption? @relation(fields: [optionId], references: [id])
+  question     Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  session      UserSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  survey       Survey          @relation(fields: [surveyId], references: [id], onDelete: Cascade)
 
   @@map("responses")
+}
+
+model ExperienceMetric {
+  id              Int      @id @default(autoincrement())
+  surveyId        Int      @map("survey_id")
+  toolName        String   @map("tool_name")
+  category        String   // ai_tools, tools, frameworks
+  
+  // Experience counts
+  neverHeardCount       Int @default(0) @map("never_heard_count")
+  heardOfCount         Int @default(0) @map("heard_of_count")
+  usedBeforeCount      Int @default(0) @map("used_before_count")
+  currentlyUsingCount  Int @default(0) @map("currently_using_count")
+  wouldUseAgainCount   Int @default(0) @map("would_use_again_count")
+  
+  // Sentiment aggregates
+  avgSentimentScore    Float?   @map("avg_sentiment_score")
+  positiveCount        Int @default(0) @map("positive_count")
+  neutralCount         Int @default(0) @map("neutral_count")
+  negativeCount        Int @default(0) @map("negative_count")
+  
+  totalResponses       Int @default(0) @map("total_responses")
+  calculatedAt         DateTime @default(now()) @map("calculated_at")
+  
+  // Relations
+  survey Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  
+  @@unique([surveyId, toolName])
+  @@index([category])
+  @@map("experience_metrics")
+}
+
+model SentimentTrend {
+  id              Int      @id @default(autoincrement())
+  toolName        String   @map("tool_name")
+  category        String
+  
+  // Monthly snapshot
+  month           DateTime @map("month")
+  avgSentiment    Float    @map("avg_sentiment")
+  changeFromPrev  Float?   @map("change_from_prev")
+  
+  // User segments
+  byExperienceLevel Json?  @map("by_experience_level") // JSON object with sentiment by experience
+  byDemographic     Json?  @map("by_demographic")     // JSON object with sentiment by demographics
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+  
+  @@unique([toolName, month])
+  @@index([category, month])
+  @@map("sentiment_trends")
 }
 
 enum QuestionType {
@@ -122,5 +170,22 @@ enum QuestionType {
   TEXT
   DEMOGRAPHIC
   EXPERIENCE // State of JS style: Never heard/Heard not interested/Used wouldn't use again/Used would use again
+  EXPERIENCE_SENTIMENT // Enhanced experience + sentiment tracking
   WRITE_IN    // Optional write-in field
+}
+
+enum ExperienceLevel {
+  NEVER_HEARD       // Never heard of it
+  HEARD_OF          // Heard of it but never used
+  USED_BEFORE       // Used it before but not currently
+  CURRENTLY_USING   // Currently using
+  WOULD_USE_AGAIN   // Would use again / recommend
+}
+
+enum SentimentScore {
+  VERY_NEGATIVE     // Strong negative sentiment
+  NEGATIVE          // Negative sentiment
+  NEUTRAL           // Neutral / no opinion
+  POSITIVE          // Positive sentiment
+  VERY_POSITIVE     // Strong positive sentiment
 }

@@ -54,85 +54,46 @@ const frameworks = [
 export async function seedAIToolQuestions() {
   console.log('Seeding AI tool experience questions...')
 
-  // Create experience questions for AI coding tools
+  // Create enhanced experience/sentiment questions for AI coding tools
   let orderIndex = 1
   for (const tool of aiCodingTools) {
-    const question = await QuestionService.create({
+    await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE,
+      type: QuestionType.EXPERIENCE_SENTIMENT,
       category: 'ai_tools',
       orderIndex: orderIndex++,
       isRequired: false,
       isActive: true,
     })
-
-    // Create the 4 standard options for experience questions
-    const experienceOptions = [
-      { value: 'never_heard', label: 'Never heard of it' },
-      {
-        value: 'heard_not_interested',
-        label: "Heard of it, but I'm not interested",
-      },
-      {
-        value: 'used_wont_use_again',
-        label: "Used it, but wouldn't use it again",
-      },
-      {
-        value: 'used_would_use_again',
-        label: 'Used it and would use it again',
-      },
-    ]
-
-    for (let i = 0; i < experienceOptions.length; i++) {
-      await QuestionService.createOption({
-        questionId: question.id,
-        value: experienceOptions[i].value,
-        label: experienceOptions[i].label,
-        orderIndex: i + 1,
-        isActive: true,
-      })
-    }
   }
 
-  // Create experience questions for development tools
+  // Create enhanced experience/sentiment questions for development tools
   orderIndex = 1
   for (const tool of developmentTools) {
-    const question = await QuestionService.create({
+    await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE,
+      type: QuestionType.EXPERIENCE_SENTIMENT,
       category: 'tools',
       orderIndex: orderIndex++,
       isRequired: false,
       isActive: true,
     })
+  }
 
-    const experienceOptions = [
-      { value: 'never_heard', label: 'Never heard of it' },
-      {
-        value: 'heard_not_interested',
-        label: "Heard of it, but I'm not interested",
-      },
-      {
-        value: 'used_wont_use_again',
-        label: "Used it, but wouldn't use it again",
-      },
-      {
-        value: 'used_would_use_again',
-        label: 'Used it and would use it again',
-      },
-    ]
-
-    for (let i = 0; i < experienceOptions.length; i++) {
-      await QuestionService.createOption({
-        questionId: question.id,
-        value: experienceOptions[i].value,
-        label: experienceOptions[i].label,
-        orderIndex: i + 1,
-        isActive: true,
-      })
-    }
+  // Create enhanced experience/sentiment questions for frameworks
+  orderIndex = 1
+  for (const framework of frameworks) {
+    await QuestionService.create({
+      title: framework.name,
+      description: framework.description,
+      type: QuestionType.EXPERIENCE_SENTIMENT,
+      category: 'frameworks',
+      orderIndex: orderIndex++,
+      isRequired: false,
+      isActive: true,
+    })
   }
 
   // Add questions from AI workshop survey

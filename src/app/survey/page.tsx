@@ -26,6 +26,8 @@ interface SurveyResponse {
   textValue?: string
   ratingValue?: number
   writeInValue?: string
+  experienceLevel?: string
+  sentimentScore?: string
 }
 
 export default function SurveyPage() {
@@ -104,6 +106,10 @@ export default function SurveyPage() {
       if (response.textValue) formatted.textValue = response.textValue
       if (response.ratingValue) formatted.ratingValue = response.ratingValue
       if (response.writeInValue) formatted.writeInValue = response.writeInValue
+      if (response.experienceLevel)
+        formatted.experienceLevel = response.experienceLevel
+      if (response.sentimentScore)
+        formatted.sentimentScore = response.sentimentScore
 
       return formatted
     })

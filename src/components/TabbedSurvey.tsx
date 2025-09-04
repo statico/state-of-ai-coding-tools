@@ -9,6 +9,7 @@ import { MultipleChoiceQuestion } from '@/components/MultipleChoiceQuestion'
 import { RatingQuestion } from '@/components/RatingQuestion'
 import { TextQuestion } from '@/components/TextQuestion'
 import { ExperienceQuestion } from '@/components/ExperienceQuestion'
+import { ExperienceSentimentQuestion } from '@/components/ExperienceSentimentQuestion'
 import {
   AlertCircle,
   ChevronLeft,
@@ -17,7 +18,12 @@ import {
   Loader2,
   CheckCircle,
 } from 'lucide-react'
-import type { Question, QuestionOption } from '@prisma/client'
+import type {
+  Question,
+  QuestionOption,
+  ExperienceLevel,
+  SentimentScore,
+} from '@prisma/client'
 
 interface QuestionWithOptions {
   question: Question
@@ -31,6 +37,8 @@ interface SurveyResponse {
   textValue?: string
   ratingValue?: number
   writeInValue?: string
+  experienceLevel?: string
+  sentimentScore?: string
 }
 
 interface TabbedSurveyProps {
@@ -166,6 +174,12 @@ export function TabbedSurvey({
         ) {
           newErrors[question.id] = 'Please provide a response'
           isValid = false
+        } else if (
+          question.type === 'EXPERIENCE_SENTIMENT' &&
+          !response.experienceLevel
+        ) {
+          newErrors[question.id] = 'Please select your experience level'
+          isValid = false
         }
       }
     }
@@ -176,7 +190,7 @@ export function TabbedSurvey({
 
   const handleNext = () => {
     if (validateCurrentTab()) {
-      setCompletedTabs(prev => new Set([...prev, activeTab]))
+      setCompletedTabs(prev => new Set(Array.from(prev).concat(activeTab)))
       const nextTab = TAB_SECTIONS[currentTabIndex + 1]
       if (nextTab) {
         setActiveTab(nextTab.id)
@@ -198,7 +212,7 @@ export function TabbedSurvey({
       return
     }
 
-    setCompletedTabs(prev => new Set([...prev, activeTab]))
+    setCompletedTabs(prev => new Set(Array.from(prev).concat(activeTab)))
     setIsSubmitting(true)
 
     try {
@@ -276,6 +290,31 @@ export function TabbedSurvey({
             }}
             onChange={({ optionId, writeInValue }) =>
               updateResponse(question.id, { optionId, writeInValue })
+            }
+            error={error}
+          />
+        )
+
+      case 'EXPERIENCE_SENTIMENT':
+        return (
+          <ExperienceSentimentQuestion
+            key={question.id}
+            question={question}
+            value={{
+              experienceLevel: response?.experienceLevel as
+                | ExperienceLevel
+                | undefined,
+              sentimentScore: response?.sentimentScore as
+                | SentimentScore
+                | undefined,
+              writeInValue: response?.writeInValue,
+            }}
+            onChange={({ experienceLevel, sentimentScore, writeInValue }) =>
+              updateResponse(question.id, {
+                experienceLevel: experienceLevel as string,
+                sentimentScore: sentimentScore as string,
+                writeInValue,
+              })
             }
             error={error}
           />

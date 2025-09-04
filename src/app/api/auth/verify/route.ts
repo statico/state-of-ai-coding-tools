@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     )
     session.isAuthenticated = true
     session.surveyId = currentSurvey.id
-    session.weeklyPassword = currentPassword
+    session.weeklyPassword = currentPassword || undefined
     session.authenticatedAt = new Date().toISOString()
     await session.save()
 
