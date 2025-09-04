@@ -16,7 +16,7 @@ vi.mock('@/lib/prisma', () => ({
 import { SurveyService } from '@/lib/services/survey'
 import { prisma } from '@/lib/prisma'
 
-const mockPrisma = vi.mocked(prisma)
+const mockPrisma = prisma as any
 
 describe('SurveyService', () => {
   beforeEach(() => {
@@ -52,7 +52,7 @@ describe('SurveyService', () => {
         password: 'test123',
         createdAt: new Date(),
       }
-      mockPrisma.survey.findUnique.mockResolvedValue(mockSurvey)
+      mockPrisma.survey.findUnique.mockResolvedValue(mockSurvey as any)
 
       const result = await SurveyService.findById(1)
 
@@ -104,7 +104,7 @@ describe('SurveyService', () => {
         startDate: new Date('2024-01-01'),
         endDate: new Date('2024-12-31'),
       }
-      mockPrisma.survey.findFirst.mockResolvedValue(mockSurvey)
+      mockPrisma.survey.findFirst.mockResolvedValue(mockSurvey as any)
 
       const result = await SurveyService.getCurrentSurvey()
 

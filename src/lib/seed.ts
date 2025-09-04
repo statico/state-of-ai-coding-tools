@@ -172,7 +172,7 @@ export async function seedDatabase() {
     })
   }
 
-  const feedbackQuestion = await QuestionService.create({
+  await QuestionService.create({
     title: 'What improvements would you like to see in AI coding tools?',
     description: 'Please share any feedback or suggestions for improving AI coding tools',
     type: QuestionType.TEXT,

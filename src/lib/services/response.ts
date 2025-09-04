@@ -112,15 +112,24 @@ export class ResponseService {
       }
       acc[questionId].responses.push(response)
       return acc
-    }, {} as Record<number, any>)
+    }, {} as Record<number, {
+      questionId: number
+      questionTitle: string
+      questionType: string
+      responses: Array<typeof responses[number]>
+    }>)
 
     // Calculate aggregated results
-    return Object.values(grouped).map((group: any) => {
+    return Object.values(grouped).map((group) => {
       const totalResponses = group.responses.length
       
       if (group.questionType === 'SINGLE_CHOICE' || group.questionType === 'MULTIPLE_CHOICE') {
         // Count by option
-        const optionCounts = group.responses.reduce((acc: Record<string, any>, response: any) => {
+        const optionCounts = group.responses.reduce((acc: Record<string, {
+          optionId: number | null
+          optionLabel: string
+          count: number
+        }>, response) => {
           const key = response.optionId?.toString() || 'null'
           if (!acc[key]) {
             acc[key] = {
@@ -133,8 +142,10 @@ export class ResponseService {
           return acc
         }, {})
 
-        const results = Object.values(optionCounts).map((option: any) => ({
-          ...option,
+        const results = Object.values(optionCounts).map((option) => ({
+          optionId: option.optionId ?? undefined,
+          optionLabel: option.optionLabel,
+          count: option.count,
           percentage: totalResponses > 0 ? (option.count / totalResponses) * 100 : 0,
         }))
 
@@ -146,7 +157,7 @@ export class ResponseService {
         }
       } else if (group.questionType === 'RATING') {
         // Calculate rating distribution
-        const ratingCounts = group.responses.reduce((acc: Record<number, number>, response: any) => {
+        const ratingCounts = group.responses.reduce((acc: Record<number, number>, response) => {
           const rating = response.ratingValue
           if (rating !== null) {
             acc[rating] = (acc[rating] || 0) + 1
@@ -187,12 +198,17 @@ export class ResponseService {
 export class UserSessionService {
   static async create(data: {
     id: string
-    surveyId?: number
-    demographicData?: any
-    progress?: any
+    surveyId?: number | null
+    demographicData?: Record<string, unknown> | null
+    progress?: Record<string, unknown> | null
   }): Promise<UserSession> {
     return await prisma.userSession.create({
-      data,
+      data: {
+        id: data.id,
+        surveyId: data.surveyId ?? null,
+        demographicData: data.demographicData as any,
+        progress: data.progress as any,
+      },
     })
   }
 
@@ -202,10 +218,10 @@ export class UserSessionService {
     })
   }
 
-  static async updateProgress(id: string, progress: any): Promise<UserSession> {
+  static async updateProgress(id: string, progress: Record<string, unknown>): Promise<UserSession> {
     return await prisma.userSession.update({
       where: { id },
-      data: { progress },
+      data: { progress: progress as any },
     })
   }
 

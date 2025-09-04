@@ -8,11 +8,11 @@ test.describe('Homepage', () => {
     await expect(page.locator('h1')).toContainText('State of AI Coding Tools')
     
     // Check description
-    await expect(page.locator('p')).toContainText('A survey system for gauging interest and usage of AI coding tools')
+    await expect(page.getByText('Help shape the future of AI coding tools')).toBeVisible()
 
     // Check navigation links
-    await expect(page.locator('a[href="/auth"]')).toContainText('Enter Survey')
-    await expect(page.locator('a[href="/results"]')).toContainText('View Results')
+    await expect(page.getByRole('button', { name: /Enter Survey/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /View Results/i })).toBeVisible()
   })
 
   test('navigates to auth page', async ({ page }) => {

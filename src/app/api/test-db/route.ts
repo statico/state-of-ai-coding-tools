@@ -17,13 +17,15 @@ export async function GET() {
       count: surveys.length,
       surveys,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Database test error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorCode = (error as { errorCode?: string })?.errorCode
     return NextResponse.json(
       {
         success: false,
-        error: error.message,
-        errorCode: error.errorCode,
+        error: errorMessage,
+        errorCode,
       },
       { status: 500 }
     )

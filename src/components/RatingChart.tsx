@@ -55,7 +55,7 @@ export function RatingChart({ data, title }: RatingChartProps) {
           />
           <YAxis />
           <Tooltip 
-            formatter={(value, name) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.count, 0) * 100).toFixed(1)}%)`, 'Count']}
+            formatter={(value) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.count, 0) * 100).toFixed(1)}%)`, 'Count']}
           />
           <Bar dataKey="count" fill="#FBBF24" />
         </BarChart>

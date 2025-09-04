@@ -1,4 +1,5 @@
 import React from 'react'
+import { describe, it, beforeEach, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SingleChoiceQuestion } from '@/components/SingleChoiceQuestion'
 import type { Question, QuestionOption, QuestionType } from '@prisma/client'

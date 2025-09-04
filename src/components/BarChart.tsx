@@ -27,7 +27,7 @@ export function BarChart({ data, title }: BarChartProps) {
           />
           <YAxis />
           <Tooltip 
-            formatter={(value, name) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.value, 0) * 100).toFixed(1)}%)`, 'Count']}
+            formatter={(value) => [`${value} responses (${((value as number) / data.reduce((sum, item) => sum + item.value, 0) * 100).toFixed(1)}%)`, 'Count']}
           />
           <Bar dataKey="value" fill="#4F46E5" />
         </RechartsBarChart>

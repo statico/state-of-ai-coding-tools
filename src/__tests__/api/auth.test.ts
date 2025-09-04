@@ -26,7 +26,7 @@ describe('/api/auth/verify', () => {
       description: 'Test description',
     }
 
-    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey)
+    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as any)
     mockSurveyService.verifyPassword.mockResolvedValue(true)
 
     const request = new NextRequest('http://localhost:3000/api/auth/verify', {
@@ -56,7 +56,7 @@ describe('/api/auth/verify', () => {
   it('should return error for invalid password', async () => {
     const mockSurvey = { id: 1, title: 'Test Survey' }
 
-    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey)
+    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as any)
     mockSurveyService.verifyPassword.mockResolvedValue(false)
 
     const request = new NextRequest('http://localhost:3000/api/auth/verify', {

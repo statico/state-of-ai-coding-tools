@@ -13,7 +13,7 @@ test.describe('Results Page', () => {
     await page.goto('/results')
 
     // Should have return home button
-    await expect(page.locator('a[href="/"]')).toContainText('Return Home')
+    await expect(page.getByText('Return Home')).toBeVisible()
     
     // Test navigation back home
     await page.click('text=Return Home')
