@@ -7,6 +7,7 @@ import { SingleChoiceQuestion } from '@/components/SingleChoiceQuestion'
 import { MultipleChoiceQuestion } from '@/components/MultipleChoiceQuestion'
 import { RatingQuestion } from '@/components/RatingQuestion'
 import { TextQuestion } from '@/components/TextQuestion'
+import { ShareModal } from '@/components/ShareModal'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -197,10 +198,15 @@ export default function SurveyPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="mb-8">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl">{survey?.title || 'Survey'}</CardTitle>
-            {survey?.description && (
-              <CardDescription className="text-lg mt-2">{survey.description}</CardDescription>
-            )}
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex-1">
+                <CardTitle className="text-3xl">{survey?.title || 'Survey'}</CardTitle>
+                {survey?.description && (
+                  <CardDescription className="text-lg mt-2">{survey.description}</CardDescription>
+                )}
+              </div>
+              <ShareModal />
+            </div>
           </CardHeader>
         </Card>
 
