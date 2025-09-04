@@ -111,7 +111,7 @@ export default function SurveyPage() {
     // Generate a session ID
     const sessionId =
       localStorage.getItem('survey_session_id') ||
-      `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
 
     if (!localStorage.getItem('survey_session_id')) {
       localStorage.setItem('survey_session_id', sessionId)
