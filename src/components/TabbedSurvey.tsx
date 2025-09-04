@@ -46,6 +46,11 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
   const [completedTabs, setCompletedTabs] = useState<Set<string>>(new Set())
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Scroll to top when tab changes
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const currentTabIndex = TAB_SECTIONS.findIndex(tab => tab.id === activeTab)
   const isLastTab = currentTabIndex === TAB_SECTIONS.length - 1
   const isFirstTab = currentTabIndex === 0
@@ -129,6 +134,7 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
       const nextTab = TAB_SECTIONS[currentTabIndex + 1]
       if (nextTab) {
         setActiveTab(nextTab.id)
+        scrollToTop()
       }
     }
   }
@@ -137,6 +143,7 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
     const prevTab = TAB_SECTIONS[currentTabIndex - 1]
     if (prevTab) {
       setActiveTab(prevTab.id)
+      scrollToTop()
     }
   }
 
@@ -231,8 +238,13 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
     }
   }
 
+  const handleTabChange = (newTab: string) => {
+    setActiveTab(newTab)
+    scrollToTop()
+  }
+
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
       <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${TAB_SECTIONS.length}, 1fr)` }}>
         {TAB_SECTIONS.map((section, index) => (
           <TabsTrigger 
