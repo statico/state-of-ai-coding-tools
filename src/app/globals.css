@@ -1,6 +1,5 @@
-@import 'tailwindcss' with (
-  --color-mode: class
-);
+@import 'tailwindcss';
+@variant dark (&:where(.dark, .dark *));
 
 :root {
   --radius: 0.5rem;
