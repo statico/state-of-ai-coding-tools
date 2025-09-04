@@ -23,12 +23,22 @@ export class ResponseService {
     textValue?: string
     ratingValue?: number
   }): Promise<Response> {
+    // For multiple choice questions, we need to be more specific to avoid duplicates
+    const whereClause = data.optionId 
+      ? {
+          surveyId: data.surveyId,
+          sessionId: data.sessionId,
+          questionId: data.questionId,
+          optionId: data.optionId,
+        }
+      : {
+          surveyId: data.surveyId,
+          sessionId: data.sessionId,
+          questionId: data.questionId,
+        }
+
     const existing = await prisma.response.findFirst({
-      where: {
-        surveyId: data.surveyId,
-        sessionId: data.sessionId,
-        questionId: data.questionId,
-      },
+      where: whereClause,
     })
 
     if (existing) {
@@ -43,6 +53,17 @@ export class ResponseService {
     } else {
       return this.create(data)
     }
+  }
+
+  // Helper method to clear existing responses for a question (useful for multiple choice)
+  static async clearQuestionResponses(surveyId: number, sessionId: string, questionId: number): Promise<void> {
+    await prisma.response.deleteMany({
+      where: {
+        surveyId,
+        sessionId,
+        questionId,
+      },
+    })
   }
 
   static async findBySurvey(surveyId: number): Promise<Response[]> {
