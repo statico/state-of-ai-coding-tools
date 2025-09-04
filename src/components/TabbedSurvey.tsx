@@ -354,10 +354,7 @@ export function TabbedSurvey({
           <TabsTrigger
             key={section.id}
             value={section.id}
-            disabled={
-              index > 0 && !completedTabs.has(TAB_SECTIONS[index - 1].id)
-            }
-            className="relative"
+            className="relative cursor-pointer"
           >
             {completedTabs.has(section.id) && (
               <CheckCircle className="h-4 w-4 mr-1 text-green-600" />
