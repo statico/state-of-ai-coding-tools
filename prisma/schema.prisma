@@ -102,6 +102,7 @@ model Response {
   optionId     Int?     @map("option_id")
   textValue    String?  @map("text_value")
   ratingValue  Int?     @map("rating_value")
+  writeInValue String?  @map("write_in_value")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
@@ -120,4 +121,6 @@ enum QuestionType {
   RATING
   TEXT
   DEMOGRAPHIC
+  EXPERIENCE // State of JS style: Never heard/Heard not interested/Used wouldn't use again/Used would use again
+  WRITE_IN    // Optional write-in field
 }

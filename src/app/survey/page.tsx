@@ -7,6 +7,7 @@ import { SingleChoiceQuestion } from '@/components/SingleChoiceQuestion'
 import { MultipleChoiceQuestion } from '@/components/MultipleChoiceQuestion'
 import { RatingQuestion } from '@/components/RatingQuestion'
 import { TextQuestion } from '@/components/TextQuestion'
+import { ExperienceQuestion } from '@/components/ExperienceQuestion'
 import { ShareModal } from '@/components/ShareModal'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -26,6 +27,7 @@ interface SurveyResponse {
   optionIds?: number[]
   textValue?: string
   ratingValue?: number
+  writeInValue?: string
 }
 
 export default function SurveyPage() {
@@ -134,6 +136,7 @@ export default function SurveyPage() {
         if (response.optionId) formatted.optionId = response.optionId
         if (response.textValue) formatted.textValue = response.textValue
         if (response.ratingValue) formatted.ratingValue = response.ratingValue
+        if (response.writeInValue) formatted.writeInValue = response.writeInValue
 
         return formatted
       })
@@ -272,6 +275,23 @@ export default function SurveyPage() {
                               question={question}
                               value={response?.textValue}
                               onChange={(textValue) => updateResponse(question.id, { textValue })}
+                              error={error}
+                            />
+                          )
+
+                        case 'EXPERIENCE':
+                          return (
+                            <ExperienceQuestion
+                              key={question.id}
+                              question={question}
+                              options={options}
+                              value={{
+                                optionId: response?.optionId,
+                                writeInValue: response?.writeInValue
+                              }}
+                              onChange={({ optionId, writeInValue }) => 
+                                updateResponse(question.id, { optionId, writeInValue })
+                              }
                               error={error}
                             />
                           )
