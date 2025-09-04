@@ -28,6 +28,20 @@ export async function POST(request: NextRequest) {
         id: sessionId,
         surveyId,
       })
+    } else if (session.completedAt) {
+      // Check if session has already completed the survey this week
+      const completedDate = new Date(session.completedAt)
+      const now = new Date()
+      const weekStart = new Date(now)
+      weekStart.setDate(now.getDate() - now.getDay()) // Start of current week
+      weekStart.setHours(0, 0, 0, 0)
+
+      if (completedDate >= weekStart) {
+        return NextResponse.json(
+          { error: 'You have already submitted your responses for this week' },
+          { status: 400 }
+        )
+      }
     }
 
     // Save all responses
