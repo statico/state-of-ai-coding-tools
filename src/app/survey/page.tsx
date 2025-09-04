@@ -168,9 +168,9 @@ export default function SurveyPage() {
                 </CardDescription>
               )}
               {hasSubmitted && (
-                <Alert className="mt-4 border-green-500 dark:border-green-600/50 bg-green-50 dark:bg-green-950/50">
-                  <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                  <AlertDescription className="text-green-900 dark:text-green-200">
+                <Alert className="mt-4 border-green-500 bg-green-100 dark:bg-green-900">
+                  <CheckCircle className="h-4 w-4 text-green-700 dark:text-green-300" />
+                  <AlertDescription className="text-green-900 dark:text-green-100">
                     {submissionMessage ||
                       'You have already submitted your responses for this week'}
                   </AlertDescription>
