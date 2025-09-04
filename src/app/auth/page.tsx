@@ -46,13 +46,7 @@ export default function AuthPage() {
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription className="ml-2">
-              <strong>Password Setup Instructions:</strong>
-              <ul className="mt-2 space-y-1 text-sm">
-                <li>• The password is set in the environment variable <code className="px-1 py-0.5 bg-muted rounded">SURVEY_PASSWORD</code></li>
-                <li>• For local development: Add to your <code className="px-1 py-0.5 bg-muted rounded">.env.local</code> file</li>
-                <li>• For production: Set in your hosting platform&apos;s environment settings</li>
-                <li>• Default password (if not set): <code className="px-1 py-0.5 bg-muted rounded">survey2024</code></li>
-              </ul>
+              Please enter the weekly password to access the survey. Contact your administrator if you need the password.
             </AlertDescription>
           </Alert>
 
@@ -68,6 +62,10 @@ export default function AuthPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
+                data-1p-ignore="true"
+                data-lpignore="true"
+                data-form-type="other"
+                autoComplete="off"
               />
             </div>
 

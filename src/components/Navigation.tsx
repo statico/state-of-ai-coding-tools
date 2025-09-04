@@ -5,18 +5,14 @@ import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
 import { useAuth } from '@/lib/auth-context'
-import { Home, FileQuestion, BarChart3, LogOut, Settings } from 'lucide-react'
+import { Home, FileQuestion, BarChart3 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ThemeSwitcher } from './theme-switcher'
 
 export function Navigation() {
   const pathname = usePathname()
   const router = useRouter()
-  const { isAuthenticated, logout } = useAuth()
-
-  const handleLogout = async () => {
-    await logout()
-    router.push('/')
-  }
+  const { isAuthenticated } = useAuth()
 
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -31,65 +27,52 @@ export function Navigation() {
             <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <Link href="/" legacyBehavior passHref>
-                    <NavigationMenuLink className={cn(
+                  <NavigationMenuLink asChild>
+                    <Link href="/" className={cn(
                       "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
                       pathname === '/' && "bg-accent"
                     )}>
                       <Home className="mr-2 h-4 w-4" />
                       Home
-                    </NavigationMenuLink>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 
                 {isAuthenticated && (
                   <NavigationMenuItem>
-                    <Link href="/survey" legacyBehavior passHref>
-                      <NavigationMenuLink className={cn(
+                    <NavigationMenuLink asChild>
+                      <Link href="/survey" className={cn(
                         "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
                         pathname === '/survey' && "bg-accent"
                       )}>
                         <FileQuestion className="mr-2 h-4 w-4" />
                         Survey
-                      </NavigationMenuLink>
-                    </Link>
+                      </Link>
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                 )}
                 
                 <NavigationMenuItem>
-                  <Link href="/results" legacyBehavior passHref>
-                    <NavigationMenuLink className={cn(
+                  <NavigationMenuLink asChild>
+                    <Link href="/results" className={cn(
                       "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
                       pathname === '/results' && "bg-accent"
                     )}>
                       <BarChart3 className="mr-2 h-4 w-4" />
                       Results
-                    </NavigationMenuLink>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
           
           <div className="flex items-center gap-2">
-            {pathname === '/auth' && (
-              <div className="text-sm text-muted-foreground mr-4">
-                <Settings className="inline-block h-4 w-4 mr-1" />
-                Password: Set in environment variable SURVEY_PASSWORD
-              </div>
-            )}
-            {isAuthenticated ? (
-              <Button 
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </Button>
-            ) : (
+            <ThemeSwitcher />
+            {!isAuthenticated && (
               <Button 
                 onClick={() => router.push('/auth')}
+                variant="default"
                 size="sm"
               >
                 Enter Survey

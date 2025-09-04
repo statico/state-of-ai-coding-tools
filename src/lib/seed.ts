@@ -56,7 +56,7 @@ export async function seedDatabase() {
   const survey = await SurveyService.create({
     title: 'State of AI Coding Tools 2024',
     description: 'Weekly survey about AI coding tool usage and preferences',
-    password: 'ai2024',
+    password: process.env.SURVEY_PASSWORD || 'survey2024',
     startDate: new Date('2024-01-01'),
     endDate: new Date('2024-12-31'),
     isActive: true,
