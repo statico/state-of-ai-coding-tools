@@ -1,7 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,9 +19,9 @@ export function ShareModal() {
   const { currentPassword } = useAuth()
   const [copied, setCopied] = useState(false)
   const [copiedPassword, setCopiedPassword] = useState(false)
-  
+
   const surveyUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  
+
   const copyToClipboard = async (text: string, type: 'url' | 'password') => {
     try {
       await navigator.clipboard.writeText(text)
@@ -29,9 +36,9 @@ export function ShareModal() {
       console.error('Failed to copy:', err)
     }
   }
-  
+
   const copyBoth = async () => {
-    const shareText = `Join the AI Coding Tools Weekly Survey!\n\nURL: ${surveyUrl}\nPassword: ${currentPassword}\n\nShare your experiences with AI coding tools and help shape the future of development.`
+    const shareText = `Join the AI Coding Tools Weekly Survey!\n\nURL: ${surveyUrl}\nThis week's password: ${currentPassword}`
     try {
       await navigator.clipboard.writeText(shareText)
       setCopied(true)
@@ -44,7 +51,7 @@ export function ShareModal() {
       console.error('Failed to copy:', err)
     }
   }
-  
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -57,29 +64,29 @@ export function ShareModal() {
         <DialogHeader>
           <DialogTitle>Share the Weekly Survey</DialogTitle>
           <DialogDescription>
-            Share the survey link and this week&apos;s password with your colleagues
+            Share the survey link and this week&apos;s password with your
+            colleagues
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="url">Survey URL</Label>
             <div className="flex gap-2">
-              <Input
-                id="url"
-                value={surveyUrl}
-                readOnly
-                className="flex-1"
-              />
+              <Input id="url" value={surveyUrl} readOnly className="flex-1" />
               <Button
                 size="icon"
                 variant="outline"
                 onClick={() => copyToClipboard(surveyUrl, 'url')}
               >
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
               </Button>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="password">This Week&apos;s Password</Label>
             <div className="flex gap-2">
@@ -92,20 +99,26 @@ export function ShareModal() {
               <Button
                 size="icon"
                 variant="outline"
-                onClick={() => copyToClipboard(currentPassword || '', 'password')}
+                onClick={() =>
+                  copyToClipboard(currentPassword || '', 'password')
+                }
                 disabled={!currentPassword}
               >
-                {copiedPassword ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copiedPassword ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
               Password rotates every Monday at 00:00 UTC
             </p>
           </div>
-          
+
           <div className="pt-4">
-            <Button 
-              className="w-full" 
+            <Button
+              className="w-full"
               onClick={copyBoth}
               disabled={!currentPassword}
             >
