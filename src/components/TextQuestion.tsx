@@ -1,4 +1,8 @@
 import type { Question } from '@prisma/client'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 interface TextQuestionProps {
   question: Question
@@ -14,26 +18,32 @@ export function TextQuestion({
   error,
 }: TextQuestionProps) {
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900">
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">
           {question.title}
           {question.isRequired && <span className="text-red-500 ml-1">*</span>}
-        </h3>
+        </CardTitle>
         {question.description && (
-          <p className="mt-1 text-sm text-gray-600">{question.description}</p>
+          <CardDescription>{question.description}</CardDescription>
         )}
-      </div>
-
-      <textarea
-        rows={4}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Enter your response..."
-        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-      />
-
-      {error && <p className="text-sm text-red-600">{error}</p>}
-    </div>
+      </CardHeader>
+      <CardContent>
+        <Textarea
+          rows={4}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Enter your response..."
+          className="w-full"
+        />
+        
+        {error && (
+          <Alert variant="destructive" className="mt-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+      </CardContent>
+    </Card>
   )
 }

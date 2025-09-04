@@ -10,6 +10,13 @@
 - NEVER run `pnpm build` during development. It interferes with the dev server.
 - NEVER run `pnpm dev` or `pnpm worker` since the user is already doing this. Ask the user to check changes instead.
 
+## Port Configuration
+
+- NEVER use port 3000 - it's reserved for other services
+- ALWAYS use ports 4000+ for development servers (e.g., 4001, 4002, etc.)
+- Configure PostgreSQL to run on high ports (e.g., 5433 or higher) to avoid conflicts
+- When running development servers or tests, specify PORT=4001 or higher
+
 ## Architecture
 
 - Next.js app router pages in `src/app/`

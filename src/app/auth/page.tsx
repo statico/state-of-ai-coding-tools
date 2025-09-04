@@ -3,6 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Loader2, LogIn, Info, AlertCircle } from 'lucide-react'
 
 export default function AuthPage() {
   const [password, setPassword] = useState('')
@@ -28,50 +34,74 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Enter Weekly Password
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Enter the weekly password to access the State of AI Coding Tools survey
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Weekly password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-background py-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Enter Weekly Password</CardTitle>
+          <CardDescription>
+            Enter the password to access the State of AI Coding Tools survey
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription className="ml-2">
+              <strong>Password Setup Instructions:</strong>
+              <ul className="mt-2 space-y-1 text-sm">
+                <li>• The password is set in the environment variable <code className="px-1 py-0.5 bg-muted rounded">SURVEY_PASSWORD</code></li>
+                <li>• For local development: Add to your <code className="px-1 py-0.5 bg-muted rounded">.env.local</code> file</li>
+                <li>• For production: Set in your hosting platform&apos;s environment settings</li>
+                <li>• Default password (if not set): <code className="px-1 py-0.5 bg-muted rounded">survey2024</code></li>
+              </ul>
+            </AlertDescription>
+          </Alert>
 
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                placeholder="Enter the weekly password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
             </div>
-          )}
 
-          <div>
-            <button
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <Button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full"
+              size="lg"
             >
-              {isLoading ? 'Verifying...' : 'Enter Survey'}
-            </button>
-          </div>
-        </form>
-      </div>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Verifying...
+                </>
+              ) : (
+                <>
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Enter Survey
+                </>
+              )}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="text-center text-sm text-muted-foreground">
+          Contact your administrator if you don&apos;t have the password
+        </CardFooter>
+      </Card>
     </div>
   )
 }

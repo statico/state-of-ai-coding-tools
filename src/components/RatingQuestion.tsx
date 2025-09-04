@@ -1,5 +1,10 @@
-import { StarIcon } from '@radix-ui/react-icons'
+import { Star } from 'lucide-react'
 import type { Question } from '@prisma/client'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface RatingQuestionProps {
   question: Question
@@ -15,40 +20,51 @@ export function RatingQuestion({
   error,
 }: RatingQuestionProps) {
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-lg font-medium text-gray-900">
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">
           {question.title}
           {question.isRequired && <span className="text-red-500 ml-1">*</span>}
-        </h3>
+        </CardTitle>
         {question.description && (
-          <p className="mt-1 text-sm text-gray-600">{question.description}</p>
+          <CardDescription>{question.description}</CardDescription>
         )}
-      </div>
-
-      <div className="flex items-center space-x-2">
-        {[1, 2, 3, 4, 5].map((rating) => (
-          <button
-            key={rating}
-            type="button"
-            onClick={() => onChange(rating)}
-            className={`p-1 hover:scale-110 transition-transform ${
-              value && value >= rating
-                ? 'text-yellow-400'
-                : 'text-gray-300 hover:text-yellow-300'
-            }`}
-          >
-            <StarIcon className="h-8 w-8 fill-current" />
-          </button>
-        ))}
-        {value && (
-          <span className="ml-2 text-sm text-gray-600">
-            {value} out of 5 stars
-          </span>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center space-x-1">
+          {[1, 2, 3, 4, 5].map((rating) => (
+            <Button
+              key={rating}
+              type="button"
+              variant="ghost"
+              size="lg"
+              onClick={() => onChange(rating)}
+              className="p-2 hover:scale-110 transition-all"
+            >
+              <Star
+                className={cn(
+                  "h-8 w-8 transition-colors",
+                  value && value >= rating
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300 hover:text-yellow-300"
+                )}
+              />
+            </Button>
+          ))}
+          {value && (
+            <span className="ml-4 text-sm text-muted-foreground">
+              {value} out of 5 stars
+            </span>
+          )}
+        </div>
+        
+        {error && (
+          <Alert variant="destructive" className="mt-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
-      </div>
-
-      {error && <p className="text-sm text-red-600">{error}</p>}
-    </div>
+      </CardContent>
+    </Card>
   )
 }

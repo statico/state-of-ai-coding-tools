@@ -7,6 +7,11 @@ import { SingleChoiceQuestion } from '@/components/SingleChoiceQuestion'
 import { MultipleChoiceQuestion } from '@/components/MultipleChoiceQuestion'
 import { RatingQuestion } from '@/components/RatingQuestion'
 import { TextQuestion } from '@/components/TextQuestion'
+import { Button } from '@/components/ui/button'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Loader2, Send, AlertCircle } from 'lucide-react'
 import type { Question, QuestionOption } from '@prisma/client'
 
 interface QuestionWithOptions {
@@ -121,7 +126,7 @@ export default function SurveyPage() {
 
     try {
       const formattedResponses = Object.values(responses).map(response => {
-        const formatted: any = {
+        const formatted: Record<string, unknown> = {
           questionId: response.questionId,
         }
 
@@ -152,10 +157,11 @@ export default function SurveyPage() {
 
       const data = await response.json()
 
-      if (data.success) {
+      if (response.ok && (data.success || data.message === 'Responses submitted successfully')) {
         router.push('/survey/thank-you')
       } else {
-        console.error('Failed to submit survey:', data.error)
+        console.error('Failed to submit survey:', data.error || 'Unknown error')
+        alert(data.error || 'Failed to submit survey. Please try again.')
       }
     } catch (error) {
       console.error('Error submitting survey:', error)
@@ -167,7 +173,7 @@ export default function SurveyPage() {
   if (loading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     )
   }
@@ -187,25 +193,31 @@ export default function SurveyPage() {
   }, {} as Record<string, QuestionWithOptions[]>)
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-6 py-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">{survey?.title}</h1>
-              {survey?.description && (
-                <p className="mt-2 text-lg text-gray-600">{survey.description}</p>
-              )}
-            </div>
+    <div className="min-h-screen bg-background py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Card className="mb-8">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl">{survey?.title || 'Survey'}</CardTitle>
+            {survey?.description && (
+              <CardDescription className="text-lg mt-2">{survey.description}</CardDescription>
+            )}
+          </CardHeader>
+        </Card>
 
-            <form onSubmit={handleSubmit} className="space-y-12">
-              {Object.entries(questionsByCategory).map(([category, categoryQuestions]) => (
-                <div key={category} className="border-b border-gray-200 pb-12 last:border-b-0">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6 capitalize">
-                    {category.replace('_', ' ')}
-                  </h2>
+        <form onSubmit={handleSubmit} className="space-y-8">
+              {Object.entries(questionsByCategory).map(([category, categoryQuestions], index) => (
+                <div key={category}>
+                  {index > 0 && <Separator className="my-8" />}
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold capitalize">
+                      {category.replace(/_/g, ' ')}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {categoryQuestions.filter(q => q.question.isRequired).length} required questions
+                    </p>
+                  </div>
                   
-                  <div className="space-y-8">
+                  <div className="space-y-6">
                     {categoryQuestions.map(({ question, options }) => {
                       const response = responses[question.id]
                       const error = errors[question.id]
@@ -266,18 +278,37 @@ export default function SurveyPage() {
                 </div>
               ))}
 
+              {Object.keys(errors).length > 0 && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Please complete all required questions</AlertTitle>
+                  <AlertDescription>
+                    There are {Object.keys(errors).length} questions that need your attention.
+                  </AlertDescription>
+                </Alert>
+              )}
+
               <div className="flex justify-end pt-6">
-                <button
+                <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  size="lg"
+                  className="min-w-[200px]"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Survey'}
-                </button>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" />
+                      Submit Survey
+                    </>
+                  )}
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
       </div>
     </div>
   )
