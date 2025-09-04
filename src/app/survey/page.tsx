@@ -11,7 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Loader2 } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Loader2, CheckCircle } from 'lucide-react'
 import type { Question, QuestionOption } from '@prisma/client'
 
 interface QuestionWithOptions {
@@ -32,6 +33,8 @@ export default function SurveyPage() {
   const { isAuthenticated, survey, loading } = useAuth()
   const [questions, setQuestions] = useState<QuestionWithOptions[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [submissionMessage, setSubmissionMessage] = useState('')
   const router = useRouter()
 
   useEffect(() => {
@@ -42,8 +45,35 @@ export default function SurveyPage() {
 
     if (!loading && isAuthenticated) {
       fetchQuestions()
+      checkExistingSubmission()
     }
   }, [loading, isAuthenticated, router])
+
+  const checkExistingSubmission = async () => {
+    const sessionId = localStorage.getItem('survey_session_id')
+    if (!sessionId) return
+
+    try {
+      const response = await fetch('/api/survey/check-submission', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId }),
+      })
+      const data = await response.json()
+
+      if (data.hasSubmitted) {
+        setHasSubmitted(true)
+        setSubmissionMessage(
+          data.message ||
+            'You have already submitted your responses for this week'
+        )
+      }
+    } catch (error) {
+      console.error('Error checking submission:', error)
+    }
+  }
 
   const fetchQuestions = async () => {
     try {
@@ -139,6 +169,15 @@ export default function SurveyPage() {
                     {survey.description}
                   </CardDescription>
                 )}
+                {hasSubmitted && (
+                  <Alert className="mt-4 border-green-200 bg-green-50">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <AlertDescription className="text-green-800">
+                      {submissionMessage ||
+                        'You have already submitted your responses for this week'}
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
               <ShareModal />
             </div>
@@ -146,7 +185,12 @@ export default function SurveyPage() {
         </Card>
 
         <Card className="p-6">
-          <TabbedSurvey questions={questions} onSubmit={handleSubmit} />
+          <TabbedSurvey
+            questions={questions}
+            onSubmit={handleSubmit}
+            hasSubmitted={hasSubmitted}
+            submissionMessage={submissionMessage}
+          />
         </Card>
       </div>
     </div>

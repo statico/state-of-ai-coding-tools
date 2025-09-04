@@ -36,6 +36,8 @@ interface SurveyResponse {
 interface TabbedSurveyProps {
   questions: QuestionWithOptions[]
   onSubmit: (responses: Record<number, SurveyResponse>) => Promise<void>
+  hasSubmitted?: boolean
+  submissionMessage?: string
 }
 
 const TAB_SECTIONS = [
@@ -62,7 +64,12 @@ const TAB_SECTIONS = [
   },
 ]
 
-export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
+export function TabbedSurvey({
+  questions,
+  onSubmit,
+  hasSubmitted = false,
+  submissionMessage = '',
+}: TabbedSurveyProps) {
   const [activeTab, setActiveTab] = useState(TAB_SECTIONS[0].id)
   const [responses, setResponses] = useState<Record<number, SurveyResponse>>({})
   const [errors, setErrors] = useState<Record<number, string>>({})
@@ -340,24 +347,36 @@ export function TabbedSurvey({ questions, onSubmit }: TabbedSurveyProps) {
             </Button>
 
             {isLastTab ? (
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                size="lg"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  <>
-                    <Send className="mr-2 h-4 w-4" />
-                    Submit Survey
-                  </>
+              <div className="flex flex-col items-end gap-2">
+                <Button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting || hasSubmitted}
+                  size="lg"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : hasSubmitted ? (
+                    <>
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Already Submitted
+                    </>
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" />
+                      Submit Survey
+                    </>
+                  )}
+                </Button>
+                {hasSubmitted && submissionMessage && (
+                  <p className="text-sm text-muted-foreground">
+                    {submissionMessage}
+                  </p>
                 )}
-              </Button>
+              </div>
             ) : (
               <Button type="button" onClick={handleNext}>
                 Next
