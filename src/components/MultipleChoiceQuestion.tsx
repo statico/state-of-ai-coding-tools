@@ -40,27 +40,28 @@ export function MultipleChoiceQuestion({
         )}
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
+        <div className="space-y-2">
           {options.map((option) => (
-            <div key={option.id} className="flex items-start space-x-3">
+            <Label
+              key={option.id}
+              htmlFor={`option-${option.id}`}
+              className="flex items-center space-x-3 p-4 rounded-lg border border-transparent hover:border-border hover:bg-accent/50 transition-all cursor-pointer -mx-2"
+            >
               <Checkbox
                 id={`option-${option.id}`}
                 checked={value.includes(option.id)}
                 onCheckedChange={(checked) => handleChange(option.id, !!checked)}
-                className="mt-0.5"
+                className="h-5 w-5 flex-shrink-0"
               />
-              <Label
-                htmlFor={`option-${option.id}`}
-                className="flex-1 cursor-pointer"
-              >
-                <span className="font-medium">{option.label}</span>
+              <div className="flex-1">
+                <span className="font-medium block">{option.label}</span>
                 {option.description && (
                   <p className="text-sm text-muted-foreground mt-1">
                     {option.description}
                   </p>
                 )}
-              </Label>
-            </div>
+              </div>
+            </Label>
           ))}
         </div>
         
