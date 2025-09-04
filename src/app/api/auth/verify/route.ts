@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { SurveyService } from '@/lib/services/survey'
+import { validateWeeklyPassword, getActiveWeeklyPassword } from '@/lib/password-manager'
 
 const verifyPasswordSchema = z.object({
   password: z.string().min(1, 'Password is required'),
@@ -21,8 +22,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verify password
-    const isValid = await SurveyService.verifyPassword(currentSurvey.id, password)
+    // Verify weekly password instead of survey password
+    const isValid = await validateWeeklyPassword(password)
     
     if (!isValid) {
       return NextResponse.json(
@@ -30,10 +31,14 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
+    
+    // Get the current password for the session data
+    const currentPassword = await getActiveWeeklyPassword()
 
     // Create session token (simple JWT-like structure for this demo)
     const sessionData = {
       surveyId: currentSurvey.id,
+      weeklyPassword: currentPassword,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     }
 
@@ -45,6 +50,7 @@ export async function POST(request: NextRequest) {
         description: currentSurvey.description,
       },
       session: sessionData,
+      currentPassword, // Include password for share functionality
     })
 
   } catch (error) {
