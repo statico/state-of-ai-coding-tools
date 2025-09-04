@@ -142,3 +142,29 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/Node
+
+# Playwright MCP screenshots and test artifacts
+.playwright-mcp/
+
+# One-off utility scripts (should use migrations or proper tooling instead)
+scripts/update-*.ts
+scripts/update-*.js
+scripts/test-*.ts
+scripts/test-*.js
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor swap files
+*.swp
+*.swo
+*~
+.idea/
+*.sublime-*
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
