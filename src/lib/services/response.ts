@@ -9,6 +9,7 @@ export class ResponseService {
     optionId?: number
     textValue?: string
     ratingValue?: number
+    writeInValue?: string
   }): Promise<Response> {
     return await prisma.response.create({
       data,
@@ -22,6 +23,7 @@ export class ResponseService {
     optionId?: number
     textValue?: string
     ratingValue?: number
+    writeInValue?: string
   }): Promise<Response> {
     // For multiple choice questions, we need to be more specific to avoid duplicates
     const whereClause = data.optionId
@@ -48,6 +50,7 @@ export class ResponseService {
           optionId: data.optionId,
           textValue: data.textValue,
           ratingValue: data.ratingValue,
+          writeInValue: data.writeInValue,
         },
       })
     } else {

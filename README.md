@@ -284,6 +284,25 @@ For issues, questions, or suggestions, please:
 - Check existing issues for similar problems
 - Provide reproduction steps for bugs
 
+## ✅ Todo / Recent Improvements
+
+### Completed
+- ✅ Fixed thank you page styling to use shadcn components
+- ✅ Removed unused development testing routes (test-db)
+- ✅ Added resubmission prevention for current week
+- ✅ Implemented check-submission endpoint
+- ✅ Added support for 4-option experience questions format
+- ✅ Incorporated relevant questions from AI workshop survey
+- ✅ Added write-in value support for experience questions
+- ✅ Enhanced security with proper session validation
+
+### Pending
+- [ ] Add more AI coding tools to the survey
+- [ ] Implement data export functionality
+- [ ] Add admin dashboard for survey management
+- [ ] Create weekly email digest of results
+- [ ] Add comparative analysis between weeks
+
 ## 🎨 Design Philosophy
 
 This survey system follows the design philosophy of State of JavaScript:

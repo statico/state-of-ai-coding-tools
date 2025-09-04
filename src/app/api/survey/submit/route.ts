@@ -12,6 +12,7 @@ const submitResponseSchema = z.object({
       optionIds: z.array(z.number()).optional(),
       textValue: z.string().optional(),
       ratingValue: z.number().min(1).max(5).optional(),
+      writeInValue: z.string().optional(),
     })
   ),
 })
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
           })
         }
       } else {
-        // Handle single choice, rating, and text questions
+        // Handle single choice, rating, text, and experience questions
         await ResponseService.createOrUpdate({
           surveyId,
           sessionId,
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
           optionId: response.optionId,
           textValue: response.textValue,
           ratingValue: response.ratingValue,
+          writeInValue: response.writeInValue,
         })
       }
     }
