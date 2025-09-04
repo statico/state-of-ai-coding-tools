@@ -3,17 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
-import { SingleChoiceQuestion } from '@/components/SingleChoiceQuestion'
-import { MultipleChoiceQuestion } from '@/components/MultipleChoiceQuestion'
-import { RatingQuestion } from '@/components/RatingQuestion'
-import { TextQuestion } from '@/components/TextQuestion'
-import { ExperienceQuestion } from '@/components/ExperienceQuestion'
+import { TabbedSurvey } from '@/components/TabbedSurvey'
 import { ShareModal } from '@/components/ShareModal'
-import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Loader2, Send, AlertCircle } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import type { Question, QuestionOption } from '@prisma/client'
 
 interface QuestionWithOptions {
@@ -31,12 +24,9 @@ interface SurveyResponse {
 }
 
 export default function SurveyPage() {
-  const { isAuthenticated, survey, session, loading } = useAuth()
+  const { isAuthenticated, survey, loading } = useAuth()
   const [questions, setQuestions] = useState<QuestionWithOptions[]>([])
-  const [responses, setResponses] = useState<Record<number, SurveyResponse>>({})
-  const [errors, setErrors] = useState<Record<number, string>>({})
   const [isLoading, setIsLoading] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -67,110 +57,48 @@ export default function SurveyPage() {
     }
   }
 
-  const updateResponse = (questionId: number, responseData: Partial<SurveyResponse>) => {
-    setResponses(prev => ({
-      ...prev,
-      [questionId]: {
-        ...prev[questionId],
-        questionId,
-        ...responseData,
-      }
-    }))
+  const handleSubmit = async (responses: Record<number, SurveyResponse>) => {
+    if (!survey) return
 
-    // Clear error for this question
-    setErrors(prev => {
-      const newErrors = { ...prev }
-      delete newErrors[questionId]
-      return newErrors
+    const formattedResponses = Object.values(responses).map(response => {
+      const formatted: Record<string, unknown> = {
+        questionId: response.questionId,
+      }
+
+      if (response.optionId) formatted.optionId = response.optionId
+      if (response.textValue) formatted.textValue = response.textValue
+      if (response.ratingValue) formatted.ratingValue = response.ratingValue
+      if (response.writeInValue) formatted.writeInValue = response.writeInValue
+
+      return formatted
     })
-  }
 
-  const validateResponses = (): boolean => {
-    const newErrors: Record<number, string> = {}
-    let isValid = true
-
-    for (const { question } of questions) {
-      if (question.isRequired && !responses[question.id]) {
-        newErrors[question.id] = 'This question is required'
-        isValid = false
-        continue
-      }
-
-      const response = responses[question.id]
-      if (question.isRequired && response) {
-        if (question.type === 'SINGLE_CHOICE' && !response.optionId) {
-          newErrors[question.id] = 'Please select an option'
-          isValid = false
-        } else if (question.type === 'MULTIPLE_CHOICE' && (!response.optionIds || response.optionIds.length === 0)) {
-          newErrors[question.id] = 'Please select at least one option'
-          isValid = false
-        } else if (question.type === 'RATING' && !response.ratingValue) {
-          newErrors[question.id] = 'Please provide a rating'
-          isValid = false
-        } else if (question.type === 'TEXT' && (!response.textValue || response.textValue.trim() === '')) {
-          newErrors[question.id] = 'Please provide a response'
-          isValid = false
-        }
-      }
-    }
-
-    setErrors(newErrors)
-    return isValid
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    // Generate a session ID
+    const sessionId = localStorage.getItem('survey_session_id') || 
+      `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
-    if (!validateResponses() || !survey || !session) {
-      return
+    if (!localStorage.getItem('survey_session_id')) {
+      localStorage.setItem('survey_session_id', sessionId)
     }
 
-    setIsSubmitting(true)
+    const response = await fetch('/api/survey/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sessionId,
+        surveyId: survey.id,
+        responses: formattedResponses,
+      }),
+    })
 
-    try {
-      const formattedResponses = Object.values(responses).map(response => {
-        const formatted: Record<string, unknown> = {
-          questionId: response.questionId,
-        }
+    const data = await response.json()
 
-        if (response.optionId) formatted.optionId = response.optionId
-        if (response.textValue) formatted.textValue = response.textValue
-        if (response.ratingValue) formatted.ratingValue = response.ratingValue
-        if (response.writeInValue) formatted.writeInValue = response.writeInValue
-
-        return formatted
-      })
-
-      // Generate a session ID from localStorage or create one
-      const sessionId = localStorage.getItem('survey_session_id') || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      if (!localStorage.getItem('survey_session_id')) {
-        localStorage.setItem('survey_session_id', sessionId)
-      }
-
-      const response = await fetch('/api/survey/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sessionId,
-          surveyId: survey.id,
-          responses: formattedResponses,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && (data.success || data.message === 'Responses submitted successfully')) {
-        router.push('/survey/thank-you')
-      } else {
-        console.error('Failed to submit survey:', data.error || 'Unknown error')
-        alert(data.error || 'Failed to submit survey. Please try again.')
-      }
-    } catch (error) {
-      console.error('Error submitting survey:', error)
-    } finally {
-      setIsSubmitting(false)
+    if (response.ok && (data.success || data.message === 'Responses submitted successfully')) {
+      router.push('/survey/thank-you')
+    } else {
+      throw new Error(data.error || 'Failed to submit survey')
     }
   }
 
@@ -186,24 +114,14 @@ export default function SurveyPage() {
     return null
   }
 
-  // Group questions by category
-  const questionsByCategory = questions.reduce((acc, questionWithOptions) => {
-    const category = questionWithOptions.question.category
-    if (!acc[category]) {
-      acc[category] = []
-    }
-    acc[category].push(questionWithOptions)
-    return acc
-  }, {} as Record<string, QuestionWithOptions[]>)
-
   return (
     <div className="min-h-screen bg-background py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="mb-8">
           <CardHeader className="text-center">
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start">
               <div className="flex-1">
-                <CardTitle className="text-3xl">{survey?.title || 'Survey'}</CardTitle>
+                <CardTitle className="text-3xl">{survey?.title || 'AI Coding Tools Weekly Survey'}</CardTitle>
                 {survey?.description && (
                   <CardDescription className="text-lg mt-2">{survey.description}</CardDescription>
                 )}
@@ -213,128 +131,12 @@ export default function SurveyPage() {
           </CardHeader>
         </Card>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-              {Object.entries(questionsByCategory).map(([category, categoryQuestions], index) => (
-                <div key={category}>
-                  {index > 0 && <Separator className="my-8" />}
-                  <div className="mb-6">
-                    <h2 className="text-xl font-semibold capitalize">
-                      {category.replace(/_/g, ' ')}
-                    </h2>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {categoryQuestions.filter(q => q.question.isRequired).length} required questions
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    {categoryQuestions.map(({ question, options }) => {
-                      const response = responses[question.id]
-                      const error = errors[question.id]
-
-                      switch (question.type) {
-                        case 'SINGLE_CHOICE':
-                        case 'DEMOGRAPHIC':
-                          return (
-                            <SingleChoiceQuestion
-                              key={question.id}
-                              question={question}
-                              options={options}
-                              value={response?.optionId}
-                              onChange={(optionId) => updateResponse(question.id, { optionId })}
-                              error={error}
-                            />
-                          )
-
-                        case 'MULTIPLE_CHOICE':
-                          return (
-                            <MultipleChoiceQuestion
-                              key={question.id}
-                              question={question}
-                              options={options}
-                              value={response?.optionIds}
-                              onChange={(optionIds) => updateResponse(question.id, { optionIds })}
-                              error={error}
-                            />
-                          )
-
-                        case 'RATING':
-                          return (
-                            <RatingQuestion
-                              key={question.id}
-                              question={question}
-                              value={response?.ratingValue}
-                              onChange={(ratingValue) => updateResponse(question.id, { ratingValue })}
-                              error={error}
-                            />
-                          )
-
-                        case 'TEXT':
-                          return (
-                            <TextQuestion
-                              key={question.id}
-                              question={question}
-                              value={response?.textValue}
-                              onChange={(textValue) => updateResponse(question.id, { textValue })}
-                              error={error}
-                            />
-                          )
-
-                        case 'EXPERIENCE':
-                          return (
-                            <ExperienceQuestion
-                              key={question.id}
-                              question={question}
-                              options={options}
-                              value={{
-                                optionId: response?.optionId,
-                                writeInValue: response?.writeInValue
-                              }}
-                              onChange={({ optionId, writeInValue }) => 
-                                updateResponse(question.id, { optionId, writeInValue })
-                              }
-                              error={error}
-                            />
-                          )
-
-                        default:
-                          return null
-                      }
-                    })}
-                  </div>
-                </div>
-              ))}
-
-              {Object.keys(errors).length > 0 && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Please complete all required questions</AlertTitle>
-                  <AlertDescription>
-                    There are {Object.keys(errors).length} questions that need your attention.
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="flex justify-end pt-6">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  size="lg"
-                  className="min-w-[200px]"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      Submit Survey
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
+        <Card className="p-6">
+          <TabbedSurvey 
+            questions={questions} 
+            onSubmit={handleSubmit}
+          />
+        </Card>
       </div>
     </div>
   )
