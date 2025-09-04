@@ -41,12 +41,12 @@ export function SingleChoiceQuestion({
               <Label
                 key={option.id}
                 htmlFor={`option-${option.id}`}
-                className="flex items-start space-x-3 p-4 rounded-lg border border-transparent hover:border-border hover:bg-accent/50 transition-all cursor-pointer -mx-2"
+                className="flex items-center space-x-3 p-4 rounded-lg border border-transparent hover:border-border hover:bg-accent/50 transition-all cursor-pointer -mx-2"
               >
                 <RadioGroupItem
                   value={option.id.toString()}
                   id={`option-${option.id}`}
-                  className="mt-0.5 h-5 w-5"
+                  className="h-5 w-5 flex-shrink-0"
                 />
                 <div className="flex-1">
                   <span className="font-medium block">{option.label}</span>

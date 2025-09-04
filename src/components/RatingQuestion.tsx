@@ -31,7 +31,7 @@ export function RatingQuestion({
         )}
       </CardHeader>
       <CardContent>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-2">
           {[1, 2, 3, 4, 5].map((rating) => (
             <Button
               key={rating}
@@ -43,10 +43,10 @@ export function RatingQuestion({
             >
               <Star
                 className={cn(
-                  "h-8 w-8 transition-colors",
+                  "h-10 w-10 transition-colors",
                   value && value >= rating
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "text-gray-300 hover:text-yellow-300"
+                    ? "fill-primary text-primary"
+                    : "text-muted-foreground hover:text-primary/70"
                 )}
               />
             </Button>
