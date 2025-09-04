@@ -15,7 +15,11 @@ import { Label } from '@/components/ui/label'
 import { Share2, Copy, Check } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 
-export function ShareModal() {
+interface ShareModalProps {
+  iconOnly?: boolean
+}
+
+export function ShareModal({ iconOnly = false }: ShareModalProps) {
   const { currentPassword } = useAuth()
   const [copied, setCopied] = useState(false)
   const [copiedPassword, setCopiedPassword] = useState(false)
@@ -55,10 +59,17 @@ export function ShareModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Share2 className="h-4 w-4 mr-2" />
-          Share Survey
-        </Button>
+        {iconOnly ? (
+          <Button variant="outline" size="icon" title="Share Survey">
+            <Share2 className="h-4 w-4" />
+            <span className="sr-only">Share Survey</span>
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm">
+            <Share2 className="h-4 w-4 mr-2" />
+            Share Survey
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

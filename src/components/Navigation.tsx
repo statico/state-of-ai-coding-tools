@@ -112,7 +112,7 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center gap-2">
-            {isAuthenticated && <ShareModal />}
+            {isAuthenticated && <ShareModal iconOnly />}
             <ThemeSwitcher />
             {isAuthenticated && (
               <Button
