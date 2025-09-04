@@ -6,15 +6,20 @@ import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
 import { useAuth } from '@/lib/auth-context'
-import { Home, FileQuestion, BarChart3, Menu, X } from 'lucide-react'
+import { Home, FileQuestion, BarChart3, Menu, X, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeSwitcher } from './theme-switcher'
 
 export function Navigation() {
   const pathname = usePathname()
   const router = useRouter()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  
+  const handleLogout = () => {
+    logout()
+    router.push('/')
+  }
 
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -87,6 +92,17 @@ export function Navigation() {
           
           <div className="flex items-center gap-2">
             <ThemeSwitcher />
+            {isAuthenticated && (
+              <Button 
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="hidden md:inline-flex"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            )}
             {!isAuthenticated && (
               <Button 
                 onClick={() => router.push('/auth')}
@@ -149,6 +165,19 @@ export function Navigation() {
                   <BarChart3 className="h-4 w-4" />
                   Results
                 </Link>
+                
+                <Button 
+                  onClick={() => {
+                    handleLogout()
+                    setMobileMenuOpen(false)
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-2 justify-start"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
               </>
             )}
             
