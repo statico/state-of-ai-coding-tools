@@ -27,7 +27,7 @@ import { ShareModal } from './ShareModal'
 export function Navigation() {
   const pathname = usePathname()
   const router = useRouter()
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, logout, loading } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleLogout = () => {
@@ -139,7 +139,7 @@ export function Navigation() {
           <div className="flex items-center gap-2">
             {isAuthenticated && <ShareModal iconOnly />}
             <ThemeSwitcher />
-            {isAuthenticated && (
+            {!loading && isAuthenticated && (
               <Button
                 onClick={handleLogout}
                 variant="outline"
@@ -150,7 +150,7 @@ export function Navigation() {
                 Logout
               </Button>
             )}
-            {!isAuthenticated && (
+            {!loading && !isAuthenticated && (
               <Button
                 onClick={() => router.push('/auth')}
                 variant="default"
@@ -217,18 +217,20 @@ export function Navigation() {
                   Trends
                 </Link>
 
-                <Button
-                  onClick={() => {
-                    handleLogout()
-                    setMobileMenuOpen(false)
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="w-full mt-2 justify-start"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
+                {!loading && (
+                  <Button
+                    onClick={() => {
+                      handleLogout()
+                      setMobileMenuOpen(false)
+                    }}
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2 justify-start"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                )}
               </>
             )}
 
@@ -258,17 +260,19 @@ export function Navigation() {
                   Trends
                 </Link>
 
-                <Button
-                  onClick={() => {
-                    router.push('/auth')
-                    setMobileMenuOpen(false)
-                  }}
-                  variant="default"
-                  size="sm"
-                  className="w-full mt-2"
-                >
-                  Enter Survey
-                </Button>
+                {!loading && (
+                  <Button
+                    onClick={() => {
+                      router.push('/auth')
+                      setMobileMenuOpen(false)
+                    }}
+                    variant="default"
+                    size="sm"
+                    className="w-full mt-2"
+                  >
+                    Enter Survey
+                  </Button>
+                )}
               </>
             )}
           </div>
