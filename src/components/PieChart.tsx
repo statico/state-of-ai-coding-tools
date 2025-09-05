@@ -45,9 +45,19 @@ export function PieChart({ data, title }: PieChartProps) {
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={customTooltipContentStyle}
-                labelStyle={customTooltipLabelStyle}
-                formatter={value => [`${value} responses`, 'Count']}
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <div className="bg-popover text-popover-foreground border border-border rounded-md shadow-md p-2 text-xs">
+                        <p className="font-semibold">{payload[0].name}</p>
+                        <p className="text-popover-foreground">
+                          {`${payload[0].value} responses`}
+                        </p>
+                      </div>
+                    )
+                  }
+                  return null
+                }}
               />
             </RechartsPieChart>
           </ResponsiveContainer>
@@ -59,16 +69,16 @@ export function PieChart({ data, title }: PieChartProps) {
                 className="w-3 h-3 rounded-sm flex-shrink-0"
                 style={{ backgroundColor: getColor(index) }}
               />
-              <span className="text-muted-foreground truncate flex-1">
+              <span className="text-card-foreground truncate flex-1">
                 {entry.name}
               </span>
-              <span className="text-muted-foreground text-[10px]">
+              <span className="text-card-foreground text-[10px]">
                 {entry.percentage.toFixed(1)}%
               </span>
             </div>
           ))}
           {data.length > 10 && (
-            <div className="text-[11px] text-muted-foreground pt-1">
+            <div className="text-[11px] text-card-foreground pt-1">
               +{data.length - 10} more...
             </div>
           )}
