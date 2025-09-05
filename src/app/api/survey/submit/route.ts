@@ -16,6 +16,7 @@ const submitResponseSchema = z.object({
       writeInValue: z.string().optional(),
       experienceLevel: z.string().optional(),
       sentimentScore: z.string().optional(),
+      otherValue: z.string().optional(), // For "Other" option in multiple choice
     })
   ),
 })
@@ -59,13 +60,26 @@ export async function POST(request: NextRequest) {
           response.questionId
         )
 
-        // Add new responses
-        for (const optionId of response.optionIds) {
+        // Add new responses, filtering out the special "Other" option (-1)
+        const regularOptionIds = response.optionIds.filter(id => id !== -1)
+        const hasOtherOption = response.optionIds.includes(-1)
+
+        for (const optionId of regularOptionIds) {
           await ResponseService.create({
             surveyId,
             sessionId,
             questionId: response.questionId,
             optionId,
+          })
+        }
+
+        // If "Other" was selected, save the text value
+        if (hasOtherOption && response.otherValue) {
+          await ResponseService.create({
+            surveyId,
+            sessionId,
+            questionId: response.questionId,
+            writeInValue: response.otherValue,
           })
         }
       } else {

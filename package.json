@@ -18,6 +18,7 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "seed": "tsx src/lib/seed.ts",
+    "seed:fake": "tsx src/lib/seed-fake-responses.ts",
     "prepare": "husky"
   },
   "lint-staged": {

@@ -53,7 +53,7 @@ Visit `http://localhost:4001`
 
 ### Seeding Data
 
-The project includes two seed scripts:
+The project includes three seed scripts:
 
 **Comprehensive Survey Questions:**
 ```bash
@@ -72,6 +72,17 @@ This creates questions for:
 pnpm tsx src/lib/seed-passwords.ts
 ```
 Generates 3 years of weekly passwords that automatically rotate every Monday at 00:00 UTC.
+
+**Fake Test Data (for development):**
+```bash
+pnpm seed:fake
+```
+Generates fake survey responses for the past 8 weeks to test results visualization. Includes:
+- Realistic response distributions
+- Multiple choice selections with "Other" options
+- Experience ratings weighted by tool popularity
+- Demographic diversity
+- Text feedback samples
 
 ### Database Operations
 

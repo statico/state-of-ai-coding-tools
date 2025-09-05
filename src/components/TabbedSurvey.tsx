@@ -33,6 +33,7 @@ interface SurveyResponse {
   ratingValue?: number
   writeInValue?: string
   experience?: string
+  otherValue?: string // For "Other" option in multiple choice
 }
 
 interface TabbedSurveyProps {
@@ -279,7 +280,16 @@ export function TabbedSurvey({
             question={question}
             options={options}
             value={response?.optionIds}
-            onChange={optionIds => updateResponse(question.id, { optionIds })}
+            onChange={optionIds =>
+              updateResponse(question.id, {
+                optionIds,
+                otherValue: response?.otherValue,
+              })
+            }
+            otherValue={response?.otherValue || ''}
+            onOtherChange={value =>
+              updateResponse(question.id, { ...response, otherValue: value })
+            }
             error={error}
           />
         )
