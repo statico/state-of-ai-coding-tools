@@ -1657,6 +1657,8 @@ async function createFakeResponses(numberOfSessions: number = 50) {
 
   for (let i = 0; i < numberOfSessions; i++) {
     const sessionId = faker.string.uuid()
+    // Generate a date within the last 90 days, distributed across weeks
+    const responseDate = faker.date.recent({ days: 90 })
     const session = await prisma.userSession.create({
       data: {
         id: sessionId,
@@ -1664,7 +1666,8 @@ async function createFakeResponses(numberOfSessions: number = 50) {
           source: 'seed',
           userAgent: faker.internet.userAgent(),
         },
-        completedAt: faker.date.recent({ days: 30 }),
+        completedAt: responseDate,
+        createdAt: responseDate,
       },
     })
 
@@ -1704,6 +1707,7 @@ async function createFakeResponses(numberOfSessions: number = 50) {
                   sessionId: session.id,
                   questionId: question.id,
                   optionId: option.id,
+                  createdAt: responseDate,
                 },
               })
             }
@@ -1822,6 +1826,7 @@ async function createFakeResponses(numberOfSessions: number = 50) {
       }
 
       if (question.type !== QuestionType.MULTIPLE_CHOICE) {
+        responseData.createdAt = responseDate
         await prisma.response.create({ data: responseData })
       }
     }

@@ -107,17 +107,7 @@ export class QuestionService {
 
     return questions.map(question => ({
       question: {
-        id: question.id,
-        title: question.title,
-        description: question.description,
-        type: question.type,
-        category: question.category,
-        categoryId: question.categoryId,
-        orderIndex: question.orderIndex,
-        isRequired: question.isRequired,
-        isActive: question.isActive,
-        createdAt: question.createdAt,
-        updatedAt: question.updatedAt,
+        ...question,
         categoryRef: question.categoryRef,
       },
       options: question.options,
