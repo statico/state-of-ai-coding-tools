@@ -8,8 +8,9 @@ import { prisma } from '@/lib/prisma'
 import { faker } from '@faker-js/faker'
 import { Experience } from '@prisma/client'
 
-// Set seed for consistent fake data
-faker.seed(42)
+// Use random seed to avoid UUID conflicts on repeated runs
+// Remove or uncomment the line below for consistent data
+// faker.seed(42)
 
 const NUM_WEEKS = 8 // Generate data for past 8 weeks
 const MIN_RESPONSES_PER_WEEK = 15
@@ -176,11 +177,13 @@ async function seedFakeResponses() {
 
             case 'RATING':
               // Weighted towards higher ratings
-              const weights = [0.05, 0.1, 0.2, 0.35, 0.3] // 1-5 star weights
-              const rating = faker.helpers.weightedArrayElement(
-                [1, 2, 3, 4, 5],
-                weights
-              )
+              const rating = faker.helpers.weightedArrayElement([
+                { weight: 0.05, value: 1 },
+                { weight: 0.1, value: 2 },
+                { weight: 0.2, value: 3 },
+                { weight: 0.35, value: 4 },
+                { weight: 0.3, value: 5 },
+              ])
               await prisma.response.create({
                 data: {
                   surveyId: survey.id,
@@ -247,8 +250,10 @@ async function seedFakeResponses() {
               }
 
               const experience = faker.helpers.weightedArrayElement(
-                Object.keys(adjustedWeights) as Experience[],
-                Object.values(adjustedWeights)
+                Object.entries(adjustedWeights).map(([value, weight]) => ({
+                  weight,
+                  value: value as Experience,
+                }))
               )
 
               await prisma.response.create({
