@@ -41,8 +41,13 @@ export function MultipleChoiceQuestion({
           {question.title}
           {question.isRequired && <span className="text-red-500 ml-1">*</span>}
         </CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">
+          Check all that apply
+        </p>
         {question.description && (
-          <CardDescription>{question.description}</CardDescription>
+          <CardDescription className="mt-1">
+            {question.description}
+          </CardDescription>
         )}
       </CardHeader>
       <CardContent>

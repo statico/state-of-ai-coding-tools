@@ -92,9 +92,19 @@ export function TabbedSurvey({
   const [completedTabs, setCompletedTabs] = useState<Set<string>>(new Set())
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Scroll to top when tab changes
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  // Smooth scroll to top of survey
+  const scrollToSurvey = () => {
+    // Find the survey container and scroll it into view
+    const surveyElement = document.querySelector('[role="tabpanel"]')
+    if (surveyElement) {
+      const yOffset = -20 // Small offset from top
+      const y =
+        surveyElement.getBoundingClientRect().top + window.pageYOffset + yOffset
+      window.scrollTo({ top: y, behavior: 'smooth' })
+    } else {
+      // Fallback to scrolling to top
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
   const currentTabIndex = TAB_SECTIONS.findIndex(tab => tab.id === activeTab)
@@ -199,7 +209,8 @@ export function TabbedSurvey({
       const nextTab = TAB_SECTIONS[currentTabIndex + 1]
       if (nextTab) {
         setActiveTab(nextTab.id)
-        scrollToTop()
+        // Small delay to ensure tab content is rendered before scrolling
+        setTimeout(() => scrollToSurvey(), 100)
       }
     }
   }
@@ -208,7 +219,8 @@ export function TabbedSurvey({
     const prevTab = TAB_SECTIONS[currentTabIndex - 1]
     if (prevTab) {
       setActiveTab(prevTab.id)
-      scrollToTop()
+      // Small delay to ensure tab content is rendered before scrolling
+      setTimeout(() => scrollToSurvey(), 100)
     }
   }
 
@@ -322,7 +334,8 @@ export function TabbedSurvey({
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab)
-    scrollToTop()
+    // Small delay to ensure tab content is rendered before scrolling
+    setTimeout(() => scrollToSurvey(), 100)
   }
 
   return (
