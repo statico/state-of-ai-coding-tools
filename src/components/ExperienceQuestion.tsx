@@ -119,9 +119,7 @@ export function ExperienceQuestion({
                 size="sm"
                 onClick={() => handleExperienceClick(option.value)}
                 className={cn(
-                  'h-auto py-2 px-2 flex flex-col items-center justify-center text-center',
-                  'min-h-[60px]',
-                  'border-2',
+                  'h-auto py-2 px-2 flex flex-col items-center justify-center text-center shadow-none min-h-[60px] border-2',
                   isSelected ? option.activeClass : 'bg-background'
                 )}
               >
