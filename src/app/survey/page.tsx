@@ -182,11 +182,8 @@ export default function SurveyPage() {
                   <div>{survey?.description || SURVEY_DESCRIPTION}</div>
                   <div className="text-sm text-primary">
                     This survey and its responses are intended to be kept
-                    private within the{' '}
-                    <a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/">
-                      Rands Leadership Slack
-                    </a>
-                    . Responses will be collected anonymously and shared in the
+                    private within the community in which it was shared.
+                    Responses will be collected anonymously and shared in the
                     responses.
                   </div>
                 </CardDescription>
