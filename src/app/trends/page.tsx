@@ -388,6 +388,52 @@ export default function TrendsPage() {
           </Link>
         </div>
 
+        {/* Summary Statistics - Always visible */}
+        {activeTab === 'overview' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {trends.length > 0 && (
+              <>
+                <Card className="p-4">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Latest Week
+                  </h3>
+                  <p className="text-2xl font-bold text-card-foreground mt-1">
+                    {trends[trends.length - 1]?.responses || 0} responses
+                  </p>
+                </Card>
+                <Card className="p-4">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Average Weekly
+                  </h3>
+                  <p className="text-2xl font-bold text-card-foreground mt-1">
+                    {Math.round(
+                      trends.reduce((a, b) => a + b.responses, 0) /
+                        trends.length
+                    )}{' '}
+                    responses
+                  </p>
+                </Card>
+                <Card className="p-4">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Peak Week
+                  </h3>
+                  <p className="text-2xl font-bold text-card-foreground mt-1">
+                    {Math.max(...trends.map(t => t.responses))} responses
+                  </p>
+                </Card>
+                <Card className="p-4">
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Total Responses
+                  </h3>
+                  <p className="text-2xl font-bold text-card-foreground mt-1">
+                    {trends.reduce((a, b) => a + b.responses, 0)} overall
+                  </p>
+                </Card>
+              </>
+            )}
+          </div>
+        )}
+
         {/* Tabbed Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
@@ -428,50 +474,6 @@ export default function TrendsPage() {
                 </LineChart>
               </ResponsiveContainer>
             </Card>
-
-            {/* Summary Statistics */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {trends.length > 0 && (
-                <>
-                  <Card className="p-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                      Latest Week
-                    </h3>
-                    <p className="text-2xl font-bold text-card-foreground mt-1">
-                      {trends[trends.length - 1]?.responses || 0} responses
-                    </p>
-                  </Card>
-                  <Card className="p-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                      Average Weekly
-                    </h3>
-                    <p className="text-2xl font-bold text-card-foreground mt-1">
-                      {Math.round(
-                        trends.reduce((a, b) => a + b.responses, 0) /
-                          trends.length
-                      )}{' '}
-                      responses
-                    </p>
-                  </Card>
-                  <Card className="p-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                      Peak Week
-                    </h3>
-                    <p className="text-2xl font-bold text-card-foreground mt-1">
-                      {Math.max(...trends.map(t => t.responses))} responses
-                    </p>
-                  </Card>
-                  <Card className="p-4">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                      Total Responses
-                    </h3>
-                    <p className="text-2xl font-bold text-card-foreground mt-1">
-                      {trends.reduce((a, b) => a + b.responses, 0)} overall
-                    </p>
-                  </Card>
-                </>
-              )}
-            </div>
           </TabsContent>
 
           {TAB_SECTIONS.slice(1).map(section => (
