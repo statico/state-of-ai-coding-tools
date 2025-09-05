@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type { Survey } from '@prisma/client'
 
-// Mock Prisma first, before any imports
+// Mock Prisma before importing modules that use it
 vi.mock('@/lib/prisma', () => ({
   prisma: {
     survey: {
@@ -15,9 +16,9 @@ vi.mock('@/lib/prisma', () => ({
 
 import { SurveyService } from '@/lib/services/survey'
 import { prisma } from '@/lib/prisma'
-import type { Survey } from '@prisma/client'
 
-const mockPrisma = vi.mocked(prisma)
+// Get the mocked prisma object with proper typing
+const mockPrisma = vi.mocked(prisma, true)
 
 describe('SurveyService', () => {
   beforeEach(() => {
@@ -81,7 +82,17 @@ describe('SurveyService', () => {
 
   describe('verifyPassword', () => {
     it('should return true for correct password', async () => {
-      mockPrisma.survey.findUnique.mockResolvedValue({ password: 'correct123' })
+      mockPrisma.survey.findUnique.mockResolvedValue({
+        password: 'correct123',
+        id: 1,
+        title: 'Test Survey',
+        description: null,
+        isActive: true,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2030-12-31'),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as Survey)
 
       const result = await SurveyService.verifyPassword(1, 'correct123')
 
@@ -89,7 +100,17 @@ describe('SurveyService', () => {
     })
 
     it('should return false for incorrect password', async () => {
-      mockPrisma.survey.findUnique.mockResolvedValue({ password: 'correct123' })
+      mockPrisma.survey.findUnique.mockResolvedValue({
+        password: 'correct123',
+        id: 1,
+        title: 'Test Survey',
+        description: null,
+        isActive: true,
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2030-12-31'),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as Survey)
 
       const result = await SurveyService.verifyPassword(1, 'wrong123')
 
