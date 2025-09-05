@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getIronSession } from 'iron-session'
 import { SessionData, sessionOptions } from '@/lib/session'
 import { cookies } from 'next/headers'
-import { SurveyService } from '@/lib/services/survey'
+import { SURVEY_TITLE, SURVEY_DESCRIPTION } from '@/lib/constants'
 import { getPassword } from '@/lib/password-manager'
 
 export async function GET() {
@@ -19,25 +19,14 @@ export async function GET() {
       })
     }
 
-    // Get current survey
-    const currentSurvey = await SurveyService.getCurrentSurvey()
-
-    if (!currentSurvey) {
-      return NextResponse.json({
-        isAuthenticated: false,
-        error: 'No active survey',
-      })
-    }
-
     // Get current password for sharing
     const currentPassword = getPassword()
 
     return NextResponse.json({
       isAuthenticated: true,
       survey: {
-        id: currentSurvey.id,
-        title: currentSurvey.title,
-        description: currentSurvey.description,
+        title: SURVEY_TITLE,
+        description: SURVEY_DESCRIPTION,
       },
       currentPassword,
       authenticatedAt: session.authenticatedAt,

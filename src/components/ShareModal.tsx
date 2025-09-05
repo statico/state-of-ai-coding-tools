@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SURVEY_TITLE } from '@/lib/constants'
 import {
   Dialog,
   DialogContent,
@@ -42,7 +43,7 @@ export function ShareModal({ iconOnly = false }: ShareModalProps) {
   }
 
   const copyBoth = async () => {
-    const shareText = `Join the AI Coding Tools Weekly Survey!\n\nURL: ${surveyUrl}\nPassword: ${currentPassword}`
+    const shareText = `Join the ${SURVEY_TITLE}!\n\nURL: ${surveyUrl}\nPassword: ${currentPassword}`
     try {
       await navigator.clipboard.writeText(shareText)
       setCopied(true)

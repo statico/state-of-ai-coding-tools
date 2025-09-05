@@ -10,7 +10,6 @@ export async function POST() {
     // Create the session in the database
     await UserSessionService.create({
       id: sessionId,
-      surveyId: null,
       demographicData: null,
       progress: null,
     })

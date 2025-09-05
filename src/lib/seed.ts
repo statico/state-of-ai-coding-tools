@@ -1,5 +1,4 @@
 import { QuestionService } from './services/question'
-import { SurveyService } from './services/survey'
 import { QuestionType } from '@prisma/client'
 
 const aiCodingTools = [
@@ -51,18 +50,6 @@ const companySizes = [
 
 export async function seedDatabase() {
   console.log('Starting database seeding...')
-
-  // Create a sample survey
-  const survey = await SurveyService.create({
-    title: 'State of AI Coding Tools',
-    description: 'Weekly survey about AI coding tool usage and preferences',
-    password: process.env.SURVEY_PASSWORD || 'survey2024',
-    startDate: new Date('2024-01-01'),
-    endDate: new Date('2030-12-31'),
-    isActive: true,
-  })
-
-  console.log(`Created survey: ${survey.title}`)
 
   // Create demographic questions
   const experienceQuestion = await QuestionService.create({
@@ -194,8 +181,6 @@ export async function seedDatabase() {
   })
 
   console.log('Database seeding completed successfully!')
-  console.log(`Survey ID: ${survey.id}`)
-  console.log(`Survey Password: ${survey.password}`)
 }
 
 if (require.main === module) {

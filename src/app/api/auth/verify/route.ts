@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { SurveyService } from '@/lib/services/survey'
+import { SURVEY_TITLE, SURVEY_DESCRIPTION } from '@/lib/constants'
 import { validatePassword, getPassword } from '@/lib/password-manager'
 import { getIronSession } from 'iron-session'
 import { SessionData, sessionOptions } from '@/lib/session'
@@ -14,16 +14,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { password } = verifyPasswordSchema.parse(body)
-
-    // Get the current active survey
-    const currentSurvey = await SurveyService.getCurrentSurvey()
-
-    if (!currentSurvey) {
-      return NextResponse.json(
-        { error: 'No active survey found' },
-        { status: 404 }
-      )
-    }
 
     // Verify password from environment variable
     const isValid = await validatePassword(password)
@@ -42,7 +32,6 @@ export async function POST(request: NextRequest) {
       sessionOptions
     )
     session.isAuthenticated = true
-    session.surveyId = currentSurvey.id
     session.password = currentPassword
     session.authenticatedAt = new Date().toISOString()
     await session.save()
@@ -50,9 +39,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       survey: {
-        id: currentSurvey.id,
-        title: currentSurvey.title,
-        description: currentSurvey.description,
+        title: SURVEY_TITLE,
+        description: SURVEY_DESCRIPTION,
       },
       currentPassword, // Include password for share functionality
     })

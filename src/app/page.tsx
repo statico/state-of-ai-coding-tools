@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
+import { SURVEY_TITLE, SURVEY_DESCRIPTION } from '@/lib/constants'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import {
@@ -42,11 +43,10 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tight mb-4">
-            AI Coding Tools Weekly Survey
+            {SURVEY_TITLE}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Help shape the future of AI coding tools by sharing your experiences
-            and preferences in our weekly survey
+            {SURVEY_DESCRIPTION}
           </p>
         </div>
 

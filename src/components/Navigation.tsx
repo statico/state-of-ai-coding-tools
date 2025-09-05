@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { SURVEY_TITLE } from '@/lib/constants'
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -45,7 +46,7 @@ export function Navigation() {
               className="flex items-center gap-2 font-semibold text-lg"
             >
               <BarChart3 className="h-6 w-6" />
-              <span>AI Coding Tools Weekly Survey</span>
+              <span>{SURVEY_TITLE}</span>
             </Link>
 
             <NavigationMenu className="hidden md:flex">

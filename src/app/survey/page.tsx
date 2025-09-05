@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
+import { SURVEY_TITLE, SURVEY_DESCRIPTION } from '@/lib/constants'
 import { TabbedSurvey } from '@/components/TabbedSurvey'
 import {
   Card,
@@ -139,7 +140,6 @@ export default function SurveyPage() {
       },
       body: JSON.stringify({
         sessionId,
-        surveyId: survey.id,
         responses: formattedResponses,
       }),
     })
@@ -175,11 +175,11 @@ export default function SurveyPage() {
           <CardHeader className="text-center">
             <div>
               <CardTitle className="text-3xl">
-                {survey?.title || 'AI Coding Tools Weekly Survey'}
+                {survey?.title || SURVEY_TITLE}
               </CardTitle>
-              {survey?.description && (
+              {(survey?.description || SURVEY_DESCRIPTION) && (
                 <CardDescription className="text-lg mt-2 space-y-2 text-balance">
-                  <div>{survey.description}</div>
+                  <div>{survey?.description || SURVEY_DESCRIPTION}</div>
                   <div className="text-sm text-primary">
                     This survey and its responses are intended to be kept
                     private within the{' '}

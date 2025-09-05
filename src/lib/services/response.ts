@@ -3,7 +3,6 @@ import type { Response, UserSession, Experience, Prisma } from '@prisma/client'
 
 export class ResponseService {
   static async create(data: {
-    surveyId: number
     sessionId: string
     questionId: number
     optionId?: number
@@ -18,7 +17,6 @@ export class ResponseService {
   }
 
   static async createOrUpdate(data: {
-    surveyId: number
     sessionId: string
     questionId: number
     optionId?: number
@@ -30,13 +28,11 @@ export class ResponseService {
     // For multiple choice questions, we need to be more specific to avoid duplicates
     const whereClause = data.optionId
       ? {
-          surveyId: data.surveyId,
           sessionId: data.sessionId,
           questionId: data.questionId,
           optionId: data.optionId,
         }
       : {
-          surveyId: data.surveyId,
           sessionId: data.sessionId,
           questionId: data.questionId,
         }
@@ -63,22 +59,19 @@ export class ResponseService {
 
   // Helper method to clear existing responses for a question (useful for multiple choice)
   static async clearQuestionResponses(
-    surveyId: number,
     sessionId: string,
     questionId: number
   ): Promise<void> {
     await prisma.response.deleteMany({
       where: {
-        surveyId,
         sessionId,
         questionId,
       },
     })
   }
 
-  static async findBySurvey(surveyId: number): Promise<Response[]> {
+  static async findAll(): Promise<Response[]> {
     return await prisma.response.findMany({
-      where: { surveyId },
       orderBy: { createdAt: 'asc' },
     })
   }
@@ -90,7 +83,7 @@ export class ResponseService {
     })
   }
 
-  static async getAggregatedResults(surveyId: number): Promise<
+  static async getAggregatedResults(): Promise<
     Array<{
       questionId: number
       questionTitle: string
@@ -105,7 +98,6 @@ export class ResponseService {
     }>
   > {
     const responses = await prisma.response.findMany({
-      where: { surveyId },
       include: {
         question: true,
         option: true,
@@ -265,14 +257,12 @@ export class ResponseService {
 export class UserSessionService {
   static async create(data: {
     id: string
-    surveyId?: number | null
     demographicData?: Record<string, unknown> | null
     progress?: Record<string, unknown> | null
   }): Promise<UserSession> {
     return await prisma.userSession.create({
       data: {
         id: data.id,
-        surveyId: data.surveyId ?? null,
         demographicData: data.demographicData as Prisma.InputJsonValue,
         progress: data.progress as Prisma.InputJsonValue,
       },

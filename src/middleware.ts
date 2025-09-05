@@ -10,7 +10,8 @@ export async function middleware(request: NextRequest) {
   // Check if the request is for a protected API route
   if (protectedPaths.some(path => pathname.startsWith(path))) {
     // Get cookies from the request
-    const cookieStore = request.cookies
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cookieStore = request.cookies as any
     const session = await getIronSession<SessionData>(
       cookieStore,
       sessionOptions

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
+import { SURVEY_TITLE } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -45,7 +46,7 @@ export default function AuthPage() {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Enter Password</CardTitle>
           <CardDescription>
-            Enter the password to access the AI Coding Tools Weekly Survey
+            Enter the password to access the {SURVEY_TITLE}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -7,25 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Survey {
-  id           Int           @id @default(autoincrement())
-  title        String
-  description  String?
-  password     String
-  startDate    DateTime      @map("start_date")
-  endDate      DateTime      @map("end_date")
-  isActive     Boolean       @default(true) @map("is_active")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  
-  // Relations
-  responses    Response[]
-  userSessions UserSession[]
-  experienceMetrics ExperienceMetric[]
-
-  @@map("surveys")
-}
-
 model Question {
   id          Int              @id @default(autoincrement())
   title       String
@@ -61,21 +42,18 @@ model QuestionOption {
 
 model UserSession {
   id              String     @id
-  surveyId        Int?       @map("survey_id")
   demographicData Json?      @map("demographic_data")
   progress        Json?
   completedAt     DateTime?  @map("completed_at")
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
   responses       Response[]
-  survey          Survey?    @relation(fields: [surveyId], references: [id])
 
   @@map("user_sessions")
 }
 
 model Response {
   id           Int             @id @default(autoincrement())
-  surveyId     Int             @map("survey_id")
   sessionId    String          @map("session_id")
   questionId   Int             @map("question_id")
   optionId     Int?            @map("option_id")
@@ -93,14 +71,12 @@ model Response {
   option       QuestionOption? @relation(fields: [optionId], references: [id])
   question     Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
   session      UserSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  survey       Survey          @relation(fields: [surveyId], references: [id], onDelete: Cascade)
 
   @@map("responses")
 }
 
 model ExperienceMetric {
   id              Int      @id @default(autoincrement())
-  surveyId        Int      @map("survey_id")
   toolName        String   @map("tool_name")
   category        String   // ai_tools, tools, frameworks
   
@@ -119,10 +95,7 @@ model ExperienceMetric {
   totalResponses       Int @default(0) @map("total_responses")
   calculatedAt         DateTime @default(now()) @map("calculated_at")
   
-  // Relations
-  survey Survey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
-  
-  @@unique([surveyId, toolName])
+  @@unique([toolName])
   @@index([category])
   @@map("experience_metrics")
 }

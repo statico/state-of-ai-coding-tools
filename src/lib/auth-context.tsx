@@ -3,20 +3,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
 interface Survey {
-  id: number
   title: string
   description: string | null
-}
-
-interface SessionData {
-  surveyId: number
-  expiresAt: string
 }
 
 interface AuthContextType {
   isAuthenticated: boolean
   survey: Survey | null
-  session: SessionData | null
   currentPassword: string | null
   login: (password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
@@ -30,7 +23,6 @@ const AUTH_STORAGE_KEY = 'survey_auth_session'
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [survey, setSurvey] = useState<Survey | null>(null)
-  const [session, setSession] = useState<SessionData | null>(null)
   const [currentPassword, setCurrentPassword] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -96,7 +88,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(true)
       setSurvey(data.survey)
       setCurrentPassword(data.currentPassword)
-      setSession(data.session || {})
 
       return { success: true }
     } catch (error) {
@@ -115,7 +106,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(AUTH_STORAGE_KEY)
     setIsAuthenticated(false)
     setSurvey(null)
-    setSession(null)
     setCurrentPassword(null)
   }
 
@@ -124,7 +114,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         isAuthenticated,
         survey,
-        session,
         currentPassword,
         login,
         logout,

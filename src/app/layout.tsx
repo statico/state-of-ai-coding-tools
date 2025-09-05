@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
+import { SURVEY_TITLE, SURVEY_DESCRIPTION } from '@/lib/constants'
 import { AuthProvider } from '@/lib/auth-context'
 import { Navigation } from '@/components/Navigation'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'AI Coding Tools Weekly Survey',
-  description:
-    'Weekly survey for gauging interest and usage of AI coding tools',
+  title: SURVEY_TITLE,
+  description: SURVEY_DESCRIPTION,
 }
 
 export default function RootLayout({

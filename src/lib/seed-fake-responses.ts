@@ -54,19 +54,7 @@ async function seedFakeResponses() {
   console.log('🎲 Starting fake data seeding...')
 
   try {
-    // Get the current survey
-    const survey = await prisma.survey.findFirst({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' },
-    })
-
-    if (!survey) {
-      throw new Error(
-        'No active survey found. Please run the main seed script first.'
-      )
-    }
-
-    console.log(`📊 Found survey: ${survey.title}`)
+    console.log(`📊 Generating fake responses for testing`)
 
     // Get all questions with their options
     const questions = await prisma.question.findMany({
@@ -104,7 +92,6 @@ async function seedFakeResponses() {
         const session = await prisma.userSession.create({
           data: {
             id: sessionId,
-            surveyId: survey.id,
             completedAt: responseDate,
             createdAt: responseDate,
             demographicData: {
@@ -127,7 +114,6 @@ async function seedFakeResponses() {
                 const option = faker.helpers.arrayElement(question.options)
                 await prisma.response.create({
                   data: {
-                    surveyId: survey.id,
                     sessionId: session.id,
                     questionId: question.id,
                     optionId: option.id,
@@ -152,7 +138,6 @@ async function seedFakeResponses() {
                 for (const option of selectedOptions) {
                   await prisma.response.create({
                     data: {
-                      surveyId: survey.id,
                       sessionId: session.id,
                       questionId: question.id,
                       optionId: option.id,
@@ -165,7 +150,6 @@ async function seedFakeResponses() {
                 if (faker.datatype.boolean({ probability: 0.15 })) {
                   await prisma.response.create({
                     data: {
-                      surveyId: survey.id,
                       sessionId: session.id,
                       questionId: question.id,
                       writeInValue: faker.helpers.arrayElement([
@@ -193,7 +177,6 @@ async function seedFakeResponses() {
               ])
               await prisma.response.create({
                 data: {
-                  surveyId: survey.id,
                   sessionId: session.id,
                   questionId: question.id,
                   ratingValue: rating,
@@ -220,7 +203,6 @@ async function seedFakeResponses() {
                 ]
                 await prisma.response.create({
                   data: {
-                    surveyId: survey.id,
                     sessionId: session.id,
                     questionId: question.id,
                     textValue: faker.helpers.arrayElement(feedbackOptions),
@@ -267,7 +249,6 @@ async function seedFakeResponses() {
 
               await prisma.response.create({
                 data: {
-                  surveyId: survey.id,
                   sessionId: session.id,
                   questionId: question.id,
                   experience,
@@ -279,7 +260,6 @@ async function seedFakeResponses() {
               if (faker.datatype.boolean({ probability: 0.08 })) {
                 await prisma.response.create({
                   data: {
-                    surveyId: survey.id,
                     sessionId: session.id,
                     questionId: question.id,
                     writeInValue: faker.helpers.arrayElement([
@@ -299,7 +279,6 @@ async function seedFakeResponses() {
               if (faker.datatype.boolean({ probability: 0.3 })) {
                 await prisma.response.create({
                   data: {
-                    surveyId: survey.id,
                     sessionId: session.id,
                     questionId: question.id,
                     writeInValue: faker.lorem.sentence(),
@@ -319,12 +298,8 @@ async function seedFakeResponses() {
     }
 
     // Get summary statistics
-    const totalSessions = await prisma.userSession.count({
-      where: { surveyId: survey.id },
-    })
-    const totalResponses = await prisma.response.count({
-      where: { surveyId: survey.id },
-    })
+    const totalSessions = await prisma.userSession.count({})
+    const totalResponses = await prisma.response.count({})
 
     console.log('\n✅ Fake data seeding completed!')
     console.log(`📈 Statistics:`)

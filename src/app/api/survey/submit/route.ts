@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { ResponseService, UserSessionService } from '@/lib/services/response'
+import { getWeekStart } from '@/lib/constants'
 import type { Experience } from '@prisma/client'
 
 const submitResponseSchema = z.object({
   sessionId: z.string().min(1, 'Session ID is required'),
-  surveyId: z.number(),
   responses: z.array(
     z.object({
       questionId: z.number(),
@@ -24,22 +24,18 @@ const submitResponseSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { sessionId, surveyId, responses } = submitResponseSchema.parse(body)
+    const { sessionId, responses } = submitResponseSchema.parse(body)
 
     // Create user session if it doesn't exist
     let session = await UserSessionService.findById(sessionId)
     if (!session) {
       session = await UserSessionService.create({
         id: sessionId,
-        surveyId,
       })
     } else if (session.completedAt) {
       // Check if session has already completed the survey this week
       const completedDate = new Date(session.completedAt)
-      const now = new Date()
-      const weekStart = new Date(now)
-      weekStart.setDate(now.getDate() - now.getDay()) // Start of current week
-      weekStart.setHours(0, 0, 0, 0)
+      const weekStart = getWeekStart() // Monday UTC
 
       if (completedDate >= weekStart) {
         return NextResponse.json(
@@ -55,7 +51,6 @@ export async function POST(request: NextRequest) {
       if (response.optionIds && response.optionIds.length > 0) {
         // Clear existing responses for this question first
         await ResponseService.clearQuestionResponses(
-          surveyId,
           sessionId,
           response.questionId
         )
@@ -66,7 +61,6 @@ export async function POST(request: NextRequest) {
 
         for (const optionId of regularOptionIds) {
           await ResponseService.create({
-            surveyId,
             sessionId,
             questionId: response.questionId,
             optionId,
@@ -76,7 +70,6 @@ export async function POST(request: NextRequest) {
         // If "Other" was selected, save the text value
         if (hasOtherOption && response.otherValue) {
           await ResponseService.create({
-            surveyId,
             sessionId,
             questionId: response.questionId,
             writeInValue: response.otherValue,
@@ -85,7 +78,6 @@ export async function POST(request: NextRequest) {
       } else {
         // Handle single choice, rating, text, and experience questions
         await ResponseService.createOrUpdate({
-          surveyId,
           sessionId,
           questionId: response.questionId,
           optionId: response.optionId,

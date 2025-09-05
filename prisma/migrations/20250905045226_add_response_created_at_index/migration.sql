@@ -1,5 +1,5 @@
 -- CreateIndex
-CREATE INDEX "Response_createdAt_idx" ON "Response"("createdAt");
+CREATE INDEX "responses_created_at_idx" ON "responses"("created_at");
 
 -- CreateIndex for sessionId since we use it for grouping
-CREATE INDEX "Response_sessionId_idx" ON "Response"("sessionId");
+CREATE INDEX "responses_session_id_idx" ON "responses"("session_id");
