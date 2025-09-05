@@ -7,10 +7,31 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const weeksParam = searchParams.get('weeks')
     const weeks = weeksParam ? parseInt(weeksParam, 10) : 12
-    const category = searchParams.get('category') // For future optimization
+    const categoryFilter = searchParams.get('category')
 
-    // Get all active questions with their options
-    const questionsWithOptions = await QuestionService.getAllWithOptions()
+    // Only get questions for specific category if provided, otherwise get all
+    const questionsWithOptions = categoryFilter
+      ? await prisma.question
+          .findMany({
+            where: {
+              isActive: true,
+              category: categoryFilter,
+            },
+            include: {
+              options: {
+                where: { isActive: true },
+                orderBy: { orderIndex: 'asc' },
+              },
+            },
+            orderBy: { orderIndex: 'asc' },
+          })
+          .then(questions =>
+            questions.map(q => ({
+              question: q,
+              options: q.options,
+            }))
+          )
+      : await QuestionService.getAllWithOptions()
 
     // Calculate date range for all weeks
     const today = new Date()
@@ -26,15 +47,27 @@ export async function GET(request: NextRequest) {
     newestWeekEnd.setHours(23, 59, 59, 999)
 
     // Get ALL responses for the entire period in a SINGLE query
+    // Only get the fields we need to reduce memory usage
     const allResponses = await prisma.response.findMany({
       where: {
         createdAt: {
           gte: oldestWeekStart,
           lte: newestWeekEnd,
         },
+        ...(categoryFilter && {
+          question: {
+            category: categoryFilter,
+          },
+        }),
       },
-      include: {
-        question: true,
+      select: {
+        sessionId: true,
+        questionId: true,
+        optionId: true,
+        ratingValue: true,
+        textValue: true,
+        experience: true,
+        createdAt: true,
       },
     })
 
@@ -179,7 +212,7 @@ export async function GET(request: NextRequest) {
       trendData.push(weekData)
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       trends: trendData,
       questions: questionsWithOptions.map(({ question, options }) => ({
@@ -193,6 +226,14 @@ export async function GET(request: NextRequest) {
         })),
       })),
     })
+
+    // Add cache headers - cache for 5 minutes
+    response.headers.set(
+      'Cache-Control',
+      'public, s-maxage=300, stale-while-revalidate'
+    )
+
+    return response
   } catch (error) {
     console.error('Error fetching trends:', error)
     return NextResponse.json(
