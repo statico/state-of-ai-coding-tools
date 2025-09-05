@@ -17,6 +17,7 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
+    "db:seed": "tsx src/lib/seed-full-survey.ts",
     "seed": "tsx src/lib/seed.ts",
     "seed:fake": "tsx src/lib/seed-fake-responses.ts",
     "prepare": "husky"
@@ -77,8 +78,5 @@
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
-  },
-  "prisma": {
-    "seed": "npx tsx src/lib/seed-full-survey.ts"
   }
 }
