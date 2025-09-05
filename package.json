@@ -24,9 +24,6 @@
     "seed:custom": "tsx prisma/seed-consolidated.ts",
     "prepare": "husky"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed-consolidated.ts"
-  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   },
