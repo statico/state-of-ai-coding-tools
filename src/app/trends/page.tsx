@@ -43,51 +43,12 @@ interface Question {
   }>
 }
 
-const TAB_SECTIONS = [
+// This will be populated dynamically from the API
+const DEFAULT_TAB_SECTIONS = [
   {
     id: 'overview',
     label: 'Overview',
     categories: ['overview'],
-  },
-  {
-    id: 'demographics',
-    label: 'Demographics',
-    categories: ['demographics'],
-  },
-  {
-    id: 'ai_models',
-    label: 'AI Models',
-    categories: [
-      'ai_models_anthropic',
-      'ai_models_google',
-      'ai_models_open',
-      'ai_models_openai',
-    ],
-  },
-  {
-    id: 'coding',
-    label: 'Coding Tools',
-    categories: ['code_completion', 'code_review', 'ide_assistants'],
-  },
-  {
-    id: 'testing',
-    label: 'Testing & Quality',
-    categories: ['testing_quality'],
-  },
-  {
-    id: 'usage',
-    label: 'Usage',
-    categories: ['usage', 'sentiment'],
-  },
-  {
-    id: 'organization',
-    label: 'Organization',
-    categories: ['organizational', 'enterprise'],
-  },
-  {
-    id: 'future',
-    label: 'Future & Followup',
-    categories: ['future', 'followup'],
   },
 ]
 
@@ -105,9 +66,14 @@ export default function TrendsPage() {
   const [weekRange, setWeekRange] = useState(12)
   const [activeTab, setActiveTab] = useState('overview')
   const [isFetching, setIsFetching] = useState(false)
+  const [tabSections, setTabSections] = useState(DEFAULT_TAB_SECTIONS)
   const [categoryData, setCategoryData] = useState<
     Record<string, { trends: TrendData[]; questions: Question[] }>
   >({})
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
 
   useEffect(() => {
     if (!isFetching && activeTab === 'overview') {
@@ -121,6 +87,26 @@ export default function TrendsPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weekRange, activeTab])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/survey/categories')
+      const data = await response.json()
+      if (data.success && data.categories.length > 0) {
+        const sections = [
+          DEFAULT_TAB_SECTIONS[0], // Keep overview
+          ...data.categories.map((cat: any) => ({
+            id: cat.key,
+            label: cat.label,
+            categories: [cat.key],
+          })),
+        ]
+        setTabSections(sections)
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
 
   const fetchTrends = async () => {
     if (isFetching) return
@@ -157,7 +143,7 @@ export default function TrendsPage() {
       setIsLoading(true)
 
       // Find the categories for this tab
-      const section = TAB_SECTIONS.find(s => s.id === categoryId)
+      const section = tabSections.find(s => s.id === categoryId)
       if (!section) return
 
       // Fetch data for each category in this tab
@@ -550,7 +536,7 @@ export default function TrendsPage() {
         {/* Tabbed Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
-            {TAB_SECTIONS.map(section => (
+            {tabSections.map(section => (
               <TabsTrigger key={section.id} value={section.id}>
                 {section.label}
               </TabsTrigger>
@@ -594,7 +580,7 @@ export default function TrendsPage() {
             </Card>
           </TabsContent>
 
-          {TAB_SECTIONS.slice(1).map(section => {
+          {tabSections.slice(1).map(section => {
             const catData = categoryData[section.id]
             const catQuestions = catData?.questions || []
             const catTrends = catData?.trends || trends

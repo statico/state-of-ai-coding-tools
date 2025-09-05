@@ -16,12 +16,94 @@ async function clearExistingData() {
   await prisma.userSession.deleteMany()
   await prisma.questionOption.deleteMany()
   await prisma.question.deleteMany()
+  await prisma.category.deleteMany()
   await prisma.experienceMetric.deleteMany()
   await prisma.experienceTrend.deleteMany()
   console.log('✅ Cleared existing data')
 }
 
-async function createSection1Demographics() {
+async function createCategories() {
+  console.log('📁 Creating categories...')
+
+  const categories = await Promise.all([
+    prisma.category.create({
+      data: {
+        key: 'demographics',
+        label: 'Demographics',
+        description: 'Tell us about yourself and your background',
+        orderIndex: 1,
+        isActive: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        key: 'organization',
+        label: 'Organization',
+        description: 'Your workplace and organizational context',
+        orderIndex: 2,
+        isActive: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        key: 'usage',
+        label: 'Usage',
+        description: 'How you use AI coding tools',
+        orderIndex: 3,
+        isActive: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        key: 'sentiment',
+        label: 'Sentiment',
+        description: 'Your feelings and experiences with AI tools',
+        orderIndex: 4,
+        isActive: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        key: 'tools',
+        label: 'Tools',
+        description: 'Your experience with specific AI coding tools',
+        orderIndex: 5,
+        isActive: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        key: 'models',
+        label: 'Models',
+        description: 'Your experience with AI models',
+        orderIndex: 6,
+        isActive: true,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        key: 'future',
+        label: 'Future',
+        description: 'Your thoughts on the future of AI in coding',
+        orderIndex: 7,
+        isActive: true,
+      },
+    }),
+  ])
+
+  console.log('✅ Created categories')
+
+  // Return a map for easy lookup
+  return categories.reduce(
+    (acc, cat) => {
+      acc[cat.key] = cat.id
+      return acc
+    },
+    {} as Record<string, number>
+  )
+}
+
+async function createSection1Demographics(categoryMap: Record<string, number>) {
   console.log('📊 Creating Section 1: Demographics & Background...')
 
   const questions = await Promise.all([
@@ -32,6 +114,7 @@ async function createSection1Demographics() {
         description: 'What is your age?',
         type: QuestionType.DEMOGRAPHIC,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 101,
         isRequired: false,
         options: {
@@ -59,6 +142,7 @@ async function createSection1Demographics() {
         description: 'How do you identify?',
         type: QuestionType.DEMOGRAPHIC,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 102,
         isRequired: false,
         options: {
@@ -85,6 +169,7 @@ async function createSection1Demographics() {
           'How many years have you been working professionally in software development?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 103,
         isRequired: false,
         options: {
@@ -107,6 +192,7 @@ async function createSection1Demographics() {
         description: 'Select your current role',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 104,
         isRequired: false,
         options: {
@@ -184,6 +270,7 @@ async function createSection1Demographics() {
         description: 'How many people are on your immediate team?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 105,
         isRequired: false,
         options: {
@@ -207,6 +294,7 @@ async function createSection1Demographics() {
         description: 'How many people work at your company?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 106,
         isRequired: false,
         options: {
@@ -233,6 +321,7 @@ async function createSection1Demographics() {
         description: 'What industry does your company primarily operate in?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 107,
         isRequired: false,
         options: {
@@ -286,6 +375,7 @@ async function createSection1Demographics() {
         description: 'Select your country or region',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 108,
         isRequired: false,
         options: {
@@ -562,6 +652,7 @@ async function createSection1Demographics() {
         description: 'Select your preferred programming language',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 109,
         isRequired: false,
         options: {
@@ -631,7 +722,9 @@ async function createSection1Demographics() {
   return questions
 }
 
-async function createSection2Organizational() {
+async function createSection2Organizational(
+  categoryMap: Record<string, number>
+) {
   console.log('🏢 Creating Section 2: Organizational Context & Policies...')
 
   const questions = await Promise.all([
@@ -642,6 +735,7 @@ async function createSection2Organizational() {
         description: "What is your company's policy on AI coding tools?",
         type: QuestionType.SINGLE_CHOICE,
         category: 'organization',
+        categoryId: categoryMap['organization'],
         orderIndex: 201,
         isRequired: false,
         options: {
@@ -686,6 +780,7 @@ async function createSection2Organizational() {
           'What security or compliance requirements apply to your AI tool usage? (Select all that apply)',
         type: QuestionType.MULTIPLE_CHOICE,
         category: 'organization',
+        categoryId: categoryMap['organization'],
         orderIndex: 202,
         isRequired: false,
         options: {
@@ -739,6 +834,7 @@ async function createSection2Organizational() {
           "What is your company's budget for AI coding tools per developer per year?",
         type: QuestionType.SINGLE_CHOICE,
         category: 'organization',
+        categoryId: categoryMap['organization'],
         orderIndex: 203,
         isRequired: false,
         options: {
@@ -760,7 +856,9 @@ async function createSection2Organizational() {
   return questions
 }
 
-async function createSection3UsagePatterns() {
+async function createSection3UsagePatterns(
+  categoryMap: Record<string, number>
+) {
   console.log('💻 Creating Section 3: Usage Patterns & Preferences...')
 
   const questions = await Promise.all([
@@ -771,6 +869,7 @@ async function createSection3UsagePatterns() {
         description: 'How often do you use AI coding tools?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'usage',
+        categoryId: categoryMap['usage'],
         orderIndex: 301,
         isRequired: false,
         options: {
@@ -809,6 +908,7 @@ async function createSection3UsagePatterns() {
         description: 'What type of AI models do you prefer to use?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'usage',
+        categoryId: categoryMap['usage'],
         orderIndex: 302,
         isRequired: false,
         options: {
@@ -856,6 +956,7 @@ async function createSection3UsagePatterns() {
           'What do you primarily use AI coding tools for? (Select all that apply)',
         type: QuestionType.MULTIPLE_CHOICE,
         category: 'usage',
+        categoryId: categoryMap['usage'],
         orderIndex: 303,
         isRequired: false,
         options: {
@@ -916,6 +1017,7 @@ async function createSection3UsagePatterns() {
           'What development environments do you use? (Select all that apply)',
         type: QuestionType.MULTIPLE_CHOICE,
         category: 'usage',
+        categoryId: categoryMap['usage'],
         orderIndex: 304,
         isRequired: false,
         options: {
@@ -948,7 +1050,9 @@ async function createSection3UsagePatterns() {
   return questions
 }
 
-async function createSection4SentimentImpact() {
+async function createSection4SentimentImpact(
+  categoryMap: Record<string, number>
+) {
   console.log('📈 Creating Section 4: Sentiment & Impact...')
 
   const questions = await Promise.all([
@@ -959,6 +1063,7 @@ async function createSection4SentimentImpact() {
         description: 'How do you personally feel about AI coding tools?',
         type: QuestionType.RATING,
         category: 'sentiment',
+        categoryId: categoryMap['sentiment'],
         orderIndex: 401,
         isRequired: false,
       },
@@ -971,6 +1076,7 @@ async function createSection4SentimentImpact() {
         description: 'How does your team feel about AI coding tools?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'sentiment',
+        categoryId: categoryMap['sentiment'],
         orderIndex: 402,
         isRequired: false,
         options: {
@@ -1009,6 +1115,7 @@ async function createSection4SentimentImpact() {
         description: 'How have AI coding tools impacted your productivity?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'sentiment',
+        categoryId: categoryMap['sentiment'],
         orderIndex: 403,
         isRequired: false,
         options: {
@@ -1060,6 +1167,7 @@ async function createSection4SentimentImpact() {
         description: 'How have AI coding tools impacted your code quality?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'sentiment',
+        categoryId: categoryMap['sentiment'],
         orderIndex: 404,
         isRequired: false,
         options: {
@@ -1099,6 +1207,7 @@ async function createSection4SentimentImpact() {
           'What are the biggest benefits of AI coding tools? (Select up to 3)',
         type: QuestionType.MULTIPLE_CHOICE,
         category: 'sentiment',
+        categoryId: categoryMap['sentiment'],
         orderIndex: 405,
         isRequired: false,
         options: {
@@ -1162,6 +1271,7 @@ async function createSection4SentimentImpact() {
           'What are the biggest challenges with AI coding tools? (Select up to 3)',
         type: QuestionType.MULTIPLE_CHOICE,
         category: 'sentiment',
+        categoryId: categoryMap['sentiment'],
         orderIndex: 406,
         isRequired: false,
         options: {
@@ -1236,48 +1346,25 @@ async function createSection4SentimentImpact() {
   return questions
 }
 
-async function createSection5AIIDEsAssistants() {
-  console.log('🤖 Creating Section 5: AI Coding IDEs & Assistants...')
+async function createSection5AIIDEsAssistants(
+  categoryMap: Record<string, number>
+) {
+  console.log('🤖 Creating Section 5: AI Coding Tools...')
 
   const tools = [
-    // IDE-Based Assistants
-    { name: 'Cursor', category: 'tools', order: 501 },
-    { name: 'Windsurf (Codeium)', category: 'tools', order: 502 },
-    {
-      name: 'Claude Code (Anthropic CLI)',
-      category: 'tools',
-      order: 503,
-    },
-    {
-      name: 'Qodo Gen (formerly Codium)',
-      category: 'tools',
-      order: 504,
-    },
-    { name: 'Bolt.new', category: 'tools', order: 505 },
-    { name: 'v0 (Vercel)', category: 'tools', order: 506 },
-    { name: 'Replit AI', category: 'tools', order: 507 },
-    { name: 'JetBrains AI Assistant', category: 'tools', order: 508 },
-    {
-      name: 'Visual Studio IntelliCode',
-      category: 'tools',
-      order: 509,
-    },
-
-    // Code Completion/Generation
-    { name: 'GitHub Copilot', category: 'tools', order: 510 },
-    { name: 'Amazon Q Developer', category: 'tools', order: 511 },
-    { name: 'Tabnine', category: 'tools', order: 512 },
-    { name: 'Codeium (Free tier)', category: 'tools', order: 513 },
-    { name: 'Sourcegraph Cody', category: 'tools', order: 514 },
-    { name: 'Continue.dev', category: 'tools', order: 515 },
-    { name: 'Aider', category: 'tools', order: 516 },
-    { name: 'Pieces for Developers', category: 'tools', order: 517 },
-    { name: 'Augment Code', category: 'tools', order: 518 },
-
-    // Enterprise/Team Solutions
-    { name: 'Gemini Code Assist (Google)', category: 'tools', order: 519 },
-    { name: 'CodeWhisperer (AWS)', category: 'tools', order: 520 },
-    { name: 'Azure AI Assistant', category: 'tools', order: 521 },
+    // Most Popular Tools (keep the most important ones)
+    { name: 'GitHub Copilot', category: 'tools', order: 501 },
+    { name: 'Cursor', category: 'tools', order: 502 },
+    { name: 'Claude Code (Anthropic CLI)', category: 'tools', order: 503 },
+    { name: 'Windsurf (Codeium)', category: 'tools', order: 504 },
+    { name: 'Amazon Q Developer', category: 'tools', order: 505 },
+    { name: 'Bolt.new', category: 'tools', order: 506 },
+    { name: 'v0 (Vercel)', category: 'tools', order: 507 },
+    { name: 'Aider', category: 'tools', order: 508 },
+    { name: 'Continue.dev', category: 'tools', order: 509 },
+    { name: 'Sourcegraph Cody', category: 'tools', order: 510 },
+    { name: 'Tabnine', category: 'tools', order: 511 },
+    { name: 'Replit AI', category: 'tools', order: 512 },
   ]
 
   const questions = await Promise.all(
@@ -1288,6 +1375,7 @@ async function createSection5AIIDEsAssistants() {
           description: `What's your experience with ${tool.name}?`,
           type: QuestionType.EXPERIENCE,
           category: tool.category,
+          categoryId: categoryMap['tools'],
           orderIndex: tool.order,
           isRequired: false,
         },
@@ -1295,101 +1383,42 @@ async function createSection5AIIDEsAssistants() {
     )
   )
 
-  console.log('✅ Created Section 5: AI Coding IDEs & Assistants')
+  console.log('✅ Created Section 5: AI Coding Tools')
   return questions
 }
 
 async function createSection6CodeReviewTesting() {
-  console.log('🔍 Creating Section 6: AI Code Review & Testing Tools...')
-
-  const tools = [
-    // Code Review
-    { name: 'CodeRabbit', category: 'tools', order: 601 },
-    { name: 'Qodo Merge (PR-Agent)', category: 'tools', order: 602 },
-    { name: 'Bito AI Code Review', category: 'tools', order: 603 },
-    { name: 'CodeScene', category: 'tools', order: 604 },
-    { name: 'DeepSource', category: 'tools', order: 605 },
-    { name: 'Codacy', category: 'tools', order: 606 },
-    { name: 'PullRequest.com', category: 'tools', order: 607 },
-    { name: 'What The Diff', category: 'tools', order: 608 },
-    { name: 'CodeAnt AI', category: 'tools', order: 609 },
-
-    // Testing & Quality
-    { name: 'Diffblue Cover (Java)', category: 'tools', order: 610 },
-    { name: 'Mabl (E2E testing)', category: 'tools', order: 611 },
-    {
-      name: 'Applitools (Visual testing)',
-      category: 'tools',
-      order: 612,
-    },
-    { name: 'Testim.io', category: 'tools', order: 613 },
-  ]
-
-  const questions = await Promise.all(
-    tools.map(tool =>
-      prisma.question.create({
-        data: {
-          title: tool.name,
-          description: `What's your experience with ${tool.name}?`,
-          type: QuestionType.EXPERIENCE,
-          category: tool.category,
-          orderIndex: tool.order,
-          isRequired: false,
-        },
-      })
-    )
-  )
-
-  console.log('✅ Created Section 6: AI Code Review & Testing Tools')
-  return questions
+  // Merged into Section 5 (tools)
+  return []
 }
 
-async function createSection7AIModels() {
+async function createSection7AIModels(categoryMap: Record<string, number>) {
   console.log('🧠 Creating Section 7: AI Models...')
 
   const models = [
+    // Keep only the most relevant/popular models
     // OpenAI Models
-    { name: 'GPT-4o', category: 'models', order: 701 },
-    { name: 'GPT-4o-mini', category: 'models', order: 702 },
-    { name: 'o1', category: 'models', order: 703 },
-    { name: 'o1-mini', category: 'models', order: 704 },
-    { name: 'o3-mini', category: 'models', order: 705 },
+    { name: 'GPT-4o', category: 'models', order: 601 },
+    { name: 'GPT-4o-mini', category: 'models', order: 602 },
+    { name: 'o1', category: 'models', order: 603 },
+    { name: 'o3-mini', category: 'models', order: 604 },
 
     // Anthropic Models
-    { name: 'Claude 3.5 Sonnet', category: 'models', order: 706 },
-    { name: 'Claude 3.5 Haiku', category: 'models', order: 707 },
-    { name: 'Claude 3 Opus', category: 'models', order: 708 },
-    { name: 'Claude Opus 4', category: 'models', order: 709 },
-    { name: 'Claude Opus 4.1', category: 'models', order: 710 },
+    { name: 'Claude 3.5 Sonnet', category: 'models', order: 605 },
+    { name: 'Claude 3.5 Haiku', category: 'models', order: 606 },
+    { name: 'Claude Opus 4.1', category: 'models', order: 607 },
 
     // Google Models
-    { name: 'Gemini 2.5 Pro', category: 'models', order: 711 },
-    { name: 'Gemini 2.0 Flash', category: 'models', order: 712 },
-    { name: 'Gemini 1.5 Pro', category: 'models', order: 713 },
-    { name: 'Gemini 1.5 Flash', category: 'models', order: 714 },
+    { name: 'Gemini 2.0 Flash', category: 'models', order: 608 },
+    { name: 'Gemini 1.5 Pro', category: 'models', order: 609 },
 
-    // Open/Local Models
-    {
-      name: 'DeepSeek-R1 (& distilled)',
-      category: 'models',
-      order: 715,
-    },
-    { name: 'DeepSeek-V3', category: 'models', order: 716 },
-    { name: 'DeepSeek Coder', category: 'models', order: 717 },
-    {
-      name: 'Qwen 3 (235B/30B/smaller)',
-      category: 'models',
-      order: 718,
-    },
-    { name: 'Qwen 2.5 Coder', category: 'models', order: 719 },
-    { name: 'Llama 3.3 (70B)', category: 'models', order: 720 },
-    { name: 'Llama 3.1 (405B/70B/8B)', category: 'models', order: 721 },
-    { name: 'Mistral Large', category: 'models', order: 722 },
-    { name: 'Codestral (Mistral)', category: 'models', order: 723 },
-    { name: 'Yi Coder', category: 'models', order: 724 },
-    { name: 'StarCoder2', category: 'models', order: 725 },
-    { name: 'Code Llama', category: 'models', order: 726 },
-    { name: 'WizardCoder', category: 'models', order: 727 },
+    // Open/Local Models (most popular)
+    { name: 'DeepSeek-R1', category: 'models', order: 610 },
+    { name: 'DeepSeek-V3', category: 'models', order: 611 },
+    { name: 'Qwen 2.5 Coder', category: 'models', order: 612 },
+    { name: 'Llama 3.3', category: 'models', order: 613 },
+    { name: 'Mistral Large', category: 'models', order: 614 },
+    { name: 'Codestral', category: 'models', order: 615 },
   ]
 
   const questions = await Promise.all(
@@ -1400,6 +1429,7 @@ async function createSection7AIModels() {
           description: `Have you used ${model.name} for coding assistance?`,
           type: QuestionType.EXPERIENCE,
           category: model.category,
+          categoryId: categoryMap['models'],
           orderIndex: model.order,
           isRequired: false,
         },
@@ -1411,7 +1441,9 @@ async function createSection7AIModels() {
   return questions
 }
 
-async function createSection8FutureOpinions() {
+async function createSection8FutureOpinions(
+  categoryMap: Record<string, number>
+) {
   console.log('🔮 Creating Section 8: Future & Opinions...')
 
   const questions = await Promise.all([
@@ -1423,6 +1455,7 @@ async function createSection8FutureOpinions() {
           "How concerned are you about AI's impact on your job security?",
         type: QuestionType.SINGLE_CHOICE,
         category: 'future',
+        categoryId: categoryMap['future'],
         orderIndex: 801,
         isRequired: false,
         options: {
@@ -1457,6 +1490,7 @@ async function createSection8FutureOpinions() {
           'How do you expect AI tool usage to change in the next 2 years?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'future',
+        categoryId: categoryMap['future'],
         orderIndex: 802,
         isRequired: false,
         options: {
@@ -1499,6 +1533,7 @@ async function createSection8FutureOpinions() {
           'What features are most important for future AI coding tools? (Select up to 3)',
         type: QuestionType.MULTIPLE_CHOICE,
         category: 'future',
+        categoryId: categoryMap['future'],
         orderIndex: 803,
         isRequired: false,
         options: {
@@ -1567,6 +1602,7 @@ async function createSection8FutureOpinions() {
           'How likely are you to recommend AI coding tools to other developers?',
         type: QuestionType.RATING,
         category: 'future',
+        categoryId: categoryMap['future'],
         orderIndex: 804,
         isRequired: false,
       },
@@ -1580,6 +1616,7 @@ async function createSection8FutureOpinions() {
           "Any other thoughts on AI coding tools you'd like to share? (max 1000 characters)",
         type: QuestionType.TEXT,
         category: 'future',
+        categoryId: categoryMap['future'],
         orderIndex: 805,
         isRequired: false,
       },
@@ -1590,7 +1627,7 @@ async function createSection8FutureOpinions() {
   return questions
 }
 
-async function createSection9FollowUp() {
+async function createSection9FollowUp(categoryMap: Record<string, number>) {
   console.log('📧 Creating Section 9: Follow-up...')
 
   const questions = await Promise.all([
@@ -1601,7 +1638,8 @@ async function createSection9FollowUp() {
         description:
           'Would you like to receive the survey results when available?',
         type: QuestionType.SINGLE_CHOICE,
-        category: 'organization',
+        category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 901,
         isRequired: false,
         options: {
@@ -1624,7 +1662,8 @@ async function createSection9FollowUp() {
         description:
           'Would you be interested in participating in a follow-up interview (30 min, compensated)?',
         type: QuestionType.SINGLE_CHOICE,
-        category: 'organization',
+        category: 'demographics',
+        categoryId: categoryMap['demographics'],
         orderIndex: 902,
         isRequired: false,
         options: {
@@ -1973,16 +2012,19 @@ export async function seed(options: SeedOptions = {}) {
       await clearExistingData()
     }
 
+    let categoryMap: Record<string, number> = {}
+
     if (createQuestions) {
-      await createSection1Demographics()
-      await createSection2Organizational()
-      await createSection3UsagePatterns()
-      await createSection4SentimentImpact()
-      await createSection5AIIDEsAssistants()
-      await createSection6CodeReviewTesting()
-      await createSection7AIModels()
-      await createSection8FutureOpinions()
-      await createSection9FollowUp()
+      categoryMap = await createCategories()
+      await createSection1Demographics(categoryMap)
+      await createSection2Organizational(categoryMap)
+      await createSection3UsagePatterns(categoryMap)
+      await createSection4SentimentImpact(categoryMap)
+      await createSection5AIIDEsAssistants(categoryMap)
+      // Section 6 merged into Section 5 (tools)
+      await createSection7AIModels(categoryMap)
+      await createSection8FutureOpinions(categoryMap)
+      await createSection9FollowUp(categoryMap)
     }
 
     if (shouldCreateResponses) {
