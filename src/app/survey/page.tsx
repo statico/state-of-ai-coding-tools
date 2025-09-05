@@ -114,13 +114,22 @@ export default function SurveyPage() {
       return formatted
     })
 
-    // Generate a session ID
-    const sessionId =
-      localStorage.getItem('survey_session_id') ||
-      `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
+    // Get or create session ID from server
+    let sessionId = localStorage.getItem('survey_session_id')
 
-    if (!localStorage.getItem('survey_session_id')) {
-      localStorage.setItem('survey_session_id', sessionId)
+    if (!sessionId) {
+      // Generate session ID server-side for security
+      const sessionResponse = await fetch('/api/session/create', {
+        method: 'POST',
+      })
+      const sessionData = await sessionResponse.json()
+
+      if (!sessionData.success) {
+        throw new Error('Failed to create session')
+      }
+
+      sessionId = sessionData.sessionId
+      localStorage.setItem('survey_session_id', sessionId as string)
     }
 
     const response = await fetch('/api/survey/submit', {
