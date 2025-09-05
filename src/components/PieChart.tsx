@@ -6,7 +6,6 @@ import {
   Cell,
   ResponsiveContainer,
   Tooltip,
-  Legend,
 } from 'recharts'
 import {
   customTooltipContentStyle,

@@ -10,6 +10,7 @@ const mockQuestion: Question = {
   description: 'Please select one option',
   type: 'SINGLE_CHOICE' as QuestionType,
   category: 'preferences',
+  categoryId: null,
   orderIndex: 1,
   isRequired: true,
   isActive: true,

@@ -95,7 +95,7 @@ export default function TrendsPage() {
       if (data.success && data.categories.length > 0) {
         const sections = [
           DEFAULT_TAB_SECTIONS[0], // Keep overview
-          ...data.categories.map((cat: any) => ({
+          ...data.categories.map((cat: { key: string; label: string }) => ({
             id: cat.key,
             label: cat.label,
             categories: [cat.key],
@@ -212,18 +212,6 @@ export default function TrendsPage() {
       </div>
     )
   }
-
-  // Group questions by category
-  const questionsByCategory = questions.reduce(
-    (acc, q) => {
-      if (!acc[q.category]) {
-        acc[q.category] = []
-      }
-      acc[q.category].push(q)
-      return acc
-    },
-    {} as Record<string, Question[]>
-  )
 
   const renderQuestionChart = (question: Question) => {
     switch (question.type) {

@@ -120,10 +120,17 @@ export async function GET(request: NextRequest) {
         responses: uniqueSessions.size,
       }
 
+      // Skip question metrics for overview - we only need response counts
+      if (categoryFilter === 'overview') {
+        trendData.push(weekData)
+        continue
+      }
+
       // For each question, calculate metrics
       for (const { question, options } of questionsWithOptions) {
         const questionResponses = responses.filter(
-          r => r.questionId === question.id
+          (r): r is typeof r & { questionId: number } =>
+            'questionId' in r && r.questionId === question.id
         )
 
         if (questionResponses.length === 0) {
@@ -139,7 +146,7 @@ export async function GET(request: NextRequest) {
           case 'DEMOGRAPHIC':
             // Track the most popular option percentage
             const optionCounts: Record<number, number> = {}
-            questionResponses.forEach(r => {
+            questionResponses.forEach((r: any) => {
               if (r.optionId) {
                 optionCounts[r.optionId] = (optionCounts[r.optionId] || 0) + 1
               }
@@ -160,7 +167,7 @@ export async function GET(request: NextRequest) {
             // Track selection count for each option
             // Multiple choice questions store each selected option as a separate response
             const multiOptionCounts: Record<number, number> = {}
-            questionResponses.forEach(r => {
+            questionResponses.forEach((r: any) => {
               if (r.optionId) {
                 multiOptionCounts[r.optionId] =
                   (multiOptionCounts[r.optionId] || 0) + 1
@@ -180,8 +187,8 @@ export async function GET(request: NextRequest) {
           case 'RATING':
             // Calculate average rating
             const ratings = questionResponses
-              .map(r => r.ratingValue)
-              .filter(r => r !== null) as number[]
+              .map((r: any) => r.ratingValue)
+              .filter((r: any) => r !== null) as number[]
 
             if (ratings.length > 0) {
               const avgRating =
@@ -202,7 +209,7 @@ export async function GET(request: NextRequest) {
               WOULD_NOT_USE: 0,
             }
 
-            questionResponses.forEach(r => {
+            questionResponses.forEach((r: any) => {
               if (r.experience && r.experience in experienceCounts) {
                 experienceCounts[
                   r.experience as keyof typeof experienceCounts
@@ -222,7 +229,7 @@ export async function GET(request: NextRequest) {
           case 'TEXT':
             // Just count how many text responses
             weekData[`q_${question.id}_count`] = questionResponses.filter(
-              r => r.textValue
+              (r: any) => r.textValue
             ).length
             break
         }

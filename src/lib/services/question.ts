@@ -63,6 +63,7 @@ export class QuestionService {
         description: question.description,
         type: question.type,
         category: question.category,
+        categoryId: question.categoryId,
         orderIndex: question.orderIndex,
         isRequired: question.isRequired,
         isActive: question.isActive,

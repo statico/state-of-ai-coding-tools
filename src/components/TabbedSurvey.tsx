@@ -98,8 +98,6 @@ export function TabbedSurvey({
   }
 
   const currentTabIndex = categories.findIndex(cat => cat.key === activeTab)
-  const isLastTab = currentTabIndex === categories.length - 1
-  const isFirstTab = currentTabIndex === 0
 
   // Group questions by category
   const questionsByCategory = questions.reduce(

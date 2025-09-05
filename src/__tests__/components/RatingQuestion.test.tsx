@@ -10,6 +10,7 @@ const mockQuestion: Question = {
   description: 'Rate from 1 to 5 stars',
   type: 'RATING' as QuestionType,
   category: 'satisfaction',
+  categoryId: null,
   orderIndex: 1,
   isRequired: true,
   isActive: true,

@@ -10,6 +10,7 @@ const mockQuestion: Question = {
   description: 'Select all that apply',
   type: 'MULTIPLE_CHOICE' as QuestionType,
   category: 'tools',
+  categoryId: null,
   orderIndex: 1,
   isRequired: true,
   isActive: true,
