@@ -17,14 +17,15 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:seed:responses": "tsx prisma/seed-responses.ts",
-    "seed": "tsx src/lib/seed.ts",
-    "seed:fake": "tsx src/lib/seed-fake-responses.ts",
+    "seed": "tsx prisma/seed-consolidated.ts",
+    "seed:all": "tsx prisma/seed-consolidated.ts",
+    "seed:questions": "tsx prisma/seed-consolidated.ts --no-responses",
+    "seed:responses": "tsx prisma/seed-consolidated.ts --no-clear --no-questions",
+    "seed:custom": "tsx prisma/seed-consolidated.ts",
     "prepare": "husky"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed-consolidated.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"

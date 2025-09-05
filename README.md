@@ -43,8 +43,8 @@ SURVEY_PASSWORD="secret"  # Optional, defaults to "secret" if not set
 # Run migrations
 pnpm prisma migrate dev
 
-# Seed the database with comprehensive questions
-pnpm tsx src/lib/seed-comprehensive.ts
+# Seed the database with questions and sample data
+pnpm seed
 ```
 
 4. **Start the development server:**
@@ -58,30 +58,39 @@ Visit `http://localhost:4001`
 
 ### Seeding Data
 
-The project includes three seed scripts:
+The consolidated seed script provides flexible options for populating your database:
 
-**Comprehensive Survey Questions:**
+**Basic Seeding:**
 ```bash
-pnpm tsx src/lib/seed-comprehensive.ts
-```
-This creates questions for:
-- Demographics (experience, role, company size)
-- IDEs (VS Code, Cursor, Windsurf, etc.)
-- Completion tools (GitHub Copilot, Codeium, etc.)
-- Code review tools
-- Refactoring tools
-- AI models (ChatGPT, Claude, etc.)
+# Full seed (clear data, create questions, generate 50 fake responses)
+pnpm seed
 
-**Fake Test Data (for development):**
-```bash
-pnpm seed:fake
+# Only create questions (no fake responses)
+pnpm seed:questions
+
+# Only add fake responses (keeps existing questions)
+pnpm seed:responses
 ```
-Generates fake survey responses for the past 8 weeks to test results visualization. Includes:
-- Realistic response distributions
-- Multiple choice selections with "Other" options
-- Experience ratings weighted by tool popularity
-- Demographic diversity
-- Text feedback samples
+
+**Custom Options:**
+```bash
+# Don't clear existing data
+npx tsx prisma/seed-consolidated.ts --no-clear
+
+# Create a specific number of fake responses (default is 50)
+npx tsx prisma/seed-consolidated.ts --responses 100
+
+# Combine options
+npx tsx prisma/seed-consolidated.ts --no-clear --responses 25
+```
+
+**What Gets Seeded:**
+- **Demographics**: Years of experience, company size, development area, location
+- **AI Tools**: 18 popular AI coding assistants (GitHub Copilot, Cursor, Claude, etc.)
+- **Editors**: 10 popular code editors (VS Code, IntelliJ, Vim, etc.)
+- **Frameworks**: 15 popular frameworks (React, Vue, Django, etc.)
+- **Opinions**: Questions about AI impact, concerns, and future predictions
+- **Fake Data**: Weighted responses based on tool popularity, experience metrics, and trend data
 
 ### Database Operations
 
@@ -144,19 +153,23 @@ src/
 
 ### Adding New Questions
 
-1. **Update the seed script** (`src/lib/seed-comprehensive.ts`):
+1. **Update the seed script** (`prisma/seed-consolidated.ts`):
 ```typescript
-const newTools = [
-  {
-    name: 'New AI Tool',
-    description: 'Description of the tool',
-  }
+const aiTools = [
+  'GitHub Copilot',
+  'Cursor',
+  'New AI Tool', // Add your tool here
+  // ...
 ]
 ```
 
 2. **Re-run the seed:**
 ```bash
-pnpm tsx src/lib/seed-comprehensive.ts
+# Clear and re-seed everything
+pnpm seed
+
+# Or just add to existing data
+npx tsx prisma/seed-consolidated.ts --no-clear
 ```
 
 ### Question Types
@@ -262,7 +275,7 @@ docker-compose logs -f
 docker-compose exec app npx prisma migrate deploy
 
 # Seed the database
-docker-compose exec app npx tsx src/lib/seed-comprehensive.ts
+docker-compose exec app npx tsx prisma/seed-consolidated.ts
 
 # Stop services
 docker-compose down

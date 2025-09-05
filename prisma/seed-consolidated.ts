@@ -1,21 +1,29 @@
 import { PrismaClient, QuestionType, Experience } from '@prisma/client'
+import { faker } from '@faker-js/faker'
 
 const prisma = new PrismaClient()
 
-async function main() {
-  console.log('🌱 Starting seed...')
+interface SeedOptions {
+  clearData?: boolean
+  createQuestions?: boolean
+  createFakeResponses?: boolean
+  numberOfResponses?: number
+}
 
-  // Clear existing data
+async function clearExistingData() {
+  console.log('🧹 Clearing existing data...')
   await prisma.response.deleteMany()
   await prisma.userSession.deleteMany()
   await prisma.questionOption.deleteMany()
   await prisma.question.deleteMany()
   await prisma.experienceMetric.deleteMany()
   await prisma.experienceTrend.deleteMany()
-
   console.log('✅ Cleared existing data')
+}
 
-  // Create demographic questions
+async function createDemographicQuestions() {
+  console.log('👥 Creating demographic questions...')
+
   const demographics = await Promise.all([
     prisma.question.create({
       data: {
@@ -114,8 +122,12 @@ async function main() {
   ])
 
   console.log('✅ Created demographic questions')
+  return demographics
+}
 
-  // Create AI coding tools questions
+async function createAIToolQuestions() {
+  console.log('🤖 Creating AI tool questions...')
+
   const aiTools = [
     'GitHub Copilot',
     'Cursor',
@@ -153,9 +165,13 @@ async function main() {
   )
 
   console.log(`✅ Created ${aiTools.length} AI tool questions`)
+  return aiToolQuestions
+}
 
-  // Create development tools questions
-  const devTools = [
+async function createEditorQuestions() {
+  console.log('📝 Creating editor questions...')
+
+  const editors = [
     'VS Code',
     'IntelliJ IDEA',
     'Visual Studio',
@@ -168,8 +184,8 @@ async function main() {
     'Zed',
   ]
 
-  const devToolQuestions = await Promise.all(
-    devTools.map((tool, index) =>
+  const editorQuestions = await Promise.all(
+    editors.map((tool, index) =>
       prisma.question.create({
         data: {
           title: tool,
@@ -183,9 +199,13 @@ async function main() {
     )
   )
 
-  console.log(`✅ Created ${devTools.length} editor questions`)
+  console.log(`✅ Created ${editors.length} editor questions`)
+  return editorQuestions
+}
 
-  // Create framework questions
+async function createFrameworkQuestions() {
+  console.log('🛠️ Creating framework questions...')
+
   const frameworks = [
     'React',
     'Vue.js',
@@ -220,8 +240,12 @@ async function main() {
   )
 
   console.log(`✅ Created ${frameworks.length} framework questions`)
+  return frameworkQuestions
+}
 
-  // Create opinion questions
+async function createOpinionQuestions() {
+  console.log('💭 Creating opinion questions...')
+
   const opinionQuestions = await Promise.all([
     prisma.question.create({
       data: {
@@ -377,74 +401,258 @@ async function main() {
   ])
 
   console.log('✅ Created opinion questions')
+  return opinionQuestions
+}
 
-  // Create some initial experience metrics with sample data
-  const sampleMetrics = await Promise.all([
-    prisma.experienceMetric.create({
-      data: {
-        toolName: 'GitHub Copilot',
-        category: 'ai_tools',
-        neverHeardCount: 50,
-        wantToTryCount: 200,
-        notInterestedCount: 30,
-        wouldUseAgainCount: 450,
-        wouldNotUseCount: 70,
-        awarenessRate: 0.9375,
-        adoptionRate: 0.65,
-        satisfactionRate: 0.865,
-        totalResponses: 800,
-      },
-    }),
-    prisma.experienceMetric.create({
-      data: {
-        toolName: 'Cursor',
-        category: 'ai_tools',
-        neverHeardCount: 150,
-        wantToTryCount: 350,
-        notInterestedCount: 50,
-        wouldUseAgainCount: 200,
-        wouldNotUseCount: 50,
-        awarenessRate: 0.8125,
-        adoptionRate: 0.3125,
-        satisfactionRate: 0.8,
-        totalResponses: 800,
-      },
-    }),
-    prisma.experienceMetric.create({
-      data: {
-        toolName: 'React',
-        category: 'frameworks',
-        neverHeardCount: 5,
-        wantToTryCount: 95,
-        notInterestedCount: 100,
-        wouldUseAgainCount: 500,
-        wouldNotUseCount: 100,
-        awarenessRate: 0.99375,
-        adoptionRate: 0.75,
-        satisfactionRate: 0.833,
-        totalResponses: 800,
-      },
-    }),
-    prisma.experienceMetric.create({
-      data: {
-        toolName: 'VS Code',
-        category: 'editors',
-        neverHeardCount: 2,
-        wantToTryCount: 18,
-        notInterestedCount: 30,
-        wouldUseAgainCount: 700,
-        wouldNotUseCount: 50,
-        awarenessRate: 0.9975,
-        adoptionRate: 0.9375,
-        satisfactionRate: 0.933,
-        totalResponses: 800,
-      },
-    }),
-  ])
+async function createFakeResponses(numberOfSessions: number = 50) {
+  console.log(`🎭 Creating ${numberOfSessions} fake survey responses...`)
 
-  console.log('✅ Created sample experience metrics')
+  const questions = await prisma.question.findMany({
+    include: { options: true },
+    orderBy: { orderIndex: 'asc' },
+  })
 
-  // Create trend data for the last 3 months
+  if (questions.length === 0) {
+    console.log('❌ No questions found. Please create questions first.')
+    return
+  }
+
+  for (let i = 0; i < numberOfSessions; i++) {
+    const sessionId = faker.string.uuid()
+    const session = await prisma.userSession.create({
+      data: {
+        id: sessionId,
+        demographicData: {
+          source: 'seed',
+          userAgent: faker.internet.userAgent(),
+        },
+        completedAt: faker.date.recent({ days: 30 }),
+      },
+    })
+
+    console.log(
+      `  Creating responses for session ${i + 1}/${numberOfSessions}...`
+    )
+
+    for (const question of questions) {
+      let responseData: any = {
+        sessionId: session.id,
+        questionId: question.id,
+      }
+
+      switch (question.type) {
+        case QuestionType.SINGLE_CHOICE:
+        case QuestionType.DEMOGRAPHIC:
+          if (question.options.length > 0) {
+            const randomOption = faker.helpers.arrayElement(question.options)
+            responseData.optionId = randomOption.id
+          }
+          break
+
+        case QuestionType.MULTIPLE_CHOICE:
+          if (question.options.length > 0) {
+            const numOptions = faker.number.int({
+              min: 1,
+              max: Math.min(3, question.options.length),
+            })
+            const selectedOptions = faker.helpers.arrayElements(
+              question.options,
+              numOptions
+            )
+
+            for (const option of selectedOptions) {
+              await prisma.response.create({
+                data: {
+                  sessionId: session.id,
+                  questionId: question.id,
+                  optionId: option.id,
+                },
+              })
+            }
+            continue
+          }
+          break
+
+        case QuestionType.RATING:
+          const ratingOptions = [
+            { value: 1, weight: 5 },
+            { value: 2, weight: 10 },
+            { value: 3, weight: 20 },
+            { value: 4, weight: 30 },
+            { value: 5, weight: 35 },
+          ]
+          const rating = faker.helpers.weightedArrayElement(ratingOptions)
+          responseData.ratingValue = rating
+          break
+
+        case QuestionType.TEXT:
+          const feedbackOptions = [
+            'Great tool, very helpful for my daily work!',
+            'Could use more features, but overall satisfied.',
+            'The UI needs improvement, but functionality is good.',
+            'Excellent experience, would recommend to others.',
+            'Some bugs need fixing, but shows promise.',
+            'Very intuitive and easy to use.',
+            'Performance could be better.',
+            'Love the AI integration features!',
+            'Needs better documentation.',
+            'Game changer for productivity!',
+          ]
+          responseData.textValue = faker.helpers.arrayElement(feedbackOptions)
+          break
+
+        case QuestionType.EXPERIENCE:
+          let experienceWeights = [
+            { value: Experience.NEVER_HEARD, weight: 10 },
+            { value: Experience.WANT_TO_TRY, weight: 20 },
+            { value: Experience.NOT_INTERESTED, weight: 15 },
+            { value: Experience.WOULD_USE_AGAIN, weight: 40 },
+            { value: Experience.WOULD_NOT_USE, weight: 15 },
+          ]
+
+          // Adjust weights based on tool popularity
+          if (
+            question.title.includes('GitHub Copilot') ||
+            question.title.includes('ChatGPT')
+          ) {
+            experienceWeights = [
+              { value: Experience.NEVER_HEARD, weight: 5 },
+              { value: Experience.WANT_TO_TRY, weight: 15 },
+              { value: Experience.NOT_INTERESTED, weight: 10 },
+              { value: Experience.WOULD_USE_AGAIN, weight: 50 },
+              { value: Experience.WOULD_NOT_USE, weight: 20 },
+            ]
+          } else if (
+            question.title.includes('VS Code') ||
+            question.title.includes('React')
+          ) {
+            experienceWeights = [
+              { value: Experience.NEVER_HEARD, weight: 2 },
+              { value: Experience.WANT_TO_TRY, weight: 10 },
+              { value: Experience.NOT_INTERESTED, weight: 8 },
+              { value: Experience.WOULD_USE_AGAIN, weight: 60 },
+              { value: Experience.WOULD_NOT_USE, weight: 20 },
+            ]
+          } else if (
+            question.title.includes('Cursor') ||
+            question.title.includes('Claude')
+          ) {
+            experienceWeights = [
+              { value: Experience.NEVER_HEARD, weight: 15 },
+              { value: Experience.WANT_TO_TRY, weight: 30 },
+              { value: Experience.NOT_INTERESTED, weight: 15 },
+              { value: Experience.WOULD_USE_AGAIN, weight: 30 },
+              { value: Experience.WOULD_NOT_USE, weight: 10 },
+            ]
+          } else if (
+            question.title.includes('Devin') ||
+            question.title.includes('CodeGeeX')
+          ) {
+            experienceWeights = [
+              { value: Experience.NEVER_HEARD, weight: 40 },
+              { value: Experience.WANT_TO_TRY, weight: 30 },
+              { value: Experience.NOT_INTERESTED, weight: 20 },
+              { value: Experience.WOULD_USE_AGAIN, weight: 8 },
+              { value: Experience.WOULD_NOT_USE, weight: 2 },
+            ]
+          }
+
+          responseData.experience =
+            faker.helpers.weightedArrayElement(experienceWeights)
+          break
+
+        case QuestionType.WRITE_IN:
+          if (faker.datatype.boolean({ probability: 0.3 })) {
+            responseData.writeInValue = faker.lorem.sentence()
+          }
+          break
+      }
+
+      if (question.type !== QuestionType.MULTIPLE_CHOICE) {
+        await prisma.response.create({ data: responseData })
+      }
+    }
+  }
+
+  console.log('✅ Created fake responses')
+}
+
+async function updateExperienceMetrics() {
+  console.log('📊 Updating experience metrics...')
+
+  const experienceQuestions = await prisma.question.findMany({
+    where: { type: QuestionType.EXPERIENCE },
+  })
+
+  for (const question of experienceQuestions) {
+    const responses = await prisma.response.findMany({
+      where: { questionId: question.id },
+    })
+
+    const counts = {
+      neverHeardCount: 0,
+      wantToTryCount: 0,
+      notInterestedCount: 0,
+      wouldUseAgainCount: 0,
+      wouldNotUseCount: 0,
+    }
+
+    responses.forEach(response => {
+      switch (response.experience) {
+        case Experience.NEVER_HEARD:
+          counts.neverHeardCount++
+          break
+        case Experience.WANT_TO_TRY:
+          counts.wantToTryCount++
+          break
+        case Experience.NOT_INTERESTED:
+          counts.notInterestedCount++
+          break
+        case Experience.WOULD_USE_AGAIN:
+          counts.wouldUseAgainCount++
+          break
+        case Experience.WOULD_NOT_USE:
+          counts.wouldNotUseCount++
+          break
+      }
+    })
+
+    const total = responses.length
+    const heardCount = total - counts.neverHeardCount
+    const usedCount = counts.wouldUseAgainCount + counts.wouldNotUseCount
+
+    await prisma.experienceMetric.upsert({
+      where: { toolName: question.title },
+      create: {
+        toolName: question.title,
+        category: question.category,
+        ...counts,
+        awarenessRate: total > 0 ? heardCount / total : 0,
+        adoptionRate: total > 0 ? usedCount / total : 0,
+        satisfactionRate:
+          usedCount > 0 ? counts.wouldUseAgainCount / usedCount : 0,
+        totalResponses: total,
+      },
+      update: {
+        ...counts,
+        awarenessRate: total > 0 ? heardCount / total : 0,
+        adoptionRate: total > 0 ? usedCount / total : 0,
+        satisfactionRate:
+          usedCount > 0 ? counts.wouldUseAgainCount / usedCount : 0,
+        totalResponses: total,
+      },
+    })
+  }
+
+  console.log(
+    `✅ Updated experience metrics for ${experienceQuestions.length} tools`
+  )
+}
+
+async function createTrendData() {
+  console.log('📈 Creating trend data...')
+
+  const metrics = await prisma.experienceMetric.findMany()
   const now = new Date()
   const months = [
     new Date(now.getFullYear(), now.getMonth() - 2, 1),
@@ -453,7 +661,7 @@ async function main() {
   ]
 
   const trendData = []
-  for (const metric of sampleMetrics) {
+  for (const metric of metrics) {
     for (let i = 0; i < months.length; i++) {
       const baseAwareness = metric.awarenessRate || 0.5
       const baseAdoption = metric.adoptionRate || 0.3
@@ -483,21 +691,98 @@ async function main() {
   }
 
   await Promise.all(trendData)
-
   console.log('✅ Created trend data')
-
-  // Count total questions
-  const totalQuestions = await prisma.question.count()
-  console.log(
-    `\n🎉 Seed completed! Created ${totalQuestions} questions in total.`
-  )
 }
 
-main()
-  .catch(e => {
-    console.error('Error seeding database:', e)
-    process.exit(1)
+export async function seed(options: SeedOptions = {}) {
+  const {
+    clearData = true,
+    createQuestions = true,
+    createFakeResponses: shouldCreateResponses = true,
+    numberOfResponses = 50,
+  } = options
+
+  console.log('🌱 Starting consolidated database seed...')
+  console.log('   Options:', {
+    clearData,
+    createQuestions,
+    createFakeResponses: shouldCreateResponses,
+    numberOfResponses,
   })
-  .finally(async () => {
-    await prisma.$disconnect()
-  })
+
+  try {
+    if (clearData) {
+      await clearExistingData()
+    }
+
+    if (createQuestions) {
+      await createDemographicQuestions()
+      await createAIToolQuestions()
+      await createEditorQuestions()
+      await createFrameworkQuestions()
+      await createOpinionQuestions()
+    }
+
+    if (shouldCreateResponses) {
+      await createFakeResponses(numberOfResponses)
+      await updateExperienceMetrics()
+      await createTrendData()
+    }
+
+    const totalQuestions = await prisma.question.count()
+    const totalSessions = await prisma.userSession.count()
+    const totalResponses = await prisma.response.count()
+    const totalMetrics = await prisma.experienceMetric.count()
+
+    console.log('\n🎉 Seed completed successfully!')
+    console.log(`   📋 Questions: ${totalQuestions}`)
+    console.log(`   👤 Sessions: ${totalSessions}`)
+    console.log(`   📝 Responses: ${totalResponses}`)
+    console.log(`   📊 Metrics: ${totalMetrics}`)
+
+    return {
+      questions: totalQuestions,
+      sessions: totalSessions,
+      responses: totalResponses,
+      metrics: totalMetrics,
+    }
+  } catch (error) {
+    console.error('❌ Error during seeding:', error)
+    throw error
+  }
+}
+
+// Main execution
+async function main() {
+  const args = process.argv.slice(2)
+  const options: SeedOptions = {}
+
+  // Parse command line arguments
+  if (args.includes('--no-clear')) {
+    options.clearData = false
+  }
+  if (args.includes('--no-questions')) {
+    options.createQuestions = false
+  }
+  if (args.includes('--no-responses')) {
+    options.createFakeResponses = false
+  }
+  const responsesIndex = args.indexOf('--responses')
+  if (responsesIndex !== -1 && args[responsesIndex + 1]) {
+    options.numberOfResponses = parseInt(args[responsesIndex + 1], 10)
+  }
+
+  await seed(options)
+}
+
+// Only run main if this file is executed directly
+if (require.main === module) {
+  main()
+    .catch(e => {
+      console.error('Error in seed script:', e)
+      process.exit(1)
+    })
+    .finally(async () => {
+      await prisma.$disconnect()
+    })
+}
