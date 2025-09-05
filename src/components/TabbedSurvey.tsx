@@ -71,12 +71,12 @@ export function TabbedSurvey({
 
   // Initialize active tab from URL hash when categories are loaded
   useEffect(() => {
-    if (categories.length > 0) {
+    if (categories.length > 0 && !activeTab) {
       const hash = window.location.hash.slice(1) // Remove #
       const validCategory = categories.find(cat => cat.key === hash)
       if (hash && validCategory) {
         setActiveTab(hash)
-      } else if (!activeTab) {
+      } else {
         setActiveTab(categories[0].key)
       }
     }
@@ -99,15 +99,26 @@ export function TabbedSurvey({
 
   // Smooth scroll to top of survey
   const scrollToSurvey = () => {
-    // Find the survey container and scroll it into view
-    const surveyElement = document.querySelector('[role="tabpanel"]')
-    if (surveyElement) {
-      const yOffset = -20 // Small offset from top
+    // Try multiple selectors to find the best scroll target
+    const selectors = [
+      '[role="tabpanel"]',
+      '.space-y-6', // The container with questions
+      '[role="tablist"]', // The tab list itself
+    ]
+
+    let targetElement = null
+    for (const selector of selectors) {
+      targetElement = document.querySelector(selector)
+      if (targetElement) break
+    }
+
+    if (targetElement) {
+      const yOffset = -100 // More offset to account for header
       const y =
-        surveyElement.getBoundingClientRect().top + window.pageYOffset + yOffset
+        targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset
       window.scrollTo({ top: y, behavior: 'smooth' })
     } else {
-      // Fallback to scrolling to top
+      // Fallback to scrolling to top of page
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
@@ -209,10 +220,12 @@ export function TabbedSurvey({
       const nextTab = categories[currentTabIndex + 1]
       if (nextTab) {
         setActiveTab(nextTab.key)
-        // Update URL hash
-        router.push(`/survey#${nextTab.key}`, { scroll: false })
         // Small delay to ensure tab content is rendered before scrolling
-        setTimeout(() => scrollToSurvey(), 100)
+        setTimeout(() => {
+          scrollToSurvey()
+          // Update URL hash after scroll to avoid interference
+          router.push(`/survey#${nextTab.key}`, { scroll: false })
+        }, 100)
       }
     }
   }
@@ -221,10 +234,12 @@ export function TabbedSurvey({
     const prevTab = categories[currentTabIndex - 1]
     if (prevTab) {
       setActiveTab(prevTab.key)
-      // Update URL hash
-      router.push(`/survey#${prevTab.key}`, { scroll: false })
       // Small delay to ensure tab content is rendered before scrolling
-      setTimeout(() => scrollToSurvey(), 100)
+      setTimeout(() => {
+        scrollToSurvey()
+        // Update URL hash after scroll to avoid interference
+        router.push(`/survey#${prevTab.key}`, { scroll: false })
+      }, 100)
     }
   }
 
@@ -349,8 +364,7 @@ export function TabbedSurvey({
     setActiveTab(newTab)
     // Update URL hash
     router.push(`/survey#${newTab}`, { scroll: false })
-    // Small delay to ensure tab content is rendered before scrolling
-    setTimeout(() => scrollToSurvey(), 100)
+    // Don't scroll when user directly clicks a tab - they can see where they are
   }
 
   if (isLoadingCategories) {

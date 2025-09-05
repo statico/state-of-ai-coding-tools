@@ -76,7 +76,7 @@ export default function TrendsPage() {
     if (tabSections.length > 0) {
       const hash = window.location.hash.slice(1) // Remove #
       const validSection = tabSections.find(section => section.id === hash)
-      if (hash && validSection) {
+      if (hash && validSection && activeTab !== hash) {
         setActiveTab(hash)
       }
       // If no hash or invalid hash, keep 'overview' as default
