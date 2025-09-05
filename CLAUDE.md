@@ -5,6 +5,7 @@
 - **Local Database Reset**: You can always blow away the local database and re-seed data without asking for permission
 - The local development database at `localhost:5433` can be reset freely
 - Use `npx prisma migrate reset --force` when needed for schema changes
+- NEVER modify migrations, only create new ones.
 
 ## Git Commits
 

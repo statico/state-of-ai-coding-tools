@@ -7,19 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model WeeklyPassword {
-  id        Int      @id @default(autoincrement())
-  password  String   @unique
-  weekStart DateTime @map("week_start")
-  weekEnd   DateTime @map("week_end")
-  isActive  Boolean  @default(false) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@index([weekStart, weekEnd])
-  @@map("weekly_passwords")
-}
-
 model Survey {
   id           Int           @id @default(autoincrement())
   title        String

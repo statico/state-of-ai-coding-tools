@@ -42,7 +42,7 @@ export function ShareModal({ iconOnly = false }: ShareModalProps) {
   }
 
   const copyBoth = async () => {
-    const shareText = `Join the AI Coding Tools Weekly Survey!\n\nURL: ${surveyUrl}\nThis week's password: ${currentPassword}`
+    const shareText = `Join the AI Coding Tools Weekly Survey!\n\nURL: ${surveyUrl}\nPassword: ${currentPassword}`
     try {
       await navigator.clipboard.writeText(shareText)
       setCopied(true)
@@ -75,8 +75,7 @@ export function ShareModal({ iconOnly = false }: ShareModalProps) {
         <DialogHeader>
           <DialogTitle>Share the Weekly Survey</DialogTitle>
           <DialogDescription>
-            Share the survey link and this week&apos;s password with your
-            colleagues
+            Share the survey link and password with your colleagues
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -99,7 +98,7 @@ export function ShareModal({ iconOnly = false }: ShareModalProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">This Week&apos;s Password</Label>
+            <Label htmlFor="password">Password</Label>
             <div className="flex gap-2">
               <Input
                 id="password"
@@ -122,9 +121,6 @@ export function ShareModal({ iconOnly = false }: ShareModalProps) {
                 )}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Password rotates every Monday at 00:00 UTC
-            </p>
           </div>
 
           <div className="pt-4">

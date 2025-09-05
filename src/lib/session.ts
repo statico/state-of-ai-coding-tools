@@ -3,7 +3,7 @@ import { SessionOptions } from 'iron-session'
 export interface SessionData {
   isAuthenticated: boolean
   surveyId?: number
-  weeklyPassword?: string
+  password?: string
   authenticatedAt?: string
 }
 

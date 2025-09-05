@@ -11,8 +11,8 @@ vi.mock('@/lib/services/survey', () => ({
 }))
 
 vi.mock('@/lib/password-manager', () => ({
-  validateWeeklyPassword: vi.fn(),
-  getActiveWeeklyPassword: vi.fn(),
+  validatePassword: vi.fn(),
+  getPassword: vi.fn(),
 }))
 
 vi.mock('@/lib/session', () => ({
@@ -39,14 +39,11 @@ vi.mock('next/headers', () => ({
 
 import { POST } from '@/app/api/auth/verify/route'
 import { SurveyService } from '@/lib/services/survey'
-import {
-  validateWeeklyPassword,
-  getActiveWeeklyPassword,
-} from '@/lib/password-manager'
+import { validatePassword, getPassword } from '@/lib/password-manager'
 
 const mockSurveyService = vi.mocked(SurveyService)
-const mockValidateWeeklyPassword = vi.mocked(validateWeeklyPassword)
-const mockGetActiveWeeklyPassword = vi.mocked(getActiveWeeklyPassword)
+const mockValidatePassword = vi.mocked(validatePassword)
+const mockGetPassword = vi.mocked(getPassword)
 
 describe('/api/auth/verify', () => {
   beforeEach(() => {
@@ -61,8 +58,8 @@ describe('/api/auth/verify', () => {
     }
 
     mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as Survey)
-    mockValidateWeeklyPassword.mockResolvedValue(true)
-    mockGetActiveWeeklyPassword.mockResolvedValue('test-password')
+    mockValidatePassword.mockResolvedValue(true)
+    mockGetPassword.mockReturnValue('test-password')
 
     const request = new NextRequest('http://localhost:3000/api/auth/verify', {
       method: 'POST',
@@ -89,7 +86,7 @@ describe('/api/auth/verify', () => {
     const mockSurvey = { id: 1, title: 'Test Survey' }
 
     mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as Survey)
-    mockValidateWeeklyPassword.mockResolvedValue(false)
+    mockValidatePassword.mockResolvedValue(false)
 
     const request = new NextRequest('http://localhost:3000/api/auth/verify', {
       method: 'POST',

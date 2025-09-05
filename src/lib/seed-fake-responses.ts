@@ -95,14 +95,18 @@ async function seedFakeResponses() {
       for (let i = 0; i < numResponses; i++) {
         // Create a user session
         const sessionId = faker.string.uuid()
+        // Generate a date for this response within the week
+        const responseDate = faker.date.between({
+          from: weekStart,
+          to: new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000),
+        })
+
         const session = await prisma.userSession.create({
           data: {
             id: sessionId,
             surveyId: survey.id,
-            completedAt: faker.date.between({
-              from: weekStart,
-              to: new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000),
-            }),
+            completedAt: responseDate,
+            createdAt: responseDate,
             demographicData: {
               yearsOfExperience: faker.helpers.arrayElement(EXPERIENCE_YEARS),
               companySize: faker.helpers.arrayElement(COMPANY_SIZES),
@@ -127,6 +131,7 @@ async function seedFakeResponses() {
                     sessionId: session.id,
                     questionId: question.id,
                     optionId: option.id,
+                    createdAt: responseDate,
                   },
                 })
               }
@@ -151,6 +156,7 @@ async function seedFakeResponses() {
                       sessionId: session.id,
                       questionId: question.id,
                       optionId: option.id,
+                      createdAt: responseDate,
                     },
                   })
                 }
@@ -169,6 +175,7 @@ async function seedFakeResponses() {
                         'Self-built solution',
                         'Legacy system',
                       ]),
+                      createdAt: responseDate,
                     },
                   })
                 }
@@ -190,6 +197,7 @@ async function seedFakeResponses() {
                   sessionId: session.id,
                   questionId: question.id,
                   ratingValue: rating,
+                  createdAt: responseDate,
                 },
               })
               break
@@ -216,6 +224,7 @@ async function seedFakeResponses() {
                     sessionId: session.id,
                     questionId: question.id,
                     textValue: faker.helpers.arrayElement(feedbackOptions),
+                    createdAt: responseDate,
                   },
                 })
               }
@@ -262,6 +271,7 @@ async function seedFakeResponses() {
                   sessionId: session.id,
                   questionId: question.id,
                   experience,
+                  createdAt: responseDate,
                 },
               })
 
@@ -278,6 +288,7 @@ async function seedFakeResponses() {
                       'Waiting for enterprise version',
                       'Need team approval first',
                     ]),
+                    createdAt: responseDate,
                   },
                 })
               }
@@ -292,6 +303,7 @@ async function seedFakeResponses() {
                     sessionId: session.id,
                     questionId: question.id,
                     writeInValue: faker.lorem.sentence(),
+                    createdAt: responseDate,
                   },
                 })
               }

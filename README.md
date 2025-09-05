@@ -1,6 +1,6 @@
 # AI Coding Tools Weekly Survey
 
-A comprehensive weekly survey platform for tracking AI coding tool adoption and preferences in the development community. Built with Next.js, featuring automatic password rotation and real-time results visualization.
+A comprehensive weekly survey platform for tracking AI coding tool adoption and preferences in the development community. Built with Next.js with real-time results visualization.
 
 ## Project Goals
 
@@ -35,6 +35,7 @@ Edit `.env.local`:
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5433/survey_db"
 SESSION_SECRET="your-secret-at-least-32-characters-long"
+SURVEY_PASSWORD="secret"  # Optional, defaults to "secret" if not set
 ```
 
 3. **Set up the database:**
@@ -44,9 +45,6 @@ pnpm prisma migrate dev
 
 # Seed the database with comprehensive questions
 pnpm tsx src/lib/seed-comprehensive.ts
-
-# Generate weekly passwords (3 years worth)
-pnpm tsx src/lib/seed-passwords.ts
 ```
 
 4. **Start the development server:**
@@ -73,12 +71,6 @@ This creates questions for:
 - Code review tools
 - Refactoring tools
 - AI models (ChatGPT, Claude, etc.)
-
-**Weekly Passwords:**
-```bash
-pnpm tsx src/lib/seed-passwords.ts
-```
-Generates 3 years of weekly passwords that automatically rotate every Monday at 00:00 UTC.
 
 **Fake Test Data (for development):**
 ```bash
@@ -271,7 +263,6 @@ docker-compose exec app npx prisma migrate deploy
 
 # Seed the database
 docker-compose exec app npx tsx src/lib/seed-comprehensive.ts
-docker-compose exec app npx tsx src/lib/seed-passwords.ts
 
 # Stop services
 docker-compose down
@@ -348,18 +339,11 @@ pnpm prisma migrate status
 
 ## Password System
 
-The survey uses an automatic weekly password rotation system:
+The survey uses a simple password system configured via environment variable:
 
-1. **Passwords rotate every Monday at 00:00 UTC**
-2. **Pre-generated for 3 years** using faker.js
-3. **Stored in `weekly_passwords` table**
-4. **Current password accessible via Share Survey button**
-
-To regenerate passwords:
-```bash
-pnpm tsx src/lib/seed-passwords.ts
-```
-
+- Set `SURVEY_PASSWORD` in your `.env.local` file
+- If not set, defaults to `"secret"`
+- The password is displayed in the Share Survey modal for easy sharing
 ## Testing
 
 ```bash

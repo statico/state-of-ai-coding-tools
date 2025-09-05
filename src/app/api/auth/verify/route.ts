@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { SurveyService } from '@/lib/services/survey'
-import {
-  validateWeeklyPassword,
-  getActiveWeeklyPassword,
-} from '@/lib/password-manager'
+import { validatePassword, getPassword } from '@/lib/password-manager'
 import { getIronSession } from 'iron-session'
 import { SessionData, sessionOptions } from '@/lib/session'
 import { cookies } from 'next/headers'
@@ -28,15 +25,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verify weekly password instead of survey password
-    const isValid = await validateWeeklyPassword(password)
+    // Verify password from environment variable
+    const isValid = await validatePassword(password)
 
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
     }
 
     // Get the current password for the session data
-    const currentPassword = await getActiveWeeklyPassword()
+    const currentPassword = getPassword()
 
     // Create iron-session
     const cookieStore = await cookies()
@@ -46,7 +43,7 @@ export async function POST(request: NextRequest) {
     )
     session.isAuthenticated = true
     session.surveyId = currentSurvey.id
-    session.weeklyPassword = currentPassword || undefined
+    session.password = currentPassword
     session.authenticatedAt = new Date().toISOString()
     await session.save()
 
