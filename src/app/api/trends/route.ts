@@ -9,29 +9,32 @@ export async function GET(request: NextRequest) {
     const weeks = weeksParam ? parseInt(weeksParam, 10) : 12
     const categoryFilter = searchParams.get('category')
 
-    // Only get questions for specific category if provided, otherwise get all
-    const questionsWithOptions = categoryFilter
-      ? await prisma.question
-          .findMany({
-            where: {
-              isActive: true,
-              category: categoryFilter,
-            },
-            include: {
-              options: {
-                where: { isActive: true },
+    // For overview, we don't need question data at all
+    const questionsWithOptions =
+      categoryFilter === 'overview'
+        ? []
+        : categoryFilter
+          ? await prisma.question
+              .findMany({
+                where: {
+                  isActive: true,
+                  category: categoryFilter,
+                },
+                include: {
+                  options: {
+                    where: { isActive: true },
+                    orderBy: { orderIndex: 'asc' },
+                  },
+                },
                 orderBy: { orderIndex: 'asc' },
-              },
-            },
-            orderBy: { orderIndex: 'asc' },
-          })
-          .then(questions =>
-            questions.map(q => ({
-              question: q,
-              options: q.options,
-            }))
-          )
-      : await QuestionService.getAllWithOptions()
+              })
+              .then(questions =>
+                questions.map(q => ({
+                  question: q,
+                  options: q.options,
+                }))
+              )
+          : await QuestionService.getAllWithOptions()
 
     // Calculate date range for all weeks
     const today = new Date()
@@ -48,28 +51,44 @@ export async function GET(request: NextRequest) {
 
     // Get ALL responses for the entire period in a SINGLE query
     // Only get the fields we need to reduce memory usage
-    const allResponses = await prisma.response.findMany({
-      where: {
-        createdAt: {
-          gte: oldestWeekStart,
-          lte: newestWeekEnd,
-        },
-        ...(categoryFilter && {
-          question: {
-            category: categoryFilter,
-          },
-        }),
-      },
-      select: {
-        sessionId: true,
-        questionId: true,
-        optionId: true,
-        ratingValue: true,
-        textValue: true,
-        experience: true,
-        createdAt: true,
-      },
-    })
+    // For overview, we only need sessionId and createdAt
+    const allResponses =
+      categoryFilter === 'overview'
+        ? await prisma.response.findMany({
+            where: {
+              createdAt: {
+                gte: oldestWeekStart,
+                lte: newestWeekEnd,
+              },
+            },
+            select: {
+              sessionId: true,
+              createdAt: true,
+            },
+            distinct: ['sessionId', 'createdAt'],
+          })
+        : await prisma.response.findMany({
+            where: {
+              createdAt: {
+                gte: oldestWeekStart,
+                lte: newestWeekEnd,
+              },
+              ...(categoryFilter && {
+                question: {
+                  category: categoryFilter,
+                },
+              }),
+            },
+            select: {
+              sessionId: true,
+              questionId: true,
+              optionId: true,
+              ratingValue: true,
+              textValue: true,
+              experience: true,
+              createdAt: true,
+            },
+          })
 
     // Create week range data
     const trendData = []
