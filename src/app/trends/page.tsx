@@ -7,6 +7,8 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -159,12 +161,12 @@ export default function TrendsPage() {
       case 'SINGLE_CHOICE':
       case 'DEMOGRAPHIC':
       case 'MULTIPLE_CHOICE':
-        // Create chart data for options
-        const optionLines =
+        // Create chart data for options with stacked bars
+        const optionBars =
           question.options?.map((opt, idx) => ({
             dataKey: `q_${question.id}_opt_${opt.id}`,
             name: opt.label,
-            stroke: generateColor(idx, question.options?.length || 1),
+            fill: generateColor(idx, question.options?.length || 1),
           })) || []
 
         return (
@@ -173,7 +175,7 @@ export default function TrendsPage() {
               <CardTitle>{question.title}</CardTitle>
             </CardHeader>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
+              <BarChart data={trends}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="week"
@@ -190,19 +192,17 @@ export default function TrendsPage() {
                 />
                 <Tooltip />
                 <Legend />
-                {optionLines.map(line => (
-                  <Line
-                    key={line.dataKey}
-                    type="monotone"
-                    dataKey={line.dataKey}
-                    name={line.name}
-                    stroke={line.stroke}
-                    strokeWidth={2}
-                    dot={{ r: 3 }}
-                    activeDot={{ r: 5 }}
+                {optionBars.map(bar => (
+                  <Bar
+                    key={bar.dataKey}
+                    stackId="stack"
+                    dataKey={bar.dataKey}
+                    name={bar.name}
+                    fill={bar.fill}
+                    animationDuration={150}
                   />
                 ))}
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
           </Card>
         )
@@ -214,7 +214,7 @@ export default function TrendsPage() {
               <CardTitle>{question.title}</CardTitle>
             </CardHeader>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
+              <BarChart data={trends}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="week"
@@ -232,16 +232,13 @@ export default function TrendsPage() {
                 />
                 <Tooltip />
                 <Legend />
-                <Line
-                  type="monotone"
+                <Bar
                   dataKey={`q_${question.id}_avg`}
                   name="Average Rating"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
+                  fill="#3b82f6"
+                  animationDuration={150}
                 />
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
           </Card>
         )
@@ -292,6 +289,7 @@ export default function TrendsPage() {
                     strokeWidth={2}
                     dot={{ r: 3 }}
                     activeDot={{ r: 5 }}
+                    animationDuration={150}
                   />
                 ))}
               </LineChart>
@@ -306,7 +304,7 @@ export default function TrendsPage() {
               <CardTitle>{question.title}</CardTitle>
             </CardHeader>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
+              <BarChart data={trends}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="week"
@@ -323,16 +321,13 @@ export default function TrendsPage() {
                 />
                 <Tooltip />
                 <Legend />
-                <Line
-                  type="monotone"
+                <Bar
                   dataKey={`q_${question.id}_count`}
                   name="Text Responses"
-                  stroke="#8b5cf6"
-                  strokeWidth={2}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 6 }}
+                  fill="#8b5cf6"
+                  animationDuration={150}
                 />
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
           </Card>
         )
@@ -470,6 +465,7 @@ export default function TrendsPage() {
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
                     name="Total Responses"
+                    animationDuration={150}
                   />
                 </LineChart>
               </ResponsiveContainer>
