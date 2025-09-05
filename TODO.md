@@ -1,6 +1,6 @@
 # TODO
 
-NOTE: Dev server is already running on localhost:4001. Use the Playwright MCP server to debug it. Commit often.
+NOTE: Dev server is already running on localhost:4001. Use the Playwright MCP server to debug it. Commit often. Make sure the tests pass.
 
 - [x] The trends page crashes the browser. Use Playwright to debug it.
 - [ ] There are too many categories in the seed. Consolidate them. We can fit about 7 categories on the page. Maybe demographics, sentiment, tools, models, etc.

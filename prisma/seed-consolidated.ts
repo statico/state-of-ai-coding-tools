@@ -641,7 +641,7 @@ async function createSection2Organizational() {
         title: 'Company AI Tool Policy',
         description: "What is your company's policy on AI coding tools?",
         type: QuestionType.SINGLE_CHOICE,
-        category: 'organizational',
+        category: 'organization',
         orderIndex: 201,
         isRequired: false,
         options: {
@@ -685,7 +685,7 @@ async function createSection2Organizational() {
         description:
           'What security or compliance requirements apply to your AI tool usage? (Select all that apply)',
         type: QuestionType.MULTIPLE_CHOICE,
-        category: 'organizational',
+        category: 'organization',
         orderIndex: 202,
         isRequired: false,
         options: {
@@ -738,7 +738,7 @@ async function createSection2Organizational() {
         description:
           "What is your company's budget for AI coding tools per developer per year?",
         type: QuestionType.SINGLE_CHOICE,
-        category: 'organizational',
+        category: 'organization',
         orderIndex: 203,
         isRequired: false,
         options: {
@@ -1241,43 +1241,43 @@ async function createSection5AIIDEsAssistants() {
 
   const tools = [
     // IDE-Based Assistants
-    { name: 'Cursor', category: 'ide_assistants', order: 501 },
-    { name: 'Windsurf (Codeium)', category: 'ide_assistants', order: 502 },
+    { name: 'Cursor', category: 'tools', order: 501 },
+    { name: 'Windsurf (Codeium)', category: 'tools', order: 502 },
     {
       name: 'Claude Code (Anthropic CLI)',
-      category: 'ide_assistants',
+      category: 'tools',
       order: 503,
     },
     {
       name: 'Qodo Gen (formerly Codium)',
-      category: 'ide_assistants',
+      category: 'tools',
       order: 504,
     },
-    { name: 'Bolt.new', category: 'ide_assistants', order: 505 },
-    { name: 'v0 (Vercel)', category: 'ide_assistants', order: 506 },
-    { name: 'Replit AI', category: 'ide_assistants', order: 507 },
-    { name: 'JetBrains AI Assistant', category: 'ide_assistants', order: 508 },
+    { name: 'Bolt.new', category: 'tools', order: 505 },
+    { name: 'v0 (Vercel)', category: 'tools', order: 506 },
+    { name: 'Replit AI', category: 'tools', order: 507 },
+    { name: 'JetBrains AI Assistant', category: 'tools', order: 508 },
     {
       name: 'Visual Studio IntelliCode',
-      category: 'ide_assistants',
+      category: 'tools',
       order: 509,
     },
 
     // Code Completion/Generation
-    { name: 'GitHub Copilot', category: 'code_completion', order: 510 },
-    { name: 'Amazon Q Developer', category: 'code_completion', order: 511 },
-    { name: 'Tabnine', category: 'code_completion', order: 512 },
-    { name: 'Codeium (Free tier)', category: 'code_completion', order: 513 },
-    { name: 'Sourcegraph Cody', category: 'code_completion', order: 514 },
-    { name: 'Continue.dev', category: 'code_completion', order: 515 },
-    { name: 'Aider', category: 'code_completion', order: 516 },
-    { name: 'Pieces for Developers', category: 'code_completion', order: 517 },
-    { name: 'Augment Code', category: 'code_completion', order: 518 },
+    { name: 'GitHub Copilot', category: 'tools', order: 510 },
+    { name: 'Amazon Q Developer', category: 'tools', order: 511 },
+    { name: 'Tabnine', category: 'tools', order: 512 },
+    { name: 'Codeium (Free tier)', category: 'tools', order: 513 },
+    { name: 'Sourcegraph Cody', category: 'tools', order: 514 },
+    { name: 'Continue.dev', category: 'tools', order: 515 },
+    { name: 'Aider', category: 'tools', order: 516 },
+    { name: 'Pieces for Developers', category: 'tools', order: 517 },
+    { name: 'Augment Code', category: 'tools', order: 518 },
 
     // Enterprise/Team Solutions
-    { name: 'Gemini Code Assist (Google)', category: 'enterprise', order: 519 },
-    { name: 'CodeWhisperer (AWS)', category: 'enterprise', order: 520 },
-    { name: 'Azure AI Assistant', category: 'enterprise', order: 521 },
+    { name: 'Gemini Code Assist (Google)', category: 'tools', order: 519 },
+    { name: 'CodeWhisperer (AWS)', category: 'tools', order: 520 },
+    { name: 'Azure AI Assistant', category: 'tools', order: 521 },
   ]
 
   const questions = await Promise.all(
@@ -1304,25 +1304,25 @@ async function createSection6CodeReviewTesting() {
 
   const tools = [
     // Code Review
-    { name: 'CodeRabbit', category: 'code_review', order: 601 },
-    { name: 'Qodo Merge (PR-Agent)', category: 'code_review', order: 602 },
-    { name: 'Bito AI Code Review', category: 'code_review', order: 603 },
-    { name: 'CodeScene', category: 'code_review', order: 604 },
-    { name: 'DeepSource', category: 'code_review', order: 605 },
-    { name: 'Codacy', category: 'code_review', order: 606 },
-    { name: 'PullRequest.com', category: 'code_review', order: 607 },
-    { name: 'What The Diff', category: 'code_review', order: 608 },
-    { name: 'CodeAnt AI', category: 'code_review', order: 609 },
+    { name: 'CodeRabbit', category: 'tools', order: 601 },
+    { name: 'Qodo Merge (PR-Agent)', category: 'tools', order: 602 },
+    { name: 'Bito AI Code Review', category: 'tools', order: 603 },
+    { name: 'CodeScene', category: 'tools', order: 604 },
+    { name: 'DeepSource', category: 'tools', order: 605 },
+    { name: 'Codacy', category: 'tools', order: 606 },
+    { name: 'PullRequest.com', category: 'tools', order: 607 },
+    { name: 'What The Diff', category: 'tools', order: 608 },
+    { name: 'CodeAnt AI', category: 'tools', order: 609 },
 
     // Testing & Quality
-    { name: 'Diffblue Cover (Java)', category: 'testing_quality', order: 610 },
-    { name: 'Mabl (E2E testing)', category: 'testing_quality', order: 611 },
+    { name: 'Diffblue Cover (Java)', category: 'tools', order: 610 },
+    { name: 'Mabl (E2E testing)', category: 'tools', order: 611 },
     {
       name: 'Applitools (Visual testing)',
-      category: 'testing_quality',
+      category: 'tools',
       order: 612,
     },
-    { name: 'Testim.io', category: 'testing_quality', order: 613 },
+    { name: 'Testim.io', category: 'tools', order: 613 },
   ]
 
   const questions = await Promise.all(
@@ -1349,47 +1349,47 @@ async function createSection7AIModels() {
 
   const models = [
     // OpenAI Models
-    { name: 'GPT-4o', category: 'ai_models_openai', order: 701 },
-    { name: 'GPT-4o-mini', category: 'ai_models_openai', order: 702 },
-    { name: 'o1', category: 'ai_models_openai', order: 703 },
-    { name: 'o1-mini', category: 'ai_models_openai', order: 704 },
-    { name: 'o3-mini', category: 'ai_models_openai', order: 705 },
+    { name: 'GPT-4o', category: 'models', order: 701 },
+    { name: 'GPT-4o-mini', category: 'models', order: 702 },
+    { name: 'o1', category: 'models', order: 703 },
+    { name: 'o1-mini', category: 'models', order: 704 },
+    { name: 'o3-mini', category: 'models', order: 705 },
 
     // Anthropic Models
-    { name: 'Claude 3.5 Sonnet', category: 'ai_models_anthropic', order: 706 },
-    { name: 'Claude 3.5 Haiku', category: 'ai_models_anthropic', order: 707 },
-    { name: 'Claude 3 Opus', category: 'ai_models_anthropic', order: 708 },
-    { name: 'Claude Opus 4', category: 'ai_models_anthropic', order: 709 },
-    { name: 'Claude Opus 4.1', category: 'ai_models_anthropic', order: 710 },
+    { name: 'Claude 3.5 Sonnet', category: 'models', order: 706 },
+    { name: 'Claude 3.5 Haiku', category: 'models', order: 707 },
+    { name: 'Claude 3 Opus', category: 'models', order: 708 },
+    { name: 'Claude Opus 4', category: 'models', order: 709 },
+    { name: 'Claude Opus 4.1', category: 'models', order: 710 },
 
     // Google Models
-    { name: 'Gemini 2.5 Pro', category: 'ai_models_google', order: 711 },
-    { name: 'Gemini 2.0 Flash', category: 'ai_models_google', order: 712 },
-    { name: 'Gemini 1.5 Pro', category: 'ai_models_google', order: 713 },
-    { name: 'Gemini 1.5 Flash', category: 'ai_models_google', order: 714 },
+    { name: 'Gemini 2.5 Pro', category: 'models', order: 711 },
+    { name: 'Gemini 2.0 Flash', category: 'models', order: 712 },
+    { name: 'Gemini 1.5 Pro', category: 'models', order: 713 },
+    { name: 'Gemini 1.5 Flash', category: 'models', order: 714 },
 
     // Open/Local Models
     {
       name: 'DeepSeek-R1 (& distilled)',
-      category: 'ai_models_open',
+      category: 'models',
       order: 715,
     },
-    { name: 'DeepSeek-V3', category: 'ai_models_open', order: 716 },
-    { name: 'DeepSeek Coder', category: 'ai_models_open', order: 717 },
+    { name: 'DeepSeek-V3', category: 'models', order: 716 },
+    { name: 'DeepSeek Coder', category: 'models', order: 717 },
     {
       name: 'Qwen 3 (235B/30B/smaller)',
-      category: 'ai_models_open',
+      category: 'models',
       order: 718,
     },
-    { name: 'Qwen 2.5 Coder', category: 'ai_models_open', order: 719 },
-    { name: 'Llama 3.3 (70B)', category: 'ai_models_open', order: 720 },
-    { name: 'Llama 3.1 (405B/70B/8B)', category: 'ai_models_open', order: 721 },
-    { name: 'Mistral Large', category: 'ai_models_open', order: 722 },
-    { name: 'Codestral (Mistral)', category: 'ai_models_open', order: 723 },
-    { name: 'Yi Coder', category: 'ai_models_open', order: 724 },
-    { name: 'StarCoder2', category: 'ai_models_open', order: 725 },
-    { name: 'Code Llama', category: 'ai_models_open', order: 726 },
-    { name: 'WizardCoder', category: 'ai_models_open', order: 727 },
+    { name: 'Qwen 2.5 Coder', category: 'models', order: 719 },
+    { name: 'Llama 3.3 (70B)', category: 'models', order: 720 },
+    { name: 'Llama 3.1 (405B/70B/8B)', category: 'models', order: 721 },
+    { name: 'Mistral Large', category: 'models', order: 722 },
+    { name: 'Codestral (Mistral)', category: 'models', order: 723 },
+    { name: 'Yi Coder', category: 'models', order: 724 },
+    { name: 'StarCoder2', category: 'models', order: 725 },
+    { name: 'Code Llama', category: 'models', order: 726 },
+    { name: 'WizardCoder', category: 'models', order: 727 },
   ]
 
   const questions = await Promise.all(
@@ -1601,7 +1601,7 @@ async function createSection9FollowUp() {
         description:
           'Would you like to receive the survey results when available?',
         type: QuestionType.SINGLE_CHOICE,
-        category: 'followup',
+        category: 'organization',
         orderIndex: 901,
         isRequired: false,
         options: {
@@ -1624,7 +1624,7 @@ async function createSection9FollowUp() {
         description:
           'Would you be interested in participating in a follow-up interview (30 min, compensated)?',
         type: QuestionType.SINGLE_CHOICE,
-        category: 'followup',
+        category: 'organization',
         orderIndex: 902,
         isRequired: false,
         options: {
