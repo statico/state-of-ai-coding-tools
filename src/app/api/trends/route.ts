@@ -9,34 +9,7 @@ export async function GET(request: NextRequest) {
     const weeks = weeksParam ? parseInt(weeksParam, 10) : 12
     const categoryFilter = searchParams.get('category')
 
-    // For overview, we don't need question data at all
-    const questionsWithOptions =
-      categoryFilter === 'overview'
-        ? []
-        : categoryFilter
-          ? await prisma.question
-              .findMany({
-                where: {
-                  isActive: true,
-                  category: categoryFilter,
-                },
-                include: {
-                  options: {
-                    where: { isActive: true },
-                    orderBy: { orderIndex: 'asc' },
-                  },
-                },
-                orderBy: { orderIndex: 'asc' },
-              })
-              .then(questions =>
-                questions.map(q => ({
-                  question: q,
-                  options: q.options,
-                }))
-              )
-          : await QuestionService.getAllWithOptions()
-
-    // Calculate date range for all weeks
+    // Calculate date range
     const today = new Date()
     const dayOfWeek = today.getDay()
     const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
@@ -49,48 +22,83 @@ export async function GET(request: NextRequest) {
     newestWeekEnd.setDate(today.getDate() - daysToMonday + 6)
     newestWeekEnd.setHours(23, 59, 59, 999)
 
-    // Get ALL responses for the entire period in a SINGLE query
-    // Only get the fields we need to reduce memory usage
-    // For overview, we only need sessionId and createdAt
-    const allResponses =
-      categoryFilter === 'overview'
-        ? await prisma.response.findMany({
-            where: {
-              createdAt: {
-                gte: oldestWeekStart,
-                lte: newestWeekEnd,
-              },
-            },
-            select: {
-              sessionId: true,
-              createdAt: true,
-            },
-            distinct: ['sessionId', 'createdAt'],
-          })
-        : await prisma.response.findMany({
-            where: {
-              createdAt: {
-                gte: oldestWeekStart,
-                lte: newestWeekEnd,
-              },
-              ...(categoryFilter && {
-                question: {
-                  category: categoryFilter,
-                },
-              }),
-            },
-            select: {
-              sessionId: true,
-              questionId: true,
-              optionId: true,
-              ratingValue: true,
-              textValue: true,
-              experience: true,
-              createdAt: true,
-            },
-          })
+    // For overview, use optimized SQL
+    if (categoryFilter === 'overview') {
+      const weeklyStats = await prisma.$queryRaw<
+        Array<{
+          week_start: Date
+          week_end: Date
+          unique_sessions: bigint
+        }>
+      >`
+        WITH RECURSIVE weeks AS (
+          SELECT 
+            DATE_TRUNC('week', ${oldestWeekStart}::timestamp)::date AS week_start,
+            (DATE_TRUNC('week', ${oldestWeekStart}::timestamp) + INTERVAL '6 days')::date AS week_end
+          UNION ALL
+          SELECT 
+            (week_start + INTERVAL '7 days')::date,
+            (week_end + INTERVAL '7 days')::date
+          FROM weeks
+          WHERE week_start < DATE_TRUNC('week', ${newestWeekEnd}::timestamp)::date
+        )
+        SELECT 
+          w.week_start,
+          w.week_end,
+          COUNT(DISTINCT r.session_id) as unique_sessions
+        FROM weeks w
+        LEFT JOIN responses r ON 
+          DATE(r.created_at) >= w.week_start AND 
+          DATE(r.created_at) <= w.week_end
+        GROUP BY w.week_start, w.week_end
+        ORDER BY w.week_start
+      `
 
-    // Create week range data
+      const trendData = weeklyStats.map(stat => ({
+        week: `${new Date(stat.week_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${new Date(stat.week_end).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
+        weekStart: stat.week_start.toISOString(),
+        weekEnd: stat.week_end.toISOString(),
+        responses: Number(stat.unique_sessions),
+      }))
+
+      const response = NextResponse.json({
+        success: true,
+        trends: trendData,
+        questions: [],
+      })
+
+      response.headers.set(
+        'Cache-Control',
+        'public, s-maxage=300, stale-while-revalidate'
+      )
+      return response
+    }
+
+    // For category-specific data, get questions first
+    const questionsWithOptions = categoryFilter
+      ? await prisma.question
+          .findMany({
+            where: {
+              isActive: true,
+              category: categoryFilter,
+            },
+            include: {
+              options: {
+                where: { isActive: true },
+                orderBy: { orderIndex: 'asc' },
+              },
+            },
+            orderBy: { orderIndex: 'asc' },
+          })
+          .then(questions =>
+            questions.map(q => ({
+              question: q,
+              options: q.options,
+            }))
+          )
+      : await QuestionService.getAllWithOptions()
+
+    // Use efficient batched queries per week instead of complex recursive SQL
     const trendData = []
 
     for (let i = 0; i < weeks; i++) {
@@ -103,14 +111,60 @@ export async function GET(request: NextRequest) {
       weekEnd.setDate(weekStart.getDate() + 6)
       weekEnd.setHours(23, 59, 59, 999)
 
-      // Filter responses for this week from the pre-fetched data
-      const responses = allResponses.filter(r => {
-        const createdAt = new Date(r.createdAt)
-        return createdAt >= weekStart && createdAt <= weekEnd
-      })
+      // Single optimized query per week with joins
+      const weeklyData = categoryFilter
+        ? await prisma.$queryRaw<
+            Array<{
+              session_id: string
+              question_id: number
+              option_id: number | null
+              rating_value: number | null
+              text_value: string | null
+              experience: string | null
+            }>
+          >`
+            SELECT DISTINCT
+              r.session_id,
+              r.question_id,
+              r.option_id,
+              r.rating_value,
+              r.text_value,
+              r.experience
+            FROM responses r
+            JOIN questions q ON r.question_id = q.id
+            WHERE 
+              r.created_at >= ${weekStart}::timestamp
+              AND r.created_at <= ${weekEnd}::timestamp
+              AND q.is_active = true
+              AND q.category = ${categoryFilter}
+          `
+        : await prisma.$queryRaw<
+            Array<{
+              session_id: string
+              question_id: number
+              option_id: number | null
+              rating_value: number | null
+              text_value: string | null
+              experience: string | null
+            }>
+          >`
+            SELECT DISTINCT
+              r.session_id,
+              r.question_id,
+              r.option_id,
+              r.rating_value,
+              r.text_value,
+              r.experience
+            FROM responses r
+            JOIN questions q ON r.question_id = q.id
+            WHERE 
+              r.created_at >= ${weekStart}::timestamp
+              AND r.created_at <= ${weekEnd}::timestamp
+              AND q.is_active = true
+          `
 
       // Get unique session count for response count
-      const uniqueSessions = new Set(responses.map(r => r.sessionId))
+      const uniqueSessions = new Set(weeklyData.map(r => r.session_id))
 
       // Process data for each question
       const weekData: Record<string, number | string> = {
@@ -120,24 +174,10 @@ export async function GET(request: NextRequest) {
         responses: uniqueSessions.size,
       }
 
-      // Skip question metrics for overview - we only need response counts
-      if (categoryFilter === 'overview') {
-        trendData.push(weekData)
-        continue
-      }
-
-      // For each question, calculate metrics
+      // Process data for each question
       for (const { question, options } of questionsWithOptions) {
-        const questionResponses = responses.filter(
-          (
-            r
-          ): r is typeof r & {
-            questionId: number
-            optionId: number | null
-            ratingValue: number | null
-            textValue: string | null
-            experience: string | null
-          } => 'questionId' in r && r.questionId === question.id
+        const questionResponses = weeklyData.filter(
+          r => r.question_id === question.id
         )
 
         if (questionResponses.length === 0) {
@@ -151,15 +191,13 @@ export async function GET(request: NextRequest) {
         switch (question.type) {
           case 'SINGLE_CHOICE':
           case 'DEMOGRAPHIC':
-            // Track the most popular option percentage
             const optionCounts: Record<number, number> = {}
             questionResponses.forEach(r => {
-              if (r.optionId !== null && r.optionId !== undefined) {
-                optionCounts[r.optionId] = (optionCounts[r.optionId] || 0) + 1
+              if (r.option_id !== null && r.option_id !== undefined) {
+                optionCounts[r.option_id] = (optionCounts[r.option_id] || 0) + 1
               }
             })
 
-            // Store percentages for each option
             options.forEach(opt => {
               const count = optionCounts[opt.id] || 0
               const percentage =
@@ -171,13 +209,11 @@ export async function GET(request: NextRequest) {
             break
 
           case 'MULTIPLE_CHOICE':
-            // Track selection count for each option
-            // Multiple choice questions store each selected option as a separate response
             const multiOptionCounts: Record<number, number> = {}
             questionResponses.forEach(r => {
-              if (r.optionId !== null && r.optionId !== undefined) {
-                multiOptionCounts[r.optionId] =
-                  (multiOptionCounts[r.optionId] || 0) + 1
+              if (r.option_id !== null && r.option_id !== undefined) {
+                multiOptionCounts[r.option_id] =
+                  (multiOptionCounts[r.option_id] || 0) + 1
               }
             })
 
@@ -192,9 +228,8 @@ export async function GET(request: NextRequest) {
             break
 
           case 'RATING':
-            // Calculate average rating
             const ratings = questionResponses
-              .map(r => r.ratingValue)
+              .map(r => r.rating_value)
               .filter((r): r is number => r !== null)
 
             if (ratings.length > 0) {
@@ -207,7 +242,6 @@ export async function GET(request: NextRequest) {
             break
 
           case 'EXPERIENCE':
-            // Track experience levels
             const experienceCounts = {
               NEVER_HEARD: 0,
               WANT_TO_TRY: 0,
@@ -234,9 +268,8 @@ export async function GET(request: NextRequest) {
             break
 
           case 'TEXT':
-            // Just count how many text responses
             weekData[`q_${question.id}_count`] = questionResponses.filter(
-              r => r.textValue
+              r => r.text_value
             ).length
             break
         }
@@ -260,12 +293,10 @@ export async function GET(request: NextRequest) {
       })),
     })
 
-    // Add cache headers - cache for 5 minutes
     response.headers.set(
       'Cache-Control',
       'public, s-maxage=300, stale-while-revalidate'
     )
-
     return response
   } catch (error) {
     console.error('Error fetching trends:', error)
