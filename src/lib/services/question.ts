@@ -75,7 +75,14 @@ export class QuestionService {
 
   static async getAllWithOptions(): Promise<
     Array<{
-      question: Question
+      question: Question & {
+        categoryRef?: {
+          id: number
+          key: string
+          label: string
+          description: string | null
+        } | null
+      }
       options: QuestionOption[]
     }>
   > {
@@ -85,6 +92,14 @@ export class QuestionService {
         options: {
           where: { isActive: true },
           orderBy: { orderIndex: 'asc' },
+        },
+        categoryRef: {
+          select: {
+            id: true,
+            key: true,
+            label: true,
+            description: true,
+          },
         },
       },
       orderBy: [{ category: 'asc' }, { orderIndex: 'asc' }],
@@ -97,11 +112,13 @@ export class QuestionService {
         description: question.description,
         type: question.type,
         category: question.category,
+        categoryId: question.categoryId,
         orderIndex: question.orderIndex,
         isRequired: question.isRequired,
         isActive: question.isActive,
         createdAt: question.createdAt,
         updatedAt: question.updatedAt,
+        categoryRef: question.categoryRef,
       },
       options: question.options,
     }))

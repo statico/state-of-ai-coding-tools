@@ -7,12 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Category {
+  id          Int        @id @default(autoincrement())
+  key         String     @unique // e.g., 'demographics', 'ai_models'
+  label       String     // Display name for the tab
+  description String?    // Description shown at the top of the category
+  orderIndex  Int        @map("order_index")
+  isActive    Boolean    @default(true) @map("is_active")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  questions   Question[]
+
+  @@index([orderIndex])
+  @@map("categories")
+}
+
 model Question {
   id          Int              @id @default(autoincrement())
   title       String
   description String?
   type        QuestionType
-  category    String
+  category    String           // Keep for backward compatibility, will migrate to categoryId
+  categoryId  Int?             @map("category_id")
   orderIndex  Int              @map("order_index")
   isRequired  Boolean          @default(false) @map("is_required")
   isActive    Boolean          @default(true) @map("is_active")
@@ -20,7 +36,9 @@ model Question {
   updatedAt   DateTime         @updatedAt @map("updated_at")
   options     QuestionOption[]
   responses   Response[]
+  categoryRef Category?        @relation(fields: [categoryId], references: [id])
 
+  @@index([categoryId])
   @@map("questions")
 }
 

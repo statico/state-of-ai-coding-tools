@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -18,7 +18,12 @@ import {
   Loader2,
   CheckCircle,
 } from 'lucide-react'
-import type { Question, QuestionOption, Experience } from '@prisma/client'
+import type {
+  Question,
+  QuestionOption,
+  Experience,
+  Category,
+} from '@prisma/client'
 
 interface QuestionWithOptions {
   question: Question
@@ -43,60 +48,39 @@ interface TabbedSurveyProps {
   submissionMessage?: string
 }
 
-const TAB_SECTIONS = [
-  {
-    id: 'demographics',
-    label: 'Demographics',
-    categories: ['demographics'],
-  },
-  {
-    id: 'ai_models',
-    label: 'AI Models',
-    categories: [
-      'ai_models_anthropic',
-      'ai_models_google',
-      'ai_models_open',
-      'ai_models_openai',
-    ],
-  },
-  {
-    id: 'coding_tools',
-    label: 'Coding Tools',
-    categories: ['code_completion', 'code_review', 'ide_assistants'],
-  },
-  {
-    id: 'testing',
-    label: 'Testing & Quality',
-    categories: ['testing_quality'],
-  },
-  {
-    id: 'usage',
-    label: 'Usage & Sentiment',
-    categories: ['usage', 'sentiment'],
-  },
-  {
-    id: 'organizational',
-    label: 'Organization',
-    categories: ['organizational', 'enterprise'],
-  },
-  {
-    id: 'future',
-    label: 'Future & Followup',
-    categories: ['future', 'followup'],
-  },
-]
-
 export function TabbedSurvey({
   questions,
   onSubmit,
   hasSubmitted = false,
   submissionMessage = '',
 }: TabbedSurveyProps) {
-  const [activeTab, setActiveTab] = useState(TAB_SECTIONS[0].id)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [activeTab, setActiveTab] = useState<string>('')
   const [responses, setResponses] = useState<Record<number, SurveyResponse>>({})
   const [errors, setErrors] = useState<Record<number, string>>({})
   const [completedTabs, setCompletedTabs] = useState<Set<string>>(new Set())
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/survey/categories')
+      const data = await response.json()
+      if (data.success && data.categories.length > 0) {
+        setCategories(data.categories)
+        setActiveTab(data.categories[0].key)
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    } finally {
+      setIsLoadingCategories(false)
+    }
+  }
 
   // Smooth scroll to top of survey
   const scrollToSurvey = () => {
@@ -113,8 +97,8 @@ export function TabbedSurvey({
     }
   }
 
-  const currentTabIndex = TAB_SECTIONS.findIndex(tab => tab.id === activeTab)
-  const isLastTab = currentTabIndex === TAB_SECTIONS.length - 1
+  const currentTabIndex = categories.findIndex(cat => cat.key === activeTab)
+  const isLastTab = currentTabIndex === categories.length - 1
   const isFirstTab = currentTabIndex === 0
 
   // Group questions by category
@@ -129,17 +113,8 @@ export function TabbedSurvey({
   )
 
   // Get questions for a specific tab
-  const getTabQuestions = (tabId: string) => {
-    const tab = TAB_SECTIONS.find(t => t.id === tabId)
-    if (!tab) return []
-
-    const tabQuestions: QuestionWithOptions[] = []
-    tab.categories.forEach(category => {
-      const categoryQuestions = questionsByCategory[category] || []
-      tabQuestions.push(...categoryQuestions)
-    })
-
-    return tabQuestions
+  const getTabQuestions = (categoryKey: string) => {
+    return questionsByCategory[categoryKey] || []
   }
 
   // Get questions for current tab
@@ -218,9 +193,9 @@ export function TabbedSurvey({
   const handleNext = () => {
     if (validateCurrentTab()) {
       setCompletedTabs(prev => new Set(Array.from(prev).concat(activeTab)))
-      const nextTab = TAB_SECTIONS[currentTabIndex + 1]
+      const nextTab = categories[currentTabIndex + 1]
       if (nextTab) {
-        setActiveTab(nextTab.id)
+        setActiveTab(nextTab.key)
         // Small delay to ensure tab content is rendered before scrolling
         setTimeout(() => scrollToSurvey(), 100)
       }
@@ -228,9 +203,9 @@ export function TabbedSurvey({
   }
 
   const handlePrevious = () => {
-    const prevTab = TAB_SECTIONS[currentTabIndex - 1]
+    const prevTab = categories[currentTabIndex - 1]
     if (prevTab) {
-      setActiveTab(prevTab.id)
+      setActiveTab(prevTab.key)
       // Small delay to ensure tab content is rendered before scrolling
       setTimeout(() => scrollToSurvey(), 100)
     }
@@ -359,34 +334,59 @@ export function TabbedSurvey({
     setTimeout(() => scrollToSurvey(), 100)
   }
 
+  if (isLoadingCategories) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (categories.length === 0) {
+    return (
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>No survey categories available</AlertTitle>
+        <AlertDescription>
+          Please check back later or contact support if this issue persists.
+        </AlertDescription>
+      </Alert>
+    )
+  }
+
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
       <TabsList
         className="grid w-full"
-        style={{ gridTemplateColumns: `repeat(${TAB_SECTIONS.length}, 1fr)` }}
+        style={{ gridTemplateColumns: `repeat(${categories.length}, 1fr)` }}
       >
-        {TAB_SECTIONS.map(section => (
+        {categories.map(category => (
           <TabsTrigger
-            key={section.id}
-            value={section.id}
+            key={category.key}
+            value={category.key}
             className="relative cursor-pointer"
           >
-            {completedTabs.has(section.id) && (
+            {completedTabs.has(category.key) && (
               <CheckCircle className="h-4 w-4 mr-1 text-green-600" />
             )}
-            {section.label}
+            {category.label}
           </TabsTrigger>
         ))}
       </TabsList>
 
-      {TAB_SECTIONS.map(section => (
+      {categories.map(category => (
         <TabsContent
-          key={section.id}
-          value={section.id}
+          key={category.key}
+          value={category.key}
           className="space-y-6 mt-6"
         >
+          {category.description && (
+            <div className="text-sm text-muted-foreground p-4 bg-muted/50 rounded-lg">
+              {category.description}
+            </div>
+          )}
           <div className="space-y-6">
-            {getTabQuestions(section.id).map(renderQuestion)}
+            {getTabQuestions(category.key).map(renderQuestion)}
           </div>
 
           {Object.keys(errors).length > 0 && (
@@ -405,14 +405,14 @@ export function TabbedSurvey({
               type="button"
               variant="outline"
               onClick={handlePrevious}
-              disabled={TAB_SECTIONS.findIndex(t => t.id === section.id) === 0}
+              disabled={categories.findIndex(c => c.key === category.key) === 0}
             >
               <ChevronLeft className="h-4 w-4 mr-2" />
               Previous
             </Button>
 
-            {TAB_SECTIONS.findIndex(t => t.id === section.id) ===
-            TAB_SECTIONS.length - 1 ? (
+            {categories.findIndex(c => c.key === category.key) ===
+            categories.length - 1 ? (
               <div className="flex flex-col items-end gap-2">
                 <Button
                   type="button"
