@@ -3,7 +3,7 @@
 NOTE: Dev server is already running on localhost:4001. Use the Playwright MCP server to debug it. Commit often. Make sure the tests pass.
 
 - [x] The trends page crashes the browser. Use Playwright to debug it.
-- [ ] There are too many categories in the seed. Consolidate them. We can fit about 7 categories on the page. Maybe demographics, sentiment, tools, models, etc.
+- [x] There are too many categories in the seed. Consolidate them. We can fit about 7 categories on the page. Maybe demographics, sentiment, tools, models, etc.
 - [ ] Remove the "Home" tab in the navigation.
 - [x] The survey trends page doesn't load once you click on Demographics. Use Playwright to debug the performance on /trends
 - [ ] Make separate pages for each category on the /survey and /trends page, like /survey/demographics and /trends/demographics. Make the root survey page redirect to the first category, and make the root trends page redirect to overview.
