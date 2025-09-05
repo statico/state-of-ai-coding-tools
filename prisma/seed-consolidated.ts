@@ -107,84 +107,6 @@ async function createSection1Demographics(categoryMap: Record<string, number>) {
   console.log('📊 Creating Section 1: Demographics & Background...')
 
   const questions = await Promise.all([
-    // 1.1 Age
-    prisma.question.create({
-      data: {
-        title: 'Age',
-        description: 'What is your age?',
-        type: QuestionType.DEMOGRAPHIC,
-        category: 'demographics',
-        categoryId: categoryMap['demographics'],
-        orderIndex: 101,
-        isRequired: false,
-        options: {
-          create: [
-            { value: 'under_25', label: 'Under 25', orderIndex: 1 },
-            { value: '25_34', label: '25-34', orderIndex: 2 },
-            { value: '35_44', label: '35-44', orderIndex: 3 },
-            { value: '45_54', label: '45-54', orderIndex: 4 },
-            { value: '55_64', label: '55-64', orderIndex: 5 },
-            { value: '65_plus', label: '65+', orderIndex: 6 },
-            {
-              value: 'prefer_not_say',
-              label: 'Prefer not to say',
-              orderIndex: 7,
-            },
-          ],
-        },
-      },
-    }),
-
-    // 1.2 Gender Identity
-    prisma.question.create({
-      data: {
-        title: 'Gender Identity',
-        description: 'How do you identify?',
-        type: QuestionType.DEMOGRAPHIC,
-        category: 'demographics',
-        categoryId: categoryMap['demographics'],
-        orderIndex: 102,
-        isRequired: false,
-        options: {
-          create: [
-            { value: 'woman', label: 'Woman', orderIndex: 1 },
-            { value: 'man', label: 'Man', orderIndex: 2 },
-            { value: 'non_binary', label: 'Non-binary', orderIndex: 3 },
-            { value: 'other', label: 'Other', orderIndex: 4 },
-            {
-              value: 'prefer_not_say',
-              label: 'Prefer not to say',
-              orderIndex: 5,
-            },
-          ],
-        },
-      },
-    }),
-
-    // 1.3 Years of Professional Experience
-    prisma.question.create({
-      data: {
-        title: 'Years of Professional Experience',
-        description:
-          'How many years have you been working professionally in software development?',
-        type: QuestionType.SINGLE_CHOICE,
-        category: 'demographics',
-        categoryId: categoryMap['demographics'],
-        orderIndex: 103,
-        isRequired: false,
-        options: {
-          create: [
-            { value: 'less_than_1', label: 'Less than 1 year', orderIndex: 1 },
-            { value: '1_3', label: '1-3 years', orderIndex: 2 },
-            { value: '4_7', label: '4-7 years', orderIndex: 3 },
-            { value: '8_12', label: '8-12 years', orderIndex: 4 },
-            { value: '13_20', label: '13-20 years', orderIndex: 5 },
-            { value: '20_plus', label: '20+ years', orderIndex: 6 },
-          ],
-        },
-      },
-    }),
-
     // 1.4 Role
     prisma.question.create({
       data: {
@@ -1008,42 +930,6 @@ async function createSection3UsagePatterns(
         },
       },
     }),
-
-    // 3.4 Development Environment
-    prisma.question.create({
-      data: {
-        title: 'Development Environment',
-        description:
-          'What development environments do you use? (Select all that apply)',
-        type: QuestionType.MULTIPLE_CHOICE,
-        category: 'usage',
-        categoryId: categoryMap['usage'],
-        orderIndex: 304,
-        isRequired: false,
-        options: {
-          create: [
-            { value: 'vscode', label: 'VS Code', orderIndex: 1 },
-            {
-              value: 'jetbrains',
-              label: 'JetBrains IDEs (IntelliJ, PyCharm, etc.)',
-              orderIndex: 2,
-            },
-            { value: 'visual_studio', label: 'Visual Studio', orderIndex: 3 },
-            { value: 'neovim_vim', label: 'Neovim/Vim', orderIndex: 4 },
-            { value: 'emacs', label: 'Emacs', orderIndex: 5 },
-            { value: 'xcode', label: 'Xcode', orderIndex: 6 },
-            { value: 'android_studio', label: 'Android Studio', orderIndex: 7 },
-            { value: 'web_based', label: 'Web-based IDEs', orderIndex: 8 },
-            {
-              value: 'terminal_cli',
-              label: 'Terminal/CLI only',
-              orderIndex: 9,
-            },
-            { value: 'other', label: 'Other', orderIndex: 10 },
-          ],
-        },
-      },
-    }),
   ])
 
   console.log('✅ Created Section 3: Usage Patterns & Preferences')
@@ -1397,26 +1283,15 @@ async function createSection7AIModels(categoryMap: Record<string, number>) {
 
   const models = [
     // Keep only the most relevant/popular models
-    // OpenAI Models
+    { name: 'GPT-5', category: 'models', order: 600 },
     { name: 'GPT-4o', category: 'models', order: 601 },
-    { name: 'GPT-4o-mini', category: 'models', order: 602 },
-    { name: 'o1', category: 'models', order: 603 },
-    { name: 'o3-mini', category: 'models', order: 604 },
-
-    // Anthropic Models
-    { name: 'Claude 3.5 Sonnet', category: 'models', order: 605 },
-    { name: 'Claude 3.5 Haiku', category: 'models', order: 606 },
-    { name: 'Claude Opus 4.1', category: 'models', order: 607 },
-
-    // Google Models
-    { name: 'Gemini 2.0 Flash', category: 'models', order: 608 },
-    { name: 'Gemini 1.5 Pro', category: 'models', order: 609 },
-
-    // Open/Local Models (most popular)
+    { name: 'Claude Opus 4.x', category: 'models', order: 605 },
+    { name: 'Claude Sonnet 4.x', category: 'models', order: 606 },
+    { name: 'Gemini 2.5 Pro', category: 'models', order: 608 },
     { name: 'DeepSeek-R1', category: 'models', order: 610 },
     { name: 'DeepSeek-V3', category: 'models', order: 611 },
-    { name: 'Qwen 2.5 Coder', category: 'models', order: 612 },
-    { name: 'Llama 3.3', category: 'models', order: 613 },
+    { name: 'Qwen3', category: 'models', order: 612 },
+    { name: 'Llama3.3', category: 'models', order: 613 },
     { name: 'Mistral Large', category: 'models', order: 614 },
     { name: 'Codestral', category: 'models', order: 615 },
   ]
@@ -1438,246 +1313,6 @@ async function createSection7AIModels(categoryMap: Record<string, number>) {
   )
 
   console.log('✅ Created Section 7: AI Models')
-  return questions
-}
-
-async function createSection8FutureOpinions(
-  categoryMap: Record<string, number>
-) {
-  console.log('🔮 Creating Section 8: Future & Opinions...')
-
-  const questions = await Promise.all([
-    // 8.1 AI Impact on Job Security
-    prisma.question.create({
-      data: {
-        title: 'AI Impact on Job Security',
-        description:
-          "How concerned are you about AI's impact on your job security?",
-        type: QuestionType.SINGLE_CHOICE,
-        category: 'future',
-        categoryId: categoryMap['future'],
-        orderIndex: 801,
-        isRequired: false,
-        options: {
-          create: [
-            { value: 'very_concerned', label: 'Very concerned', orderIndex: 1 },
-            {
-              value: 'somewhat_concerned',
-              label: 'Somewhat concerned',
-              orderIndex: 2,
-            },
-            { value: 'neutral', label: 'Neutral', orderIndex: 3 },
-            {
-              value: 'somewhat_optimistic',
-              label: 'Somewhat optimistic',
-              orderIndex: 4,
-            },
-            {
-              value: 'very_optimistic',
-              label: 'Very optimistic',
-              orderIndex: 5,
-            },
-          ],
-        },
-      },
-    }),
-
-    // 8.2 Expected AI Tool Usage in 2 Years
-    prisma.question.create({
-      data: {
-        title: 'Expected AI Tool Usage in 2 Years',
-        description:
-          'How do you expect AI tool usage to change in the next 2 years?',
-        type: QuestionType.SINGLE_CHOICE,
-        category: 'future',
-        categoryId: categoryMap['future'],
-        orderIndex: 802,
-        isRequired: false,
-        options: {
-          create: [
-            {
-              value: 'mandatory',
-              label: 'Will be mandatory for most developers',
-              orderIndex: 1,
-            },
-            {
-              value: 'standard_optional',
-              label: 'Will be standard practice but optional',
-              orderIndex: 2,
-            },
-            {
-              value: 'commonly_used',
-              label: 'Will be commonly used by some',
-              orderIndex: 3,
-            },
-            {
-              value: 'remain_niche',
-              label: 'Will remain niche/experimental',
-              orderIndex: 4,
-            },
-            {
-              value: 'decline',
-              label: 'Will decline due to limitations',
-              orderIndex: 5,
-            },
-          ],
-        },
-      },
-    }),
-
-    // 8.3 Most Important Features for Future Tools
-    prisma.question.create({
-      data: {
-        title: 'Most Important Features for Future Tools',
-        description:
-          'What features are most important for future AI coding tools? (Select up to 3)',
-        type: QuestionType.MULTIPLE_CHOICE,
-        category: 'future',
-        categoryId: categoryMap['future'],
-        orderIndex: 803,
-        isRequired: false,
-        options: {
-          create: [
-            {
-              value: 'better_context',
-              label: 'Better context understanding (larger context windows)',
-              orderIndex: 1,
-            },
-            {
-              value: 'faster_response',
-              label: 'Faster response times',
-              orderIndex: 2,
-            },
-            { value: 'lower_cost', label: 'Lower cost', orderIndex: 3 },
-            {
-              value: 'better_security',
-              label: 'Better security/privacy',
-              orderIndex: 4,
-            },
-            {
-              value: 'local_deployment',
-              label: 'Local/on-premise deployment',
-              orderIndex: 5,
-            },
-            {
-              value: 'ide_integration',
-              label: 'Better IDE integration',
-              orderIndex: 6,
-            },
-            {
-              value: 'multi_file_understanding',
-              label: 'Multi-file/project understanding',
-              orderIndex: 7,
-            },
-            {
-              value: 'debugging_capabilities',
-              label: 'Better debugging capabilities',
-              orderIndex: 8,
-            },
-            {
-              value: 'multimodal',
-              label: 'Voice/multimodal interaction',
-              orderIndex: 9,
-            },
-            {
-              value: 'test_generation',
-              label: 'Automated testing generation',
-              orderIndex: 10,
-            },
-            {
-              value: 'architecture_assistance',
-              label: 'Architecture/design assistance',
-              orderIndex: 11,
-            },
-          ],
-        },
-      },
-    }),
-
-    // 8.4 NPS Score
-    prisma.question.create({
-      data: {
-        title: 'Would You Recommend AI Coding Tools?',
-        description:
-          'How likely are you to recommend AI coding tools to other developers?',
-        type: QuestionType.RATING,
-        category: 'future',
-        categoryId: categoryMap['future'],
-        orderIndex: 804,
-        isRequired: false,
-      },
-    }),
-
-    // 8.5 Additional Comments
-    prisma.question.create({
-      data: {
-        title: 'Additional Comments',
-        description:
-          "Any other thoughts on AI coding tools you'd like to share? (max 1000 characters)",
-        type: QuestionType.TEXT,
-        category: 'future',
-        categoryId: categoryMap['future'],
-        orderIndex: 805,
-        isRequired: false,
-      },
-    }),
-  ])
-
-  console.log('✅ Created Section 8: Future & Opinions')
-  return questions
-}
-
-async function createSection9FollowUp(categoryMap: Record<string, number>) {
-  console.log('📧 Creating Section 9: Follow-up...')
-
-  const questions = await Promise.all([
-    // 9.1 Interest in Results
-    prisma.question.create({
-      data: {
-        title: 'Interest in Results',
-        description:
-          'Would you like to receive the survey results when available?',
-        type: QuestionType.SINGLE_CHOICE,
-        category: 'demographics',
-        categoryId: categoryMap['demographics'],
-        orderIndex: 901,
-        isRequired: false,
-        options: {
-          create: [
-            {
-              value: 'yes_email',
-              label: 'Yes, please email me',
-              orderIndex: 1,
-            },
-            { value: 'no_thanks', label: 'No thanks', orderIndex: 2 },
-          ],
-        },
-      },
-    }),
-
-    // 9.2 Follow-up Interview
-    prisma.question.create({
-      data: {
-        title: 'Participation in Follow-up',
-        description:
-          'Would you be interested in participating in a follow-up interview (30 min, compensated)?',
-        type: QuestionType.SINGLE_CHOICE,
-        category: 'demographics',
-        categoryId: categoryMap['demographics'],
-        orderIndex: 902,
-        isRequired: false,
-        options: {
-          create: [
-            { value: 'yes_contact', label: 'Yes', orderIndex: 1 },
-            { value: 'maybe_later', label: 'Maybe later', orderIndex: 2 },
-            { value: 'no_thanks', label: 'No thanks', orderIndex: 3 },
-          ],
-        },
-      },
-    }),
-  ])
-
-  console.log('✅ Created Section 9: Follow-up')
   return questions
 }
 
@@ -2023,8 +1658,6 @@ export async function seed(options: SeedOptions = {}) {
       await createSection5AIIDEsAssistants(categoryMap)
       // Section 6 merged into Section 5 (tools)
       await createSection7AIModels(categoryMap)
-      await createSection8FutureOpinions(categoryMap)
-      await createSection9FollowUp(categoryMap)
     }
 
     if (shouldCreateResponses) {
