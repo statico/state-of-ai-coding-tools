@@ -74,5 +74,8 @@
     "tsx": "^4.20.5",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
+  },
+  "prisma": {
+    "seed": "npx tsx src/lib/seed-full-survey.ts"
   }
 }
