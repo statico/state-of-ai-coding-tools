@@ -2,6 +2,10 @@
 
 A comprehensive weekly survey platform for tracking AI coding tool adoption and preferences in the development community. Built with Next.js, featuring automatic password rotation and real-time results visualization.
 
+## Project Goals
+
+This survey platform aims to capture the evolving landscape of AI-powered coding tools by collecting weekly data on developer preferences, adoption rates, and experiences across various AI coding assistants, IDEs, and LLMs. The project provides insights into tool effectiveness, developer sentiment, and emerging trends in AI-assisted development through aggregated community feedback and trend analysis over time.
+
 > [!NOTE]
 > This project has been almost entirely vibe coded with Claude Code.
 
