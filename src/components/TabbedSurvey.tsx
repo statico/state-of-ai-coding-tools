@@ -344,7 +344,7 @@ export function TabbedSurvey({
         className="grid w-full"
         style={{ gridTemplateColumns: `repeat(${TAB_SECTIONS.length}, 1fr)` }}
       >
-        {TAB_SECTIONS.map((section, index) => (
+        {TAB_SECTIONS.map(section => (
           <TabsTrigger
             key={section.id}
             value={section.id}

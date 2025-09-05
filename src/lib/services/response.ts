@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import type { Response, UserSession, Experience } from '@prisma/client'
+import type { Response, UserSession, Experience, Prisma } from '@prisma/client'
 
 export class ResponseService {
   static async create(data: {
@@ -243,8 +243,8 @@ export class UserSessionService {
       data: {
         id: data.id,
         surveyId: data.surveyId ?? null,
-        demographicData: data.demographicData as any,
-        progress: data.progress as any,
+        demographicData: data.demographicData as Prisma.InputJsonValue,
+        progress: data.progress as Prisma.InputJsonValue,
       },
     })
   }
@@ -261,7 +261,7 @@ export class UserSessionService {
   ): Promise<UserSession> {
     return await prisma.userSession.update({
       where: { id },
-      data: { progress: progress as any },
+      data: { progress: progress as Prisma.InputJsonValue },
     })
   }
 

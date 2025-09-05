@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
+import type { Survey } from '@prisma/client'
 
 // Mock the survey service and password manager
 vi.mock('@/lib/services/survey', () => ({
@@ -59,7 +60,7 @@ describe('/api/auth/verify', () => {
       description: 'Test description',
     }
 
-    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as any)
+    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as Survey)
     mockValidateWeeklyPassword.mockResolvedValue(true)
     mockGetActiveWeeklyPassword.mockResolvedValue('test-password')
 
@@ -87,7 +88,7 @@ describe('/api/auth/verify', () => {
   it('should return error for invalid password', async () => {
     const mockSurvey = { id: 1, title: 'Test Survey' }
 
-    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as any)
+    mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as Survey)
     mockValidateWeeklyPassword.mockResolvedValue(false)
 
     const request = new NextRequest('http://localhost:3000/api/auth/verify', {
