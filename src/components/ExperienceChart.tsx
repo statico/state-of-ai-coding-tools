@@ -15,6 +15,7 @@ import {
   customTooltipLabelStyle,
   customLegendStyle,
 } from './ChartTooltip'
+import { CHART_COLORS } from '@/lib/chart-colors'
 
 interface ExperienceChartProps {
   data: Array<{
@@ -27,14 +28,6 @@ interface ExperienceChartProps {
     total: number
   }>
   title: string
-}
-
-const EXPERIENCE_COLORS = {
-  neverHeard: '#94a3b8', // Gray - Never heard
-  wantToTry: '#4ade80', // Green - Want to try
-  notInterested: '#fb923c', // Orange - Not interested
-  wouldUseAgain: '#3b82f6', // Blue - Would use again
-  wouldNotUse: '#ef4444', // Red - Would not use
 }
 
 // Experience labels for reference (currently unused)
@@ -84,27 +77,27 @@ export function ExperienceChart({ data, title }: ExperienceChartProps) {
           <Bar
             dataKey="Never heard"
             stackId="a"
-            fill={EXPERIENCE_COLORS.neverHeard}
+            fill={CHART_COLORS.experience.neverHeard}
           />
           <Bar
             dataKey="Want to try"
             stackId="a"
-            fill={EXPERIENCE_COLORS.wantToTry}
+            fill={CHART_COLORS.experience.wantToTry}
           />
           <Bar
             dataKey="Not interested"
             stackId="a"
-            fill={EXPERIENCE_COLORS.notInterested}
+            fill={CHART_COLORS.experience.notInterested}
           />
           <Bar
             dataKey="Would use again"
             stackId="a"
-            fill={EXPERIENCE_COLORS.wouldUseAgain}
+            fill={CHART_COLORS.experience.wouldUseAgain}
           />
           <Bar
             dataKey="Would not use"
             stackId="a"
-            fill={EXPERIENCE_COLORS.wouldNotUse}
+            fill={CHART_COLORS.experience.wouldNotUse}
           />
         </RechartsBarChart>
       </ResponsiveContainer>

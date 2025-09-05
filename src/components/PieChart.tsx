@@ -11,6 +11,7 @@ import {
   customTooltipContentStyle,
   customTooltipLabelStyle,
 } from './ChartTooltip'
+import { getColor } from '@/lib/chart-colors'
 
 interface PieChartProps {
   data: Array<{
@@ -20,29 +21,6 @@ interface PieChartProps {
   }>
   title: string
 }
-
-const COLORS = [
-  '#ff7c00',
-  '#ffb366',
-  '#40a9a6',
-  '#2c7a7b',
-  '#f6c458',
-  '#ffa040',
-  '#94d0cc',
-  '#b5838d',
-  '#e07b39',
-  '#a44a3f',
-  '#c97064',
-  '#de9151',
-  '#f4a460',
-  '#cd5c5c',
-  '#daa520',
-  '#8b7355',
-  '#bc8f8f',
-  '#d2691e',
-  '#ff6b6b',
-  '#4ecdc4',
-]
 
 export function PieChart({ data, title }: PieChartProps) {
   return (
@@ -63,10 +41,7 @@ export function PieChart({ data, title }: PieChartProps) {
                 dataKey="value"
               >
                 {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
+                  <Cell key={`cell-${index}`} fill={getColor(index)} />
                 ))}
               </Pie>
               <Tooltip
@@ -82,7 +57,7 @@ export function PieChart({ data, title }: PieChartProps) {
             <div key={index} className="flex items-center gap-2 text-[11px]">
               <div
                 className="w-3 h-3 rounded-sm flex-shrink-0"
-                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                style={{ backgroundColor: getColor(index) }}
               />
               <span className="text-muted-foreground truncate flex-1">
                 {entry.name}

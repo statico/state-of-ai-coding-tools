@@ -15,6 +15,7 @@ import {
   customTooltipLabelStyle,
   customLegendStyle,
 } from './ChartTooltip'
+import { CHART_COLORS } from '@/lib/chart-colors'
 
 interface BarChartProps {
   data: Array<{
@@ -50,7 +51,7 @@ export function BarChart({ data, title }: BarChartProps) {
             ]}
           />
           <Legend wrapperStyle={customLegendStyle} />
-          <Bar dataKey="value" fill="#ff7c00" />
+          <Bar dataKey="value" fill={CHART_COLORS.primary} />
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>

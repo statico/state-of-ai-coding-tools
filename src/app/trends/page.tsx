@@ -23,6 +23,7 @@ import {
   customLegendStyle,
   compactLegendStyle,
 } from '@/components/ChartTooltip'
+import { CHART_COLORS, getColor } from '@/lib/chart-colors'
 
 interface TrendData {
   week: string
@@ -51,12 +52,6 @@ const DEFAULT_TAB_SECTIONS = [
     categories: ['overview'],
   },
 ]
-
-// Generate colors for lines
-const generateColor = (index: number, total: number) => {
-  const hue = (index * 360) / total
-  return `hsl(${hue}, 70%, 50%)`
-}
 
 export default function TrendsPage() {
   const [trends, setTrends] = useState<TrendData[]>([])
@@ -210,222 +205,6 @@ export default function TrendsPage() {
     )
   }
 
-  const _renderQuestionChart = (question: Question) => {
-    switch (question.type) {
-      case 'SINGLE_CHOICE':
-      case 'DEMOGRAPHIC':
-      case 'MULTIPLE_CHOICE':
-        // Create chart data for options with stacked bars
-        const optionBars =
-          question.options?.map((opt, idx) => ({
-            dataKey: `q_${question.id}_opt_${opt.id}`,
-            name: opt.label,
-            fill: generateColor(idx, question.options?.length || 1),
-          })) || []
-
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis
-                  tick={{ fontSize: 11 }}
-                  label={{
-                    value: 'Percentage (%)',
-                    angle: -90,
-                    position: 'insideLeft',
-                    style: { fontSize: 11 },
-                  }}
-                />
-                <Tooltip
-                  contentStyle={customTooltipContentStyle}
-                  labelStyle={customTooltipLabelStyle}
-                />
-                {optionBars.length <= 8 && (
-                  <Legend
-                    wrapperStyle={customLegendStyle}
-                    layout="horizontal"
-                    align="center"
-                    verticalAlign="bottom"
-                  />
-                )}
-                {optionBars.map(bar => (
-                  <Bar
-                    key={bar.dataKey}
-                    stackId="stack"
-                    dataKey={bar.dataKey}
-                    name={bar.name}
-                    fill={bar.fill}
-                    animationDuration={0}
-                  />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        )
-
-      case 'RATING':
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis
-                  tick={{ fontSize: 11 }}
-                  label={{
-                    value: 'Average Rating',
-                    angle: -90,
-                    position: 'insideLeft',
-                    style: { fontSize: 11 },
-                  }}
-                  domain={[0, 5]}
-                />
-                <Tooltip
-                  contentStyle={customTooltipContentStyle}
-                  labelStyle={customTooltipLabelStyle}
-                />
-                <Legend wrapperStyle={customLegendStyle} />
-                <Bar
-                  dataKey={`q_${question.id}_avg`}
-                  name="Average Rating"
-                  fill="#3b82f6"
-                  animationDuration={0}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        )
-
-      case 'EXPERIENCE':
-        const experienceMetrics = [
-          { key: 'never_heard', label: 'Never Heard', color: '#6b7280' },
-          { key: 'want_to_try', label: 'Want to Try', color: '#3b82f6' },
-          {
-            key: 'not_interested',
-            label: 'Not Interested',
-            color: '#ef4444',
-          },
-          {
-            key: 'would_use_again',
-            label: 'Would Use Again',
-            color: '#10b981',
-          },
-          { key: 'would_not_use', label: 'Would Not Use', color: '#f59e0b' },
-        ]
-
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis
-                  tick={{ fontSize: 11 }}
-                  label={{
-                    value: 'Percentage (%)',
-                    angle: -90,
-                    position: 'insideLeft',
-                    style: { fontSize: 11 },
-                  }}
-                />
-                <Tooltip
-                  contentStyle={customTooltipContentStyle}
-                  labelStyle={customTooltipLabelStyle}
-                />
-                <Legend wrapperStyle={customLegendStyle} />
-                {experienceMetrics.map(metric => (
-                  <Line
-                    key={metric.key}
-                    type="monotone"
-                    dataKey={`q_${question.id}_${metric.key}`}
-                    name={metric.label}
-                    stroke={metric.color}
-                    strokeWidth={2}
-                    dot={{ r: 3 }}
-                    activeDot={{ r: 5 }}
-                    animationDuration={0}
-                  />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </Card>
-        )
-
-      case 'TEXT':
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis
-                  tick={{ fontSize: 11 }}
-                  label={{
-                    value: 'Response Count',
-                    angle: -90,
-                    position: 'insideLeft',
-                    style: { fontSize: 11 },
-                  }}
-                />
-                <Tooltip
-                  contentStyle={customTooltipContentStyle}
-                  labelStyle={customTooltipLabelStyle}
-                />
-                <Legend wrapperStyle={customLegendStyle} />
-                <Bar
-                  dataKey={`q_${question.id}_count`}
-                  name="Text Responses"
-                  fill="#8b5cf6"
-                  animationDuration={0}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        )
-
-      default:
-        return null
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -553,7 +332,7 @@ export default function TrendsPage() {
                   <Line
                     type="monotone"
                     dataKey="responses"
-                    stroke="#ff7c00"
+                    stroke={CHART_COLORS.responses}
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
@@ -610,10 +389,7 @@ export default function TrendsPage() {
                                   question.options?.map((opt, idx) => ({
                                     dataKey: `q_${question.id}_opt_${opt.id}`,
                                     name: opt.label,
-                                    fill: generateColor(
-                                      idx,
-                                      question.options?.length || 1
-                                    ),
+                                    fill: getColor(idx),
                                   })) || []
 
                                 return (
@@ -717,7 +493,7 @@ export default function TrendsPage() {
                                         <Bar
                                           dataKey={`q_${question.id}_avg`}
                                           name="Average Rating"
-                                          fill="#3b82f6"
+                                          fill={CHART_COLORS.rating}
                                           animationDuration={0}
                                         />
                                       </BarChart>
@@ -730,27 +506,29 @@ export default function TrendsPage() {
                                   {
                                     key: 'never_heard',
                                     label: 'Never Heard',
-                                    color: '#6b7280',
+                                    color: CHART_COLORS.experience.neverHeard,
                                   },
                                   {
                                     key: 'want_to_try',
                                     label: 'Want to Try',
-                                    color: '#3b82f6',
+                                    color: CHART_COLORS.experience.wantToTry,
                                   },
                                   {
                                     key: 'not_interested',
                                     label: 'Not Interested',
-                                    color: '#ef4444',
+                                    color:
+                                      CHART_COLORS.experience.notInterested,
                                   },
                                   {
                                     key: 'would_use_again',
                                     label: 'Would Use Again',
-                                    color: '#10b981',
+                                    color:
+                                      CHART_COLORS.experience.wouldUseAgain,
                                   },
                                   {
                                     key: 'would_not_use',
                                     label: 'Would Not Use',
-                                    color: '#f59e0b',
+                                    color: CHART_COLORS.experience.wouldNotUse,
                                   },
                                 ]
 
@@ -848,7 +626,7 @@ export default function TrendsPage() {
                                         <Bar
                                           dataKey={`q_${question.id}_count`}
                                           name="Text Responses"
-                                          fill="#8b5cf6"
+                                          fill={CHART_COLORS.text}
                                           animationDuration={0}
                                         />
                                       </BarChart>

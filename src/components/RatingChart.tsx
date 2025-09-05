@@ -16,6 +16,7 @@ import {
   customTooltipLabelStyle,
   customLegendStyle,
 } from './ChartTooltip'
+import { CHART_COLORS } from '@/lib/chart-colors'
 
 interface RatingChartProps {
   data: Array<{
@@ -81,7 +82,7 @@ export function RatingChart({ data, title }: RatingChartProps) {
             ]}
           />
           <Legend wrapperStyle={customLegendStyle} />
-          <Bar dataKey="count" fill="hsl(var(--primary))" />
+          <Bar dataKey="count" fill={CHART_COLORS.rating} />
         </BarChart>
       </ResponsiveContainer>
     </div>
