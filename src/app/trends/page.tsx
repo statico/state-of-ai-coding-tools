@@ -17,6 +17,11 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { ChevronLeft, Home } from 'lucide-react'
+import {
+  customTooltipContentStyle,
+  customTooltipLabelStyle,
+  customLegendStyle,
+} from '@/components/ChartTooltip'
 
 interface TrendData {
   week: string
@@ -189,16 +194,22 @@ export default function TrendsPage() {
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  tick={{ fontSize: 11 }}
                 />
                 <YAxis
+                  tick={{ fontSize: 11 }}
                   label={{
                     value: 'Percentage (%)',
                     angle: -90,
                     position: 'insideLeft',
+                    style: { fontSize: 11 },
                   }}
                 />
-                <Tooltip />
-                <Legend />
+                <Tooltip
+                  contentStyle={customTooltipContentStyle}
+                  labelStyle={customTooltipLabelStyle}
+                />
+                <Legend wrapperStyle={customLegendStyle} />
                 {optionBars.map(bar => (
                   <Bar
                     key={bar.dataKey}
@@ -228,17 +239,23 @@ export default function TrendsPage() {
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  tick={{ fontSize: 11 }}
                 />
                 <YAxis
+                  tick={{ fontSize: 11 }}
                   label={{
                     value: 'Average Rating',
                     angle: -90,
                     position: 'insideLeft',
+                    style: { fontSize: 11 },
                   }}
                   domain={[0, 5]}
                 />
-                <Tooltip />
-                <Legend />
+                <Tooltip
+                  contentStyle={customTooltipContentStyle}
+                  labelStyle={customTooltipLabelStyle}
+                />
+                <Legend wrapperStyle={customLegendStyle} />
                 <Bar
                   dataKey={`q_${question.id}_avg`}
                   name="Average Rating"
@@ -280,16 +297,22 @@ export default function TrendsPage() {
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  tick={{ fontSize: 11 }}
                 />
                 <YAxis
+                  tick={{ fontSize: 11 }}
                   label={{
                     value: 'Percentage (%)',
                     angle: -90,
                     position: 'insideLeft',
+                    style: { fontSize: 11 },
                   }}
                 />
-                <Tooltip />
-                <Legend />
+                <Tooltip
+                  contentStyle={customTooltipContentStyle}
+                  labelStyle={customTooltipLabelStyle}
+                />
+                <Legend wrapperStyle={customLegendStyle} />
                 {experienceMetrics.map(metric => (
                   <Line
                     key={metric.key}
@@ -322,16 +345,22 @@ export default function TrendsPage() {
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  tick={{ fontSize: 11 }}
                 />
                 <YAxis
+                  tick={{ fontSize: 11 }}
                   label={{
                     value: 'Response Count',
                     angle: -90,
                     position: 'insideLeft',
+                    style: { fontSize: 11 },
                   }}
                 />
-                <Tooltip />
-                <Legend />
+                <Tooltip
+                  contentStyle={customTooltipContentStyle}
+                  labelStyle={customTooltipLabelStyle}
+                />
+                <Legend wrapperStyle={customLegendStyle} />
                 <Bar
                   dataKey={`q_${question.id}_count`}
                   name="Text Responses"
@@ -464,10 +493,14 @@ export default function TrendsPage() {
                     angle={-45}
                     textAnchor="end"
                     height={80}
+                    tick={{ fontSize: 11 }}
                   />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
+                  <YAxis tick={{ fontSize: 11 }} />
+                  <Tooltip
+                    contentStyle={customTooltipContentStyle}
+                    labelStyle={customTooltipLabelStyle}
+                  />
+                  <Legend wrapperStyle={customLegendStyle} />
                   <Line
                     type="monotone"
                     dataKey="responses"

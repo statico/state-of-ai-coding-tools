@@ -7,9 +7,15 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import { StarIcon } from '@radix-ui/react-icons'
+import {
+  customTooltipContentStyle,
+  customTooltipLabelStyle,
+  customLegendStyle,
+} from './ChartTooltip'
 
 interface RatingChartProps {
   data: Array<{
@@ -60,14 +66,21 @@ export function RatingChart({ data, title }: RatingChartProps) {
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="rating" tickFormatter={value => `${value} ⭐`} />
-          <YAxis />
+          <XAxis
+            dataKey="rating"
+            tickFormatter={value => `${value} ⭐`}
+            tick={{ fontSize: 11 }}
+          />
+          <YAxis tick={{ fontSize: 11 }} />
           <Tooltip
+            contentStyle={customTooltipContentStyle}
+            labelStyle={customTooltipLabelStyle}
             formatter={value => [
               `${value} responses (${(((value as number) / data.reduce((sum, item) => sum + item.count, 0)) * 100).toFixed(1)}%)`,
               'Count',
             ]}
           />
+          <Legend wrapperStyle={customLegendStyle} />
           <Bar dataKey="count" fill="hsl(var(--primary))" />
         </BarChart>
       </ResponsiveContainer>

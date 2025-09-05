@@ -7,8 +7,14 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts'
+import {
+  customTooltipContentStyle,
+  customTooltipLabelStyle,
+  customLegendStyle,
+} from './ChartTooltip'
 
 interface BarChartProps {
   data: Array<{
@@ -32,14 +38,18 @@ export function BarChart({ data, title }: BarChartProps) {
             textAnchor="end"
             height={80}
             interval={0}
+            tick={{ fontSize: 11 }}
           />
-          <YAxis />
+          <YAxis tick={{ fontSize: 11 }} />
           <Tooltip
+            contentStyle={customTooltipContentStyle}
+            labelStyle={customTooltipLabelStyle}
             formatter={value => [
               `${value} responses (${(((value as number) / data.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}%)`,
               'Count',
             ]}
           />
+          <Legend wrapperStyle={customLegendStyle} />
           <Bar dataKey="value" fill="#ff7c00" />
         </RechartsBarChart>
       </ResponsiveContainer>

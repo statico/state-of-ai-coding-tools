@@ -10,6 +10,11 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts'
+import {
+  customTooltipContentStyle,
+  customTooltipLabelStyle,
+  customLegendStyle,
+} from './ChartTooltip'
 
 interface ExperienceChartProps {
   data: Array<{
@@ -62,10 +67,19 @@ export function ExperienceChart({ data, title }: ExperienceChartProps) {
           margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" domain={[0, 100]} tickFormatter={v => `${v}%`} />
-          <YAxis type="category" dataKey="name" />
-          <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
-          <Legend />
+          <XAxis
+            type="number"
+            domain={[0, 100]}
+            tickFormatter={v => `${v}%`}
+            tick={{ fontSize: 11 }}
+          />
+          <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} />
+          <Tooltip
+            contentStyle={customTooltipContentStyle}
+            labelStyle={customTooltipLabelStyle}
+            formatter={(value: number) => `${value.toFixed(1)}%`}
+          />
+          <Legend wrapperStyle={customLegendStyle} />
 
           <Bar
             dataKey="Never heard"

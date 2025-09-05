@@ -6,7 +6,12 @@ import {
   Cell,
   ResponsiveContainer,
   Tooltip,
+  Legend,
 } from 'recharts'
+import {
+  customTooltipContentStyle,
+  customTooltipLabelStyle,
+} from './ChartTooltip'
 
 interface PieChartProps {
   data: Array<{
@@ -65,13 +70,17 @@ export function PieChart({ data, title }: PieChartProps) {
                   />
                 ))}
               </Pie>
-              <Tooltip formatter={value => [`${value} responses`, 'Count']} />
+              <Tooltip
+                contentStyle={customTooltipContentStyle}
+                labelStyle={customTooltipLabelStyle}
+                formatter={value => [`${value} responses`, 'Count']}
+              />
             </RechartsPieChart>
           </ResponsiveContainer>
         </div>
         <div className="lg:w-48 space-y-1">
           {data.slice(0, 10).map((entry, index) => (
-            <div key={index} className="flex items-center gap-2 text-xs">
+            <div key={index} className="flex items-center gap-2 text-[11px]">
               <div
                 className="w-3 h-3 rounded-sm flex-shrink-0"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
@@ -79,13 +88,13 @@ export function PieChart({ data, title }: PieChartProps) {
               <span className="text-muted-foreground truncate flex-1">
                 {entry.name}
               </span>
-              <span className="text-muted-foreground text-xs">
+              <span className="text-muted-foreground text-[10px]">
                 {entry.percentage.toFixed(1)}%
               </span>
             </div>
           ))}
           {data.length > 10 && (
-            <div className="text-xs text-muted-foreground pt-1">
+            <div className="text-[11px] text-muted-foreground pt-1">
               +{data.length - 10} more...
             </div>
           )}
