@@ -60,7 +60,6 @@ const generateColor = (index: number, total: number) => {
 
 export default function TrendsPage() {
   const [trends, setTrends] = useState<TrendData[]>([])
-  const [questions, setQuestions] = useState<Question[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [weekRange, setWeekRange] = useState(12)
@@ -122,7 +121,6 @@ export default function TrendsPage() {
 
       if (data.success) {
         setTrends(data.trends)
-        setQuestions([])
       } else {
         setError(data.error || 'Failed to fetch trends')
       }
@@ -177,7 +175,6 @@ export default function TrendsPage() {
         },
       }))
 
-      setQuestions(combinedQuestions)
       setTrends(combinedTrends)
     } catch (err) {
       setError('Network error')
@@ -213,7 +210,7 @@ export default function TrendsPage() {
     )
   }
 
-  const renderQuestionChart = (question: Question) => {
+  const _renderQuestionChart = (question: Question) => {
     switch (question.type) {
       case 'SINGLE_CHOICE':
       case 'DEMOGRAPHIC':
