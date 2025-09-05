@@ -40,8 +40,8 @@ SURVEY_PASSWORD="secret"  # Optional, defaults to "secret" if not set
 
 3. **Set up the database:**
 ```bash
-# Run migrations
-pnpm prisma migrate dev
+# Apply existing migrations to the database
+pnpm prisma migrate deploy
 
 # Seed the database with questions and sample data
 pnpm seed
