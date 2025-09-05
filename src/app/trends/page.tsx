@@ -21,6 +21,7 @@ import {
   customTooltipContentStyle,
   customTooltipLabelStyle,
   customLegendStyle,
+  compactLegendStyle,
 } from '@/components/ChartTooltip'
 
 interface TrendData {
@@ -54,34 +55,39 @@ const TAB_SECTIONS = [
     categories: ['demographics'],
   },
   {
-    id: 'ai_tools',
-    label: 'AI Tools',
-    categories: ['ai_tools'],
+    id: 'ai_models',
+    label: 'AI Models',
+    categories: [
+      'ai_models_anthropic',
+      'ai_models_google',
+      'ai_models_open',
+      'ai_models_openai',
+    ],
   },
   {
-    id: 'tools',
-    label: 'Dev Tools',
-    categories: ['tools'],
+    id: 'coding',
+    label: 'Coding Tools',
+    categories: ['code_completion', 'code_review', 'ide_assistants'],
   },
   {
-    id: 'frameworks',
-    label: 'Frameworks',
-    categories: ['frameworks'],
+    id: 'testing',
+    label: 'Testing & Quality',
+    categories: ['testing_quality'],
   },
   {
-    id: 'preferences',
-    label: 'Preferences',
-    categories: ['preferences'],
+    id: 'usage',
+    label: 'Usage',
+    categories: ['usage', 'sentiment'],
   },
   {
-    id: 'challenges',
-    label: 'Challenges',
-    categories: ['challenges'],
+    id: 'organization',
+    label: 'Organization',
+    categories: ['organizational', 'enterprise'],
   },
   {
-    id: 'workflow',
-    label: 'Workflow',
-    categories: ['workflow'],
+    id: 'future',
+    label: 'Future & Followup',
+    categories: ['future', 'followup'],
   },
 ]
 
@@ -274,7 +280,14 @@ export default function TrendsPage() {
                   contentStyle={customTooltipContentStyle}
                   labelStyle={customTooltipLabelStyle}
                 />
-                <Legend wrapperStyle={customLegendStyle} />
+                {optionBars.length <= 8 && (
+                  <Legend
+                    wrapperStyle={customLegendStyle}
+                    layout="horizontal"
+                    align="center"
+                    verticalAlign="bottom"
+                  />
+                )}
                 {optionBars.map(bar => (
                   <Bar
                     key={bar.dataKey}
@@ -665,9 +678,18 @@ export default function TrendsPage() {
                                           }
                                           labelStyle={customTooltipLabelStyle}
                                         />
-                                        <Legend
-                                          wrapperStyle={customLegendStyle}
-                                        />
+                                        {optionBars.length <= 8 && (
+                                          <Legend
+                                            wrapperStyle={
+                                              optionBars.length > 5
+                                                ? compactLegendStyle
+                                                : customLegendStyle
+                                            }
+                                            layout="horizontal"
+                                            align="center"
+                                            verticalAlign="bottom"
+                                          />
+                                        )}
                                         {optionBars.map(bar => (
                                           <Bar
                                             key={bar.dataKey}

@@ -16,5 +16,13 @@ export const customTooltipLabelStyle = {
 }
 
 export const customLegendStyle = {
-  fontSize: '11px',
+  fontSize: '10px',
+  maxHeight: '80px',
+  overflow: 'auto',
+}
+
+export const compactLegendStyle = {
+  fontSize: '9px',
+  maxHeight: '60px',
+  overflow: 'auto',
 }
