@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/navigation-menu'
 import { useAuth } from '@/lib/auth-context'
 import {
-  Home,
   FileQuestion,
   BarChart3,
   Menu,
@@ -51,21 +50,6 @@ export function Navigation() {
 
             <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href="/"
-                      className={cn(
-                        'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50',
-                        pathname === '/' && 'bg-accent'
-                      )}
-                    >
-                      <Home className="mr-2 h-4 w-4" />
-                      Home
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-
                 {isAuthenticated && (
                   <>
                     <NavigationMenuItem>
@@ -195,18 +179,6 @@ export function Navigation() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t py-4 px-4 space-y-2">
-            <Link
-              href="/"
-              className={cn(
-                'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
-                pathname === '/' && 'bg-accent'
-              )}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Home className="h-4 w-4" />
-              Home
-            </Link>
-
             {isAuthenticated && (
               <>
                 <Link
