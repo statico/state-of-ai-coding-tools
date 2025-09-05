@@ -9,10 +9,10 @@ export async function middleware(request: NextRequest) {
 
   // Check if the request is for a protected API route
   if (protectedPaths.some(path => pathname.startsWith(path))) {
-    const response = NextResponse.next()
+    // Get cookies from the request
+    const cookieStore = request.cookies
     const session = await getIronSession<SessionData>(
-      request,
-      response,
+      cookieStore,
       sessionOptions
     )
 
