@@ -21,10 +21,63 @@ async function clearExistingData() {
   console.log('✅ Cleared existing data')
 }
 
-async function createDemographicQuestions() {
-  console.log('👥 Creating demographic questions...')
+async function createSection1Demographics() {
+  console.log('📊 Creating Section 1: Demographics & Background...')
 
-  const demographics = await Promise.all([
+  const questions = await Promise.all([
+    // 1.1 Age
+    prisma.question.create({
+      data: {
+        title: 'Age',
+        description: 'What is your age?',
+        type: QuestionType.DEMOGRAPHIC,
+        category: 'demographics',
+        orderIndex: 101,
+        isRequired: false,
+        options: {
+          create: [
+            { value: 'under_25', label: 'Under 25', orderIndex: 1 },
+            { value: '25_34', label: '25-34', orderIndex: 2 },
+            { value: '35_44', label: '35-44', orderIndex: 3 },
+            { value: '45_54', label: '45-54', orderIndex: 4 },
+            { value: '55_64', label: '55-64', orderIndex: 5 },
+            { value: '65_plus', label: '65+', orderIndex: 6 },
+            {
+              value: 'prefer_not_say',
+              label: 'Prefer not to say',
+              orderIndex: 7,
+            },
+          ],
+        },
+      },
+    }),
+
+    // 1.2 Gender Identity
+    prisma.question.create({
+      data: {
+        title: 'Gender Identity',
+        description: 'How do you identify?',
+        type: QuestionType.DEMOGRAPHIC,
+        category: 'demographics',
+        orderIndex: 102,
+        isRequired: false,
+        options: {
+          create: [
+            { value: 'woman', label: 'Woman', orderIndex: 1 },
+            { value: 'man', label: 'Man', orderIndex: 2 },
+            { value: 'non_binary', label: 'Non-binary', orderIndex: 3 },
+            { value: 'other', label: 'Other', orderIndex: 4 },
+            {
+              value: 'prefer_not_say',
+              label: 'Prefer not to say',
+              orderIndex: 5,
+            },
+          ],
+        },
+      },
+    }),
+
+    // 1.3 Years of Professional Experience
     prisma.question.create({
       data: {
         title: 'Years of Professional Experience',
@@ -32,80 +85,29 @@ async function createDemographicQuestions() {
           'How many years have you been working professionally in software development?',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
-        orderIndex: 1,
+        orderIndex: 103,
         isRequired: false,
         options: {
           create: [
             { value: 'less_than_1', label: 'Less than 1 year', orderIndex: 1 },
-            { value: '1_2', label: '1-2 years', orderIndex: 2 },
-            { value: '3_5', label: '3-5 years', orderIndex: 3 },
-            { value: '6_10', label: '6-10 years', orderIndex: 4 },
-            { value: '11_20', label: '11-20 years', orderIndex: 5 },
-            { value: 'over_20', label: 'Over 20 years', orderIndex: 6 },
+            { value: '1_3', label: '1-3 years', orderIndex: 2 },
+            { value: '4_7', label: '4-7 years', orderIndex: 3 },
+            { value: '8_12', label: '8-12 years', orderIndex: 4 },
+            { value: '13_20', label: '13-20 years', orderIndex: 5 },
+            { value: '20_plus', label: '20+ years', orderIndex: 6 },
           ],
         },
       },
     }),
-    prisma.question.create({
-      data: {
-        title: 'Company Size',
-        description: 'How many people work at your company?',
-        type: QuestionType.SINGLE_CHOICE,
-        category: 'demographics',
-        orderIndex: 2,
-        isRequired: false,
-        options: {
-          create: [
-            {
-              value: 'solo',
-              label: 'Just me (freelancer/consultant)',
-              orderIndex: 1,
-            },
-            { value: '2_10', label: '2-10 employees', orderIndex: 2 },
-            { value: '11_50', label: '11-50 employees', orderIndex: 3 },
-            { value: '51_100', label: '51-100 employees', orderIndex: 4 },
-            { value: '101_500', label: '101-500 employees', orderIndex: 5 },
-            { value: '501_1000', label: '501-1000 employees', orderIndex: 6 },
-            { value: 'over_1000', label: 'Over 1000 employees', orderIndex: 7 },
-          ],
-        },
-      },
-    }),
-    prisma.question.create({
-      data: {
-        title: 'Primary Development Area',
-        description: 'What type of development do you primarily focus on?',
-        type: QuestionType.MULTIPLE_CHOICE,
-        category: 'demographics',
-        orderIndex: 3,
-        isRequired: false,
-        options: {
-          create: [
-            { value: 'frontend', label: 'Frontend Development', orderIndex: 1 },
-            { value: 'backend', label: 'Backend Development', orderIndex: 2 },
-            {
-              value: 'fullstack',
-              label: 'Full-Stack Development',
-              orderIndex: 3,
-            },
-            { value: 'mobile', label: 'Mobile Development', orderIndex: 4 },
-            { value: 'devops', label: 'DevOps/Infrastructure', orderIndex: 5 },
-            { value: 'data', label: 'Data Engineering/Science', orderIndex: 6 },
-            { value: 'ml', label: 'Machine Learning/AI', orderIndex: 7 },
-            { value: 'embedded', label: 'Embedded Systems', orderIndex: 8 },
-            { value: 'games', label: 'Game Development', orderIndex: 9 },
-            { value: 'other', label: 'Other', orderIndex: 10 },
-          ],
-        },
-      },
-    }),
+
+    // 1.4 Role
     prisma.question.create({
       data: {
         title: 'What is your role?',
         description: 'Select your current role',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
-        orderIndex: 4,
+        orderIndex: 104,
         isRequired: false,
         options: {
           create: [
@@ -174,13 +176,117 @@ async function createDemographicQuestions() {
         },
       },
     }),
+
+    // 1.5 Team Size
+    prisma.question.create({
+      data: {
+        title: 'Team Size',
+        description: 'How many people are on your immediate team?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'demographics',
+        orderIndex: 105,
+        isRequired: false,
+        options: {
+          create: [
+            { value: 'solo', label: 'Solo developer', orderIndex: 1 },
+            { value: '2_5', label: '2-5 people', orderIndex: 2 },
+            { value: '6_10', label: '6-10 people', orderIndex: 3 },
+            { value: '11_25', label: '11-25 people', orderIndex: 4 },
+            { value: '26_50', label: '26-50 people', orderIndex: 5 },
+            { value: '51_100', label: '51-100 people', orderIndex: 6 },
+            { value: '100_plus', label: '100+ people', orderIndex: 7 },
+          ],
+        },
+      },
+    }),
+
+    // 1.6 Company Size
+    prisma.question.create({
+      data: {
+        title: 'Company Size',
+        description: 'How many people work at your company?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'demographics',
+        orderIndex: 106,
+        isRequired: false,
+        options: {
+          create: [
+            { value: '1_10', label: '1-10 employees', orderIndex: 1 },
+            { value: '11_50', label: '11-50 employees', orderIndex: 2 },
+            { value: '51_200', label: '51-200 employees', orderIndex: 3 },
+            { value: '201_1000', label: '201-1,000 employees', orderIndex: 4 },
+            {
+              value: '1001_5000',
+              label: '1,001-5,000 employees',
+              orderIndex: 5,
+            },
+            { value: '5000_plus', label: '5,000+ employees', orderIndex: 6 },
+          ],
+        },
+      },
+    }),
+
+    // 1.7 Industry
+    prisma.question.create({
+      data: {
+        title: 'Industry',
+        description: 'What industry does your company primarily operate in?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'demographics',
+        orderIndex: 107,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'software_technology',
+              label: 'Software/Technology',
+              orderIndex: 1,
+            },
+            {
+              value: 'finance_banking_insurance',
+              label: 'Finance/Banking/Insurance',
+              orderIndex: 2,
+            },
+            {
+              value: 'healthcare_biotech',
+              label: 'Healthcare/Biotech',
+              orderIndex: 3,
+            },
+            {
+              value: 'ecommerce_retail',
+              label: 'E-commerce/Retail',
+              orderIndex: 4,
+            },
+            { value: 'education', label: 'Education', orderIndex: 5 },
+            {
+              value: 'government_public',
+              label: 'Government/Public Sector',
+              orderIndex: 6,
+            },
+            {
+              value: 'gaming_entertainment',
+              label: 'Gaming/Entertainment',
+              orderIndex: 7,
+            },
+            {
+              value: 'transportation_logistics',
+              label: 'Transportation/Logistics',
+              orderIndex: 8,
+            },
+            { value: 'other', label: 'Other', orderIndex: 9 },
+          ],
+        },
+      },
+    }),
+
+    // 1.8 Country/Region
     prisma.question.create({
       data: {
         title: 'What is your country or region?',
         description: 'Select your country or region',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
-        orderIndex: 5,
+        orderIndex: 108,
         isRequired: false,
         options: {
           create: [
@@ -448,13 +554,15 @@ async function createDemographicQuestions() {
         },
       },
     }),
+
+    // 1.9 Preferred Programming Language
     prisma.question.create({
       data: {
-        title: 'What is your primary programming language?',
-        description: 'Select your primary programming language',
+        title: 'What is your preferred programming language?',
+        description: 'Select your preferred programming language',
         type: QuestionType.SINGLE_CHOICE,
         category: 'demographics',
-        orderIndex: 6,
+        orderIndex: 109,
         isRequired: false,
         options: {
           create: [
@@ -519,287 +627,1019 @@ async function createDemographicQuestions() {
     }),
   ])
 
-  console.log('✅ Created demographic questions')
-  return demographics
+  console.log('✅ Created Section 1: Demographics & Background')
+  return questions
 }
 
-async function createAIToolQuestions() {
-  console.log('🤖 Creating AI tool questions...')
+async function createSection2Organizational() {
+  console.log('🏢 Creating Section 2: Organizational Context & Policies...')
 
-  const aiTools = [
-    'GitHub Copilot',
-    'Cursor',
-    'Claude (Anthropic)',
-    'ChatGPT',
-    'Amazon CodeWhisperer',
-    'Codeium',
-    'Tabnine',
-    'Replit AI',
-    'Sourcegraph Cody',
-    'CodeGeeX',
-    'Continue',
-    'Aider',
-    'Windsurf',
-    'v0 by Vercel',
-    'bolt.new',
-    'Lovable',
-    'Replit Agent',
-    'Devin',
-  ]
-
-  const aiToolQuestions = await Promise.all(
-    aiTools.map((tool, index) =>
-      prisma.question.create({
-        data: {
-          title: tool,
-          description: `What's your experience with ${tool}?`,
-          type: QuestionType.EXPERIENCE,
-          category: 'ai_tools',
-          orderIndex: 100 + index,
-          isRequired: false,
-        },
-      })
-    )
-  )
-
-  console.log(`✅ Created ${aiTools.length} AI tool questions`)
-  return aiToolQuestions
-}
-
-async function createEditorQuestions() {
-  console.log('📝 Creating editor questions...')
-
-  const editors = [
-    'VS Code',
-    'IntelliJ IDEA',
-    'Visual Studio',
-    'Vim/Neovim',
-    'Sublime Text',
-    'WebStorm',
-    'Xcode',
-    'Android Studio',
-    'Emacs',
-    'Zed',
-  ]
-
-  const editorQuestions = await Promise.all(
-    editors.map((tool, index) =>
-      prisma.question.create({
-        data: {
-          title: tool,
-          description: `What's your experience with ${tool}?`,
-          type: QuestionType.EXPERIENCE,
-          category: 'editors',
-          orderIndex: 200 + index,
-          isRequired: false,
-        },
-      })
-    )
-  )
-
-  console.log(`✅ Created ${editors.length} editor questions`)
-  return editorQuestions
-}
-
-async function createFrameworkQuestions() {
-  console.log('🛠️ Creating framework questions...')
-
-  const frameworks = [
-    'React',
-    'Vue.js',
-    'Angular',
-    'Svelte',
-    'Next.js',
-    'Nuxt',
-    'Express',
-    'NestJS',
-    'Django',
-    'Flask',
-    'FastAPI',
-    'Ruby on Rails',
-    'Spring Boot',
-    'ASP.NET',
-    'Laravel',
-  ]
-
-  const frameworkQuestions = await Promise.all(
-    frameworks.map((framework, index) =>
-      prisma.question.create({
-        data: {
-          title: framework,
-          description: `What's your experience with ${framework}?`,
-          type: QuestionType.EXPERIENCE,
-          category: 'frameworks',
-          orderIndex: 300 + index,
-          isRequired: false,
-        },
-      })
-    )
-  )
-
-  console.log(`✅ Created ${frameworks.length} framework questions`)
-  return frameworkQuestions
-}
-
-async function createOpinionQuestions() {
-  console.log('💭 Creating opinion questions...')
-
-  const opinionQuestions = await Promise.all([
+  const questions = await Promise.all([
+    // 2.1 Company AI Tool Policy
     prisma.question.create({
       data: {
-        title: 'AI Impact on Productivity',
-        description:
-          'How much have AI coding tools improved your productivity?',
+        title: 'Company AI Tool Policy',
+        description: "What is your company's policy on AI coding tools?",
         type: QuestionType.SINGLE_CHOICE,
-        category: 'opinions',
-        orderIndex: 400,
+        category: 'organizational',
+        orderIndex: 201,
         isRequired: false,
         options: {
           create: [
             {
-              value: 'significant_increase',
-              label: 'Significantly increased (>50%)',
+              value: 'provides_mandates',
+              label: 'Company provides and mandates specific AI tools',
               orderIndex: 1,
             },
             {
-              value: 'moderate_increase',
-              label: 'Moderately increased (20-50%)',
+              value: 'provides_optional',
+              label: 'Company provides approved AI tools (optional use)',
               orderIndex: 2,
             },
             {
-              value: 'slight_increase',
-              label: 'Slightly increased (<20%)',
+              value: 'expense_approved',
+              label: 'Employees can expense approved AI tools',
               orderIndex: 3,
             },
-            { value: 'no_change', label: 'No change', orderIndex: 4 },
-            { value: 'decreased', label: 'Actually decreased', orderIndex: 5 },
-            { value: 'not_using', label: 'Not using AI tools', orderIndex: 6 },
+            {
+              value: 'employee_discretion',
+              label: 'Employees can use any tools at their discretion',
+              orderIndex: 4,
+            },
+            {
+              value: 'prohibited',
+              label: 'AI coding tools are explicitly prohibited',
+              orderIndex: 5,
+            },
+            { value: 'no_policy', label: 'No formal policy', orderIndex: 6 },
+            { value: 'dont_know', label: "Don't know", orderIndex: 7 },
           ],
         },
       },
     }),
+
+    // 2.2 Security/Compliance Requirements
     prisma.question.create({
       data: {
-        title: 'Most Important AI Feature',
+        title: 'Security/Compliance Requirements',
         description:
-          'Which AI coding assistant feature is most valuable to you?',
-        type: QuestionType.SINGLE_CHOICE,
-        category: 'opinions',
-        orderIndex: 401,
+          'What security or compliance requirements apply to your AI tool usage? (Select all that apply)',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: 'organizational',
+        orderIndex: 202,
         isRequired: false,
         options: {
           create: [
             {
-              value: 'autocomplete',
-              label: 'Code autocompletion',
+              value: 'code_stays_internal',
+              label: 'Code cannot leave company infrastructure',
               orderIndex: 1,
             },
             {
-              value: 'generation',
-              label: 'Code generation from comments',
+              value: 'on_premises_only',
+              label: 'Must use on-premises/self-hosted solutions only',
               orderIndex: 2,
             },
             {
-              value: 'chat',
-              label: 'Chat/conversation interface',
+              value: 'soc2_certified',
+              label: 'Must use SOC 2 certified tools',
               orderIndex: 3,
             },
             {
-              value: 'refactoring',
-              label: 'Code refactoring suggestions',
+              value: 'gdpr_privacy',
+              label: 'Must comply with GDPR/privacy regulations',
               orderIndex: 4,
             },
             {
-              value: 'debugging',
-              label: 'Bug detection and fixes',
+              value: 'hipaa_healthcare',
+              label: 'Must comply with HIPAA/healthcare regulations',
               orderIndex: 5,
             },
+            {
+              value: 'financial_regulations',
+              label: 'Must comply with financial services regulations',
+              orderIndex: 6,
+            },
+            {
+              value: 'no_requirements',
+              label: 'No specific requirements',
+              orderIndex: 7,
+            },
+            { value: 'dont_know', label: "Don't know", orderIndex: 8 },
+          ],
+        },
+      },
+    }),
+
+    // 2.3 Budget for AI Tools
+    prisma.question.create({
+      data: {
+        title: 'Budget for AI Tools (Per Developer/Year)',
+        description:
+          "What is your company's budget for AI coding tools per developer per year?",
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'organizational',
+        orderIndex: 203,
+        isRequired: false,
+        options: {
+          create: [
+            { value: 'zero', label: '$0 (no budget)', orderIndex: 1 },
+            { value: '1_100', label: '$1-$100', orderIndex: 2 },
+            { value: '101_300', label: '$101-$300', orderIndex: 3 },
+            { value: '301_600', label: '$301-$600', orderIndex: 4 },
+            { value: '601_1200', label: '$601-$1,200', orderIndex: 5 },
+            { value: '1200_plus', label: '$1,200+', orderIndex: 6 },
+            { value: 'dont_know', label: "Don't know", orderIndex: 7 },
+          ],
+        },
+      },
+    }),
+  ])
+
+  console.log('✅ Created Section 2: Organizational Context & Policies')
+  return questions
+}
+
+async function createSection3UsagePatterns() {
+  console.log('💻 Creating Section 3: Usage Patterns & Preferences...')
+
+  const questions = await Promise.all([
+    // 3.1 Current AI Tool Usage Frequency
+    prisma.question.create({
+      data: {
+        title: 'Current AI Tool Usage Frequency',
+        description: 'How often do you use AI coding tools?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'usage',
+        orderIndex: 301,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'multiple_daily',
+              label: 'Multiple times per day',
+              orderIndex: 1,
+            },
+            { value: 'daily', label: 'Daily', orderIndex: 2 },
+            {
+              value: 'several_weekly',
+              label: 'Several times per week',
+              orderIndex: 3,
+            },
+            { value: 'weekly', label: 'Weekly', orderIndex: 4 },
+            {
+              value: 'occasionally',
+              label: 'Occasionally (less than weekly)',
+              orderIndex: 5,
+            },
+            {
+              value: 'never',
+              label: 'Never used AI coding tools',
+              orderIndex: 6,
+            },
+          ],
+        },
+      },
+    }),
+
+    // 3.2 Model Preference
+    prisma.question.create({
+      data: {
+        title: 'Model Preference',
+        description: 'What type of AI models do you prefer to use?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'usage',
+        orderIndex: 302,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'exclusively_cloud',
+              label: 'Exclusively cloud/API models (OpenAI, Anthropic, etc.)',
+              orderIndex: 1,
+            },
+            {
+              value: 'primarily_cloud',
+              label: 'Primarily cloud models with some local',
+              orderIndex: 2,
+            },
+            {
+              value: 'mix_equal',
+              label: 'Mix of cloud and local models equally',
+              orderIndex: 3,
+            },
+            {
+              value: 'primarily_local',
+              label: 'Primarily local models with some cloud',
+              orderIndex: 4,
+            },
+            {
+              value: 'exclusively_local',
+              label: 'Exclusively local/self-hosted models',
+              orderIndex: 5,
+            },
+            {
+              value: 'not_sure',
+              label: "Not sure what models I'm using",
+              orderIndex: 6,
+            },
+          ],
+        },
+      },
+    }),
+
+    // 3.3 Primary Use Cases
+    prisma.question.create({
+      data: {
+        title: 'Primary Use Cases',
+        description:
+          'What do you primarily use AI coding tools for? (Select all that apply)',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: 'usage',
+        orderIndex: 303,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'code_generation',
+              label: 'Code generation/completion',
+              orderIndex: 1,
+            },
+            {
+              value: 'bug_fixing',
+              label: 'Bug fixing/debugging',
+              orderIndex: 2,
+            },
+            { value: 'code_review', label: 'Code review', orderIndex: 3 },
+            { value: 'refactoring', label: 'Refactoring', orderIndex: 4 },
+            { value: 'writing_tests', label: 'Writing tests', orderIndex: 5 },
             {
               value: 'documentation',
               label: 'Documentation generation',
               orderIndex: 6,
             },
-            { value: 'testing', label: 'Test generation', orderIndex: 7 },
-            { value: 'review', label: 'Code review', orderIndex: 8 },
+            {
+              value: 'learning',
+              label: 'Learning new languages/frameworks',
+              orderIndex: 7,
+            },
+            {
+              value: 'architecture',
+              label: 'Architecture/design discussions',
+              orderIndex: 8,
+            },
+            {
+              value: 'database_optimization',
+              label: 'Database/query optimization',
+              orderIndex: 9,
+            },
+            {
+              value: 'devops_infrastructure',
+              label: 'DevOps/infrastructure code',
+              orderIndex: 10,
+            },
+            {
+              value: 'security_analysis',
+              label: 'Security analysis',
+              orderIndex: 11,
+            },
           ],
         },
       },
     }),
+
+    // 3.4 Development Environment
     prisma.question.create({
       data: {
-        title: 'Biggest AI Tool Concern',
-        description: 'What concerns you most about AI coding tools?',
+        title: 'Development Environment',
+        description:
+          'What development environments do you use? (Select all that apply)',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: 'usage',
+        orderIndex: 304,
+        isRequired: false,
+        options: {
+          create: [
+            { value: 'vscode', label: 'VS Code', orderIndex: 1 },
+            {
+              value: 'jetbrains',
+              label: 'JetBrains IDEs (IntelliJ, PyCharm, etc.)',
+              orderIndex: 2,
+            },
+            { value: 'visual_studio', label: 'Visual Studio', orderIndex: 3 },
+            { value: 'neovim_vim', label: 'Neovim/Vim', orderIndex: 4 },
+            { value: 'emacs', label: 'Emacs', orderIndex: 5 },
+            { value: 'xcode', label: 'Xcode', orderIndex: 6 },
+            { value: 'android_studio', label: 'Android Studio', orderIndex: 7 },
+            { value: 'web_based', label: 'Web-based IDEs', orderIndex: 8 },
+            {
+              value: 'terminal_cli',
+              label: 'Terminal/CLI only',
+              orderIndex: 9,
+            },
+            { value: 'other', label: 'Other', orderIndex: 10 },
+          ],
+        },
+      },
+    }),
+  ])
+
+  console.log('✅ Created Section 3: Usage Patterns & Preferences')
+  return questions
+}
+
+async function createSection4SentimentImpact() {
+  console.log('📈 Creating Section 4: Sentiment & Impact...')
+
+  const questions = await Promise.all([
+    // 4.1 Personal Sentiment
+    prisma.question.create({
+      data: {
+        title: 'Personal Sentiment Toward AI Coding Tools',
+        description: 'How do you personally feel about AI coding tools?',
+        type: QuestionType.RATING,
+        category: 'sentiment',
+        orderIndex: 401,
+        isRequired: false,
+      },
+    }),
+
+    // 4.2 Team Sentiment
+    prisma.question.create({
+      data: {
+        title: 'Team Sentiment',
+        description: 'How does your team feel about AI coding tools?',
         type: QuestionType.SINGLE_CHOICE,
-        category: 'opinions',
+        category: 'sentiment',
         orderIndex: 402,
         isRequired: false,
         options: {
           create: [
             {
-              value: 'security',
-              label: 'Security/privacy of code',
+              value: 'very_enthusiastic',
+              label: 'Very enthusiastic',
               orderIndex: 1,
             },
-            { value: 'quality', label: 'Code quality concerns', orderIndex: 2 },
             {
-              value: 'dependency',
-              label: 'Over-reliance on AI',
-              orderIndex: 3,
+              value: 'mostly_positive',
+              label: 'Mostly positive',
+              orderIndex: 2,
             },
-            { value: 'job', label: 'Job security', orderIndex: 4 },
-            { value: 'cost', label: 'Cost/pricing', orderIndex: 5 },
+            { value: 'mixed', label: 'Mixed reactions', orderIndex: 3 },
             {
-              value: 'accuracy',
-              label: 'Accuracy of suggestions',
+              value: 'mostly_skeptical',
+              label: 'Mostly skeptical',
+              orderIndex: 4,
+            },
+            { value: 'very_resistant', label: 'Very resistant', orderIndex: 5 },
+            {
+              value: 'not_applicable',
+              label: 'Not applicable/work alone',
               orderIndex: 6,
             },
-            {
-              value: 'learning',
-              label: 'Impact on learning/skill development',
-              orderIndex: 7,
-            },
-            { value: 'none', label: 'No major concerns', orderIndex: 8 },
           ],
         },
       },
     }),
+
+    // 4.3 Productivity Impact
     prisma.question.create({
       data: {
-        title: 'AI Adoption Timeline',
-        description:
-          'When do you think AI will write the majority of production code?',
+        title: 'Productivity Impact',
+        description: 'How have AI coding tools impacted your productivity?',
         type: QuestionType.SINGLE_CHOICE,
-        category: 'opinions',
+        category: 'sentiment',
         orderIndex: 403,
         isRequired: false,
         options: {
           create: [
-            { value: 'already', label: 'It already does', orderIndex: 1 },
-            { value: '1_year', label: 'Within 1 year', orderIndex: 2 },
-            { value: '2_3_years', label: 'Within 2-3 years', orderIndex: 3 },
-            { value: '5_years', label: 'Within 5 years', orderIndex: 4 },
-            { value: '10_years', label: 'Within 10 years', orderIndex: 5 },
-            { value: 'more_10', label: 'More than 10 years', orderIndex: 6 },
-            { value: 'never', label: 'Never', orderIndex: 7 },
+            {
+              value: 'significant_increase',
+              label: 'Significant increase (>50%)',
+              orderIndex: 1,
+            },
+            {
+              value: 'moderate_increase',
+              label: 'Moderate increase (20-50%)',
+              orderIndex: 2,
+            },
+            {
+              value: 'slight_increase',
+              label: 'Slight increase (5-20%)',
+              orderIndex: 3,
+            },
+            {
+              value: 'no_change',
+              label: 'No noticeable change',
+              orderIndex: 4,
+            },
+            {
+              value: 'slight_decrease',
+              label: 'Slight decrease',
+              orderIndex: 5,
+            },
+            {
+              value: 'moderate_decrease',
+              label: 'Moderate decrease',
+              orderIndex: 6,
+            },
+            {
+              value: 'significant_decrease',
+              label: 'Significant decrease',
+              orderIndex: 7,
+            },
           ],
         },
       },
     }),
+
+    // 4.4 Code Quality Impact
+    prisma.question.create({
+      data: {
+        title: 'Code Quality Impact',
+        description: 'How have AI coding tools impacted your code quality?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'sentiment',
+        orderIndex: 404,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'significantly_improved',
+              label: 'Significantly improved',
+              orderIndex: 1,
+            },
+            {
+              value: 'somewhat_improved',
+              label: 'Somewhat improved',
+              orderIndex: 2,
+            },
+            { value: 'no_change', label: 'No change', orderIndex: 3 },
+            {
+              value: 'somewhat_degraded',
+              label: 'Somewhat degraded',
+              orderIndex: 4,
+            },
+            {
+              value: 'significantly_degraded',
+              label: 'Significantly degraded',
+              orderIndex: 5,
+            },
+            { value: 'too_early', label: 'Too early to tell', orderIndex: 6 },
+          ],
+        },
+      },
+    }),
+
+    // 4.5 Biggest Benefits
+    prisma.question.create({
+      data: {
+        title: 'Biggest Benefits',
+        description:
+          'What are the biggest benefits of AI coding tools? (Select up to 3)',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: 'sentiment',
+        orderIndex: 405,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'faster_development',
+              label: 'Faster development speed',
+              orderIndex: 1,
+            },
+            {
+              value: 'reduced_boilerplate',
+              label: 'Reduced boilerplate/repetitive coding',
+              orderIndex: 2,
+            },
+            {
+              value: 'learning_patterns',
+              label: 'Learning new patterns/approaches',
+              orderIndex: 3,
+            },
+            {
+              value: 'better_documentation',
+              label: 'Better documentation',
+              orderIndex: 4,
+            },
+            {
+              value: 'consistent_style',
+              label: 'More consistent code style',
+              orderIndex: 5,
+            },
+            {
+              value: 'catching_bugs',
+              label: 'Catching bugs earlier',
+              orderIndex: 6,
+            },
+            {
+              value: 'reduced_cognitive_load',
+              label: 'Reduced cognitive load',
+              orderIndex: 7,
+            },
+            {
+              value: 'more_creative_time',
+              label: 'More time for creative/complex tasks',
+              orderIndex: 8,
+            },
+            {
+              value: 'better_test_coverage',
+              label: 'Better test coverage',
+              orderIndex: 9,
+            },
+            { value: 'no_benefits', label: 'None/no benefits', orderIndex: 10 },
+          ],
+        },
+      },
+    }),
+
+    // 4.6 Biggest Challenges
+    prisma.question.create({
+      data: {
+        title: 'Biggest Challenges',
+        description:
+          'What are the biggest challenges with AI coding tools? (Select up to 3)',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: 'sentiment',
+        orderIndex: 406,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'cost_budget',
+              label: 'Cost/budget constraints',
+              orderIndex: 1,
+            },
+            {
+              value: 'security_privacy',
+              label: 'Security/privacy concerns',
+              orderIndex: 2,
+            },
+            {
+              value: 'code_quality',
+              label: 'Code quality concerns',
+              orderIndex: 3,
+            },
+            {
+              value: 'over_reliance',
+              label: 'Over-reliance on AI suggestions',
+              orderIndex: 4,
+            },
+            {
+              value: 'incorrect_code',
+              label: 'Incorrect/hallucinated code',
+              orderIndex: 5,
+            },
+            {
+              value: 'context_limitations',
+              label: 'Context limitations',
+              orderIndex: 6,
+            },
+            {
+              value: 'latency_performance',
+              label: 'Latency/performance issues',
+              orderIndex: 7,
+            },
+            {
+              value: 'integration_difficulties',
+              label: 'Integration difficulties',
+              orderIndex: 8,
+            },
+            {
+              value: 'company_restrictions',
+              label: 'Company policy restrictions',
+              orderIndex: 9,
+            },
+            {
+              value: 'learning_curve',
+              label: 'Learning curve',
+              orderIndex: 10,
+            },
+            {
+              value: 'language_support',
+              label: 'Lack of language/framework support',
+              orderIndex: 11,
+            },
+            {
+              value: 'team_resistance',
+              label: 'Team resistance/adoption',
+              orderIndex: 12,
+            },
+          ],
+        },
+      },
+    }),
+  ])
+
+  console.log('✅ Created Section 4: Sentiment & Impact')
+  return questions
+}
+
+async function createSection5AIIDEsAssistants() {
+  console.log('🤖 Creating Section 5: AI Coding IDEs & Assistants...')
+
+  const tools = [
+    // IDE-Based Assistants
+    { name: 'Cursor', category: 'ide_assistants', order: 501 },
+    { name: 'Windsurf (Codeium)', category: 'ide_assistants', order: 502 },
+    {
+      name: 'Claude Code (Anthropic CLI)',
+      category: 'ide_assistants',
+      order: 503,
+    },
+    {
+      name: 'Qodo Gen (formerly Codium)',
+      category: 'ide_assistants',
+      order: 504,
+    },
+    { name: 'Bolt.new', category: 'ide_assistants', order: 505 },
+    { name: 'v0 (Vercel)', category: 'ide_assistants', order: 506 },
+    { name: 'Replit AI', category: 'ide_assistants', order: 507 },
+    { name: 'JetBrains AI Assistant', category: 'ide_assistants', order: 508 },
+    {
+      name: 'Visual Studio IntelliCode',
+      category: 'ide_assistants',
+      order: 509,
+    },
+
+    // Code Completion/Generation
+    { name: 'GitHub Copilot', category: 'code_completion', order: 510 },
+    { name: 'Amazon Q Developer', category: 'code_completion', order: 511 },
+    { name: 'Tabnine', category: 'code_completion', order: 512 },
+    { name: 'Codeium (Free tier)', category: 'code_completion', order: 513 },
+    { name: 'Sourcegraph Cody', category: 'code_completion', order: 514 },
+    { name: 'Continue.dev', category: 'code_completion', order: 515 },
+    { name: 'Aider', category: 'code_completion', order: 516 },
+    { name: 'Pieces for Developers', category: 'code_completion', order: 517 },
+    { name: 'Augment Code', category: 'code_completion', order: 518 },
+
+    // Enterprise/Team Solutions
+    { name: 'Gemini Code Assist (Google)', category: 'enterprise', order: 519 },
+    { name: 'CodeWhisperer (AWS)', category: 'enterprise', order: 520 },
+    { name: 'Azure AI Assistant', category: 'enterprise', order: 521 },
+  ]
+
+  const questions = await Promise.all(
+    tools.map(tool =>
+      prisma.question.create({
+        data: {
+          title: tool.name,
+          description: `What's your experience with ${tool.name}?`,
+          type: QuestionType.EXPERIENCE,
+          category: tool.category,
+          orderIndex: tool.order,
+          isRequired: false,
+        },
+      })
+    )
+  )
+
+  console.log('✅ Created Section 5: AI Coding IDEs & Assistants')
+  return questions
+}
+
+async function createSection6CodeReviewTesting() {
+  console.log('🔍 Creating Section 6: AI Code Review & Testing Tools...')
+
+  const tools = [
+    // Code Review
+    { name: 'CodeRabbit', category: 'code_review', order: 601 },
+    { name: 'Qodo Merge (PR-Agent)', category: 'code_review', order: 602 },
+    { name: 'Bito AI Code Review', category: 'code_review', order: 603 },
+    { name: 'CodeScene', category: 'code_review', order: 604 },
+    { name: 'DeepSource', category: 'code_review', order: 605 },
+    { name: 'Codacy', category: 'code_review', order: 606 },
+    { name: 'PullRequest.com', category: 'code_review', order: 607 },
+    { name: 'What The Diff', category: 'code_review', order: 608 },
+    { name: 'CodeAnt AI', category: 'code_review', order: 609 },
+
+    // Testing & Quality
+    { name: 'Diffblue Cover (Java)', category: 'testing_quality', order: 610 },
+    { name: 'Mabl (E2E testing)', category: 'testing_quality', order: 611 },
+    {
+      name: 'Applitools (Visual testing)',
+      category: 'testing_quality',
+      order: 612,
+    },
+    { name: 'Testim.io', category: 'testing_quality', order: 613 },
+  ]
+
+  const questions = await Promise.all(
+    tools.map(tool =>
+      prisma.question.create({
+        data: {
+          title: tool.name,
+          description: `What's your experience with ${tool.name}?`,
+          type: QuestionType.EXPERIENCE,
+          category: tool.category,
+          orderIndex: tool.order,
+          isRequired: false,
+        },
+      })
+    )
+  )
+
+  console.log('✅ Created Section 6: AI Code Review & Testing Tools')
+  return questions
+}
+
+async function createSection7AIModels() {
+  console.log('🧠 Creating Section 7: AI Models...')
+
+  const models = [
+    // OpenAI Models
+    { name: 'GPT-4o', category: 'ai_models_openai', order: 701 },
+    { name: 'GPT-4o-mini', category: 'ai_models_openai', order: 702 },
+    { name: 'o1', category: 'ai_models_openai', order: 703 },
+    { name: 'o1-mini', category: 'ai_models_openai', order: 704 },
+    { name: 'o3-mini', category: 'ai_models_openai', order: 705 },
+
+    // Anthropic Models
+    { name: 'Claude 3.5 Sonnet', category: 'ai_models_anthropic', order: 706 },
+    { name: 'Claude 3.5 Haiku', category: 'ai_models_anthropic', order: 707 },
+    { name: 'Claude 3 Opus', category: 'ai_models_anthropic', order: 708 },
+    { name: 'Claude Opus 4', category: 'ai_models_anthropic', order: 709 },
+    { name: 'Claude Opus 4.1', category: 'ai_models_anthropic', order: 710 },
+
+    // Google Models
+    { name: 'Gemini 2.5 Pro', category: 'ai_models_google', order: 711 },
+    { name: 'Gemini 2.0 Flash', category: 'ai_models_google', order: 712 },
+    { name: 'Gemini 1.5 Pro', category: 'ai_models_google', order: 713 },
+    { name: 'Gemini 1.5 Flash', category: 'ai_models_google', order: 714 },
+
+    // Open/Local Models
+    {
+      name: 'DeepSeek-R1 (& distilled)',
+      category: 'ai_models_open',
+      order: 715,
+    },
+    { name: 'DeepSeek-V3', category: 'ai_models_open', order: 716 },
+    { name: 'DeepSeek Coder', category: 'ai_models_open', order: 717 },
+    {
+      name: 'Qwen 3 (235B/30B/smaller)',
+      category: 'ai_models_open',
+      order: 718,
+    },
+    { name: 'Qwen 2.5 Coder', category: 'ai_models_open', order: 719 },
+    { name: 'Llama 3.3 (70B)', category: 'ai_models_open', order: 720 },
+    { name: 'Llama 3.1 (405B/70B/8B)', category: 'ai_models_open', order: 721 },
+    { name: 'Mistral Large', category: 'ai_models_open', order: 722 },
+    { name: 'Codestral (Mistral)', category: 'ai_models_open', order: 723 },
+    { name: 'Yi Coder', category: 'ai_models_open', order: 724 },
+    { name: 'StarCoder2', category: 'ai_models_open', order: 725 },
+    { name: 'Code Llama', category: 'ai_models_open', order: 726 },
+    { name: 'WizardCoder', category: 'ai_models_open', order: 727 },
+  ]
+
+  const questions = await Promise.all(
+    models.map(model =>
+      prisma.question.create({
+        data: {
+          title: model.name,
+          description: `Have you used ${model.name} for coding assistance?`,
+          type: QuestionType.EXPERIENCE,
+          category: model.category,
+          orderIndex: model.order,
+          isRequired: false,
+        },
+      })
+    )
+  )
+
+  console.log('✅ Created Section 7: AI Models')
+  return questions
+}
+
+async function createSection8FutureOpinions() {
+  console.log('🔮 Creating Section 8: Future & Opinions...')
+
+  const questions = await Promise.all([
+    // 8.1 AI Impact on Job Security
+    prisma.question.create({
+      data: {
+        title: 'AI Impact on Job Security',
+        description:
+          "How concerned are you about AI's impact on your job security?",
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'future',
+        orderIndex: 801,
+        isRequired: false,
+        options: {
+          create: [
+            { value: 'very_concerned', label: 'Very concerned', orderIndex: 1 },
+            {
+              value: 'somewhat_concerned',
+              label: 'Somewhat concerned',
+              orderIndex: 2,
+            },
+            { value: 'neutral', label: 'Neutral', orderIndex: 3 },
+            {
+              value: 'somewhat_optimistic',
+              label: 'Somewhat optimistic',
+              orderIndex: 4,
+            },
+            {
+              value: 'very_optimistic',
+              label: 'Very optimistic',
+              orderIndex: 5,
+            },
+          ],
+        },
+      },
+    }),
+
+    // 8.2 Expected AI Tool Usage in 2 Years
+    prisma.question.create({
+      data: {
+        title: 'Expected AI Tool Usage in 2 Years',
+        description:
+          'How do you expect AI tool usage to change in the next 2 years?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'future',
+        orderIndex: 802,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'mandatory',
+              label: 'Will be mandatory for most developers',
+              orderIndex: 1,
+            },
+            {
+              value: 'standard_optional',
+              label: 'Will be standard practice but optional',
+              orderIndex: 2,
+            },
+            {
+              value: 'commonly_used',
+              label: 'Will be commonly used by some',
+              orderIndex: 3,
+            },
+            {
+              value: 'remain_niche',
+              label: 'Will remain niche/experimental',
+              orderIndex: 4,
+            },
+            {
+              value: 'decline',
+              label: 'Will decline due to limitations',
+              orderIndex: 5,
+            },
+          ],
+        },
+      },
+    }),
+
+    // 8.3 Most Important Features for Future Tools
+    prisma.question.create({
+      data: {
+        title: 'Most Important Features for Future Tools',
+        description:
+          'What features are most important for future AI coding tools? (Select up to 3)',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: 'future',
+        orderIndex: 803,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'better_context',
+              label: 'Better context understanding (larger context windows)',
+              orderIndex: 1,
+            },
+            {
+              value: 'faster_response',
+              label: 'Faster response times',
+              orderIndex: 2,
+            },
+            { value: 'lower_cost', label: 'Lower cost', orderIndex: 3 },
+            {
+              value: 'better_security',
+              label: 'Better security/privacy',
+              orderIndex: 4,
+            },
+            {
+              value: 'local_deployment',
+              label: 'Local/on-premise deployment',
+              orderIndex: 5,
+            },
+            {
+              value: 'ide_integration',
+              label: 'Better IDE integration',
+              orderIndex: 6,
+            },
+            {
+              value: 'multi_file_understanding',
+              label: 'Multi-file/project understanding',
+              orderIndex: 7,
+            },
+            {
+              value: 'debugging_capabilities',
+              label: 'Better debugging capabilities',
+              orderIndex: 8,
+            },
+            {
+              value: 'multimodal',
+              label: 'Voice/multimodal interaction',
+              orderIndex: 9,
+            },
+            {
+              value: 'test_generation',
+              label: 'Automated testing generation',
+              orderIndex: 10,
+            },
+            {
+              value: 'architecture_assistance',
+              label: 'Architecture/design assistance',
+              orderIndex: 11,
+            },
+          ],
+        },
+      },
+    }),
+
+    // 8.4 NPS Score
+    prisma.question.create({
+      data: {
+        title: 'Would You Recommend AI Coding Tools?',
+        description:
+          'How likely are you to recommend AI coding tools to other developers?',
+        type: QuestionType.RATING,
+        category: 'future',
+        orderIndex: 804,
+        isRequired: false,
+      },
+    }),
+
+    // 8.5 Additional Comments
     prisma.question.create({
       data: {
         title: 'Additional Comments',
         description:
-          "Any other thoughts on AI coding tools you'd like to share?",
+          "Any other thoughts on AI coding tools you'd like to share? (max 1000 characters)",
         type: QuestionType.TEXT,
-        category: 'opinions',
-        orderIndex: 404,
+        category: 'future',
+        orderIndex: 805,
         isRequired: false,
       },
     }),
   ])
 
-  console.log('✅ Created opinion questions')
-  return opinionQuestions
+  console.log('✅ Created Section 8: Future & Opinions')
+  return questions
+}
+
+async function createSection9FollowUp() {
+  console.log('📧 Creating Section 9: Follow-up...')
+
+  const questions = await Promise.all([
+    // 9.1 Interest in Results
+    prisma.question.create({
+      data: {
+        title: 'Interest in Results',
+        description:
+          'Would you like to receive the survey results when available?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'followup',
+        orderIndex: 901,
+        isRequired: false,
+        options: {
+          create: [
+            {
+              value: 'yes_email',
+              label: 'Yes, please email me',
+              orderIndex: 1,
+            },
+            { value: 'no_thanks', label: 'No thanks', orderIndex: 2 },
+          ],
+        },
+      },
+    }),
+
+    // 9.2 Follow-up Interview
+    prisma.question.create({
+      data: {
+        title: 'Participation in Follow-up',
+        description:
+          'Would you be interested in participating in a follow-up interview (30 min, compensated)?',
+        type: QuestionType.SINGLE_CHOICE,
+        category: 'followup',
+        orderIndex: 902,
+        isRequired: false,
+        options: {
+          create: [
+            { value: 'yes_contact', label: 'Yes', orderIndex: 1 },
+            { value: 'maybe_later', label: 'Maybe later', orderIndex: 2 },
+            { value: 'no_thanks', label: 'No thanks', orderIndex: 3 },
+          ],
+        },
+      },
+    }),
+  ])
+
+  console.log('✅ Created Section 9: Follow-up')
+  return questions
 }
 
 async function createFakeResponses(numberOfSessions: number = 50) {
@@ -872,15 +1712,34 @@ async function createFakeResponses(numberOfSessions: number = 50) {
           break
 
         case QuestionType.RATING:
-          const ratingOptions = [
-            { value: 1, weight: 5 },
-            { value: 2, weight: 10 },
-            { value: 3, weight: 20 },
-            { value: 4, weight: 30 },
-            { value: 5, weight: 35 },
-          ]
-          const rating = faker.helpers.weightedArrayElement(ratingOptions)
-          responseData.ratingValue = rating
+          const isNPS = question.title.includes('recommend')
+          if (isNPS) {
+            const npsOptions = [
+              { value: 0, weight: 5 },
+              { value: 1, weight: 5 },
+              { value: 2, weight: 5 },
+              { value: 3, weight: 5 },
+              { value: 4, weight: 5 },
+              { value: 5, weight: 10 },
+              { value: 6, weight: 10 },
+              { value: 7, weight: 15 },
+              { value: 8, weight: 20 },
+              { value: 9, weight: 15 },
+              { value: 10, weight: 5 },
+            ]
+            const rating = faker.helpers.weightedArrayElement(npsOptions)
+            responseData.ratingValue = rating
+          } else {
+            const ratingOptions = [
+              { value: 1, weight: 5 },
+              { value: 2, weight: 10 },
+              { value: 3, weight: 20 },
+              { value: 4, weight: 30 },
+              { value: 5, weight: 35 },
+            ]
+            const rating = faker.helpers.weightedArrayElement(ratingOptions)
+            responseData.ratingValue = rating
+          }
           break
 
         case QuestionType.TEXT:
@@ -895,6 +1754,11 @@ async function createFakeResponses(numberOfSessions: number = 50) {
             'Love the AI integration features!',
             'Needs better documentation.',
             'Game changer for productivity!',
+            'Security concerns need to be addressed.',
+            'The learning curve is steep but worth it.',
+            'Integration with existing tools could be improved.',
+            'Really impressed with the code generation capabilities.',
+            'Would like to see more language support.',
           ]
           responseData.textValue = faker.helpers.arrayElement(feedbackOptions)
           break
@@ -911,24 +1775,14 @@ async function createFakeResponses(numberOfSessions: number = 50) {
           // Adjust weights based on tool popularity
           if (
             question.title.includes('GitHub Copilot') ||
-            question.title.includes('ChatGPT')
+            question.title.includes('ChatGPT') ||
+            question.title.includes('GPT-4')
           ) {
             experienceWeights = [
               { value: Experience.NEVER_HEARD, weight: 5 },
               { value: Experience.WANT_TO_TRY, weight: 15 },
               { value: Experience.NOT_INTERESTED, weight: 10 },
               { value: Experience.WOULD_USE_AGAIN, weight: 50 },
-              { value: Experience.WOULD_NOT_USE, weight: 20 },
-            ]
-          } else if (
-            question.title.includes('VS Code') ||
-            question.title.includes('React')
-          ) {
-            experienceWeights = [
-              { value: Experience.NEVER_HEARD, weight: 2 },
-              { value: Experience.WANT_TO_TRY, weight: 10 },
-              { value: Experience.NOT_INTERESTED, weight: 8 },
-              { value: Experience.WOULD_USE_AGAIN, weight: 60 },
               { value: Experience.WOULD_NOT_USE, weight: 20 },
             ]
           } else if (
@@ -943,8 +1797,9 @@ async function createFakeResponses(numberOfSessions: number = 50) {
               { value: Experience.WOULD_NOT_USE, weight: 10 },
             ]
           } else if (
-            question.title.includes('Devin') ||
-            question.title.includes('CodeGeeX')
+            question.title.includes('DeepSeek') ||
+            question.title.includes('Qwen') ||
+            question.title.includes('o3-mini')
           ) {
             experienceWeights = [
               { value: Experience.NEVER_HEARD, weight: 40 },
@@ -1114,11 +1969,15 @@ export async function seed(options: SeedOptions = {}) {
     }
 
     if (createQuestions) {
-      await createDemographicQuestions()
-      await createAIToolQuestions()
-      await createEditorQuestions()
-      await createFrameworkQuestions()
-      await createOpinionQuestions()
+      await createSection1Demographics()
+      await createSection2Organizational()
+      await createSection3UsagePatterns()
+      await createSection4SentimentImpact()
+      await createSection5AIIDEsAssistants()
+      await createSection6CodeReviewTesting()
+      await createSection7AIModels()
+      await createSection8FutureOpinions()
+      await createSection9FollowUp()
     }
 
     if (shouldCreateResponses) {
