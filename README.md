@@ -183,6 +183,131 @@ docker run -p 3000:3000 \
   state-of-ai-coding-tools
 ```
 
+### Docker Compose
+
+For a complete local development setup with PostgreSQL:
+
+1. **Create `docker-compose.yml`:**
+```yaml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: survey_db
+      POSTGRES_USER: survey_user
+      POSTGRES_PASSWORD: survey_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U survey_user -d survey_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://survey_user:survey_password@db:5432/survey_db"
+      SESSION_SECRET: "your-secret-at-least-32-characters-long-change-this"
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        node server.js
+      "
+
+volumes:
+  postgres_data:
+```
+
+2. **Create `.env` file for Docker Compose:**
+```env
+# .env (for docker-compose)
+POSTGRES_DB=survey_db
+POSTGRES_USER=survey_user
+POSTGRES_PASSWORD=changeme123
+SESSION_SECRET=your-production-secret-at-least-32-chars
+```
+
+3. **Run the stack:**
+```bash
+# Start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Run migrations (first time only)
+docker-compose exec app npx prisma migrate deploy
+
+# Seed the database
+docker-compose exec app npx tsx src/lib/seed-comprehensive.ts
+docker-compose exec app npx tsx src/lib/seed-passwords.ts
+
+# Stop services
+docker-compose down
+
+# Stop and remove volumes (CAUTION: destroys data)
+docker-compose down -v
+```
+
+### Development with Docker Compose
+
+For development with hot reload:
+
+```yaml
+# docker-compose.dev.yml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: survey_db
+      POSTGRES_USER: survey_user
+      POSTGRES_PASSWORD: survey_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+
+  app:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    ports:
+      - "4001:4001"
+    environment:
+      DATABASE_URL: "postgresql://survey_user:survey_password@db:5432/survey_db"
+      SESSION_SECRET: "development-secret-at-least-32-characters-long"
+      PORT: 4001
+    depends_on:
+      - db
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm dev"
+
+volumes:
+  postgres_dev_data:
+  node_modules:
+```
+
+Run development environment:
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
+
 ### Environment Variables
 
 Required for production:
