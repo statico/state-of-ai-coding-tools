@@ -2,6 +2,24 @@
 
 A comprehensive weekly survey platform for tracking AI coding tool adoption and preferences in the development community. Built with Next.js with real-time results visualization.
 
+## Data Structure
+
+**Question Types:**
+- `EXPERIENCE`: State of JS-style tool experience tracking (Never heard/Want to try/Not interested/Would use again/Would not use)
+- `SINGLE_CHOICE`: Radio button selection for one option
+- `MULTIPLE_CHOICE`: Checkbox selection for multiple options
+- `RATING`: 1-5 star rating scale
+- `TEXT`: Open-ended text responses
+- `DEMOGRAPHIC`: Single-choice demographic questions
+- `WRITE_IN`: Optional custom text entries
+
+**Data Storage:**
+- **Questions**: Stored with title, description, type, category, and ordering
+- **Responses**: Linked to user sessions and questions, storing selected options, ratings, text values, and experience levels
+- **Sessions**: Track user progress through the survey with demographic data and completion status
+- **Metrics**: Aggregated experience metrics calculate awareness, adoption, and satisfaction rates per tool
+- **Trends**: Monthly snapshots of tool metrics for tracking changes over time
+
 ## Project Goals
 
 This survey platform aims to capture the evolving landscape of AI-powered coding tools by collecting weekly data on developer preferences, adoption rates, and experiences across various AI coding assistants, IDEs, and LLMs. The project provides insights into tool effectiveness, developer sentiment, and emerging trends in AI-assisted development through aggregated community feedback and trend analysis over time.
