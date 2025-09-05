@@ -30,6 +30,7 @@ RUN pnpm exec prisma generate
 # Build the application
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV BUILDING=1
 
 RUN pnpm build
 

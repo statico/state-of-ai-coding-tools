@@ -178,8 +178,17 @@ export default function SurveyPage() {
                 {survey?.title || 'AI Coding Tools Weekly Survey'}
               </CardTitle>
               {survey?.description && (
-                <CardDescription className="text-lg mt-2">
-                  {survey.description}
+                <CardDescription className="text-lg mt-2 space-y-2 text-balance">
+                  <div>{survey.description}</div>
+                  <div className="text-sm text-primary">
+                    This survey and its responses are intended to be kept
+                    private within the{' '}
+                    <a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/">
+                      Rands Leadership Slack
+                    </a>
+                    . Responses will be collected anonymously and shared in the
+                    responses.
+                  </div>
                 </CardDescription>
               )}
               {hasSubmitted && (

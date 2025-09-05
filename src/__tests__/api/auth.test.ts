@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
-// Mock the survey service first
+// Mock the survey service and password manager
 vi.mock('@/lib/services/survey', () => ({
   SurveyService: {
     getCurrentSurvey: vi.fn(),
@@ -9,10 +9,43 @@ vi.mock('@/lib/services/survey', () => ({
   },
 }))
 
+vi.mock('@/lib/password-manager', () => ({
+  validateWeeklyPassword: vi.fn(),
+  getActiveWeeklyPassword: vi.fn(),
+}))
+
+vi.mock('@/lib/session', () => ({
+  sessionOptions: {
+    password: 'test-password-at-least-32-characters-long',
+    cookieName: 'test-session',
+  },
+  SessionData: {},
+}))
+
+vi.mock('iron-session', () => ({
+  getIronSession: vi.fn(() =>
+    Promise.resolve({
+      isAuthenticated: false,
+      surveyId: undefined,
+      save: vi.fn(),
+    })
+  ),
+}))
+
+vi.mock('next/headers', () => ({
+  cookies: vi.fn(() => Promise.resolve({})),
+}))
+
 import { POST } from '@/app/api/auth/verify/route'
 import { SurveyService } from '@/lib/services/survey'
+import {
+  validateWeeklyPassword,
+  getActiveWeeklyPassword,
+} from '@/lib/password-manager'
 
 const mockSurveyService = vi.mocked(SurveyService)
+const mockValidateWeeklyPassword = vi.mocked(validateWeeklyPassword)
+const mockGetActiveWeeklyPassword = vi.mocked(getActiveWeeklyPassword)
 
 describe('/api/auth/verify', () => {
   beforeEach(() => {
@@ -27,7 +60,8 @@ describe('/api/auth/verify', () => {
     }
 
     mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as any)
-    mockSurveyService.verifyPassword.mockResolvedValue(true)
+    mockValidateWeeklyPassword.mockResolvedValue(true)
+    mockGetActiveWeeklyPassword.mockResolvedValue('test-password')
 
     const request = new NextRequest('http://localhost:3000/api/auth/verify', {
       method: 'POST',
@@ -47,17 +81,14 @@ describe('/api/auth/verify', () => {
       title: 'Test Survey',
       description: 'Test description',
     })
-    expect(data.session).toEqual({
-      surveyId: 1,
-      expiresAt: expect.any(String),
-    })
+    expect(data.currentPassword).toBe('test-password')
   })
 
   it('should return error for invalid password', async () => {
     const mockSurvey = { id: 1, title: 'Test Survey' }
 
     mockSurveyService.getCurrentSurvey.mockResolvedValue(mockSurvey as any)
-    mockSurveyService.verifyPassword.mockResolvedValue(false)
+    mockValidateWeeklyPassword.mockResolvedValue(false)
 
     const request = new NextRequest('http://localhost:3000/api/auth/verify', {
       method: 'POST',

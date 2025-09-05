@@ -328,7 +328,7 @@ export async function seedComprehensiveQuestions() {
     await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'ides',
       orderIndex: globalOrderIndex++,
       isRequired: false,
@@ -342,7 +342,7 @@ export async function seedComprehensiveQuestions() {
     await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'completion_tools',
       orderIndex: globalOrderIndex++,
       isRequired: false,
@@ -356,7 +356,7 @@ export async function seedComprehensiveQuestions() {
     await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'code_review',
       orderIndex: globalOrderIndex++,
       isRequired: false,
@@ -370,7 +370,7 @@ export async function seedComprehensiveQuestions() {
     await QuestionService.create({
       title: tool.name,
       description: tool.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'refactoring',
       orderIndex: globalOrderIndex++,
       isRequired: false,
@@ -384,7 +384,7 @@ export async function seedComprehensiveQuestions() {
     await QuestionService.create({
       title: model.name,
       description: model.description,
-      type: QuestionType.EXPERIENCE_SENTIMENT,
+      type: QuestionType.EXPERIENCE,
       category: 'models',
       orderIndex: globalOrderIndex++,
       isRequired: false,

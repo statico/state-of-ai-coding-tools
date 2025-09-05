@@ -1,10 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import type {
-  Response,
-  UserSession,
-  ExperienceLevel,
-  SentimentScore,
-} from '@prisma/client'
+import type { Response, UserSession, Experience } from '@prisma/client'
 
 export class ResponseService {
   static async create(data: {
@@ -15,8 +10,7 @@ export class ResponseService {
     textValue?: string
     ratingValue?: number
     writeInValue?: string
-    experienceLevel?: ExperienceLevel
-    sentimentScore?: SentimentScore
+    experience?: Experience
   }): Promise<Response> {
     return await prisma.response.create({
       data,
@@ -31,8 +25,7 @@ export class ResponseService {
     textValue?: string
     ratingValue?: number
     writeInValue?: string
-    experienceLevel?: ExperienceLevel
-    sentimentScore?: SentimentScore
+    experience?: Experience
   }): Promise<Response> {
     // For multiple choice questions, we need to be more specific to avoid duplicates
     const whereClause = data.optionId
@@ -60,8 +53,7 @@ export class ResponseService {
           textValue: data.textValue,
           ratingValue: data.ratingValue,
           writeInValue: data.writeInValue,
-          experienceLevel: data.experienceLevel,
-          sentimentScore: data.sentimentScore,
+          experience: data.experience,
         },
       })
     } else {
