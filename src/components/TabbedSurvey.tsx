@@ -50,34 +50,39 @@ const TAB_SECTIONS = [
     categories: ['demographics'],
   },
   {
-    id: 'ai_tools',
-    label: 'AI Tools',
-    categories: ['ai_tools'],
+    id: 'ai_models',
+    label: 'AI Models',
+    categories: [
+      'ai_models_anthropic',
+      'ai_models_google',
+      'ai_models_open',
+      'ai_models_openai',
+    ],
   },
   {
-    id: 'tools',
-    label: 'Dev Tools',
-    categories: ['tools'],
+    id: 'coding_tools',
+    label: 'Coding Tools',
+    categories: ['code_completion', 'code_review', 'ide_assistants'],
   },
   {
-    id: 'frameworks',
-    label: 'Frameworks',
-    categories: ['frameworks'],
+    id: 'testing',
+    label: 'Testing & Quality',
+    categories: ['testing_quality'],
   },
   {
-    id: 'preferences',
-    label: 'Preferences',
-    categories: ['preferences'],
+    id: 'usage',
+    label: 'Usage & Sentiment',
+    categories: ['usage', 'sentiment'],
   },
   {
-    id: 'challenges',
-    label: 'Challenges',
-    categories: ['challenges'],
+    id: 'organizational',
+    label: 'Organization',
+    categories: ['organizational', 'enterprise'],
   },
   {
-    id: 'workflow',
-    label: 'Workflow',
-    categories: ['workflow'],
+    id: 'future',
+    label: 'Future & Followup',
+    categories: ['future', 'followup'],
   },
 ]
 
@@ -123,17 +128,23 @@ export function TabbedSurvey({
     {} as Record<string, QuestionWithOptions[]>
   )
 
-  // Get questions for current tab
-  const getCurrentTabQuestions = () => {
-    const currentTab = TAB_SECTIONS[currentTabIndex]
-    const tabQuestions: QuestionWithOptions[] = []
+  // Get questions for a specific tab
+  const getTabQuestions = (tabId: string) => {
+    const tab = TAB_SECTIONS.find(t => t.id === tabId)
+    if (!tab) return []
 
-    currentTab.categories.forEach(category => {
+    const tabQuestions: QuestionWithOptions[] = []
+    tab.categories.forEach(category => {
       const categoryQuestions = questionsByCategory[category] || []
       tabQuestions.push(...categoryQuestions)
     })
 
     return tabQuestions
+  }
+
+  // Get questions for current tab
+  const getCurrentTabQuestions = () => {
+    return getTabQuestions(activeTab)
   }
 
   const updateResponse = (
@@ -375,7 +386,7 @@ export function TabbedSurvey({
           className="space-y-6 mt-6"
         >
           <div className="space-y-6">
-            {getCurrentTabQuestions().map(renderQuestion)}
+            {getTabQuestions(section.id).map(renderQuestion)}
           </div>
 
           {Object.keys(errors).length > 0 && (
@@ -394,13 +405,14 @@ export function TabbedSurvey({
               type="button"
               variant="outline"
               onClick={handlePrevious}
-              disabled={isFirstTab}
+              disabled={TAB_SECTIONS.findIndex(t => t.id === section.id) === 0}
             >
               <ChevronLeft className="h-4 w-4 mr-2" />
               Previous
             </Button>
 
-            {isLastTab ? (
+            {TAB_SECTIONS.findIndex(t => t.id === section.id) ===
+            TAB_SECTIONS.length - 1 ? (
               <div className="flex flex-col items-end gap-2">
                 <Button
                   type="button"
