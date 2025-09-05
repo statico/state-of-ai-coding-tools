@@ -145,7 +145,8 @@ dist
 
 # Playwright MCP screenshots and test artifacts
 .playwright-mcp/
-playwright-report
+playwright-report/
+test-results/
 
 # One-off utility scripts (should use migrations or proper tooling instead)
 scripts/update-*.ts
