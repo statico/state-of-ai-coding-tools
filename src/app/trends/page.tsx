@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -54,6 +55,7 @@ const DEFAULT_TAB_SECTIONS = [
 ]
 
 export default function TrendsPage() {
+  const router = useRouter()
   const [trends, setTrends] = useState<TrendData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -68,6 +70,18 @@ export default function TrendsPage() {
   useEffect(() => {
     fetchCategories()
   }, [])
+
+  // Initialize active tab from URL hash when tab sections are loaded
+  useEffect(() => {
+    if (tabSections.length > 0) {
+      const hash = window.location.hash.slice(1) // Remove #
+      const validSection = tabSections.find(section => section.id === hash)
+      if (hash && validSection) {
+        setActiveTab(hash)
+      }
+      // If no hash or invalid hash, keep 'overview' as default
+    }
+  }, [tabSections])
 
   useEffect(() => {
     if (!isFetching && activeTab === 'overview') {
@@ -178,6 +192,12 @@ export default function TrendsPage() {
       setIsLoading(false)
       setIsFetching(false)
     }
+  }
+
+  const handleTabChange = (newTab: string) => {
+    setActiveTab(newTab)
+    // Update URL hash
+    router.push(`/trends#${newTab}`, { scroll: false })
   }
 
   if (isLoading) {
@@ -298,7 +318,7 @@ export default function TrendsPage() {
         )}
 
         {/* Tabbed Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={handleTabChange}>
           <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
             {tabSections.map(section => (
               <TabsTrigger key={section.id} value={section.id}>

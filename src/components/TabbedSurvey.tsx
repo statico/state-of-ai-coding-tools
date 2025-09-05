@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -54,6 +55,7 @@ export function TabbedSurvey({
   hasSubmitted = false,
   submissionMessage = '',
 }: TabbedSurveyProps) {
+  const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [activeTab, setActiveTab] = useState<string>('')
   const [responses, setResponses] = useState<Record<number, SurveyResponse>>({})
@@ -67,13 +69,26 @@ export function TabbedSurvey({
     fetchCategories()
   }, [])
 
+  // Initialize active tab from URL hash when categories are loaded
+  useEffect(() => {
+    if (categories.length > 0) {
+      const hash = window.location.hash.slice(1) // Remove #
+      const validCategory = categories.find(cat => cat.key === hash)
+      if (hash && validCategory) {
+        setActiveTab(hash)
+      } else if (!activeTab) {
+        setActiveTab(categories[0].key)
+      }
+    }
+  }, [categories, activeTab])
+
   const fetchCategories = async () => {
     try {
       const response = await fetch('/api/survey/categories')
       const data = await response.json()
       if (data.success && data.categories.length > 0) {
         setCategories(data.categories)
-        setActiveTab(data.categories[0].key)
+        // Don't set active tab here - let the URL hash effect handle it
       }
     } catch (error) {
       console.error('Error fetching categories:', error)
@@ -194,6 +209,8 @@ export function TabbedSurvey({
       const nextTab = categories[currentTabIndex + 1]
       if (nextTab) {
         setActiveTab(nextTab.key)
+        // Update URL hash
+        router.push(`/survey#${nextTab.key}`, { scroll: false })
         // Small delay to ensure tab content is rendered before scrolling
         setTimeout(() => scrollToSurvey(), 100)
       }
@@ -204,6 +221,8 @@ export function TabbedSurvey({
     const prevTab = categories[currentTabIndex - 1]
     if (prevTab) {
       setActiveTab(prevTab.key)
+      // Update URL hash
+      router.push(`/survey#${prevTab.key}`, { scroll: false })
       // Small delay to ensure tab content is rendered before scrolling
       setTimeout(() => scrollToSurvey(), 100)
     }
@@ -328,6 +347,8 @@ export function TabbedSurvey({
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab)
+    // Update URL hash
+    router.push(`/survey#${newTab}`, { scroll: false })
     // Small delay to ensure tab content is rendered before scrolling
     setTimeout(() => scrollToSurvey(), 100)
   }
