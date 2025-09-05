@@ -40,7 +40,7 @@ export function BarChart({ data, title }: BarChartProps) {
               'Count',
             ]}
           />
-          <Bar dataKey="value" fill="hsl(var(--primary))" />
+          <Bar dataKey="value" fill="#ff7c00" />
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>

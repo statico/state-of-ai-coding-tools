@@ -11,7 +11,15 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu'
 import { useAuth } from '@/lib/auth-context'
-import { Home, FileQuestion, BarChart3, Menu, X, LogOut } from 'lucide-react'
+import {
+  Home,
+  FileQuestion,
+  BarChart3,
+  Menu,
+  X,
+  LogOut,
+  TrendingUp,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ThemeSwitcher } from './theme-switcher'
 import { ShareModal } from './ShareModal'
@@ -88,24 +96,56 @@ export function Navigation() {
                         </Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
+
+                    <NavigationMenuItem>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/trends"
+                          className={cn(
+                            'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none',
+                            pathname === '/trends' && 'bg-accent'
+                          )}
+                        >
+                          <TrendingUp className="mr-2 h-4 w-4" />
+                          Trends
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
                   </>
                 )}
 
                 {!isAuthenticated && (
-                  <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/results"
-                        className={cn(
-                          'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none',
-                          pathname === '/results' && 'bg-accent'
-                        )}
-                      >
-                        <BarChart3 className="mr-2 h-4 w-4" />
-                        Results
-                      </Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
+                  <>
+                    <NavigationMenuItem>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/results"
+                          className={cn(
+                            'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none',
+                            pathname === '/results' && 'bg-accent'
+                          )}
+                        >
+                          <BarChart3 className="mr-2 h-4 w-4" />
+                          Results
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+
+                    <NavigationMenuItem>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/trends"
+                          className={cn(
+                            'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none',
+                            pathname === '/trends' && 'bg-accent'
+                          )}
+                        >
+                          <TrendingUp className="mr-2 h-4 w-4" />
+                          Trends
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  </>
                 )}
               </NavigationMenuList>
             </NavigationMenu>
@@ -192,6 +232,18 @@ export function Navigation() {
                   Results
                 </Link>
 
+                <Link
+                  href="/trends"
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
+                    pathname === '/trends' && 'bg-accent'
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <TrendingUp className="h-4 w-4" />
+                  Trends
+                </Link>
+
                 <Button
                   onClick={() => {
                     handleLogout()
@@ -219,6 +271,18 @@ export function Navigation() {
                 >
                   <BarChart3 className="h-4 w-4" />
                   Results
+                </Link>
+
+                <Link
+                  href="/trends"
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
+                    pathname === '/trends' && 'bg-accent'
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <TrendingUp className="h-4 w-4" />
+                  Trends
                 </Link>
 
                 <Button

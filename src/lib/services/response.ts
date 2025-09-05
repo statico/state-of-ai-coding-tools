@@ -100,6 +100,7 @@ export class ResponseService {
         optionLabel?: string
         count: number
         percentage: number
+        experience?: string
       }>
     }>
   > {
@@ -206,6 +207,35 @@ export class ResponseService {
           percentage:
             totalResponses > 0 ? ((count as number) / totalResponses) * 100 : 0,
         }))
+
+        return {
+          questionId: group.questionId,
+          questionTitle: group.questionTitle,
+          questionType: group.questionType,
+          results,
+        }
+      } else if (group.questionType === 'EXPERIENCE') {
+        // For experience questions, aggregate by experience value
+        const experienceCounts = group.responses.reduce(
+          (acc: Record<string, number>, response) => {
+            const exp = response.experience || 'NO_RESPONSE'
+            acc[exp] = (acc[exp] || 0) + 1
+            return acc
+          },
+          {}
+        )
+
+        const results = Object.entries(experienceCounts).map(
+          ([experience, count]) => ({
+            optionLabel: experience,
+            count: count as number,
+            percentage:
+              totalResponses > 0
+                ? ((count as number) / totalResponses) * 100
+                : 0,
+            experience,
+          })
+        )
 
         return {
           questionId: group.questionId,
