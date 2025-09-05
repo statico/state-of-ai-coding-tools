@@ -7,25 +7,43 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const weeksParam = searchParams.get('weeks')
     const weeks = weeksParam ? parseInt(weeksParam, 10) : 12
+    const category = searchParams.get('category') // For future optimization
 
     // Get all active questions with their options
     const questionsWithOptions = await QuestionService.getAllWithOptions()
 
-    // Get all surveys to map to weeks (reserved for future use)
-    // const surveys = await prisma.survey.findMany({
-    //   orderBy: { createdAt: 'desc' },
-    //   take: weeks,
-    // })
+    // Calculate date range for all weeks
+    const today = new Date()
+    const dayOfWeek = today.getDay()
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+
+    const oldestWeekStart = new Date(today)
+    oldestWeekStart.setDate(today.getDate() - daysToMonday - (weeks - 1) * 7)
+    oldestWeekStart.setHours(0, 0, 0, 0)
+
+    const newestWeekEnd = new Date(today)
+    newestWeekEnd.setDate(today.getDate() - daysToMonday + 6)
+    newestWeekEnd.setHours(23, 59, 59, 999)
+
+    // Get ALL responses for the entire period in a SINGLE query
+    const allResponses = await prisma.response.findMany({
+      where: {
+        createdAt: {
+          gte: oldestWeekStart,
+          lte: newestWeekEnd,
+        },
+      },
+      include: {
+        question: true,
+      },
+    })
 
     // Create week range data
     const trendData = []
-    const today = new Date()
 
     for (let i = 0; i < weeks; i++) {
       const weekOffset = weeks - i - 1
       const weekStart = new Date(today)
-      const dayOfWeek = today.getDay()
-      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
       weekStart.setDate(today.getDate() - daysToMonday - weekOffset * 7)
       weekStart.setHours(0, 0, 0, 0)
 
@@ -33,17 +51,10 @@ export async function GET(request: NextRequest) {
       weekEnd.setDate(weekStart.getDate() + 6)
       weekEnd.setHours(23, 59, 59, 999)
 
-      // Get all responses for this week
-      const responses = await prisma.response.findMany({
-        where: {
-          createdAt: {
-            gte: weekStart,
-            lte: weekEnd,
-          },
-        },
-        include: {
-          question: true,
-        },
+      // Filter responses for this week from the pre-fetched data
+      const responses = allResponses.filter(r => {
+        const createdAt = new Date(r.createdAt)
+        return createdAt >= weekStart && createdAt <= weekEnd
       })
 
       // Get unique session count for response count

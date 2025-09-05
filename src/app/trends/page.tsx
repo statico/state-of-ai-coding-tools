@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
@@ -93,14 +93,20 @@ export default function TrendsPage() {
   const [error, setError] = useState('')
   const [weekRange, setWeekRange] = useState(12)
   const [activeTab, setActiveTab] = useState('overview')
+  const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
-    fetchTrends()
+    if (!isFetching) {
+      fetchTrends()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weekRange])
 
   const fetchTrends = async () => {
+    if (isFetching) return
+
     try {
+      setIsFetching(true)
       setIsLoading(true)
       const response = await fetch(`/api/trends?weeks=${weekRange}`)
       const data = await response.json()
@@ -116,6 +122,7 @@ export default function TrendsPage() {
       console.error('Error fetching trends:', err)
     } finally {
       setIsLoading(false)
+      setIsFetching(false)
     }
   }
 
@@ -156,186 +163,193 @@ export default function TrendsPage() {
     {} as Record<string, Question[]>
   )
 
-  const renderQuestionChart = (question: Question) => {
-    switch (question.type) {
-      case 'SINGLE_CHOICE':
-      case 'DEMOGRAPHIC':
-      case 'MULTIPLE_CHOICE':
-        // Create chart data for options with stacked bars
-        const optionBars =
-          question.options?.map((opt, idx) => ({
-            dataKey: `q_${question.id}_opt_${opt.id}`,
-            name: opt.label,
-            fill: generateColor(idx, question.options?.length || 1),
-          })) || []
+  const renderQuestionChart = useMemo(
+    () => (question: Question) => {
+      switch (question.type) {
+        case 'SINGLE_CHOICE':
+        case 'DEMOGRAPHIC':
+        case 'MULTIPLE_CHOICE':
+          // Create chart data for options with stacked bars
+          const optionBars =
+            question.options?.map((opt, idx) => ({
+              dataKey: `q_${question.id}_opt_${opt.id}`,
+              name: opt.label,
+              fill: generateColor(idx, question.options?.length || 1),
+            })) || []
 
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                />
-                <YAxis
-                  label={{
-                    value: 'Percentage (%)',
-                    angle: -90,
-                    position: 'insideLeft',
-                  }}
-                />
-                <Tooltip />
-                <Legend />
-                {optionBars.map(bar => (
+          return (
+            <Card key={question.id} className="p-6">
+              <CardHeader>
+                <CardTitle>{question.title}</CardTitle>
+              </CardHeader>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={trends}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="week"
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis
+                    label={{
+                      value: 'Percentage (%)',
+                      angle: -90,
+                      position: 'insideLeft',
+                    }}
+                  />
+                  <Tooltip />
+                  <Legend />
+                  {optionBars.map(bar => (
+                    <Bar
+                      key={bar.dataKey}
+                      stackId="stack"
+                      dataKey={bar.dataKey}
+                      name={bar.name}
+                      fill={bar.fill}
+                      animationDuration={0}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          )
+
+        case 'RATING':
+          return (
+            <Card key={question.id} className="p-6">
+              <CardHeader>
+                <CardTitle>{question.title}</CardTitle>
+              </CardHeader>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={trends}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="week"
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis
+                    label={{
+                      value: 'Average Rating',
+                      angle: -90,
+                      position: 'insideLeft',
+                    }}
+                    domain={[0, 5]}
+                  />
+                  <Tooltip />
+                  <Legend />
                   <Bar
-                    key={bar.dataKey}
-                    stackId="stack"
-                    dataKey={bar.dataKey}
-                    name={bar.name}
-                    fill={bar.fill}
+                    dataKey={`q_${question.id}_avg`}
+                    name="Average Rating"
+                    fill="#3b82f6"
                     animationDuration={150}
                   />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        )
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          )
 
-      case 'RATING':
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                />
-                <YAxis
-                  label={{
-                    value: 'Average Rating',
-                    angle: -90,
-                    position: 'insideLeft',
-                  }}
-                  domain={[0, 5]}
-                />
-                <Tooltip />
-                <Legend />
-                <Bar
-                  dataKey={`q_${question.id}_avg`}
-                  name="Average Rating"
-                  fill="#3b82f6"
-                  animationDuration={150}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        )
+        case 'EXPERIENCE':
+          const experienceMetrics = [
+            { key: 'never_heard', label: 'Never Heard', color: '#6b7280' },
+            { key: 'want_to_try', label: 'Want to Try', color: '#3b82f6' },
+            {
+              key: 'not_interested',
+              label: 'Not Interested',
+              color: '#ef4444',
+            },
+            {
+              key: 'would_use_again',
+              label: 'Would Use Again',
+              color: '#10b981',
+            },
+            { key: 'would_not_use', label: 'Would Not Use', color: '#f59e0b' },
+          ]
 
-      case 'EXPERIENCE':
-        const experienceMetrics = [
-          { key: 'never_heard', label: 'Never Heard', color: '#6b7280' },
-          { key: 'want_to_try', label: 'Want to Try', color: '#3b82f6' },
-          { key: 'not_interested', label: 'Not Interested', color: '#ef4444' },
-          {
-            key: 'would_use_again',
-            label: 'Would Use Again',
-            color: '#10b981',
-          },
-          { key: 'would_not_use', label: 'Would Not Use', color: '#f59e0b' },
-        ]
+          return (
+            <Card key={question.id} className="p-6">
+              <CardHeader>
+                <CardTitle>{question.title}</CardTitle>
+              </CardHeader>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={trends}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="week"
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis
+                    label={{
+                      value: 'Percentage (%)',
+                      angle: -90,
+                      position: 'insideLeft',
+                    }}
+                  />
+                  <Tooltip />
+                  <Legend />
+                  {experienceMetrics.map(metric => (
+                    <Line
+                      key={metric.key}
+                      type="monotone"
+                      dataKey={`q_${question.id}_${metric.key}`}
+                      name={metric.label}
+                      stroke={metric.color}
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
+                      activeDot={{ r: 5 }}
+                      animationDuration={0}
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          )
 
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                />
-                <YAxis
-                  label={{
-                    value: 'Percentage (%)',
-                    angle: -90,
-                    position: 'insideLeft',
-                  }}
-                />
-                <Tooltip />
-                <Legend />
-                {experienceMetrics.map(metric => (
-                  <Line
-                    key={metric.key}
-                    type="monotone"
-                    dataKey={`q_${question.id}_${metric.key}`}
-                    name={metric.label}
-                    stroke={metric.color}
-                    strokeWidth={2}
-                    dot={{ r: 3 }}
-                    activeDot={{ r: 5 }}
+        case 'TEXT':
+          return (
+            <Card key={question.id} className="p-6">
+              <CardHeader>
+                <CardTitle>{question.title}</CardTitle>
+              </CardHeader>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={trends}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="week"
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis
+                    label={{
+                      value: 'Response Count',
+                      angle: -90,
+                      position: 'insideLeft',
+                    }}
+                  />
+                  <Tooltip />
+                  <Legend />
+                  <Bar
+                    dataKey={`q_${question.id}_count`}
+                    name="Text Responses"
+                    fill="#8b5cf6"
                     animationDuration={150}
                   />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </Card>
-        )
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          )
 
-      case 'TEXT':
-        return (
-          <Card key={question.id} className="p-6">
-            <CardHeader>
-              <CardTitle>{question.title}</CardTitle>
-            </CardHeader>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={trends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="week"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                />
-                <YAxis
-                  label={{
-                    value: 'Response Count',
-                    angle: -90,
-                    position: 'insideLeft',
-                  }}
-                />
-                <Tooltip />
-                <Legend />
-                <Bar
-                  dataKey={`q_${question.id}_count`}
-                  name="Text Responses"
-                  fill="#8b5cf6"
-                  animationDuration={150}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        )
-
-      default:
-        return null
-    }
-  }
+        default:
+          return null
+      }
+    },
+    [trends]
+  )
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -465,7 +479,7 @@ export default function TrendsPage() {
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
                     name="Total Responses"
-                    animationDuration={150}
+                    animationDuration={0}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -478,20 +492,21 @@ export default function TrendsPage() {
               value={section.id}
               className="space-y-6"
             >
-              {section.categories.map(category => (
-                <div key={category} className="space-y-6">
-                  {questionsByCategory[category]?.map(question =>
-                    renderQuestionChart(question)
-                  )}
-                  {!questionsByCategory[category] && (
-                    <Card className="p-6">
-                      <p className="text-muted-foreground text-center">
-                        No questions found for this category
-                      </p>
-                    </Card>
-                  )}
-                </div>
-              ))}
+              {activeTab === section.id &&
+                section.categories.map(category => (
+                  <div key={category} className="space-y-6">
+                    {questionsByCategory[category]?.map(question =>
+                      renderQuestionChart(question)
+                    )}
+                    {!questionsByCategory[category] && (
+                      <Card className="p-6">
+                        <p className="text-muted-foreground text-center">
+                          No questions found for this category
+                        </p>
+                      </Card>
+                    )}
+                  </div>
+                ))}
             </TabsContent>
           ))}
         </Tabs>
