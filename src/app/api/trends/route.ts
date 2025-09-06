@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { QuestionService } from '@/lib/services/question'
+import { Prisma } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
   try {
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest) {
           week_end: Date
           unique_sessions: bigint
         }>
-      >`
+      >(Prisma.sql`
         WITH RECURSIVE weeks AS (
           SELECT 
             DATE_TRUNC('week', ${oldestWeekStart}::timestamp)::date AS week_start,
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
           DATE(r.created_at) <= w.week_end
         GROUP BY w.week_start, w.week_end
         ORDER BY w.week_start
-      `
+      `)
 
       const trendData = weeklyStats.map(stat => ({
         week: `${new Date(stat.week_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${new Date(stat.week_end).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
@@ -122,7 +123,7 @@ export async function GET(request: NextRequest) {
               text_value: string | null
               experience: string | null
             }>
-          >`
+          >(Prisma.sql`
             SELECT DISTINCT
               r.session_id,
               r.question_id,
@@ -137,7 +138,7 @@ export async function GET(request: NextRequest) {
               AND r.created_at <= ${weekEnd}::timestamp
               AND q.is_active = true
               AND q.category = ${categoryFilter}
-          `
+          `)
         : await prisma.$queryRaw<
             Array<{
               session_id: string
@@ -147,7 +148,7 @@ export async function GET(request: NextRequest) {
               text_value: string | null
               experience: string | null
             }>
-          >`
+          >(Prisma.sql`
             SELECT DISTINCT
               r.session_id,
               r.question_id,
@@ -161,7 +162,7 @@ export async function GET(request: NextRequest) {
               r.created_at >= ${weekStart}::timestamp
               AND r.created_at <= ${weekEnd}::timestamp
               AND q.is_active = true
-          `
+          `)
 
       // Get unique session count for response count
       const uniqueSessions = new Set(weeklyData.map(r => r.session_id))
