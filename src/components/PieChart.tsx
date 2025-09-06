@@ -7,10 +7,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
-import {
-  customTooltipContentStyle,
-  customTooltipLabelStyle,
-} from './ChartTooltip'
 import { getColor } from '@/lib/chart-colors'
 
 interface PieChartProps {
@@ -41,12 +37,12 @@ export function PieChart({ data, title }: PieChartProps) {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {data.map((entry, index) => (
+                {data.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={getColor(index)} />
                 ))}
               </Pie>
               <Tooltip
-                content={({ active, payload, label }) => {
+                content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
                       <div className="bg-popover text-popover-foreground border border-border rounded-md shadow-md p-2 text-xs">

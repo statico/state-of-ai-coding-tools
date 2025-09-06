@@ -10,12 +10,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
-import {
-  customTooltipContentStyle,
-  customTooltipLabelStyle,
-  customLegendStyle,
-} from './ChartTooltip'
-import { CHART_COLORS, getColor } from '@/lib/chart-colors'
+import { getColor } from '@/lib/chart-colors'
 
 interface BarChartProps {
   data: Array<{

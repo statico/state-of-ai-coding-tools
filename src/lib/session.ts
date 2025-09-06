@@ -9,7 +9,9 @@ export interface SessionData {
 // During build time, we might not have SESSION_SECRET, so use a placeholder
 const sessionSecret =
   process.env.SESSION_SECRET ||
-  (process.env.NODE_ENV === 'production' && !process.env.BUILDING
+  (process.env.NODE_ENV === 'production' &&
+  !process.env.BUILDING &&
+  !process.env.CI
     ? (() => {
         throw new Error(
           'SESSION_SECRET environment variable is required. Please set it in your .env file.'

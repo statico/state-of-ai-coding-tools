@@ -81,7 +81,7 @@ export default function TrendsPage() {
       }
       // If no hash or invalid hash, keep 'overview' as default
     }
-  }, [tabSections])
+  }, [tabSections, activeTab])
 
   useEffect(() => {
     if (!isFetching && activeTab === 'overview') {
