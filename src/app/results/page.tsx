@@ -147,11 +147,14 @@ export default function ResultsPage() {
   // Group results by category
   const resultsByCategory = results.reduce(
     (acc, result) => {
-      // Determine category from question title or assume based on content
+      // Determine category from question type and title
       let category = 'other'
       const title = result.questionTitle.toLowerCase()
 
-      if (
+      // Categorize EXPERIENCE questions as 'tools'
+      if (result.questionType === 'EXPERIENCE') {
+        category = 'tools'
+      } else if (
         title.includes('experience') ||
         title.includes('company') ||
         title.includes('size')
@@ -365,11 +368,13 @@ export default function ResultsPage() {
                   })
 
                   return {
-                    toolName: result.questionTitle.replace(
-                      'Experience with ',
-                      ''
-                    ),
-                    ...counts,
+                    toolName: result.questionTitle,
+                    neverHeard: counts.neverHeard,
+                    wantToTry: counts.wantToTry,
+                    notInterested: counts.notInterested,
+                    wouldUseAgain: counts.wouldUseAgain,
+                    wouldNotUse: counts.wouldNotUse,
+                    total: counts.total,
                   }
                 })
 

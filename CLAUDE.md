@@ -12,6 +12,7 @@
 - **Commit frequently**: Make commits often to save progress
 - Commit after completing significant features or fixes
 - Use descriptive commit messages
+- Make sure the tests pass before committing
 
 ## Setup
 
