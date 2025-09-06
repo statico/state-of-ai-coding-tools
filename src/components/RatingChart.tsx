@@ -82,7 +82,11 @@ export function RatingChart({ data, title }: RatingChartProps) {
             ]}
           />
           <Legend wrapperStyle={customLegendStyle} />
-          <Bar dataKey="count" fill={CHART_COLORS.rating} />
+          <Bar
+            dataKey="count"
+            fill={CHART_COLORS.rating}
+            animationDuration={150}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

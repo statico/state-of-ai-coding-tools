@@ -78,26 +78,31 @@ export function ExperienceChart({ data, title }: ExperienceChartProps) {
               dataKey="Never heard"
               stackId="a"
               fill={CHART_COLORS.experience.neverHeard}
+              animationDuration={150}
             />
             <Bar
               dataKey="Want to try"
               stackId="a"
               fill={CHART_COLORS.experience.wantToTry}
+              animationDuration={150}
             />
             <Bar
               dataKey="Not interested"
               stackId="a"
               fill={CHART_COLORS.experience.notInterested}
+              animationDuration={150}
             />
             <Bar
               dataKey="Would use again"
               stackId="a"
               fill={CHART_COLORS.experience.wouldUseAgain}
+              animationDuration={150}
             />
             <Bar
               dataKey="Would not use"
               stackId="a"
               fill={CHART_COLORS.experience.wouldNotUse}
+              animationDuration={150}
             />
           </RechartsBarChart>
         </ResponsiveContainer>

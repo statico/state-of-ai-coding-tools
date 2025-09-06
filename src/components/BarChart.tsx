@@ -72,8 +72,8 @@ export function BarChart({ data, title }: BarChartProps) {
                   return null
                 }}
               />
-              <Bar dataKey="value">
-                {data.map((entry, index) => (
+              <Bar dataKey="value" animationDuration={150}>
+                {data.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={getColor(index)} />
                 ))}
               </Bar>

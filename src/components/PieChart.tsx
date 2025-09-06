@@ -31,6 +31,7 @@ export function PieChart({ data, title }: PieChartProps) {
           <ResponsiveContainer width="100%" height={300}>
             <RechartsPieChart>
               <Pie
+                animationDuration={150}
                 data={data}
                 cx="50%"
                 cy="50%"
