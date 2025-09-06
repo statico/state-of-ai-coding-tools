@@ -7,6 +7,16 @@ import { PieChart } from '@/components/PieChart'
 import { RatingChart } from '@/components/RatingChart'
 import { ExperienceChart } from '@/components/ExperienceChart'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  BarChart as RechartsBarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts'
 
 interface ResultData {
   questionId: number
@@ -379,11 +389,78 @@ export default function ResultsPage() {
                 })
 
                 if (experienceData.length > 0) {
+                  // Debug: log the data to see what we're working with
+                  console.log('Experience data:', experienceData)
+
+                  // Transform data for horizontal stacked bar chart
+                  const chartData = experienceData.map(item => {
+                    const result = {
+                      name: item.toolName,
+                      'Never heard': item.neverHeard,
+                      'Not interested': item.notInterested,
+                      'Want to try': item.wantToTry,
+                      'Would not use': item.wouldNotUse,
+                      'Would use again': item.wouldUseAgain,
+                    }
+                    console.log('Chart item:', result)
+                    return result
+                  })
+
                   return (
-                    <ExperienceChart
-                      data={experienceData}
-                      title="Tool Experience"
-                    />
+                    <div className="bg-card p-6 rounded-lg shadow col-span-full">
+                      <h3 className="text-lg font-medium text-card-foreground mb-4">
+                        Tool Experience
+                      </h3>
+                      <div className="w-full h-96">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsBarChart
+                            data={chartData}
+                            margin={{
+                              top: 20,
+                              right: 30,
+                              left: 20,
+                              bottom: 60,
+                            }}
+                          >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                              dataKey="name"
+                              angle={-45}
+                              textAnchor="end"
+                              height={80}
+                            />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar
+                              dataKey="Never heard"
+                              stackId="a"
+                              fill="#8884d8"
+                            />
+                            <Bar
+                              dataKey="Not interested"
+                              stackId="a"
+                              fill="#82ca9d"
+                            />
+                            <Bar
+                              dataKey="Want to try"
+                              stackId="a"
+                              fill="#ffc658"
+                            />
+                            <Bar
+                              dataKey="Would not use"
+                              stackId="a"
+                              fill="#ff7300"
+                            />
+                            <Bar
+                              dataKey="Would use again"
+                              stackId="a"
+                              fill="#0088fe"
+                            />
+                          </RechartsBarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
                   )
                 }
 
