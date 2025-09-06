@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { BarChart } from '@/components/BarChart'
 import { PieChart } from '@/components/PieChart'
 import { RatingChart } from '@/components/RatingChart'
-import { ExperienceChart } from '@/components/ExperienceChart'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   BarChart as RechartsBarChart,
