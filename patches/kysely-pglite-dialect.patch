@@ -1,0 +1,24 @@
+diff --git a/dist/index.js b/dist/index.js
+index 39efabae263afecfb7902aa4a7b78225596a9e1f..c047fca9c9fc93fb8593e360edaf44653e4b6735 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -40,7 +40,6 @@ var PGliteConnection = class {
+     if (result.affectedRows) {
+       const numAffectedRows = BigInt(result.affectedRows);
+       return {
+-        numUpdatedOrDeletedRows: numAffectedRows,
+         numAffectedRows,
+         rows: result.rows
+       };
+diff --git a/dist/index.mjs b/dist/index.mjs
+index c32b9b14e0f65352e306670b820bd4829e6576bc..b8b35c5baa17ce138959c7fdd58ac88539ca4ee9 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -19,7 +19,6 @@ var PGliteConnection = class {
+     if (result.affectedRows) {
+       const numAffectedRows = BigInt(result.affectedRows);
+       return {
+-        numUpdatedOrDeletedRows: numAffectedRows,
+         numAffectedRows,
+         rows: result.rows
+       };

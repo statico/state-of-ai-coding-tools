@@ -1,0 +1,7 @@
+docs
+src/test/test-data
+node_modules
+*.db
+.next
+.aider*
+.env*
