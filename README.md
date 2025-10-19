@@ -8,6 +8,8 @@ A full stack web application example using my current favorite tech stack.
 
 Clone it with your favorite AI-assisted coding tool to get started quickly. Send complaints and nitpicks via [Bluesky](https://bsky.app/profile/statico.bsky.social) and [Mastodon](https://mastodon.social/@statico).
 
+<img height="400" alt="Screenshot of this TODO app" src="https://github.com/user-attachments/assets/569c90a8-6fa0-4287-896b-873962da4de1" />
+
 ## Goals
 
 - **Flexible** - It should be easy and quick to add functionality
