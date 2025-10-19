@@ -6,22 +6,38 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTRPC } from "@/lib/trpc/client";
-import { keepPreviousData } from "@tanstack/react-query";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function HomePage() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [newTodoText, setNewTodoText] = useState("");
+  const [localTodoTexts, setLocalTodoTexts] = useState<Record<number, string>>(
+    {},
+  );
 
   const { data: todos } = useQuery(
     trpc.todos.getAll.queryOptions(undefined, {
       placeholderData: keepPreviousData,
     }),
   );
+
+  // Get the current text for a todo, using local state if available, otherwise server data
+  const getTodoText = (todo: any) => {
+    return localTodoTexts[todo.id] !== undefined
+      ? localTodoTexts[todo.id]
+      : todo.text;
+  };
+
   const createTodo = useMutation(
     trpc.todos.create.mutationOptions({
       onSuccess: () => {
@@ -33,6 +49,7 @@ export default function HomePage() {
       },
     }),
   );
+
   const updateTodo = useMutation(
     trpc.todos.update.mutationOptions({
       onSuccess: () => {
@@ -43,6 +60,7 @@ export default function HomePage() {
       },
     }),
   );
+
   const deleteTodo = useMutation(
     trpc.todos.delete.mutationOptions({
       onSuccess: () => {
@@ -65,10 +83,21 @@ export default function HomePage() {
     updateTodo.mutate({ id, completed });
   };
 
+  // Debounced callback for updating todo text
+  const debouncedUpdateText = useDebouncedCallback(
+    (id: number, text: string) => {
+      if (text.trim()) {
+        updateTodo.mutate({ id, text: text.trim() });
+      }
+    },
+    500, // 500ms delay
+  );
+
   const handleUpdateText = (id: number, text: string) => {
-    if (text.trim()) {
-      updateTodo.mutate({ id, text: text.trim() });
-    }
+    // Update local state immediately for responsive UI
+    setLocalTodoTexts((prev) => ({ ...prev, [id]: text }));
+    // Debounce the actual database update
+    debouncedUpdateText(id, text);
   };
 
   const handleDelete = (id: number) => {
@@ -118,7 +147,7 @@ export default function HomePage() {
                   }
                 />
                 <Input
-                  value={todo.text}
+                  value={getTodoText(todo)}
                   onChange={(e) => handleUpdateText(todo.id, e.target.value)}
                   className={`flex-1 ${
                     todo.completed ? "text-gray-500 line-through" : ""
