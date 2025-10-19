@@ -1,5 +1,9 @@
 # Ian's Stack (2025 Edition)
 
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/statico/ian-stack-2025/tests.yml)](https://github.com/statico/ian-stack-2025/actions/workflows/tests.yml)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/statico/ian-stack-2025/docker.yml)](https://github.com/statico/ian-stack-2025/actions/workflows/docker.yml)
+[![GitHub License](https://img.shields.io/github/license/statico/ian-stack-2025)](LICENSE)
+
 A full stack web application example using my current favorite tech stack.
 
 Clone it with your favorite AI-assisted coding tool to get started quickly. Send complaints and nitpicks via [Bluesky](https://bsky.app/profile/statico.bsky.social) and [Mastodon](https://mastodon.social/@statico).
