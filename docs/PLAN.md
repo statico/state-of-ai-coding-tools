@@ -48,8 +48,8 @@ Sections will have a title and optional description. Titles and descriptions wil
 
 #### Question Types
 
-- Single Choice - Can include "None" and "Other" options
-- Multiple Choice - Can include "None" and "Other" options
+- Single Choice - Automatically includes "Other" option for write-in responses
+- Multiple Choice - Automatically includes "Other" option for write-in responses
 - Experience - A single choice question with preset UI options:
   - "Never heard of it" -> "Interested" / "Not interested"
   - "Heard of it" -> "Interested" / "Not interested"
@@ -109,7 +109,7 @@ Missing sections, questions, and options will be marked as inactive automaticall
     - `single-freeform`
     - `multiple-freeform`
     - `freeform`
-  - *`options`* - A list of options for single, multiple, single-freeform, and multiple-freeform questions (experience questions use preset UI values)
+  - *`options`* - A list of options for single, multiple, single-freeform, and multiple-freeform questions (experience questions use preset UI values). Single and multiple choice questions automatically include an "Other" option for write-in responses.
     - *`slug`* - The unique slug of the option
     - *`label`* - The label of the option
     - *`description`* - The description of the option
@@ -155,9 +155,9 @@ Missing sections, questions, and options will be marked as inactive automaticall
   - *`question_slug`* - The slug of the question the response belongs to (text, foreign key to questions.slug, not null)
   - *`skipped`* - Whether the question was explicitly skipped by the user (boolean, not null, default false)
   - *`single_option_slug`* - The slug of the selected option (text, foreign key to options.slug, nullable)
-  - *`single_writein_response`* - The write-in response for single choice questions (text, nullable)
+  - *`single_writein_response`* - The write-in response for single choice questions when "Other" option is selected (text, nullable)
   - *`multiple_option_slugs`* - The slugs of the selected options (text[], nullable, foreign key check will be application-level)
-  - *`multiple_writein_responses`* - The write-in responses for multiple choice questions (text[], nullable)
+  - *`multiple_writein_responses`* - The write-in responses for multiple choice questions when "Other" option is selected (text[], nullable)
   - *`experience_awareness`* - The awareness of the experience (integer, nullable, values: `0` (never heard of it), `1` (heard of it), `2` (used it))
   - *`experience_sentiment`* - The sentiment of the experience (integer, nullable, values: `-1` (negative), `1` (positive)) - `0` or `null` if the user did not answer the question
   - *`freeform_response`* - Free-form text response (text, nullable)
