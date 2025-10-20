@@ -11,6 +11,7 @@ export const __TEST__ = !!process.env.TEST;
 
 export enum Env {
   DATABASE_URL = "DATABASE_URL",
+  SURVEY_PASSWORD = "SURVEY_PASSWORD",
 }
 
 export function hasEnv(env: Env): boolean {

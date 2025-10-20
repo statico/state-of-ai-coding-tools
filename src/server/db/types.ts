@@ -10,16 +10,65 @@ export type Generated<T> =
     ? ColumnType<S, I | undefined, U>
     : ColumnType<T, T | undefined, T>;
 
+export type Numeric = ColumnType<string, number | string, number | string>;
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface Todos {
-  completed: Generated<boolean>;
+export interface Options {
+  active: Generated<boolean>;
+  description: string | null;
+  label: string;
+  order: number;
+  question_slug: string;
+  slug: string;
+}
+
+export interface Questions {
+  active: Generated<boolean>;
+  description: string | null;
+  multiple_max: number | null;
+  order: number;
+  section_slug: string;
+  slug: string;
+  title: string;
+  type: string;
+}
+
+export interface Responses {
+  comment: string | null;
+  experience_awareness: number | null;
+  experience_sentiment: number | null;
+  freeform_response: string | null;
+  iso_week: number;
+  iso_year: number;
+  multiple_option_slugs: string[] | null;
+  multiple_writein_responses: string[] | null;
+  numeric_response: Numeric | null;
+  question_slug: string;
+  session_id: string;
+  single_option_slug: string | null;
+  single_writein_response: string | null;
+  skipped: Generated<boolean>;
+}
+
+export interface Sections {
+  active: Generated<boolean>;
+  description: string | null;
+  order: number;
+  slug: string;
+  title: string;
+}
+
+export interface Sessions {
   created_at: Generated<Timestamp>;
-  id: Generated<number>;
-  text: string;
+  id: string;
   updated_at: Generated<Timestamp>;
 }
 
 export interface DB {
-  todos: Todos;
+  options: Options;
+  questions: Questions;
+  responses: Responses;
+  sections: Sections;
+  sessions: Sessions;
 }

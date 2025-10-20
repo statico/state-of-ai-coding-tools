@@ -1,8 +1,7 @@
 import { router } from "../trpc";
-import { todosRouter } from "./todos";
 
 export const appRouter = router({
-  todos: todosRouter,
+  // Survey routes will be added here
 });
 
 // Export type definition of API
