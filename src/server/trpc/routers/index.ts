@@ -1,6 +1,13 @@
-import { router } from "../trpc";
+import { router, userProcedure } from "../trpc";
 
 export const appRouter = router({
+  // Test procedure to demonstrate userProcedure with automatic session management
+  getSession: userProcedure.query(({ ctx }) => {
+    return {
+      sessionId: ctx.sessionId,
+    };
+  }),
+
   // Survey routes will be added here
 });
 
