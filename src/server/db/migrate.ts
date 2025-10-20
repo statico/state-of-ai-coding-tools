@@ -47,7 +47,7 @@ export const migrate = async () => {
 export const teardown = async () => {
   // Drop tables in dependency order, ignore errors if tables don't exist.
   // TODO: Find a better way to do this.
-  const tables = ["todos"];
+  const tables = ["responses", "options", "questions", "sections", "sessions"];
 
   for (const table of tables) {
     try {
