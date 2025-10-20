@@ -1,0 +1,143 @@
+sections:
+  - slug: demographics
+    title: Demographics
+
+  - slug: ai-tools
+    title: AI Coding Tools
+
+questions:
+  - section: demographics
+    slug: role
+    title: What is your primary role?
+    type: single
+    options:
+      - slug: software-engineer
+        label: Software Engineer (Individual contributor)
+      - slug: engineering-manager
+        label: Engineering Manager (Managing teams)
+      - slug: tech-lead
+        label: Tech Lead (Technical leadership)
+      - slug: product-manager
+        label: Product Manager
+      - slug: other
+        label: Other role
+
+  - section: demographics
+    slug: experience-years
+    title: How many years of professional software development experience do you have?
+    type: numeric
+
+  - section: ai-tools
+    slug: primary-ai-tool
+    title: What is your primary AI coding assistant?
+    type: single
+    options:
+      - slug: github-copilot
+        label: GitHub Copilot
+      - slug: cursor
+        label: Cursor (AI-powered editor)
+      - slug: claude
+        label: Claude (Anthropic)
+      - slug: chatgpt
+        label: ChatGPT (OpenAI)
+      - slug: other
+        label: Other AI tool
+      - slug: none
+        label: I don't use AI coding assistants
+
+  - section: ai-tools
+    slug: ai-tools-experience
+    title: Which AI coding tools have you tried?
+    type: multiple
+    multiple_max: 5
+    options:
+      - slug: github-copilot
+        label: GitHub Copilot
+      - slug: cursor
+        label: Cursor (AI-powered editor)
+      - slug: claude
+        label: Claude (Anthropic)
+      - slug: chatgpt
+        label: ChatGPT (OpenAI)
+      - slug: gemini
+        label: Gemini (Google)
+      - slug: tabnine
+        label: Tabnine (Code completion)
+      - slug: amazon-codewhisperer
+        label: Amazon CodeWhisperer (AWS)
+      - slug: replit-ghostwriter
+        label: Replit Ghostwriter
+      - slug: other
+        label: Other AI tool
+
+  - section: ai-tools
+    slug: cursor-experience
+    title: What is your experience with Cursor?
+    type: experience
+    options:
+      - slug: never-heard
+        label: Never heard of it
+      - slug: heard-of
+        label: Heard of it (but haven't used)
+      - slug: tried-it
+        label: Tried it (but don't use regularly)
+      - slug: use-regularly
+        label: Use regularly for development
+
+  - section: ai-tools
+    slug: ai-satisfaction
+    title: How satisfied are you with your current AI coding tools?
+    type: experience
+    options:
+      - slug: never-heard
+        label: Never heard of AI coding tools
+      - slug: heard-of
+        label: Heard of them (but haven't used)
+      - slug: tried-it
+        label: Tried them (but don't use regularly)
+      - slug: use-regularly
+        label: Use them regularly for development
+
+  - section: ai-tools
+    slug: ai-concerns
+    title: What are your main concerns about AI coding tools?
+    type: multiple
+    multiple_max: 3
+    options:
+      - slug: code-quality
+        label: Code quality (AI-generated code may be low quality)
+      - slug: security
+        label: Security (May introduce vulnerabilities)
+      - slug: privacy
+        label: Privacy (Code being sent to AI services)
+      - slug: dependency
+        label: Over-dependency (Worried about becoming too dependent)
+      - slug: learning
+        label: Learning impact (May hinder skill development)
+      - slug: cost
+        label: Cost (Too expensive)
+      - slug: reliability
+        label: Reliability (Not reliable enough)
+      - slug: none
+        label: No major concerns
+
+  - section: ai-tools
+    slug: write-in-tools
+    title: What other AI coding tools do you use?
+    type: single-freeform
+    options:
+      - slug: other
+        label: Other (specify below)
+
+  - section: ai-tools
+    slug: write-in-concerns
+    title: What other concerns do you have about AI coding tools?
+    type: multiple-freeform
+    options:
+      - slug: other
+        label: Other (specify below)
+
+  - section: ai-tools
+    slug: ai-feedback
+    title: What would you like to see improved in AI coding tools?
+    type: freeform
