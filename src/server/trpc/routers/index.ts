@@ -1,12 +1,9 @@
-import { router, userProcedure } from "../trpc";
+import { router } from "../trpc";
+import { authRouter } from "./auth";
 
 export const appRouter = router({
-  // Test procedure to demonstrate userProcedure with automatic session management
-  getSession: userProcedure.query(({ ctx }) => {
-    return {
-      sessionId: ctx.sessionId,
-    };
-  }),
+  // Auth routes
+  auth: authRouter,
 
   // Survey routes will be added here
 });
