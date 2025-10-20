@@ -198,4 +198,117 @@ describe("Sync Functions", () => {
     expect(sync.syncQuestions).toBeDefined();
     expect(sync.syncOptions).toBeDefined();
   });
+
+  it("should sync sections with added_at field", async () => {
+    const sections: Section[] = [
+      {
+        slug: "test-section",
+        title: "Test Section",
+        added: "2024-01-15",
+      },
+    ];
+
+    await syncSections(sections);
+
+    const result = await db.selectFrom("sections").selectAll().execute();
+    expect(result).toHaveLength(1);
+    expect(result[0].slug).toBe("test-section");
+    expect(result[0].added_at).toEqual(new Date("2024-01-15"));
+  });
+
+  it("should sync questions with randomize and added_at fields", async () => {
+    // First create a section
+    await db
+      .insertInto("sections")
+      .values({
+        slug: "test-section",
+        title: "Test Section",
+        active: true,
+        order: 0,
+      })
+      .execute();
+
+    const questions: Question[] = [
+      {
+        section: "test-section",
+        slug: "test-question",
+        title: "Test Question",
+        type: "single",
+        randomize: true,
+        added: "2024-01-15",
+      },
+    ];
+
+    await syncQuestions(questions);
+
+    const result = await db.selectFrom("questions").selectAll().execute();
+    expect(result).toHaveLength(1);
+    expect(result[0].slug).toBe("test-question");
+    expect(result[0].randomize).toBe(true);
+    expect(result[0].added_at).toEqual(new Date("2024-01-15"));
+  });
+
+  it("should sync options with added_at field", async () => {
+    // First create a section and question
+    await db
+      .insertInto("sections")
+      .values({
+        slug: "test-section",
+        title: "Test Section",
+        active: true,
+        order: 0,
+      })
+      .execute();
+
+    await db
+      .insertInto("questions")
+      .values({
+        slug: "test-question",
+        section_slug: "test-section",
+        title: "Test Question",
+        type: "single",
+        active: true,
+        order: 0,
+      })
+      .execute();
+
+    const questions: Question[] = [
+      {
+        section: "test-section",
+        slug: "test-question",
+        title: "Test Question",
+        type: "single",
+        options: [
+          {
+            slug: "option1",
+            label: "Option 1",
+            added: "2024-01-15",
+          },
+        ],
+      },
+    ];
+
+    await syncOptions(questions);
+
+    const result = await db.selectFrom("options").selectAll().execute();
+    expect(result).toHaveLength(1);
+    expect(result[0].slug).toBe("test-question_option1");
+    expect(result[0].added_at).toEqual(new Date("2024-01-15"));
+  });
+
+  it("should handle missing added field gracefully", async () => {
+    const sections: Section[] = [
+      {
+        slug: "test-section",
+        title: "Test Section",
+        // No added field
+      },
+    ];
+
+    await syncSections(sections);
+
+    const result = await db.selectFrom("sections").selectAll().execute();
+    expect(result).toHaveLength(1);
+    expect(result[0].added_at).toBeNull();
+  });
 });

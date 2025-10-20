@@ -22,6 +22,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("description", "text")
     .addColumn("active", "boolean", (col) => col.notNull().defaultTo(true))
     .addColumn("order", "integer", (col) => col.notNull())
+    .addColumn("added_at", "date")
     .execute();
 
   // Create questions table
@@ -35,6 +36,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("active", "boolean", (col) => col.notNull().defaultTo(true))
     .addColumn("order", "integer", (col) => col.notNull())
     .addColumn("multiple_max", "integer")
+    .addColumn("added_at", "date")
+    .addColumn("randomize", "boolean", (col) => col.notNull().defaultTo(false))
     .execute();
 
   // Create options table
@@ -46,6 +49,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("description", "text")
     .addColumn("active", "boolean", (col) => col.notNull().defaultTo(true))
     .addColumn("order", "integer", (col) => col.notNull())
+    .addColumn("added_at", "date")
     .execute();
 
   // Create responses table with composite primary key

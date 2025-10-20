@@ -16,6 +16,7 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Options {
   active: Generated<boolean>;
+  added_at: Timestamp | null;
   description: string | null;
   label: string;
   order: number;
@@ -25,9 +26,11 @@ export interface Options {
 
 export interface Questions {
   active: Generated<boolean>;
+  added_at: Timestamp | null;
   description: string | null;
   multiple_max: number | null;
   order: number;
+  randomize: Generated<boolean>;
   section_slug: string;
   slug: string;
   title: string;
@@ -53,6 +56,7 @@ export interface Responses {
 
 export interface Sections {
   active: Generated<boolean>;
+  added_at: Timestamp | null;
   description: string | null;
   order: number;
   slug: string;

@@ -502,5 +502,138 @@ describe("Config Validation", () => {
         ).toBe(true);
       }
     });
+
+    it("should allow randomize on valid question types", () => {
+      const validConfig = {
+        sections: [
+          {
+            slug: "test",
+            title: "Test Section",
+          },
+        ],
+        questions: [
+          {
+            section: "test",
+            slug: "single-question",
+            title: "Single Question",
+            type: "single",
+            randomize: true,
+          },
+          {
+            section: "test",
+            slug: "multiple-question",
+            title: "Multiple Question",
+            type: "multiple",
+            randomize: true,
+          },
+          {
+            section: "test",
+            slug: "experience-question",
+            title: "Experience Question",
+            type: "experience",
+            randomize: true,
+          },
+        ],
+      };
+
+      const result = ConfigSchema.safeParse(validConfig);
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject randomize on invalid question types", () => {
+      const invalidConfig = {
+        sections: [
+          {
+            slug: "test",
+            title: "Test Section",
+          },
+        ],
+        questions: [
+          {
+            section: "test",
+            slug: "numeric-question",
+            title: "Numeric Question",
+            type: "numeric",
+            randomize: true,
+          },
+        ],
+      };
+
+      const result = ConfigSchema.safeParse(invalidConfig);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(
+          result.error.issues.some(
+            (issue) =>
+              issue.path.join(".") === "questions.0.randomize" &&
+              issue.message ===
+                "Randomize is only allowed for single, multiple, and experience questions",
+          ),
+        ).toBe(true);
+      }
+    });
+
+    it("should validate added date format", () => {
+      const validConfig = {
+        sections: [
+          {
+            slug: "test",
+            title: "Test Section",
+            added: "2024-01-15",
+          },
+        ],
+        questions: [
+          {
+            section: "test",
+            slug: "test-question",
+            title: "Test Question",
+            type: "single",
+            added: "2024-01-15",
+            options: [
+              {
+                slug: "option1",
+                label: "Option 1",
+                added: "2024-01-15",
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = ConfigSchema.safeParse(validConfig);
+      expect(result.success).toBe(true);
+    });
+
+    it("should reject invalid added date format", () => {
+      const invalidConfig = {
+        sections: [
+          {
+            slug: "test",
+            title: "Test Section",
+            added: "2024/01/15", // Invalid format
+          },
+        ],
+        questions: [
+          {
+            section: "test",
+            slug: "test-question",
+            title: "Test Question",
+            type: "single",
+          },
+        ],
+      };
+
+      const result = ConfigSchema.safeParse(invalidConfig);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(
+          result.error.issues.some(
+            (issue) =>
+              issue.path.join(".") === "sections.0.added" &&
+              issue.message === "Format: YYYY-MM-DD",
+          ),
+        ).toBe(true);
+      }
+    });
   });
 });

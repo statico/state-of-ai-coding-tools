@@ -19,6 +19,7 @@ export async function syncSections(sections: Section[]) {
   // Upsert sections from config
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
+    const addedAt = section.added ? new Date(section.added) : null;
     await db
       .insertInto("sections")
       .values({
@@ -27,6 +28,7 @@ export async function syncSections(sections: Section[]) {
         description: section.description || null,
         active: true,
         order: i,
+        added_at: addedAt,
       })
       .onConflict((oc) =>
         oc.column("slug").doUpdateSet({
@@ -34,6 +36,7 @@ export async function syncSections(sections: Section[]) {
           description: section.description || null,
           active: true,
           order: i,
+          added_at: addedAt,
         }),
       )
       .execute();
@@ -69,6 +72,7 @@ export async function syncQuestions(questions: Question[]) {
   // Upsert questions from config
   for (let i = 0; i < questions.length; i++) {
     const question = questions[i];
+    const addedAt = question.added ? new Date(question.added) : null;
     await db
       .insertInto("questions")
       .values({
@@ -80,6 +84,8 @@ export async function syncQuestions(questions: Question[]) {
         active: true,
         order: i,
         multiple_max: question.multiple_max || null,
+        added_at: addedAt,
+        randomize: question.randomize || false,
       })
       .onConflict((oc) =>
         oc.column("slug").doUpdateSet({
@@ -90,6 +96,8 @@ export async function syncQuestions(questions: Question[]) {
           active: true,
           order: i,
           multiple_max: question.multiple_max || null,
+          added_at: addedAt,
+          randomize: question.randomize || false,
         }),
       )
       .execute();
@@ -139,6 +147,7 @@ export async function syncOptions(questions: Question[]) {
   // Upsert options from config
   for (const option of configOptions) {
     const optionSlug = `${option.question_slug}_${option.slug}`;
+    const addedAt = option.added ? new Date(option.added) : null;
     await db
       .insertInto("options")
       .values({
@@ -148,6 +157,7 @@ export async function syncOptions(questions: Question[]) {
         description: option.description || null,
         active: true,
         order: option.order,
+        added_at: addedAt,
       })
       .onConflict((oc) =>
         oc.column("slug").doUpdateSet({
@@ -156,6 +166,7 @@ export async function syncOptions(questions: Question[]) {
           description: option.description || null,
           active: true,
           order: option.order,
+          added_at: addedAt,
         }),
       )
       .execute();

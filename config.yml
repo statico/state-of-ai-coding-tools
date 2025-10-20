@@ -31,6 +31,7 @@ questions:
     slug: primary-ai-tool
     title: What is your primary AI coding assistant?
     type: single
+    randomize: true
     options:
       - slug: github-copilot
         label: GitHub Copilot
@@ -48,6 +49,7 @@ questions:
     title: Which AI coding tools have you tried?
     type: multiple
     multiple_max: 5
+    randomize: true
     options:
       - slug: github-copilot
         label: GitHub Copilot

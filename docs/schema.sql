@@ -69,7 +69,8 @@ CREATE TABLE public.options (
   label text NOT NULL,
   description text,
   active boolean DEFAULT true NOT NULL,
-  "order" integer NOT NULL
+  "order" integer NOT NULL,
+  added_at date
 );
 
 --
@@ -83,7 +84,9 @@ CREATE TABLE public.questions (
   type text NOT NULL,
   active boolean DEFAULT true NOT NULL,
   "order" integer NOT NULL,
-  multiple_max integer
+  multiple_max integer,
+  added_at date,
+  randomize boolean DEFAULT false NOT NULL
 );
 
 --
@@ -114,7 +117,8 @@ CREATE TABLE public.sections (
   title text NOT NULL,
   description text,
   active boolean DEFAULT true NOT NULL,
-  "order" integer NOT NULL
+  "order" integer NOT NULL,
+  added_at date
 );
 
 --
@@ -122,8 +126,8 @@ CREATE TABLE public.sections (
 --
 CREATE TABLE public.sessions (
   id uuid NOT NULL,
-  created_at timestamp without time zone DEFAULT '2025-10-19 23:04:45.548301'::timestamp without time zone NOT NULL,
-  updated_at timestamp without time zone DEFAULT '2025-10-19 23:04:45.548301'::timestamp without time zone NOT NULL
+  created_at timestamp without time zone DEFAULT '2025-10-20 13:12:33.183295'::timestamp without time zone NOT NULL,
+  updated_at timestamp without time zone DEFAULT '2025-10-20 13:12:33.183295'::timestamp without time zone NOT NULL
 );
 
 --

@@ -21,6 +21,10 @@ export const OptionSchema = z.object({
   slug: z.string().min(1, "Option slug cannot be empty"),
   label: z.string().min(1, "Option label cannot be empty"),
   description: z.string().optional(),
+  added: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD")
+    .optional(),
 });
 
 export const QuestionSchema = z
@@ -41,6 +45,11 @@ export const QuestionSchema = z
       .int()
       .positive("multiple_max must be a positive integer")
       .optional(),
+    added: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD")
+      .optional(),
+    randomize: z.boolean().optional(),
   })
   .refine(
     (data) => {
@@ -55,12 +64,33 @@ export const QuestionSchema = z
         "Experience questions cannot have options - they use preset UI values",
       path: ["options"],
     },
+  )
+  .refine(
+    (data) => {
+      // Randomize is only allowed for single, multiple, and experience questions
+      if (
+        data.randomize &&
+        !["single", "multiple", "experience"].includes(data.type)
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        "Randomize is only allowed for single, multiple, and experience questions",
+      path: ["randomize"],
+    },
   );
 
 export const SectionSchema = z.object({
   slug: z.string().min(1, "Section slug cannot be empty"),
   title: z.string().min(1, "Section title cannot be empty"),
   description: z.string().optional(),
+  added: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD")
+    .optional(),
 });
 
 export const ConfigSchema = z.object({

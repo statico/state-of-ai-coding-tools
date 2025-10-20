@@ -95,6 +95,7 @@ Missing sections, questions, and options will be marked as inactive automaticall
   - *`slug`* - The unique slug of the section
   - *`title`* - The title of the section
   - *`description`* - The description of the section
+  - *`added`* - The date when the section was added (YYYY-MM-DD format, optional)
 
 - *`questions`* - A list of questions
   - *`section`* - The slug of the section the question belongs to
@@ -113,7 +114,10 @@ Missing sections, questions, and options will be marked as inactive automaticall
     - *`slug`* - The unique slug of the option
     - *`label`* - The label of the option
     - *`description`* - The description of the option
+    - *`added`* - The date when the option was added (YYYY-MM-DD format, optional)
   - *`multiple_max`* - The maximum number of options that can be selected for multiple choice questions (integer, nullable)
+  - *`added`* - The date when the question was added (YYYY-MM-DD format, optional)
+  - *`randomize`* - Whether to randomize the order of options for single/multiple/experience questions (boolean, optional)
 
 ### SQL Schema
 
@@ -128,6 +132,7 @@ Missing sections, questions, and options will be marked as inactive automaticall
   - *`description`* - The description of the section (text, nullable)
   - *`active`* - Whether the section is active (boolean, not null, default true)
   - *`order`* - The display order of the section (integer, not null)
+  - *`added_at`* - The date when the section was added (date, nullable)
 
 - *`questions`*
   - *`slug`* - The unique slug of the question (text, primary key, not null)
@@ -138,6 +143,8 @@ Missing sections, questions, and options will be marked as inactive automaticall
   - *`active`* - Whether the question is active (boolean, not null, default true)
   - *`order`* - The display order of the question within the section (integer, not null)
   - *`multiple_max`* - The maximum number of options that can be selected for multiple choice questions (integer, nullable)
+  - *`added_at`* - The date when the question was added (date, nullable)
+  - *`randomize`* - Whether to randomize the order of options for single/multiple/experience questions (boolean, not null, default false)
 
 - *`options`*
   - *`slug`* - The unique slug of the option (text, primary key, not null) - When converting from YAML, this will be stored as `<question_slug>_<option_slug>` to ensure global uniqueness
@@ -146,6 +153,7 @@ Missing sections, questions, and options will be marked as inactive automaticall
   - *`description`* - The description of the option (text, nullable)
   - *`active`* - Whether the option is active (boolean, not null, default true)
   - *`order`* - The display order of the option within the question (integer, not null)
+  - *`added_at`* - The date when the option was added (date, nullable)
 
 - *`responses`*
   - Primary key: `(session_id, iso_week, iso_year, question_slug)` - This ensures that each question can only be answered once per week per session
