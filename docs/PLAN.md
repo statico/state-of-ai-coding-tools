@@ -50,7 +50,7 @@ Sections will have a title and optional description. Titles and descriptions wil
 
 - Single Choice - Can include "None" and "Other" options
 - Multiple Choice - Can include "None" and "Other" options
-- Experience - A single choice question with options:
+- Experience - A single choice question with preset UI options:
   - "Never heard of it" -> "Interested" / "Not interested"
   - "Heard of it" -> "Interested" / "Not interested"
   - "Used it" -> "Positive experience" / "Negative experience"
@@ -109,7 +109,7 @@ Missing sections, questions, and options will be marked as inactive automaticall
     - `single-freeform`
     - `multiple-freeform`
     - `freeform`
-  - *`options`* - A list of options for single, multiple, and experience questions
+  - *`options`* - A list of options for single, multiple, single-freeform, and multiple-freeform questions (experience questions use preset UI values)
     - *`slug`* - The unique slug of the option
     - *`label`* - The label of the option
     - *`description`* - The description of the option

@@ -121,6 +121,47 @@ describe("Sync Functions", () => {
     expect(result[1].slug).toBe("role_manager");
   });
 
+  it("should handle experience questions without options", async () => {
+    // First create a section and question
+    await db
+      .insertInto("sections")
+      .values({
+        slug: "ai-tools",
+        title: "AI Tools",
+        active: true,
+        order: 0,
+      })
+      .execute();
+
+    await db
+      .insertInto("questions")
+      .values({
+        slug: "cursor-experience",
+        section_slug: "ai-tools",
+        title: "What is your experience with Cursor?",
+        type: "experience",
+        active: true,
+        order: 0,
+      })
+      .execute();
+
+    const questions: Question[] = [
+      {
+        section: "ai-tools",
+        slug: "cursor-experience",
+        title: "What is your experience with Cursor?",
+        type: "experience",
+        // No options - experience questions use preset UI values
+      },
+    ];
+
+    await syncOptions(questions);
+
+    // Should not create any options for experience questions
+    const result = await db.selectFrom("options").selectAll().execute();
+    expect(result).toHaveLength(0);
+  });
+
   it("should sync with real config file", async () => {
     // Mock console.warn to avoid output during tests
     const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});

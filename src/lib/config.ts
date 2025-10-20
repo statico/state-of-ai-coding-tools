@@ -23,24 +23,39 @@ export const OptionSchema = z.object({
   description: z.string().optional(),
 });
 
-export const QuestionSchema = z.object({
-  section: z.string().min(1, "Question section cannot be empty"),
-  slug: z.string().min(1, "Question slug cannot be empty"),
-  title: z.string().min(1, "Question title cannot be empty"),
-  description: z.string().optional(),
-  type: z.enum(
-    Object.keys(QuestionTypes) as [QuestionType, ...QuestionType[]],
-    {
-      message: `Question type must be one of: ${Object.keys(QuestionTypes).join(", ")}`,
+export const QuestionSchema = z
+  .object({
+    section: z.string().min(1, "Question section cannot be empty"),
+    slug: z.string().min(1, "Question slug cannot be empty"),
+    title: z.string().min(1, "Question title cannot be empty"),
+    description: z.string().optional(),
+    type: z.enum(
+      Object.keys(QuestionTypes) as [QuestionType, ...QuestionType[]],
+      {
+        message: `Question type must be one of: ${Object.keys(QuestionTypes).join(", ")}`,
+      },
+    ),
+    options: z.array(OptionSchema).optional(),
+    multiple_max: z
+      .number()
+      .int()
+      .positive("multiple_max must be a positive integer")
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      // Experience questions must not have options since they use preset UI values
+      if (data.type === "experience" && data.options) {
+        return false;
+      }
+      return true;
     },
-  ),
-  options: z.array(OptionSchema).optional(),
-  multiple_max: z
-    .number()
-    .int()
-    .positive("multiple_max must be a positive integer")
-    .optional(),
-});
+    {
+      message:
+        "Experience questions cannot have options - they use preset UI values",
+      path: ["options"],
+    },
+  );
 
 export const SectionSchema = z.object({
   slug: z.string().min(1, "Section slug cannot be empty"),

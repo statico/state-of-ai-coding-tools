@@ -350,16 +350,6 @@ describe("Config Validation", () => {
             slug: "cursor-experience",
             title: "What is your experience with Cursor?",
             type: "experience",
-            options: [
-              {
-                slug: "never-heard",
-                label: "Never heard of it",
-              },
-              {
-                slug: "heard-of",
-                label: "Heard of it (but haven't used)",
-              },
-            ],
           },
           {
             section: "ai-tools",
@@ -472,6 +462,44 @@ describe("Config Validation", () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data).toEqual(configWithDescriptions);
+      }
+    });
+
+    it("should reject experience questions with options", () => {
+      const invalidConfig = {
+        sections: [
+          {
+            slug: "test",
+            title: "Test Section",
+          },
+        ],
+        questions: [
+          {
+            section: "test",
+            slug: "experience-question",
+            title: "Test Experience Question",
+            type: "experience",
+            options: [
+              {
+                slug: "never-heard",
+                label: "Never heard of it",
+              },
+            ],
+          },
+        ],
+      };
+
+      const result = ConfigSchema.safeParse(invalidConfig);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(
+          result.error.issues.some(
+            (issue) =>
+              issue.path.join(".") === "questions.0.options" &&
+              issue.message ===
+                "Experience questions cannot have options - they use preset UI values",
+          ),
+        ).toBe(true);
       }
     });
   });
