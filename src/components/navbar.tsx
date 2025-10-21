@@ -4,7 +4,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/lib/trpc/client";
 import { useQuery } from "@tanstack/react-query";
-import { Github } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { usePathname, useRouter } from "next/navigation";
 
 export function Navbar() {
@@ -86,7 +87,10 @@ export function Navbar() {
               rel="noopener noreferrer"
               aria-label="View on GitHub"
             >
-              <Github className="h-[1.2rem] w-[1.2rem]" />
+              <FontAwesomeIcon
+                icon={faGithub}
+                className="h-[1.2rem] w-[1.2rem]"
+              />
               <span className="sr-only">View on GitHub</span>
             </a>
           </Button>
