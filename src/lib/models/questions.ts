@@ -1,4 +1,10 @@
 import { db } from "@/server/db";
+import type { Questions } from "@/server/db/types";
+import type { Insertable, Selectable, Updateable } from "kysely";
+
+export type SelectableQuestion = Selectable<Questions>;
+export type InsertableQuestion = Insertable<Questions>;
+export type UpdateableQuestion = Updateable<Questions>;
 
 export async function getAllQuestions() {
   return await db
@@ -44,15 +50,7 @@ export async function getQuestionBySlug(slug: string) {
     .executeTakeFirst();
 }
 
-export async function createQuestion(data: {
-  slug: string;
-  section_slug: string;
-  title: string;
-  description?: string;
-  type: string;
-  order: number;
-  multiple_max?: number;
-}) {
+export async function createQuestion(data: InsertableQuestion) {
   return await db
     .insertInto("questions")
     .values({
@@ -63,19 +61,7 @@ export async function createQuestion(data: {
     .executeTakeFirstOrThrow();
 }
 
-export async function updateQuestion(
-  slug: string,
-  data: {
-    title?: string;
-    description?: string | null;
-    type?: string;
-    order?: number;
-    section_slug?: string;
-    multiple_max?: number | null;
-    randomize?: boolean;
-    active?: boolean;
-  },
-) {
+export async function updateQuestion(slug: string, data: UpdateableQuestion) {
   return await db
     .updateTable("questions")
     .set(data)
@@ -101,18 +87,7 @@ export async function deleteQuestion(slug: string) {
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertQuestion(data: {
-  slug: string;
-  title: string;
-  description?: string | null;
-  type: string;
-  order: number;
-  section_slug: string;
-  multiple_max?: number | null;
-  randomize?: boolean;
-  active?: boolean;
-  added_at?: Date | null;
-}) {
+export async function upsertQuestion(data: InsertableQuestion) {
   return await db
     .insertInto("questions")
     .values(data)

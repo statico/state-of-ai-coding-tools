@@ -1,49 +1,35 @@
-// Client-side types for components
-export interface ClientOption {
-  slug: string;
-  label: string;
-  description?: string | null;
-  order: number;
-  question_slug: string;
-  active: boolean;
-}
+// Import Selectable types from model files
+import { SelectableOption } from "@/lib/models/options";
+import { SelectableQuestion } from "@/lib/models/questions";
+import { SelectableResponse } from "@/lib/models/responses";
+import { SelectableSection } from "@/lib/models/sections";
 
-export interface ClientQuestion {
-  slug: string;
-  title: string;
-  description?: string | null;
-  type: string;
-  order: number;
-  section_slug: string;
-  multiple_max?: number | null;
-  randomize: boolean;
-  active: boolean;
-}
+// Create Client types that only include fields actually used by components
+export type ClientOption = Pick<
+  SelectableOption,
+  "slug" | "label" | "description" | "order" | "question_slug" | "active"
+>;
+export type ClientQuestion = Pick<
+  SelectableQuestion,
+  | "slug"
+  | "title"
+  | "description"
+  | "type"
+  | "order"
+  | "section_slug"
+  | "multiple_max"
+  | "randomize"
+  | "active"
+>;
+export type ClientSection = Pick<
+  SelectableSection,
+  "slug" | "title" | "description" | "order" | "active"
+>;
 
-export interface ClientSection {
-  slug: string;
-  title: string;
-  description?: string | null;
-  order: number;
-  active: boolean;
-}
-
-export interface ClientResponse {
-  question_slug: string;
-  session_id: string;
-  iso_week: number;
-  iso_year: number;
-  skipped: boolean;
-  single_option_slug?: string | null;
-  single_writein_response?: string | null;
-  multiple_option_slugs?: string[] | null;
-  multiple_writein_responses?: string[] | null;
-  experience_awareness?: number | null;
-  experience_sentiment?: number | null;
-  freeform_response?: string | null;
+// ClientResponse needs special handling for numeric_response
+export type ClientResponse = Omit<SelectableResponse, "numeric_response"> & {
   numeric_response?: string | number | null;
-  comment?: string | null;
-}
+};
 
 // Question types enum
 export const QUESTION_TYPES = {

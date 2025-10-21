@@ -1,4 +1,10 @@
 import { db } from "@/server/db";
+import type { Responses } from "@/server/db/types";
+import type { Insertable, Selectable, Updateable } from "kysely";
+
+export type SelectableResponse = Selectable<Responses>;
+export type InsertableResponse = Insertable<Responses>;
+export type UpdateableResponse = Updateable<Responses>;
 
 export async function getResponsesBySession(
   sessionId: string,
@@ -78,22 +84,7 @@ export async function updateResponse(
   isoWeek: number,
   isoYear: number,
   questionSlug: string,
-  data: {
-    session_id?: string;
-    iso_week?: number;
-    iso_year?: number;
-    question_slug?: string;
-    skipped?: boolean;
-    single_option_slug?: string | null;
-    single_writein_response?: string | null;
-    multiple_option_slugs?: string[] | null;
-    multiple_writein_responses?: string[] | null;
-    experience_awareness?: number | null;
-    experience_sentiment?: number | null;
-    freeform_response?: string | null;
-    numeric_response?: number | null;
-    comment?: string | null;
-  },
+  data: UpdateableResponse,
 ) {
   return await db
     .updateTable("responses")
@@ -106,22 +97,7 @@ export async function updateResponse(
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertResponse(data: {
-  session_id: string;
-  iso_week: number;
-  iso_year: number;
-  question_slug: string;
-  skipped?: boolean;
-  single_option_slug?: string | null;
-  single_writein_response?: string | null;
-  multiple_option_slugs?: string[] | null;
-  multiple_writein_responses?: string[] | null;
-  experience_awareness?: number | null;
-  experience_sentiment?: number | null;
-  freeform_response?: string | null;
-  numeric_response?: number | null;
-  comment?: string | null;
-}) {
+export async function upsertResponse(data: InsertableResponse) {
   return await db
     .insertInto("responses")
     .values(data)

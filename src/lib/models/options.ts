@@ -1,4 +1,10 @@
 import { db } from "@/server/db";
+import type { Options } from "@/server/db/types";
+import type { Insertable, Selectable, Updateable } from "kysely";
+
+export type SelectableOption = Selectable<Options>;
+export type InsertableOption = Insertable<Options>;
+export type UpdateableOption = Updateable<Options>;
 
 export async function getAllOptions() {
   return await db.selectFrom("options").selectAll().orderBy("order").execute();
@@ -40,13 +46,7 @@ export async function getOptionBySlug(slug: string) {
     .executeTakeFirst();
 }
 
-export async function createOption(data: {
-  slug: string;
-  question_slug: string;
-  label: string;
-  description?: string;
-  order: number;
-}) {
+export async function createOption(data: InsertableOption) {
   return await db
     .insertInto("options")
     .values({
@@ -57,15 +57,7 @@ export async function createOption(data: {
     .executeTakeFirstOrThrow();
 }
 
-export async function updateOption(
-  slug: string,
-  data: {
-    label?: string;
-    description?: string | null;
-    order?: number;
-    active?: boolean;
-  },
-) {
+export async function updateOption(slug: string, data: UpdateableOption) {
   return await db
     .updateTable("options")
     .set(data)
@@ -91,15 +83,7 @@ export async function deleteOption(slug: string) {
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertOption(data: {
-  slug: string;
-  label: string;
-  description?: string | null;
-  order: number;
-  question_slug: string;
-  active?: boolean;
-  added_at?: Date | null;
-}) {
+export async function upsertOption(data: InsertableOption) {
   return await db
     .insertInto("options")
     .values(data)

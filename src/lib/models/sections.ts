@@ -1,4 +1,10 @@
 import { db } from "@/server/db";
+import type { Sections } from "@/server/db/types";
+import type { Insertable, Selectable, Updateable } from "kysely";
+
+export type SelectableSection = Selectable<Sections>;
+export type InsertableSection = Insertable<Sections>;
+export type UpdateableSection = Updateable<Sections>;
 
 export async function getAllSections() {
   return await db.selectFrom("sections").selectAll().orderBy("order").execute();
@@ -21,12 +27,7 @@ export async function getSectionBySlug(slug: string) {
     .executeTakeFirst();
 }
 
-export async function createSection(data: {
-  slug: string;
-  title: string;
-  description?: string;
-  order: number;
-}) {
+export async function createSection(data: InsertableSection) {
   return await db
     .insertInto("sections")
     .values({
@@ -37,15 +38,7 @@ export async function createSection(data: {
     .executeTakeFirstOrThrow();
 }
 
-export async function updateSection(
-  slug: string,
-  data: {
-    title?: string;
-    description?: string | null;
-    order?: number;
-    active?: boolean;
-  },
-) {
+export async function updateSection(slug: string, data: UpdateableSection) {
   return await db
     .updateTable("sections")
     .set(data)
@@ -71,14 +64,7 @@ export async function deleteSection(slug: string) {
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertSection(data: {
-  slug: string;
-  title: string;
-  description?: string | null;
-  order: number;
-  active?: boolean;
-  added_at?: Date | null;
-}) {
+export async function upsertSection(data: InsertableSection) {
   return await db
     .insertInto("sections")
     .values(data)
