@@ -10,6 +10,7 @@ import { SingleFreeformQuestion } from "@/components/survey/SingleFreeformQuesti
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { ResponseData } from "@/lib/constants";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
@@ -50,7 +51,7 @@ export default function SurveyPage() {
 
   const handleResponseChange = async (
     questionSlug: string,
-    responseData: any,
+    responseData: ResponseData,
   ) => {
     try {
       await saveResponseMutation.mutateAsync({

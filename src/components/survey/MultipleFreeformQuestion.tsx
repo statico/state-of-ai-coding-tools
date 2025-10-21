@@ -4,22 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-
-interface Question {
-  slug: string;
-  title: string;
-  description?: string;
-}
-
-interface Response {
-  multiple_writein_responses?: string[];
-  skipped?: boolean;
-}
+import {
+  QuestionWithOptions,
+  ResponseData,
+  ClientResponse,
+} from "@/lib/constants";
 
 interface MultipleFreeformQuestionProps {
-  question: Question;
-  existingResponse?: Response;
-  onResponseChange: (data: any) => void;
+  question: QuestionWithOptions;
+  existingResponse?: ClientResponse;
+  onResponseChange: (data: ResponseData) => void;
 }
 
 export function MultipleFreeformQuestion({
@@ -27,15 +21,12 @@ export function MultipleFreeformQuestion({
   existingResponse,
   onResponseChange,
 }: MultipleFreeformQuestionProps) {
-  const [responses, setResponses] = useState<string[]>([]);
-  const [isSkipped, setIsSkipped] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (existingResponse) {
-      setResponses(existingResponse.multiple_writein_responses || []);
-      setIsSkipped(existingResponse.skipped || false);
-    }
-  }, [existingResponse]);
+  const [responses, setResponses] = useState<string[]>(
+    () => existingResponse?.multiple_writein_responses || [],
+  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(
+    () => existingResponse?.skipped || false,
+  );
 
   const handleResponseChange = (index: number, value: string) => {
     const newResponses = [...responses];

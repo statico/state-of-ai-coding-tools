@@ -6,31 +6,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-interface Option {
-  slug: string;
-  label: string;
-  description?: string;
-}
-
-interface Question {
-  slug: string;
-  title: string;
-  description?: string;
-  options: Option[];
-  multiple_max?: number;
-}
-
-interface Response {
-  multiple_option_slugs?: string[];
-  multiple_writein_responses?: string[];
-  skipped?: boolean;
-}
+import {
+  QuestionWithOptions,
+  ResponseData,
+  ClientResponse,
+} from "@/lib/constants";
 
 interface MultipleChoiceQuestionProps {
-  question: Question;
-  existingResponse?: Response;
-  onResponseChange: (data: any) => void;
+  question: QuestionWithOptions;
+  existingResponse?: ClientResponse;
+  onResponseChange: (data: ResponseData) => void;
 }
 
 export function MultipleChoiceQuestion({
@@ -38,17 +23,15 @@ export function MultipleChoiceQuestion({
   existingResponse,
   onResponseChange,
 }: MultipleChoiceQuestionProps) {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [writeinTexts, setWriteinTexts] = useState<string[]>([]);
-  const [isSkipped, setIsSkipped] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (existingResponse) {
-      setSelectedOptions(existingResponse.multiple_option_slugs || []);
-      setWriteinTexts(existingResponse.multiple_writein_responses || []);
-      setIsSkipped(existingResponse.skipped || false);
-    }
-  }, [existingResponse]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    () => existingResponse?.multiple_option_slugs || [],
+  );
+  const [writeinTexts, setWriteinTexts] = useState<string[]>(
+    () => existingResponse?.multiple_writein_responses || [],
+  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(
+    () => existingResponse?.skipped || false,
+  );
 
   const handleOptionChange = (optionSlug: string, checked: boolean) => {
     let newSelectedOptions;

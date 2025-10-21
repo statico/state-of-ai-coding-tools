@@ -6,30 +6,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-interface Option {
-  slug: string;
-  label: string;
-  description?: string;
-}
-
-interface Question {
-  slug: string;
-  title: string;
-  description: string;
-  options: Option[];
-}
-
-interface Response {
-  single_option_slug?: string;
-  single_writein_response?: string;
-  skipped?: boolean;
-}
+import {
+  QuestionWithOptions,
+  ResponseData,
+  ClientResponse,
+} from "@/lib/constants";
 
 interface SingleChoiceQuestionProps {
-  question: Question;
-  existingResponse?: Response;
-  onResponseChange: (data: any) => void;
+  question: QuestionWithOptions;
+  existingResponse?: ClientResponse;
+  onResponseChange: (data: ResponseData) => void;
 }
 
 export function SingleChoiceQuestion({
@@ -37,17 +23,15 @@ export function SingleChoiceQuestion({
   existingResponse,
   onResponseChange,
 }: SingleChoiceQuestionProps) {
-  const [selectedOption, setSelectedOption] = useState<string>("");
-  const [writeinText, setWriteinText] = useState<string>("");
-  const [isSkipped, setIsSkipped] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (existingResponse) {
-      setSelectedOption(existingResponse.single_option_slug || "");
-      setWriteinText(existingResponse.single_writein_response || "");
-      setIsSkipped(existingResponse.skipped || false);
-    }
-  }, [existingResponse]);
+  const [selectedOption, setSelectedOption] = useState<string>(
+    () => existingResponse?.single_option_slug || "",
+  );
+  const [writeinText, setWriteinText] = useState<string>(
+    () => existingResponse?.single_writein_response || "",
+  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(
+    () => existingResponse?.skipped || false,
+  );
 
   const handleOptionChange = (value: string) => {
     setSelectedOption(value);

@@ -65,7 +65,16 @@ export async function createQuestion(data: {
 
 export async function updateQuestion(
   slug: string,
-  data: Partial<typeof questions.$inferInsert>,
+  data: {
+    title?: string;
+    description?: string | null;
+    type?: string;
+    order?: number;
+    section_slug?: string;
+    multiple_max?: number | null;
+    randomize?: boolean;
+    active?: boolean;
+  },
 ) {
   return await db
     .updateTable("questions")
@@ -92,7 +101,18 @@ export async function deleteQuestion(slug: string) {
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertQuestion(data: typeof questions.$inferInsert) {
+export async function upsertQuestion(data: {
+  slug: string;
+  title: string;
+  description?: string | null;
+  type: string;
+  order: number;
+  section_slug: string;
+  multiple_max?: number | null;
+  randomize?: boolean;
+  active?: boolean;
+  added_at?: Date | null;
+}) {
   return await db
     .insertInto("questions")
     .values(data)

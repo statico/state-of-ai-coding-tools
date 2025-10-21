@@ -1,5 +1,4 @@
 import { db } from "@/server/db";
-import { sections } from "@/server/db/types";
 
 export async function getAllSections() {
   return await db.selectFrom("sections").selectAll().orderBy("order").execute();
@@ -40,7 +39,12 @@ export async function createSection(data: {
 
 export async function updateSection(
   slug: string,
-  data: Partial<typeof sections.$inferInsert>,
+  data: {
+    title?: string;
+    description?: string | null;
+    order?: number;
+    active?: boolean;
+  },
 ) {
   return await db
     .updateTable("sections")
@@ -67,7 +71,14 @@ export async function deleteSection(slug: string) {
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertSection(data: typeof sections.$inferInsert) {
+export async function upsertSection(data: {
+  slug: string;
+  title: string;
+  description?: string | null;
+  order: number;
+  active?: boolean;
+  added_at?: Date | null;
+}) {
   return await db
     .insertInto("sections")
     .values(data)

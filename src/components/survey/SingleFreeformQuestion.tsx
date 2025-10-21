@@ -5,22 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-
-interface Question {
-  slug: string;
-  title: string;
-  description?: string;
-}
-
-interface Response {
-  single_writein_response?: string;
-  skipped?: boolean;
-}
+import {
+  QuestionWithOptions,
+  ResponseData,
+  ClientResponse,
+} from "@/lib/constants";
 
 interface SingleFreeformQuestionProps {
-  question: Question;
-  existingResponse?: Response;
-  onResponseChange: (data: any) => void;
+  question: QuestionWithOptions;
+  existingResponse?: ClientResponse;
+  onResponseChange: (data: ResponseData) => void;
 }
 
 export function SingleFreeformQuestion({
@@ -28,15 +22,12 @@ export function SingleFreeformQuestion({
   existingResponse,
   onResponseChange,
 }: SingleFreeformQuestionProps) {
-  const [value, setValue] = useState<string>("");
-  const [isSkipped, setIsSkipped] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (existingResponse) {
-      setValue(existingResponse.single_writein_response || "");
-      setIsSkipped(existingResponse.skipped || false);
-    }
-  }, [existingResponse]);
+  const [value, setValue] = useState<string>(
+    () => existingResponse?.single_writein_response || "",
+  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(
+    () => existingResponse?.skipped || false,
+  );
 
   const handleValueChange = (newValue: string) => {
     setValue(newValue);

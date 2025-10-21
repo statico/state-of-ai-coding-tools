@@ -1,5 +1,4 @@
 import { db } from "@/server/db";
-import { responses } from "@/server/db/types";
 
 export async function getResponsesBySession(
   sessionId: string,
@@ -79,7 +78,22 @@ export async function updateResponse(
   isoWeek: number,
   isoYear: number,
   questionSlug: string,
-  data: Partial<typeof responses.$inferInsert>,
+  data: {
+    session_id?: string;
+    iso_week?: number;
+    iso_year?: number;
+    question_slug?: string;
+    skipped?: boolean;
+    single_option_slug?: string | null;
+    single_writein_response?: string | null;
+    multiple_option_slugs?: string[] | null;
+    multiple_writein_responses?: string[] | null;
+    experience_awareness?: number | null;
+    experience_sentiment?: number | null;
+    freeform_response?: string | null;
+    numeric_response?: number | null;
+    comment?: string | null;
+  },
 ) {
   return await db
     .updateTable("responses")
@@ -92,7 +106,22 @@ export async function updateResponse(
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertResponse(data: typeof responses.$inferInsert) {
+export async function upsertResponse(data: {
+  session_id: string;
+  iso_week: number;
+  iso_year: number;
+  question_slug: string;
+  skipped?: boolean;
+  single_option_slug?: string | null;
+  single_writein_response?: string | null;
+  multiple_option_slugs?: string[] | null;
+  multiple_writein_responses?: string[] | null;
+  experience_awareness?: number | null;
+  experience_sentiment?: number | null;
+  freeform_response?: string | null;
+  numeric_response?: number | null;
+  comment?: string | null;
+}) {
   return await db
     .insertInto("responses")
     .values(data)

@@ -59,7 +59,12 @@ export async function createOption(data: {
 
 export async function updateOption(
   slug: string,
-  data: Partial<typeof options.$inferInsert>,
+  data: {
+    label?: string;
+    description?: string | null;
+    order?: number;
+    active?: boolean;
+  },
 ) {
   return await db
     .updateTable("options")
@@ -86,7 +91,15 @@ export async function deleteOption(slug: string) {
     .executeTakeFirstOrThrow();
 }
 
-export async function upsertOption(data: typeof options.$inferInsert) {
+export async function upsertOption(data: {
+  slug: string;
+  label: string;
+  description?: string | null;
+  order: number;
+  question_slug: string;
+  active?: boolean;
+  added_at?: Date | null;
+}) {
   return await db
     .insertInto("options")
     .values(data)

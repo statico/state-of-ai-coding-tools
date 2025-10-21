@@ -5,57 +5,35 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
-
-interface Question {
-  slug: string;
-  title: string;
-  description?: string;
-}
-
-interface Response {
-  experience_awareness?: number;
-  experience_sentiment?: number;
-  skipped?: boolean;
-}
+import {
+  QuestionWithOptions,
+  ResponseData,
+  ClientResponse,
+  AWARENESS_OPTIONS,
+  SENTIMENT_OPTIONS,
+  INTEREST_OPTIONS,
+} from "@/lib/constants";
 
 interface ExperienceQuestionProps {
-  question: Question;
-  existingResponse?: Response;
-  onResponseChange: (data: any) => void;
+  question: QuestionWithOptions;
+  existingResponse?: ClientResponse;
+  onResponseChange: (data: ResponseData) => void;
 }
-
-const AWARENESS_OPTIONS = [
-  { value: 0, label: "Never heard of it" },
-  { value: 1, label: "Heard of it" },
-  { value: 2, label: "Used it" },
-];
-
-const SENTIMENT_OPTIONS = [
-  { value: -1, label: "Negative experience" },
-  { value: 1, label: "Positive experience" },
-];
-
-const INTEREST_OPTIONS = [
-  { value: -1, label: "Not interested" },
-  { value: 1, label: "Interested" },
-];
 
 export function ExperienceQuestion({
   question,
   existingResponse,
   onResponseChange,
 }: ExperienceQuestionProps) {
-  const [awareness, setAwareness] = useState<number | undefined>();
-  const [sentiment, setSentiment] = useState<number | undefined>();
-  const [isSkipped, setIsSkipped] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (existingResponse) {
-      setAwareness(existingResponse.experience_awareness);
-      setSentiment(existingResponse.experience_sentiment);
-      setIsSkipped(existingResponse.skipped || false);
-    }
-  }, [existingResponse]);
+  const [awareness, setAwareness] = useState<number | undefined>(
+    () => existingResponse?.experience_awareness ?? undefined,
+  );
+  const [sentiment, setSentiment] = useState<number | undefined>(
+    () => existingResponse?.experience_sentiment ?? undefined,
+  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(
+    () => existingResponse?.skipped || false,
+  );
 
   const handleAwarenessChange = (value: string) => {
     const awarenessValue = parseInt(value);
