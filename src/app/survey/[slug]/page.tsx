@@ -1,5 +1,6 @@
 "use client";
 
+import { SurveyHeader } from "@/components/survey-header";
 import { ExperienceQuestion } from "@/components/survey/ExperienceQuestion";
 import { FreeformQuestion } from "@/components/survey/FreeformQuestion";
 import { MultipleChoiceQuestion } from "@/components/survey/MultipleChoiceQuestion";
@@ -35,18 +36,32 @@ export default function SurveyPage() {
     trpc.survey.getResponses.queryOptions(),
   );
 
-  const responses = responsesData?.responses;
+  const responses =
+    responsesData &&
+    typeof responsesData === "object" &&
+    "responses" in responsesData
+      ? responsesData.responses
+      : [];
 
   const saveResponseMutation = useMutation(
     trpc.survey.saveResponse.mutationOptions(),
   );
 
-  const currentSection = sections?.find((s) => s.slug === slug);
-  const currentSectionIndex = sections?.findIndex((s) => s.slug === slug) ?? -1;
+  const currentSection =
+    sections && Array.isArray(sections)
+      ? sections.find((s: any) => s.slug === slug)
+      : undefined;
+  const currentSectionIndex =
+    sections && Array.isArray(sections)
+      ? sections.findIndex((s: any) => s.slug === slug)
+      : -1;
   const nextSection =
     currentSectionIndex >= 0 &&
-    currentSectionIndex < (sections?.length ?? 0) - 1
-      ? sections?.[currentSectionIndex + 1]
+    currentSectionIndex <
+      (sections && Array.isArray(sections) ? sections.length : 0) - 1
+      ? sections && Array.isArray(sections)
+        ? sections[currentSectionIndex + 1]
+        : null
       : null;
 
   const handleResponseChange = async (
@@ -72,9 +87,13 @@ export default function SurveyPage() {
   };
 
   const handlePrevious = () => {
-    if (currentSectionIndex > 0) {
-      const prevSection = sections?.[currentSectionIndex - 1];
-      if (prevSection) {
+    if (currentSectionIndex > 0 && sections && Array.isArray(sections)) {
+      const prevSection = sections[currentSectionIndex - 1];
+      if (
+        prevSection &&
+        typeof prevSection === "object" &&
+        "slug" in prevSection
+      ) {
         router.push(`/survey/${prevSection.slug}`);
       }
     } else {
@@ -111,92 +130,104 @@ export default function SurveyPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl p-4">
-      <div className="space-y-6">
-        {/* Progress indicator */}
-        <div className="text-muted-foreground flex items-center justify-between text-sm">
-          <span>
-            Section {currentSectionIndex + 1} of {sections?.length}
-          </span>
-          <span>{currentSection.title}</span>
-        </div>
+    <>
+      <div className="container mx-auto max-w-4xl p-4">
+        <SurveyHeader />
 
-        {/* Section header */}
-        <div className="space-y-2">
-          <h2 className="text-2xl">{currentSection.title}</h2>
-          {currentSection.description && (
-            <p className="text-muted-foreground">
-              {currentSection.description}
-            </p>
-          )}
-        </div>
-
-        {/* Questions */}
         <div className="space-y-6">
-          {questions?.map((question) => {
-            const existingResponse = responses?.find(
-              (r) => r.question_slug === question.slug,
-            );
+          {/* Section header */}
+          <div className="space-y-2">
+            <h2 className="text-2xl">{currentSection.title}</h2>
+            {currentSection.description && (
+              <p className="text-muted-foreground">
+                {currentSection.description}
+              </p>
+            )}
+          </div>
 
-            const commonProps = {
-              question,
-              existingResponse,
-              onResponseChange: (data: any) =>
-                handleResponseChange(question.slug, data),
-            };
+          {/* Questions */}
+          <div className="space-y-6">
+            {questions && Array.isArray(questions)
+              ? questions.map((question: any) => {
+                  const existingResponse =
+                    responses && Array.isArray(responses)
+                      ? responses.find(
+                          (r: any) => r.question_slug === question.slug,
+                        )
+                      : undefined;
 
-            switch (question.type) {
-              case "single":
-                return (
-                  <SingleChoiceQuestion key={question.slug} {...commonProps} />
-                );
-              case "multiple":
-                return (
-                  <MultipleChoiceQuestion
-                    key={question.slug}
-                    {...commonProps}
-                  />
-                );
-              case "experience":
-                return (
-                  <ExperienceQuestion key={question.slug} {...commonProps} />
-                );
-              case "numeric":
-                return <NumericQuestion key={question.slug} {...commonProps} />;
-              case "single-freeform":
-                return (
-                  <SingleFreeformQuestion
-                    key={question.slug}
-                    {...commonProps}
-                  />
-                );
-              case "multiple-freeform":
-                return (
-                  <MultipleFreeformQuestion
-                    key={question.slug}
-                    {...commonProps}
-                  />
-                );
-              case "freeform":
-                return (
-                  <FreeformQuestion key={question.slug} {...commonProps} />
-                );
-              default:
-                return null;
-            }
-          })}
-        </div>
+                  const commonProps = {
+                    question,
+                    existingResponse,
+                    onResponseChange: (data: any) =>
+                      handleResponseChange(question.slug, data),
+                  };
 
-        {/* Navigation */}
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={handlePrevious}>
-            Previous
-          </Button>
-          <Button onClick={handleNext}>
-            {nextSection ? "Next Section" : "Complete Survey"}
-          </Button>
+                  switch (question.type) {
+                    case "single":
+                      return (
+                        <SingleChoiceQuestion
+                          key={question.slug}
+                          {...commonProps}
+                        />
+                      );
+                    case "multiple":
+                      return (
+                        <MultipleChoiceQuestion
+                          key={question.slug}
+                          {...commonProps}
+                        />
+                      );
+                    case "experience":
+                      return (
+                        <ExperienceQuestion
+                          key={question.slug}
+                          {...commonProps}
+                        />
+                      );
+                    case "numeric":
+                      return (
+                        <NumericQuestion key={question.slug} {...commonProps} />
+                      );
+                    case "single-freeform":
+                      return (
+                        <SingleFreeformQuestion
+                          key={question.slug}
+                          {...commonProps}
+                        />
+                      );
+                    case "multiple-freeform":
+                      return (
+                        <MultipleFreeformQuestion
+                          key={question.slug}
+                          {...commonProps}
+                        />
+                      );
+                    case "freeform":
+                      return (
+                        <FreeformQuestion
+                          key={question.slug}
+                          {...commonProps}
+                        />
+                      );
+                    default:
+                      return null;
+                  }
+                })
+              : null}
+          </div>
+
+          {/* Navigation */}
+          <div className="flex justify-between">
+            <Button variant="outline" onClick={handlePrevious}>
+              Previous
+            </Button>
+            <Button onClick={handleNext}>
+              {nextSection ? "Next Section" : "Complete Survey"}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

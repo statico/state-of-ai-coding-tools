@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTRPC } from "@/lib/trpc/client";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 
 export default function IntroPage() {
   const router = useRouter();
@@ -15,7 +15,11 @@ export default function IntroPage() {
   );
 
   const handleStartSurvey = () => {
-    if (firstSection) {
+    if (
+      firstSection &&
+      typeof firstSection === "object" &&
+      "slug" in firstSection
+    ) {
       router.push(`/survey/${firstSection.slug}`);
     }
   };
