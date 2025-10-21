@@ -46,6 +46,28 @@
 - Direct service usage: Use external services directly where needed
 - Consolidate functionality: Combine related functionality into single endpoints/files
 - Avoid unnecessary docstrings: function names and types should be self-explanatory
+- Use `date-fns` for date operations, especially getISOWeek and getISOWeekYear
+
+## Frontend Guidelines
+
+### New tRPC API with Tanstack Query
+
+For tRPC queries and mutations on the client side, note that we are using the **NEW** `@tanstack/react-query` library with tRPC: https://trpc.io/docs/client/tanstack-react-query/usage
+
+```typescript
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/lib/trpc/client";
+
+function SurveyPage() {
+  const trpc = useTRPC();
+  const { data: sections } = useQuery(trpc.survey.getSections.queryOptions());
+  const { data: firstSection } = useQuery(
+    trpc.survey.getFirstSection.queryOptions(),
+  );
+  // sections.data === array of survey sections
+  // firstSection.data === first section object
+}
+```
 
 ## Database Guidelines
 

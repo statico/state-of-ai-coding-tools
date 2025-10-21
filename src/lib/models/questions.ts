@@ -1,5 +1,4 @@
 import { db } from "@/server/db";
-import { questions } from "@/server/db/types";
 
 export async function getAllQuestions() {
   return await db

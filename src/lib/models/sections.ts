@@ -82,3 +82,13 @@ export async function upsertSection(data: typeof sections.$inferInsert) {
     .returningAll()
     .executeTakeFirstOrThrow();
 }
+
+export async function getFirstSection() {
+  return await db
+    .selectFrom("sections")
+    .selectAll()
+    .where("active", "=", true)
+    .orderBy("order")
+    .limit(1)
+    .executeTakeFirst();
+}

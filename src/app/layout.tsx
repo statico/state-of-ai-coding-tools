@@ -7,8 +7,8 @@ import { TRPCProviderWrapper } from "@/lib/trpc/Provider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Todo App",
-  description: "A simple todo list application",
+  title: "AI Coding Tools Survey",
+  description: "A survey about AI coding tools",
 };
 
 export default async function RootLayout({

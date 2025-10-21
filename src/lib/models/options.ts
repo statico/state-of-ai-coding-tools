@@ -1,5 +1,4 @@
 import { db } from "@/server/db";
-import { options } from "@/server/db/types";
 
 export async function getAllOptions() {
   return await db.selectFrom("options").selectAll().orderBy("order").execute();

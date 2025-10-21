@@ -1,11 +1,10 @@
 import { router } from "../trpc";
 import { authRouter } from "./auth";
+import { surveyRouter } from "./survey";
 
 export const appRouter = router({
-  // Auth routes
   auth: authRouter,
-
-  // Survey routes will be added here
+  survey: surveyRouter,
 });
 
 // Export type definition of API

@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { PGlite } from "@electric-sql/pglite";
 import { Kysely, LogEvent, PostgresDialect } from "kysely";
 import { PGliteDialect } from "kysely-pglite-dialect";
