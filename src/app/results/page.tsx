@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
 import { getCurrentISOWeek, isCurrentWeek } from "@/lib/utils";
 import { useQueryState, parseAsInteger } from "nuqs";
+import pluralize from "pluralize";
 
 export default function ReportsPage() {
   const trpc = useTRPC();
@@ -64,61 +65,18 @@ export default function ReportsPage() {
 
         {/* Week Summary */}
         {summaryLoading ? (
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-48" />
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
-              </div>
-            </CardContent>
-          </Card>
+          <Skeleton className="h-6 w-64" />
         ) : weekSummary ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Week Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="text-center">
-                  <div className="text-2xl font-bold">
-                    {weekSummary.totalResponses}
-                  </div>
-                  <div className="text-muted-foreground text-sm">
-                    Total Responses
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold">
-                    {weekSummary.uniqueSessions}
-                  </div>
-                  <div className="text-muted-foreground text-sm">
-                    Unique Sessions
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold">
-                    {weekSummary.questions.length}
-                  </div>
-                  <div className="text-muted-foreground text-sm">Questions</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <p className="text-muted-foreground">
+            {weekSummary.uniqueSessions}{" "}
+            {pluralize("respondent", weekSummary.uniqueSessions)} ·{" "}
+            {weekSummary.totalResponses}{" "}
+            {pluralize("total response", weekSummary.totalResponses)} for{" "}
+            {weekSummary.questions.length}{" "}
+            {pluralize("question", weekSummary.questions.length)}
+          </p>
         ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>No Data Available</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                No survey responses found for the selected week.
-              </p>
-            </CardContent>
-          </Card>
+          <p className="text-muted-foreground">No data</p>
         )}
 
         {/* Question Reports */}
