@@ -1,19 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { QuestionCard } from "./QuestionCard";
+import { cn } from "@/lib/utils";
 import {
   QuestionWithOptions,
   ResponseData,
   ClientResponse,
 } from "@/lib/constants";
-import { SkipButton } from "./SkipButton";
-import { CommentSection } from "./CommentSection";
-import { cn } from "@/lib/utils";
 
 interface SingleChoiceQuestionProps {
   question: QuestionWithOptions;
@@ -36,7 +33,7 @@ export function SingleChoiceQuestion({
     () => existingResponse?.skipped || false,
   );
   const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment || "",
+    () => existingResponse?.comment ?? "",
   );
 
   const handleOptionChange = (value: string) => {
@@ -89,62 +86,52 @@ export function SingleChoiceQuestion({
   );
 
   return (
-    <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-xl">{question.title}</CardTitle>
-        {question.description && (
-          <p className="text-muted-foreground">{question.description}</p>
-        )}
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <RadioGroup
-          value={selectedOption}
-          onValueChange={handleOptionChange}
-          disabled={isSkipped}
-          className={cn("flex flex-col gap-2", isSkipped && "opacity-50")}
-        >
-          {question.options.map((option) => (
-            <div key={option.slug} className="flex items-center space-x-4">
-              <RadioGroupItem value={option.slug} id={option.slug} />
-              <Label
-                htmlFor={option.slug}
-                className="flex flex-1 flex-col items-start gap-0 py-2 text-base"
-              >
-                <div>{option.label}</div>
-                {option.description && (
-                  <div className="text-muted-foreground text-sm">
-                    {option.description}
-                  </div>
-                )}
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-
-        {selectedOption === "other" && (
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="writein" className="text-base">
-              Please specify:
+    <QuestionCard
+      title={question.title}
+      description={question.description ?? undefined}
+      isSkipped={isSkipped}
+      comment={comment}
+      hasResponse={selectedOption !== ""}
+      onSkip={handleSkip}
+      onCommentChange={handleCommentChange}
+    >
+      <RadioGroup
+        value={selectedOption}
+        onValueChange={handleOptionChange}
+        disabled={isSkipped}
+        className={cn("flex flex-col gap-2", isSkipped && "opacity-50")}
+      >
+        {question.options.map((option) => (
+          <div key={option.slug} className="flex items-center space-x-4">
+            <RadioGroupItem value={option.slug} id={option.slug} />
+            <Label
+              htmlFor={option.slug}
+              className="flex flex-1 flex-col items-start gap-0 py-2 text-base"
+            >
+              <div>{option.label}</div>
+              {option.description && (
+                <div className="text-muted-foreground text-sm">
+                  {option.description}
+                </div>
+              )}
             </Label>
-            <Input
-              id="writein"
-              value={writeinText}
-              onChange={(e) => handleWriteinChange(e.target.value)}
-              placeholder="Enter your response..."
-            />
           </div>
-        )}
+        ))}
+      </RadioGroup>
 
-        <CommentSection
-          initialComment={comment}
-          onCommentChange={handleCommentChange}
-          disabled={isSkipped}
-        />
-
-        <div className="absolute right-0 bottom-0 flex justify-between">
-          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
+      {selectedOption === "other" && (
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="writein" className="text-base">
+            Please specify:
+          </Label>
+          <Input
+            id="writein"
+            value={writeinText}
+            onChange={(e) => handleWriteinChange(e.target.value)}
+            placeholder="Enter your response..."
+          />
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </QuestionCard>
   );
 }

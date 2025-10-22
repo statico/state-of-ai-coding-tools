@@ -102,7 +102,7 @@ export function SurveyHeader() {
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "z-10 h-8 w-8 rounded-full border-2 transition-all duration-200 group-hover:scale-110",
+                    "z-10 h-8 w-8 rounded-full border transition-all duration-200 group-hover:scale-110",
                     item.isActive
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-muted-foreground/30 bg-background group-hover:border-muted-foreground/60",

@@ -10,15 +10,17 @@ interface CommentSectionProps {
   initialComment?: string;
   onCommentChange: (comment: string) => void;
   disabled?: boolean;
+  hasResponse?: boolean;
 }
 
 export function CommentSection({
   initialComment = "",
   onCommentChange,
   disabled = false,
+  hasResponse = false,
 }: CommentSectionProps) {
   const [comment, setComment] = useState(initialComment);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(!!initialComment);
   const [debouncedComment] = useDebounce(comment, 500);
   const lastEmittedComment = useRef(debouncedComment);
 
@@ -33,17 +35,26 @@ export function CommentSection({
     setIsExpanded(!isExpanded);
   };
 
+  const placeholder = hasResponse
+    ? "Tell us more about your answer"
+    : "You didn't pick any response. Tell us why.";
+
   return (
-    <div className="mt-4">
+    <div>
       <Button
         variant="ghost"
         size="sm"
         onClick={handleToggle}
         disabled={disabled}
-        className="text-muted-foreground hover:text-foreground h-8 px-2"
+        title={
+          isExpanded
+            ? "Hide the comment section"
+            : "Add a comment to this question"
+        }
+        className="text-muted-foreground hover:text-foreground -ml-2 h-8 px-2"
       >
-        <MessageCircle className="mr-1 h-4 w-4" />
-        {isExpanded ? "Hide comment" : "Add comment"}
+        <MessageCircle className="size-5" />
+        {isExpanded && "Leave a Comment (optional)"}
       </Button>
 
       {isExpanded && (
@@ -51,7 +62,7 @@ export function CommentSection({
           <Textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Add a comment about this question..."
+            placeholder={placeholder}
             disabled={disabled}
             className="min-h-[80px] resize-none"
           />

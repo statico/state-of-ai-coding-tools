@@ -1,9 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SkipButton } from "./SkipButton";
-import { CommentSection } from "./CommentSection";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { QuestionCard } from "./QuestionCard";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
@@ -32,7 +30,7 @@ export function MultipleFreeformQuestion({
     () => existingResponse?.skipped || false,
   );
   const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment || "",
+    () => existingResponse?.comment ?? "",
   );
 
   const handleResponseChange = (index: number, value: string) => {
@@ -102,54 +100,44 @@ export function MultipleFreeformQuestion({
   );
 
   return (
-    <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-xl">{question.title}</CardTitle>
-        {question.description && (
-          <p className="text-muted-foreground">{question.description}</p>
-        )}
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
-          {responses.map((response, index) => (
-            <div key={index} className="flex items-center space-x-2">
-              <Input
-                value={response}
-                onChange={(e) => handleResponseChange(index, e.target.value)}
-                disabled={isSkipped}
-                className="flex-1"
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => removeResponse(index)}
-                disabled={isSkipped}
-              >
-                <XIcon className="size-4" />
-              </Button>
-            </div>
-          ))}
+    <QuestionCard
+      title={question.title}
+      description={question.description ?? undefined}
+      isSkipped={isSkipped}
+      comment={comment}
+      hasResponse={responses.length > 0}
+      onSkip={handleSkip}
+      onCommentChange={handleCommentChange}
+    >
+      <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
+        {responses.map((response, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <Input
+              value={response}
+              onChange={(e) => handleResponseChange(index, e.target.value)}
+              disabled={isSkipped}
+              className="flex-1"
+            />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => removeResponse(index)}
+              disabled={isSkipped}
+            >
+              <XIcon className="size-4" />
+            </Button>
+          </div>
+        ))}
 
-          <Button
-            variant="outline"
-            onClick={addResponse}
-            disabled={isSkipped}
-            className="w-full"
-          >
-            Add Response
-          </Button>
-        </div>
-
-        <CommentSection
-          initialComment={comment}
-          onCommentChange={handleCommentChange}
+        <Button
+          variant="outline"
+          onClick={addResponse}
           disabled={isSkipped}
-        />
-
-        <div className="absolute right-0 bottom-0 flex justify-between">
-          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
-        </div>
-      </CardContent>
-    </Card>
+          className="w-full"
+        >
+          Add Response
+        </Button>
+      </div>
+    </QuestionCard>
   );
 }

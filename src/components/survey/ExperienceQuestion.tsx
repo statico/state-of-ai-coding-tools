@@ -1,14 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SkipButton } from "./SkipButton";
 import { SentimentBadge } from "./SentimentBadge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { QuestionCard } from "./QuestionCard";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { CommentSection } from "./CommentSection";
 import {
   QuestionWithOptions,
   ResponseData,
@@ -39,7 +37,7 @@ export function ExperienceQuestion({
     () => existingResponse?.skipped || false,
   );
   const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment || "",
+    () => existingResponse?.comment ?? "",
   );
 
   const handleAwarenessChange = (value: string) => {
@@ -113,79 +111,70 @@ export function ExperienceQuestion({
   };
 
   return (
-    <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-xl">{question.title}</CardTitle>
-        {question.description && (
-          <p className="text-muted-foreground">{question.description}</p>
-        )}
-      </CardHeader>
-      <CardContent className="flex flex-col gap-6">
-        {/* Awareness Level with inline badges */}
-        <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
-          <RadioGroup
-            value={awareness?.toString()}
-            onValueChange={handleAwarenessChange}
-            disabled={isSkipped}
-          >
-            {AWARENESS_OPTIONS.map((option) => {
-              const showBadges = awareness === option.value;
-              const sentimentOptions = getSentimentOptions(option.value);
+    <QuestionCard
+      title={question.title}
+      description={question.description ?? undefined}
+      isSkipped={isSkipped}
+      comment={comment}
+      hasResponse={awareness !== undefined || sentiment !== undefined}
+      onSkip={handleSkip}
+      onCommentChange={handleCommentChange}
+      className="gap-6"
+    >
+      {/* Awareness Level with inline badges */}
+      <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
+        <RadioGroup
+          value={awareness?.toString()}
+          onValueChange={handleAwarenessChange}
+          disabled={isSkipped}
+        >
+          {AWARENESS_OPTIONS.map((option) => {
+            const showBadges = awareness === option.value;
+            const sentimentOptions = getSentimentOptions(option.value);
 
-              return (
-                <div key={option.value} className="flex items-center space-x-4">
-                  <RadioGroupItem
-                    value={option.value.toString()}
-                    id={`awareness-${option.value}`}
-                  />
-                  <div className="flex-1">
-                    <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
-                      <Label
-                        htmlFor={`awareness-${option.value}`}
-                        className="py-2 text-base"
-                      >
-                        {option.label}
-                      </Label>
-                      {showBadges && sentimentOptions.length > 0 && (
-                        <div className="ml-0 flex gap-4 sm:ml-0">
-                          {sentimentOptions.map((sentimentOption) => (
-                            <SentimentBadge
-                              key={sentimentOption.value}
-                              value={sentimentOption.value}
-                              label={sentimentOption.label}
-                              isSelected={sentiment === sentimentOption.value}
-                              onClick={() => {
-                                // If this option is already selected, deselect it (set to neutral)
-                                if (sentiment === sentimentOption.value) {
-                                  handleSentimentChange("");
-                                } else {
-                                  handleSentimentChange(
-                                    sentimentOption.value.toString(),
-                                  );
-                                }
-                              }}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
+            return (
+              <div key={option.value} className="flex items-center space-x-4">
+                <RadioGroupItem
+                  value={option.value.toString()}
+                  id={`awareness-${option.value}`}
+                />
+                <div className="flex-1">
+                  <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
+                    <Label
+                      htmlFor={`awareness-${option.value}`}
+                      className="py-2 text-base"
+                    >
+                      {option.label}
+                    </Label>
+                    {showBadges && sentimentOptions.length > 0 && (
+                      <div className="ml-0 flex gap-4 sm:ml-0">
+                        {sentimentOptions.map((sentimentOption) => (
+                          <SentimentBadge
+                            key={sentimentOption.value}
+                            value={sentimentOption.value}
+                            label={sentimentOption.label}
+                            isSelected={sentiment === sentimentOption.value}
+                            onClick={() => {
+                              // If this option is already selected, deselect it (set to neutral)
+                              if (sentiment === sentimentOption.value) {
+                                handleSentimentChange("");
+                              } else {
+                                handleSentimentChange(
+                                  sentimentOption.value.toString(),
+                                );
+                              }
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-              );
-            })}
-          </RadioGroup>
-        </div>
-
-        <CommentSection
-          initialComment={comment}
-          onCommentChange={handleCommentChange}
-          disabled={isSkipped}
-        />
-
-        <div className="absolute right-0 bottom-0 flex justify-between">
-          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
-        </div>
-      </CardContent>
-    </Card>
+              </div>
+            );
+          })}
+        </RadioGroup>
+      </div>
+    </QuestionCard>
   );
 }

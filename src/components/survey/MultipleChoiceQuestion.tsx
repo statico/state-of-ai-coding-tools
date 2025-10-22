@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SkipButton } from "./SkipButton";
-import { CommentSection } from "./CommentSection";
+import { QuestionCard } from "./QuestionCard";
 import { cn } from "@/lib/utils";
 import {
   QuestionWithOptions,
@@ -36,7 +34,7 @@ export function MultipleChoiceQuestion({
     () => existingResponse?.skipped || false,
   );
   const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment || "",
+    () => existingResponse?.comment ?? "",
   );
 
   const handleOptionChange = (optionSlug: string, checked: boolean) => {
@@ -117,79 +115,69 @@ export function MultipleChoiceQuestion({
   const canSelectMore = selectedOptions.length < maxSelections;
 
   return (
-    <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-xl">{question.title}</CardTitle>
-        {question.description && (
-          <p className="text-muted-foreground">{question.description}</p>
-        )}
-        {question.multiple_max && (
-          <p className="text-muted-foreground text-base">
-            Select up to {question.multiple_max}
-          </p>
-        )}
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
-          {question.options.map((option) => (
-            <div key={option.slug} className="flex items-center space-x-4">
-              <Checkbox
-                id={option.slug}
-                checked={selectedOptions.includes(option.slug)}
-                onCheckedChange={(checked) =>
-                  handleOptionChange(option.slug, checked as boolean)
-                }
-                disabled={
-                  isSkipped ||
-                  (!selectedOptions.includes(option.slug) && !canSelectMore)
-                }
-              />
-              <Label
-                htmlFor={option.slug}
-                className="flex flex-1 flex-col items-start gap-0 py-2 text-base"
-              >
-                <div>{option.label}</div>
-                {option.description && (
-                  <div className="text-muted-foreground text-sm">
-                    {option.description}
-                  </div>
-                )}
-              </Label>
-            </div>
-          ))}
-        </div>
-
-        {selectedOptions.includes("other") && (
-          <div className="flex flex-col gap-2">
-            <Label className="text-base">Please specify:</Label>
-            {writeinTexts.map((text, index) => (
-              <Input
-                key={index}
-                value={text}
-                onChange={(e) => handleWriteinChange(index, e.target.value)}
-                placeholder="Enter your response..."
-              />
-            ))}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setWriteinTexts([...writeinTexts, ""])}
+    <QuestionCard
+      title={question.title}
+      description={question.description ?? undefined}
+      additionalInfo={
+        question.multiple_max
+          ? `Select up to ${question.multiple_max}`
+          : undefined
+      }
+      isSkipped={isSkipped}
+      comment={comment}
+      hasResponse={selectedOptions.length > 0}
+      onSkip={handleSkip}
+      onCommentChange={handleCommentChange}
+    >
+      <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
+        {question.options.map((option) => (
+          <div key={option.slug} className="flex items-center space-x-4">
+            <Checkbox
+              id={option.slug}
+              checked={selectedOptions.includes(option.slug)}
+              onCheckedChange={(checked) =>
+                handleOptionChange(option.slug, checked as boolean)
+              }
+              disabled={
+                isSkipped ||
+                (!selectedOptions.includes(option.slug) && !canSelectMore)
+              }
+            />
+            <Label
+              htmlFor={option.slug}
+              className="flex flex-1 flex-col items-start gap-0 py-2 text-base"
             >
-              Add another response
-            </Button>
+              <div>{option.label}</div>
+              {option.description && (
+                <div className="text-muted-foreground text-sm">
+                  {option.description}
+                </div>
+              )}
+            </Label>
           </div>
-        )}
+        ))}
+      </div>
 
-        <CommentSection
-          initialComment={comment}
-          onCommentChange={handleCommentChange}
-          disabled={isSkipped}
-        />
-
-        <div className="absolute right-0 bottom-0 flex justify-between">
-          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
+      {selectedOptions.includes("other") && (
+        <div className="flex flex-col gap-2">
+          <Label className="text-base">Please specify:</Label>
+          {writeinTexts.map((text, index) => (
+            <Input
+              key={index}
+              value={text}
+              onChange={(e) => handleWriteinChange(index, e.target.value)}
+              placeholder="Enter your response..."
+            />
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setWriteinTexts([...writeinTexts, ""])}
+          >
+            Add another response
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </QuestionCard>
   );
 }

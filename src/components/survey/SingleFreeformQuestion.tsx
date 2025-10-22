@@ -1,12 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { SkipButton } from "./SkipButton";
-import { CommentSection } from "./CommentSection";
+import { QuestionCard } from "./QuestionCard";
 import { cn } from "@/lib/utils";
 import {
   QuestionWithOptions,
@@ -32,7 +28,7 @@ export function SingleFreeformQuestion({
     () => existingResponse?.skipped || false,
   );
   const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment || "",
+    () => existingResponse?.comment ?? "",
   );
 
   const handleValueChange = (newValue: string) => {
@@ -76,33 +72,23 @@ export function SingleFreeformQuestion({
   );
 
   return (
-    <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-xl">{question.title}</CardTitle>
-        {question.description && (
-          <p className="text-muted-foreground">{question.description}</p>
-        )}
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <div className={cn("flex flex-col gap-2", isSkipped && "opacity-50")}>
-          <Input
-            id="freeform-input"
-            value={value}
-            onChange={(e) => handleValueChange(e.target.value)}
-            disabled={isSkipped}
-          />
-        </div>
-
-        <CommentSection
-          initialComment={comment}
-          onCommentChange={handleCommentChange}
+    <QuestionCard
+      title={question.title}
+      description={question.description ?? undefined}
+      isSkipped={isSkipped}
+      comment={comment}
+      hasResponse={value !== ""}
+      onSkip={handleSkip}
+      onCommentChange={handleCommentChange}
+    >
+      <div className={cn("flex flex-col gap-2", isSkipped && "opacity-50")}>
+        <Input
+          id="freeform-input"
+          value={value}
+          onChange={(e) => handleValueChange(e.target.value)}
           disabled={isSkipped}
         />
-
-        <div className="absolute right-0 bottom-0 flex justify-between">
-          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </QuestionCard>
   );
 }
