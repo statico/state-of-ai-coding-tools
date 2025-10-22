@@ -113,7 +113,11 @@ export function ExperienceReport({
                 />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip formatter={(value: number) => [value, "Count"]} />
-                <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="value"
+                  fill="hsl(var(--primary))"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -138,7 +142,11 @@ export function ExperienceReport({
                 />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip formatter={(value: number) => [value, "Count"]} />
-                <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="value"
+                  fill="hsl(var(--primary))"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

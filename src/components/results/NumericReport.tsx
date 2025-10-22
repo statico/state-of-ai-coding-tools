@@ -142,7 +142,11 @@ export function NumericReport({
               />
               <YAxis tick={{ fontSize: 12 }} />
               <Tooltip formatter={(value: number) => [value, "Count"]} />
-              <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey="count"
+                fill="hsl(var(--primary))"
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

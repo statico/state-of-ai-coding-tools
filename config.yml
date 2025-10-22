@@ -12,13 +12,17 @@ questions:
     type: single
     options:
       - slug: software-engineer
-        label: Software Engineer (Individual contributor)
+        label: Software Engineer
+        description: Individual contributor
       - slug: engineering-manager
-        label: Engineering Manager (Managing teams)
+        label: Engineering Manager
+        description: Managing teams
       - slug: tech-lead
-        label: Tech Lead (Technical leadership)
+        label: Tech Lead
+        description: Technical leadership
       - slug: product-manager
         label: Product Manager
+        description: Product management
       - slug: other
         label: Other role
 

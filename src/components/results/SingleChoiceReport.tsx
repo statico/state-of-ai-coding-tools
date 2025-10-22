@@ -23,6 +23,7 @@ interface SingleChoiceReportProps {
     options: Array<{
       optionSlug: string;
       label: string;
+      description?: string;
       count: number;
       percentage: number;
     }>;
@@ -184,9 +185,30 @@ export function SingleChoiceReport({
                       >
                         {index + 1}
                       </Badge>
-                      <span className="text-sm font-medium">
-                        {option.label}
-                      </span>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="cursor-help text-sm font-medium">
+                              {option.label}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-xs">
+                            <div className="space-y-2 text-sm">
+                              <div>
+                                <span className="font-semibold">Title:</span>{" "}
+                                {option.label}
+                              </div>
+                              <div>
+                                <span className="font-semibold">
+                                  Description:
+                                </span>{" "}
+                                {option.description ||
+                                  "No description available"}
+                              </div>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                     <div className="flex items-center gap-4">
                       <span className="text-sm font-medium">
@@ -201,7 +223,7 @@ export function SingleChoiceReport({
                   <div className="relative">
                     <div className="bg-muted h-2 w-full rounded-full">
                       <div
-                        className="h-2 rounded-full bg-pink-500"
+                        className="bg-primary h-2 rounded-full"
                         style={{ width: `${option.percentage}%` }}
                       />
                     </div>

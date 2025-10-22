@@ -95,7 +95,11 @@ export function MultipleChoiceReport({
                 width={120}
               />
               <Tooltip formatter={(value: number) => [value, "Count"]} />
-              <Bar dataKey="value" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+              <Bar
+                dataKey="value"
+                fill="hsl(var(--primary))"
+                radius={[0, 4, 4, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
