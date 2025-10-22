@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import {
   addWeeks,
   endOfISOWeek,
+  format,
   getISOWeek,
   getISOWeekYear,
   startOfISOWeek,
@@ -38,7 +39,11 @@ export function getWeekDateRange(
 }
 
 export function formatWeekDisplay(week: number, year: number): string {
-  return `Week ${week}, ${year}`;
+  const weekDateRange = getWeekDateRange(week, year);
+  // Use UTC to avoid timezone issues
+  const startDate = new Date(weekDateRange.start.getTime());
+  const formattedDate = format(startDate, "MMMM d, yyyy");
+  return `Week of ${formattedDate}`;
 }
 
 export function getWeekFromDate(date: Date): { week: number; year: number } {

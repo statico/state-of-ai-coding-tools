@@ -102,14 +102,11 @@ export function WeekSelector({
         </Button>
       </div>
 
-      <div className="text-muted-foreground text-sm">
-        {formatWeekDisplay(currentWeek, currentYear)}
-        {isCurrent && (
-          <span className="ml-2 font-medium text-amber-600">
-            (Current Week - Incomplete)
-          </span>
-        )}
-      </div>
+      {isCurrent && (
+        <div className="text-muted-foreground text-sm">
+          <span className="font-medium text-amber-600">(Incomplete)</span>
+        </div>
+      )}
     </div>
   );
 }
