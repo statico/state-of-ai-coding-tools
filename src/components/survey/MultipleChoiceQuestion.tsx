@@ -100,7 +100,7 @@ export function MultipleChoiceQuestion({
           </p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 pb-4">
         <div className="flex flex-col gap-3">
           {question.options.map((option) => (
             <div key={option.slug} className="flex items-center space-x-4">

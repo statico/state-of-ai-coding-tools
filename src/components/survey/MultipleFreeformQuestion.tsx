@@ -80,7 +80,7 @@ export function MultipleFreeformQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 pb-4">
         <div className="flex flex-col gap-3">
           {responses.map((response, index) => (
             <div key={index} className="flex items-center space-x-2">

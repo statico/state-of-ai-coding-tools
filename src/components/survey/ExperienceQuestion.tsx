@@ -91,7 +91,7 @@ export function ExperienceQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-6">
+      <CardContent className="flex flex-col gap-6 pb-4">
         {/* Awareness Level with inline badges */}
         <div className="flex flex-col gap-3">
           <RadioGroup

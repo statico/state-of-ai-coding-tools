@@ -76,7 +76,7 @@ export function SingleChoiceQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 pb-4">
         <RadioGroup
           value={selectedOption}
           onValueChange={handleOptionChange}
