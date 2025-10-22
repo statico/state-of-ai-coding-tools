@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const router = useRouter();
@@ -44,55 +45,61 @@ export function Navbar() {
 
   return (
     <nav className="bg-background border-b select-none">
-      <div className="container mx-auto flex h-12 items-center justify-between px-2 sm:h-16 sm:px-4">
+      <div className="container mx-auto flex h-12 items-center justify-between px-4 sm:h-16">
         <div className="flex items-center gap-1 sm:gap-4">
           <button
             onClick={handleHomeClick}
             className="hover:text-primary mr-2 text-sm font-bold transition-colors sm:text-xl"
           >
-            <span className="hidden sm:inline">AI Coding Tools Survey</span>
-            <span className="leading-none sm:hidden">
-              AI Survey
+            <div className="hidden sm:inline">AI Coding Tools Survey</div>
+            <div className="leading-4 sm:hidden">
+              AI Coding
               <br />
               Tools Survey
-            </span>
+            </div>
           </button>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleHomeClick}
-              className={`text-xs sm:text-sm ${
-                pathname === "/" || pathname === "/intro" ? "bg-muted" : ""
-              }`}
-            >
-              Home
-            </Button>
-            {isAuthenticated &&
-            firstSection &&
-            typeof firstSection === "object" &&
-            "slug" in firstSection ? (
+          {isAuthenticated && (
+            <div className="flex items-center gap-1 sm:gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={handleSurveyClick}
-                className={`text-xs sm:text-sm ${
-                  pathname.startsWith("/survey") ? "bg-muted" : ""
-                }`}
+                onClick={handleHomeClick}
+                className={cn(
+                  "text-xs sm:text-sm",
+                  pathname === "/" || (pathname === "/intro" && "bg-muted"),
+                )}
               >
-                Survey
+                Home
               </Button>
-            ) : null}
-            <Link href="/results">
-              <Button
-                variant={pathname === "/results" ? "default" : "ghost"}
-                size="sm"
-                className="text-xs sm:text-sm"
-              >
-                Results
-              </Button>
-            </Link>
-          </div>
+              {firstSection &&
+              typeof firstSection === "object" &&
+              "slug" in firstSection ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSurveyClick}
+                  className={cn(
+                    "text-xs sm:text-sm",
+                    pathname.startsWith("/survey") && "bg-muted",
+                  )}
+                >
+                  Survey
+                </Button>
+              ) : null}
+              <Link href="/results">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "text-xs sm:text-sm",
+                    pathname.startsWith("/results") && "bg-muted",
+                  )}
+                >
+                  Results
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center space-x-1 sm:space-x-4">
