@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { SkipButton } from "./SkipButton";
+import { SentimentBadge } from "./SentimentBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -52,7 +53,7 @@ export function ExperienceQuestion({
   };
 
   const handleSentimentChange = (value: string) => {
-    const sentimentValue = parseInt(value);
+    const sentimentValue = value === "" ? undefined : parseInt(value);
     setSentiment(sentimentValue);
     setIsSkipped(false);
 
@@ -72,10 +73,11 @@ export function ExperienceQuestion({
     });
   };
 
-  const getSentimentOptions = () => {
-    if (awareness === 0 || awareness === 1) {
+  const getSentimentOptions = (awarenessLevel?: number) => {
+    const level = awarenessLevel ?? awareness;
+    if (level === 0 || level === 1) {
       return INTEREST_OPTIONS;
-    } else if (awareness === 2) {
+    } else if (level === 2) {
       return SENTIMENT_OPTIONS;
     }
     return [];
@@ -90,60 +92,56 @@ export function ExperienceQuestion({
         )}
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Awareness Level */}
+        {/* Awareness Level with inline badges */}
         <div className="space-y-3">
           <RadioGroup
             value={awareness?.toString()}
             onValueChange={handleAwarenessChange}
             disabled={isSkipped}
           >
-            {AWARENESS_OPTIONS.map((option) => (
-              <div key={option.value} className="flex items-center space-x-4">
-                <RadioGroupItem
-                  value={option.value.toString()}
-                  id={`awareness-${option.value}`}
-                />
-                <Label
-                  htmlFor={`awareness-${option.value}`}
-                  className="flex-1 py-2"
-                >
-                  {option.label}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
+            {AWARENESS_OPTIONS.map((option) => {
+              const showBadges = awareness === option.value;
+              const sentimentOptions = getSentimentOptions(option.value);
 
-        {/* Sentiment/Interest */}
-        {awareness !== undefined && (
-          <div className="space-y-3">
-            <Label className="text-base font-medium">
-              {awareness === 2
-                ? "What was your experience?"
-                : "Are you interested?"}
-            </Label>
-            <RadioGroup
-              value={sentiment?.toString()}
-              onValueChange={handleSentimentChange}
-              disabled={isSkipped}
-            >
-              {getSentimentOptions().map((option) => (
+              return (
                 <div key={option.value} className="flex items-center space-x-4">
                   <RadioGroupItem
                     value={option.value.toString()}
-                    id={`sentiment-${option.value}`}
+                    id={`awareness-${option.value}`}
                   />
                   <Label
-                    htmlFor={`sentiment-${option.value}`}
+                    htmlFor={`awareness-${option.value}`}
                     className="flex-1 py-2"
                   >
                     {option.label}
                   </Label>
+                  {showBadges && sentimentOptions.length > 0 && (
+                    <div className="flex gap-4">
+                      {sentimentOptions.map((sentimentOption) => (
+                        <SentimentBadge
+                          key={sentimentOption.value}
+                          value={sentimentOption.value}
+                          label={sentimentOption.label}
+                          isSelected={sentiment === sentimentOption.value}
+                          onClick={() => {
+                            // If this option is already selected, deselect it (set to neutral)
+                            if (sentiment === sentimentOption.value) {
+                              handleSentimentChange("");
+                            } else {
+                              handleSentimentChange(
+                                sentimentOption.value.toString(),
+                              );
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </RadioGroup>
-          </div>
-        )}
+              );
+            })}
+          </RadioGroup>
+        </div>
 
         <div className="absolute right-0 bottom-0 flex justify-between">
           <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />

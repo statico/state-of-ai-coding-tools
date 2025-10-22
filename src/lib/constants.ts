@@ -52,13 +52,13 @@ export const AWARENESS_OPTIONS = [
 ] as const;
 
 export const SENTIMENT_OPTIONS = [
-  { value: -1, label: "Negative experience" },
   { value: 1, label: "Positive experience" },
+  { value: -1, label: "Negative experience" },
 ] as const;
 
 export const INTEREST_OPTIONS = [
-  { value: -1, label: "Not interested" },
   { value: 1, label: "Interested" },
+  { value: -1, label: "Not interested" },
 ] as const;
 
 // Type guards
