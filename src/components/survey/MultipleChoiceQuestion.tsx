@@ -90,12 +90,12 @@ export function MultipleChoiceQuestion({
   return (
     <Card className="relative">
       <CardHeader>
-        <CardTitle>{question.title}</CardTitle>
+        <CardTitle className="text-xl">{question.title}</CardTitle>
         {question.description && (
           <p className="text-muted-foreground">{question.description}</p>
         )}
         {question.multiple_max && (
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-base">
             Select up to {question.multiple_max}
           </p>
         )}
@@ -115,10 +115,10 @@ export function MultipleChoiceQuestion({
                   (!selectedOptions.includes(option.slug) && !canSelectMore)
                 }
               />
-              <Label htmlFor={option.slug} className="flex-1 py-2">
+              <Label htmlFor={option.slug} className="flex-1 py-2 text-base">
                 {option.label}
                 {option.description && (
-                  <span className="text-muted-foreground block text-sm">
+                  <span className="text-muted-foreground block text-base">
                     {option.description}
                   </span>
                 )}
@@ -129,7 +129,7 @@ export function MultipleChoiceQuestion({
 
         {selectedOptions.includes("other") && (
           <div className="space-y-2">
-            <Label>Please specify:</Label>
+            <Label className="text-base">Please specify:</Label>
             {writeinTexts.map((text, index) => (
               <Input
                 key={index}

@@ -16,7 +16,7 @@ export function SkipButton({ isSkipped, onSkip, className }: SkipButtonProps) {
       variant="ghost"
       onClick={onSkip}
       className={cn(
-        "text-xs",
+        "text-sm",
         !isSkipped && "text-muted-foreground",
         className,
       )}

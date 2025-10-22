@@ -52,7 +52,7 @@ export function NumericQuestion({
   return (
     <Card className="relative">
       <CardHeader>
-        <CardTitle>{question.title}</CardTitle>
+        <CardTitle className="text-xl">{question.title}</CardTitle>
         {question.description && (
           <p className="text-muted-foreground">{question.description}</p>
         )}

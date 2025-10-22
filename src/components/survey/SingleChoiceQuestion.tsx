@@ -71,7 +71,7 @@ export function SingleChoiceQuestion({
   return (
     <Card className="relative">
       <CardHeader>
-        <CardTitle>{question.title}</CardTitle>
+        <CardTitle className="text-xl">{question.title}</CardTitle>
         {question.description && (
           <p className="text-muted-foreground">{question.description}</p>
         )}
@@ -86,10 +86,10 @@ export function SingleChoiceQuestion({
           {question.options.map((option) => (
             <div key={option.slug} className="flex items-center space-x-4">
               <RadioGroupItem value={option.slug} id={option.slug} />
-              <Label htmlFor={option.slug} className="flex-1 py-2">
+              <Label htmlFor={option.slug} className="flex-1 py-2 text-base">
                 {option.label}
                 {option.description && (
-                  <span className="text-muted-foreground block text-sm">
+                  <span className="text-muted-foreground block text-base">
                     {option.description}
                   </span>
                 )}
@@ -100,7 +100,9 @@ export function SingleChoiceQuestion({
 
         {selectedOption === "other" && (
           <div className="space-y-2">
-            <Label htmlFor="writein">Please specify:</Label>
+            <Label htmlFor="writein" className="text-base">
+              Please specify:
+            </Label>
             <Input
               id="writein"
               value={writeinText}

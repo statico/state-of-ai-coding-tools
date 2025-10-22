@@ -51,14 +51,16 @@ export function FreeformQuestion({
   return (
     <Card className="relative">
       <CardHeader>
-        <CardTitle>{question.title}</CardTitle>
+        <CardTitle className="text-xl">{question.title}</CardTitle>
         {question.description && (
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="freeform-textarea">Your response:</Label>
+          <Label htmlFor="freeform-textarea" className="text-base">
+            Your response:
+          </Label>
           <Textarea
             id="freeform-textarea"
             value={value}

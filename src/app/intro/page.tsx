@@ -29,7 +29,7 @@ export default function IntroPage() {
       <div className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">About This Survey</CardTitle>
+            <CardTitle className="text-3xl">About This Survey</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p>
@@ -41,7 +41,7 @@ export default function IntroPage() {
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <h3 className="mb-2 font-semibold">What We Track</h3>
-                <ul className="text-muted-foreground space-y-1 text-sm">
+                <ul className="text-muted-foreground space-y-1 text-base">
                   <li>• AI tool adoption over time</li>
                   <li>• Developer sentiment and satisfaction</li>
                   <li>• Tool popularity and trends</li>
@@ -50,7 +50,7 @@ export default function IntroPage() {
               </div>
               <div>
                 <h3 className="mb-2 font-semibold">Survey Features</h3>
-                <ul className="text-muted-foreground space-y-1 text-sm">
+                <ul className="text-muted-foreground space-y-1 text-base">
                   <li>• Weekly cadence (resets every Monday)</li>
                   <li>• Anonymous responses</li>
                   <li>• Auto-save functionality</li>
@@ -63,7 +63,7 @@ export default function IntroPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Privacy & Data Usage</CardTitle>
+            <CardTitle className="text-3xl">Privacy & Data Usage</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p>

@@ -74,7 +74,7 @@ export function MultipleFreeformQuestion({
   return (
     <Card className="relative">
       <CardHeader>
-        <CardTitle>{question.title}</CardTitle>
+        <CardTitle className="text-xl">{question.title}</CardTitle>
         {question.description && (
           <p className="text-muted-foreground">{question.description}</p>
         )}
@@ -114,7 +114,7 @@ export function MultipleFreeformQuestion({
         <div className="absolute right-0 bottom-0 flex justify-between">
           <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
           {responses.length > 0 && (
-            <span className="text-muted-foreground text-sm">
+            <span className="text-muted-foreground text-base">
               {responses.length} response{responses.length !== 1 ? "s" : ""}
             </span>
           )}

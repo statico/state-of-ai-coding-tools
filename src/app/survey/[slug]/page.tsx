@@ -117,7 +117,7 @@ export default function SurveyPage() {
       <div className="container mx-auto max-w-4xl p-8">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Section not found</CardTitle>
+            <CardTitle className="text-3xl">Section not found</CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             <p className="text-muted-foreground text-center">
@@ -138,7 +138,7 @@ export default function SurveyPage() {
         <div className="space-y-6">
           {/* Section header */}
           <div className="space-y-2">
-            <h2 className="text-2xl">{currentSection.title}</h2>
+            <h2 className="text-3xl">{currentSection.title}</h2>
             {currentSection.description && (
               <p className="text-muted-foreground">
                 {currentSection.description}

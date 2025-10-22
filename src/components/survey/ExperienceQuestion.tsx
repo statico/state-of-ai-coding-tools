@@ -86,7 +86,7 @@ export function ExperienceQuestion({
   return (
     <Card className="relative">
       <CardHeader>
-        <CardTitle>{question.title}</CardTitle>
+        <CardTitle className="text-xl">{question.title}</CardTitle>
         {question.description && (
           <p className="text-muted-foreground">{question.description}</p>
         )}
@@ -104,17 +104,16 @@ export function ExperienceQuestion({
               const sentimentOptions = getSentimentOptions(option.value);
 
               return (
-                <div key={option.value} className="flex items-start space-x-4">
+                <div key={option.value} className="flex items-center space-x-4">
                   <RadioGroupItem
                     value={option.value.toString()}
                     id={`awareness-${option.value}`}
-                    className="mt-1"
                   />
                   <div className="flex-1">
                     <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <Label
                         htmlFor={`awareness-${option.value}`}
-                        className="py-2"
+                        className="py-2 text-base"
                       >
                         {option.label}
                       </Label>

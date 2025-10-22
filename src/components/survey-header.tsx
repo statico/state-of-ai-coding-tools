@@ -83,7 +83,7 @@ export function SurveyHeader() {
         {/* Mobile/Small width progress bar */}
         <div className="block md:hidden">
           <div className="space-y-2">
-            <div className="text-muted-foreground flex justify-between text-sm">
+            <div className="text-muted-foreground flex justify-between text-base">
               <span>Survey Progress</span>
               <span>{progressPercentage}%</span>
             </div>
@@ -108,14 +108,14 @@ export function SurveyHeader() {
                       : "border-muted-foreground/30 bg-background group-hover:border-muted-foreground/60",
                   )}
                 >
-                  <div className="flex h-full w-full items-center justify-center text-xs font-medium">
+                  <div className="flex h-full w-full items-center justify-center text-sm font-medium">
                     {index + 1}
                   </div>
                 </button>
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "group-hover:text-primary-foreground absolute -top-4 left-7 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors",
+                    "group-hover:text-primary-foreground absolute -top-4 left-7 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors",
                     item.isActive
                       ? "text-primary font-semibold"
                       : "text-muted-foreground",
