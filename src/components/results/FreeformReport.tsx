@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReportFooter } from "@/components/results/shared/ReportFooter";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
@@ -36,11 +37,6 @@ export function FreeformReport({
   questionDescription,
   comments = [],
 }: FreeformReportProps) {
-  const [showAll, setShowAll] = useState(false);
-  const displayResponses = showAll
-    ? data.responses
-    : data.responses.slice(0, 10);
-
   const responseRate =
     totalResponses > 0
       ? Math.round(((totalResponses - skippedResponses) / totalResponses) * 100)
@@ -64,54 +60,34 @@ export function FreeformReport({
           </div>
         ) : (
           <div className="space-y-4">
-            {/* Summary Stats */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold">{totalResponses}</div>
-                <div className="text-muted-foreground text-sm">Total</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">
-                  {data.responses.length}
-                </div>
-                <div className="text-muted-foreground text-sm">Unique</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">{responseRate}%</div>
-                <div className="text-muted-foreground text-sm">
-                  Response Rate
-                </div>
-              </div>
+            {/* Response Count */}
+            <div className="text-muted-foreground text-sm">
+              {data.responses.length}{" "}
+              {data.responses.length === 1 ? "response" : "responses"}
             </div>
 
-            {/* Freeform Responses */}
-            <div className="space-y-3">
-              {displayResponses.map((item, index) => (
-                <div key={index} className="bg-muted/30 rounded-lg border p-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-sm leading-relaxed">{item.response}</p>
-                    </div>
-                    <Badge variant="outline" className="shrink-0 text-xs">
-                      {item.count} {item.count === 1 ? "time" : "times"}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-
-              {data.responses.length > 10 && (
-                <div className="pt-2 text-center">
-                  <button
-                    onClick={() => setShowAll(!showAll)}
-                    className="text-primary text-sm hover:underline"
+            {/* Freeform Responses in ScrollArea */}
+            <ScrollArea className="h-[400px] rounded-md border">
+              <div className="space-y-3 p-4">
+                {data.responses.map((item, index) => (
+                  <div
+                    key={index}
+                    className="bg-muted/30 rounded-lg border p-3"
                   >
-                    {showAll
-                      ? "Show less"
-                      : `Show all ${data.responses.length} responses`}
-                  </button>
-                </div>
-              )}
-            </div>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <p className="text-sm leading-relaxed">
+                          {item.response}
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="shrink-0 text-xs">
+                        {item.count} {item.count === 1 ? "time" : "times"}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
 
             <ReportFooter
               totalResponses={totalResponses}
