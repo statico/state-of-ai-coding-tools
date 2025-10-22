@@ -49,7 +49,7 @@ export function Navbar() {
         <div className="flex items-center gap-1 sm:gap-4">
           <button
             onClick={handleHomeClick}
-            className="hover:text-primary mr-2 text-sm font-bold transition-colors sm:text-xl"
+            className="hover:text-primary mr-4 text-sm font-bold transition-colors sm:text-xl"
           >
             <div className="hidden sm:inline">AI Coding Tools Survey</div>
             <div className="leading-4 sm:hidden">

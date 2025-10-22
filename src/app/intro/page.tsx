@@ -25,7 +25,7 @@ export default function IntroPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-20">
+    <div className="container mx-auto max-w-4xl px-8 pt-8 pb-20 md:pt-20">
       <div className="space-y-8">
         <Card>
           <CardHeader>
@@ -81,11 +81,11 @@ export default function IntroPage() {
           </CardContent>
         </Card>
 
-        <div className="text-center">
+        <div className="flex justify-center text-center">
           <Button
             size="lg"
             onClick={handleStartSurvey}
-            className="px-8"
+            className="w-full px-8 md:w-auto"
             disabled={!firstSection}
           >
             Let's Go! <ArrowRight className="h-4 w-4" />
