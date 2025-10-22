@@ -62,7 +62,7 @@ export function WeekSelector({
 
   return (
     <div className="flex items-center gap-4">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-1 items-center gap-2">
         <Button
           variant="outline"
           size="sm"
@@ -76,7 +76,7 @@ export function WeekSelector({
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="min-w-[200px] justify-start text-left font-normal"
+              className="min-w-[200px] flex-1 justify-start text-left font-normal"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {formatWeekDisplay(currentWeek, currentYear)}
