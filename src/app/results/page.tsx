@@ -12,13 +12,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
 import { getCurrentISOWeek, isCurrentWeek } from "@/lib/utils";
-import { useState } from "react";
+import { useQueryState, parseAsInteger } from "nuqs";
 
 export default function ReportsPage() {
   const trpc = useTRPC();
   const current = getCurrentISOWeek();
-  const [selectedWeek, setSelectedWeek] = useState(current.week);
-  const [selectedYear, setSelectedYear] = useState(current.year);
+
+  // Read week and year from URL query parameters
+  const [selectedWeek] = useQueryState(
+    "week",
+    parseAsInteger.withDefault(current.week),
+  );
+  const [selectedYear] = useQueryState(
+    "year",
+    parseAsInteger.withDefault(current.year),
+  );
 
   const { data: availableWeeks = [], isLoading: weeksLoading } = useQuery(
     trpc.results.getAllWeeksSinceStart.queryOptions(),
@@ -30,11 +38,6 @@ export default function ReportsPage() {
       { enabled: !!selectedWeek && !!selectedYear },
     ),
   );
-
-  const handleWeekChange = (week: number, year: number) => {
-    setSelectedWeek(week);
-    setSelectedYear(year);
-  };
 
   const isCurrent = isCurrentWeek(selectedWeek, selectedYear);
 
@@ -62,12 +65,7 @@ export default function ReportsPage() {
             </p>
           </div>
 
-          <WeekSelector
-            currentWeek={selectedWeek}
-            currentYear={selectedYear}
-            availableWeeks={availableWeeks}
-            onWeekChange={handleWeekChange}
-          />
+          <WeekSelector availableWeeks={availableWeeks} />
         </div>
 
         {/* Incomplete Week Banner */}

@@ -19,41 +19,51 @@ import {
 } from "@/lib/utils";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useQueryState, parseAsInteger } from "nuqs";
 
 interface WeekSelectorProps {
-  currentWeek: number;
-  currentYear: number;
   availableWeeks: Array<{ week: number; year: number }>;
-  onWeekChange: (week: number, year: number) => void;
 }
 
-export function WeekSelector({
-  currentWeek,
-  currentYear,
-  availableWeeks,
-  onWeekChange,
-}: WeekSelectorProps) {
+export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
-  const current = getCurrentISOWeek();
+  // Get current week as default
+  const currentWeekData = getCurrentISOWeek();
+
+  // Use nuqs to manage week and year in URL query string
+  const [currentWeek, setCurrentWeek] = useQueryState(
+    "week",
+    parseAsInteger.withDefault(currentWeekData.week),
+  );
+  const [currentYear, setCurrentYear] = useQueryState(
+    "year",
+    parseAsInteger.withDefault(currentWeekData.year),
+  );
+
   const isCurrent = isCurrentWeek(currentWeek, currentYear);
   const isFuture = isFutureWeek(currentWeek, currentYear);
 
+  const handleWeekChange = (week: number, year: number) => {
+    setCurrentWeek(week);
+    setCurrentYear(year);
+  };
+
   const handlePrevious = () => {
     const prev = getPreviousWeek(currentWeek, currentYear);
-    onWeekChange(prev.week, prev.year);
+    handleWeekChange(prev.week, prev.year);
   };
 
   const handleNext = () => {
     const next = getNextWeek(currentWeek, currentYear);
-    onWeekChange(next.week, next.year);
+    handleWeekChange(next.week, next.year);
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       const week = getWeekFromDate(date);
-      onWeekChange(week.week, week.year);
+      handleWeekChange(week.week, week.year);
       setIsCalendarOpen(false);
     }
   };
@@ -87,7 +97,6 @@ export function WeekSelector({
               mode="single"
               selected={selectedDate}
               onSelect={handleDateSelect}
-              initialFocus
             />
           </PopoverContent>
         </Popover>
@@ -101,12 +110,6 @@ export function WeekSelector({
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
-
-      {isCurrent && (
-        <div className="text-muted-foreground text-sm">
-          <span className="font-medium text-amber-600">(Incomplete)</span>
-        </div>
-      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCProviderWrapper } from "@/lib/trpc/Provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -30,11 +31,13 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TRPCProviderWrapper>
-            <Navbar />
-            <main className="min-h-screen">{children}</main>
-            <Toaster />
-          </TRPCProviderWrapper>
+          <NuqsAdapter>
+            <TRPCProviderWrapper>
+              <Navbar />
+              <main className="min-h-screen">{children}</main>
+              <Toaster />
+            </TRPCProviderWrapper>
+          </NuqsAdapter>
         </ThemeProvider>
       </body>
     </html>
