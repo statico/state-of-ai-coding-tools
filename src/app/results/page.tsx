@@ -58,18 +58,9 @@ export default function ReportsPage() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Survey Results</h1>
-            <p className="text-muted-foreground">
-              View aggregated survey results by week
-            </p>
-          </div>
-
+          <h1 className="text-3xl">Results by Week</h1>
           <WeekSelector availableWeeks={availableWeeks} />
         </div>
-
-        {/* Incomplete Week Banner */}
-        <IncompleteWeekBanner isCurrentWeek={isCurrent} />
 
         {/* Week Summary */}
         {summaryLoading ? (

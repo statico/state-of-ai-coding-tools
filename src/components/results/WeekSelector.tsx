@@ -90,6 +90,9 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {formatWeekDisplay(currentWeek, currentYear)}
+              {isCurrent && (
+                <span className="text-destructive">(Incomplete)</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
