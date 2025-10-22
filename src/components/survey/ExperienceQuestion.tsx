@@ -104,39 +104,44 @@ export function ExperienceQuestion({
               const sentimentOptions = getSentimentOptions(option.value);
 
               return (
-                <div key={option.value} className="flex items-center space-x-4">
+                <div key={option.value} className="flex items-start space-x-4">
                   <RadioGroupItem
                     value={option.value.toString()}
                     id={`awareness-${option.value}`}
+                    className="mt-1"
                   />
-                  <Label
-                    htmlFor={`awareness-${option.value}`}
-                    className="flex-1 py-2"
-                  >
-                    {option.label}
-                  </Label>
-                  {showBadges && sentimentOptions.length > 0 && (
-                    <div className="flex gap-4">
-                      {sentimentOptions.map((sentimentOption) => (
-                        <SentimentBadge
-                          key={sentimentOption.value}
-                          value={sentimentOption.value}
-                          label={sentimentOption.label}
-                          isSelected={sentiment === sentimentOption.value}
-                          onClick={() => {
-                            // If this option is already selected, deselect it (set to neutral)
-                            if (sentiment === sentimentOption.value) {
-                              handleSentimentChange("");
-                            } else {
-                              handleSentimentChange(
-                                sentimentOption.value.toString(),
-                              );
-                            }
-                          }}
-                        />
-                      ))}
+                  <div className="flex-1">
+                    <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
+                      <Label
+                        htmlFor={`awareness-${option.value}`}
+                        className="py-2"
+                      >
+                        {option.label}
+                      </Label>
+                      {showBadges && sentimentOptions.length > 0 && (
+                        <div className="ml-0 flex gap-4 sm:ml-0">
+                          {sentimentOptions.map((sentimentOption) => (
+                            <SentimentBadge
+                              key={sentimentOption.value}
+                              value={sentimentOption.value}
+                              label={sentimentOption.label}
+                              isSelected={sentiment === sentimentOption.value}
+                              onClick={() => {
+                                // If this option is already selected, deselect it (set to neutral)
+                                if (sentiment === sentimentOption.value) {
+                                  handleSentimentChange("");
+                                } else {
+                                  handleSentimentChange(
+                                    sentimentOption.value.toString(),
+                                  );
+                                }
+                              }}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}
