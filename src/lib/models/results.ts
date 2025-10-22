@@ -13,9 +13,16 @@ export interface QuestionReport {
   questionSlug: string;
   questionTitle: string;
   questionType: string;
+  questionDescription?: string | null;
+  multipleMax?: number | null;
+  randomize?: boolean;
   totalResponses: number;
   skippedResponses: number;
   data: any; // Type depends on question type
+  comments?: Array<{
+    comment: string;
+    sessionId: string;
+  }>;
 }
 
 export interface SingleChoiceData {
@@ -185,13 +192,18 @@ export async function getWeekSummary(
   for (const question of questions) {
     const report = await getQuestionReport(question.slug, week, year);
     if (report) {
+      const comments = await getQuestionComments(question.slug, week, year);
       questionReports.push({
         questionSlug: question.slug,
         questionTitle: question.title,
         questionType: question.type,
+        questionDescription: question.description,
+        multipleMax: question.multiple_max,
+        randomize: question.randomize,
         totalResponses: report.totalResponses,
         skippedResponses: report.skippedResponses,
         data: report.data,
+        comments,
       });
     }
   }
@@ -589,4 +601,29 @@ async function aggregateFreeformQuestion(
     responses: responsesData,
     totalCount: responses.length,
   };
+}
+
+/**
+ * Get comments for a specific question in a specific week
+ */
+async function getQuestionComments(
+  questionSlug: string,
+  week: number,
+  year: number,
+): Promise<Array<{ comment: string; sessionId: string }>> {
+  const comments = await db
+    .selectFrom("responses")
+    .select(["comment", "session_id"])
+    .where("question_slug", "=", questionSlug)
+    .where("iso_week", "=", week)
+    .where("iso_year", "=", year)
+    .where("skipped", "=", false)
+    .where("comment", "is not", null)
+    .where("comment", "!=", "")
+    .execute();
+
+  return comments.map((c) => ({
+    comment: c.comment!,
+    sessionId: c.session_id,
+  }));
 }

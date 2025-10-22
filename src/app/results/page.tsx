@@ -7,7 +7,6 @@ import { MultipleChoiceReport } from "@/components/results/MultipleChoiceReport"
 import { ExperienceReport } from "@/components/results/ExperienceReport";
 import { NumericReport } from "@/components/results/NumericReport";
 import { FreeformReport } from "@/components/results/FreeformReport";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
@@ -81,57 +80,58 @@ export default function ReportsPage() {
 
         {/* Question Reports */}
         {weekSummary && weekSummary.questions.length > 0 && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {weekSummary.questions.map((question) => (
-              <Card key={question.questionSlug}>
-                <CardHeader>
-                  <CardTitle>{question.questionTitle}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {question.questionType === "single" && question.data && (
-                    <SingleChoiceReport
+              <div key={question.questionSlug}>
+                {question.questionType === "single" && question.data && (
+                  <SingleChoiceReport
+                    data={question.data}
+                    totalResponses={question.totalResponses}
+                    skippedResponses={question.skippedResponses}
+                    questionTitle={question.questionTitle}
+                    questionType={question.questionType}
+                    questionDescription={question.questionDescription}
+                    multipleMax={question.multipleMax}
+                    randomize={question.randomize}
+                    comments={question.comments}
+                  />
+                )}
+
+                {question.questionType === "multiple" && question.data && (
+                  <MultipleChoiceReport
+                    data={question.data}
+                    totalResponses={question.totalResponses}
+                    skippedResponses={question.skippedResponses}
+                  />
+                )}
+
+                {question.questionType === "experience" && question.data && (
+                  <ExperienceReport
+                    data={question.data}
+                    totalResponses={question.totalResponses}
+                    skippedResponses={question.skippedResponses}
+                  />
+                )}
+
+                {question.questionType === "numeric" && question.data && (
+                  <NumericReport
+                    data={question.data}
+                    totalResponses={question.totalResponses}
+                    skippedResponses={question.skippedResponses}
+                  />
+                )}
+
+                {(question.questionType === "freeform" ||
+                  question.questionType === "single-freeform" ||
+                  question.questionType === "multiple-freeform") &&
+                  question.data && (
+                    <FreeformReport
                       data={question.data}
                       totalResponses={question.totalResponses}
                       skippedResponses={question.skippedResponses}
                     />
                   )}
-
-                  {question.questionType === "multiple" && question.data && (
-                    <MultipleChoiceReport
-                      data={question.data}
-                      totalResponses={question.totalResponses}
-                      skippedResponses={question.skippedResponses}
-                    />
-                  )}
-
-                  {question.questionType === "experience" && question.data && (
-                    <ExperienceReport
-                      data={question.data}
-                      totalResponses={question.totalResponses}
-                      skippedResponses={question.skippedResponses}
-                    />
-                  )}
-
-                  {question.questionType === "numeric" && question.data && (
-                    <NumericReport
-                      data={question.data}
-                      totalResponses={question.totalResponses}
-                      skippedResponses={question.skippedResponses}
-                    />
-                  )}
-
-                  {(question.questionType === "freeform" ||
-                    question.questionType === "single-freeform" ||
-                    question.questionType === "multiple-freeform") &&
-                    question.data && (
-                      <FreeformReport
-                        data={question.data}
-                        totalResponses={question.totalResponses}
-                        skippedResponses={question.skippedResponses}
-                      />
-                    )}
-                </CardContent>
-              </Card>
+              </div>
             ))}
           </div>
         )}

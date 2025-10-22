@@ -1,18 +1,22 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
   Tooltip,
-  XAxis,
-  YAxis,
-  Pie,
-  PieChart,
-  Cell,
-} from "recharts";
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { List, MessageCircleMore, Percent, User } from "lucide-react";
 
 interface SingleChoiceReportProps {
   data: {
@@ -29,183 +33,199 @@ interface SingleChoiceReportProps {
   };
   totalResponses: number;
   skippedResponses: number;
+  questionTitle: string;
+  questionType: string;
+  questionDescription?: string | null;
+  multipleMax?: number | null;
+  randomize?: boolean;
+  comments?: Array<{
+    comment: string;
+    sessionId: string;
+  }>;
 }
 
 export function SingleChoiceReport({
   data,
   totalResponses,
   skippedResponses,
+  questionTitle,
+  questionType,
+  questionDescription,
+  multipleMax,
+  randomize,
+  comments = [],
 }: SingleChoiceReportProps) {
-  const chartData = data.options.map((option) => ({
-    name: option.label,
-    value: option.count,
-    percentage: option.percentage,
-  }));
+  // Filter out options with zero respondents and sort by count (most popular first)
+  const sortedOptions = [...data.options]
+    .filter((option) => option.count > 0)
+    .sort((a, b) => b.count - a.count);
+
+  const responseRate =
+    totalResponses > 0
+      ? Math.round(((totalResponses - skippedResponses) / totalResponses) * 100)
+      : 0;
+
+  // Create human-readable question type name
+  const getQuestionTypeName = (type: string) => {
+    switch (type) {
+      case "single":
+        return "Single Choice";
+      case "multiple":
+        return "Multiple Choice";
+      case "experience":
+        return "Experience";
+      case "numeric":
+        return "Numeric";
+      case "freeform":
+        return "Freeform";
+      case "single-freeform":
+        return "Single Choice with Freeform";
+      case "multiple-freeform":
+        return "Multiple Choice with Freeform";
+      default:
+        return type;
+    }
+  };
+
+  // Create tooltip content
+  const tooltipContent = (
+    <div className="space-y-2 text-sm">
+      <div>
+        <span className="font-semibold">Title:</span> {questionTitle}
+      </div>
+      <div>
+        <span className="font-semibold">Type:</span>{" "}
+        {getQuestionTypeName(questionType)}
+      </div>
+      {questionDescription && (
+        <div>
+          <span className="font-semibold">Description:</span>{" "}
+          {questionDescription}
+        </div>
+      )}
+      {multipleMax && (
+        <div>
+          <span className="font-semibold">Max selections:</span> {multipleMax}
+        </div>
+      )}
+      {randomize && (
+        <div>
+          <span className="font-semibold">Randomize options:</span> Yes
+        </div>
+      )}
+    </div>
+  );
 
   return (
-    <div className="space-y-6">
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Responses
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Skipped</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{skippedResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {totalResponses > 0
-                ? Math.round(
-                    ((totalResponses - skippedResponses) / totalResponses) *
-                      100,
-                  )
-                : 0}
-              %
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Charts */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribution by Count</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 12 }}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
-                />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number) => [value, "Count"]} />
-                <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribution by Percentage</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percentage }: any) =>
-                    `${name}: ${(percentage || 0).toFixed(1)}%`
-                  }
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="percentage"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={
-                        [
-                          "#8b5cf6",
-                          "#06b6d4",
-                          "#10b981",
-                          "#f59e0b",
-                          "#ef4444",
-                          "#6366f1",
-                          "#ec4899",
-                          "#84cc16",
-                        ][index % 8]
-                      }
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value: number) => [`${value}%`, "Percentage"]}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Detailed Results */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Detailed Results</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {data.options.map((option, index) => (
-              <div
-                key={option.optionSlug}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary">{index + 1}</Badge>
-                  <span className="font-medium">{option.label}</span>
+    <Card>
+      {/* Header */}
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex cursor-help items-center gap-3">
+                  <List className="text-muted-foreground h-5 w-5" />
+                  <CardTitle className="text-lg">{questionTitle}</CardTitle>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-muted-foreground text-sm">
-                    {option.count} responses
-                  </span>
-                  <span className="text-sm font-medium">
-                    {option.percentage.toFixed(1)}%
-                  </span>
-                </div>
-              </div>
-            ))}
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs">
+                {tooltipContent}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          {comments.length > 0 && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm">
+                  <MessageCircleMore className="h-4 w-4" />
+                  {comments.length} comments
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl">
+                <DialogHeader>
+                  <DialogTitle>Comments for "{questionTitle}"</DialogTitle>
+                </DialogHeader>
+                <ScrollArea className="h-96">
+                  <div className="space-y-3 pr-4">
+                    {comments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="bg-muted/30 rounded-lg border p-3"
+                      >
+                        <p className="text-sm">{comment.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+      </CardHeader>
+
+      {/* Main Chart Area */}
+      <CardContent className="pt-0">
+        {sortedOptions.length === 0 ? (
+          <div className="flex items-center justify-center">
+            <p className="text-muted-foreground text-sm">No data</p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Write-in Responses */}
-      {data.writeIns.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Write-in Responses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {data.writeIns.map((writeIn, index) => (
-                <div
-                  key={index}
-                  className="bg-muted flex items-center justify-between rounded-lg p-3"
-                >
-                  <span className="text-sm">{writeIn.response}</span>
-                  <Badge variant="outline">{writeIn.count}</Badge>
+        ) : (
+          <div className="space-y-4">
+            {/* Chart */}
+            <div className="space-y-3">
+              {sortedOptions.map((option, index) => (
+                <div key={option.optionSlug} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Badge
+                        variant="outline"
+                        className="h-6 w-6 rounded-full p-0 text-xs"
+                      >
+                        {index + 1}
+                      </Badge>
+                      <span className="text-sm font-medium">
+                        {option.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-sm font-medium">
+                        {option.percentage.toFixed(1)}%
+                      </span>
+                      <div className="text-muted-foreground flex items-center gap-1 text-sm">
+                        <User className="h-4 w-4" />
+                        {option.count.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="bg-muted h-2 w-full rounded-full">
+                      <div
+                        className="h-2 rounded-full bg-pink-500"
+                        style={{ width: `${option.percentage}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between pt-4">
+              <div className="text-muted-foreground flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  {totalResponses.toLocaleString()} respondents
+                </div>
+                <div className="flex items-center gap-1">
+                  <Percent className="h-4 w-4" />
+                  {responseRate}% response rate
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
