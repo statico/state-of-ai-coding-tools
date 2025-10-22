@@ -87,7 +87,6 @@ export function MultipleFreeformQuestion({
               <Input
                 value={response}
                 onChange={(e) => handleResponseChange(index, e.target.value)}
-                placeholder={`Response ${index + 1}...`}
                 disabled={isSkipped}
                 className="flex-1"
               />
@@ -114,11 +113,6 @@ export function MultipleFreeformQuestion({
 
         <div className="absolute right-0 bottom-0 flex justify-between">
           <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
-          {responses.length > 0 && (
-            <span className="text-muted-foreground text-base">
-              {responses.length} response{responses.length !== 1 ? "s" : ""}
-            </span>
-          )}
         </div>
       </CardContent>
     </Card>

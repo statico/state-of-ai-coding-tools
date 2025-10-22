@@ -62,7 +62,6 @@ export function FreeformQuestion({
             id="freeform-textarea"
             value={value}
             onChange={(e) => handleValueChange(e.target.value)}
-            placeholder="Enter your detailed response..."
             rows={4}
             disabled={isSkipped}
           />

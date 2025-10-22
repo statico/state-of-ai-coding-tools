@@ -62,7 +62,6 @@ export function SingleFreeformQuestion({
             id="freeform-input"
             value={value}
             onChange={(e) => handleValueChange(e.target.value)}
-            placeholder="Enter your response..."
             disabled={isSkipped}
           />
         </div>
