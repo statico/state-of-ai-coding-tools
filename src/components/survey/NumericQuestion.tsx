@@ -57,14 +57,15 @@ export function NumericQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <Input
             id="numeric-input"
             type="number"
             value={value}
             onChange={(e) => handleValueChange(e.target.value)}
             disabled={isSkipped}
+            className="w-32"
           />
         </div>
 

@@ -81,7 +81,7 @@ export function SurveyHeader() {
     <div>
       <div className="container mx-auto space-y-4">
         {/* Mobile/Small width progress bar */}
-        <div className="block md:hidden">
+        <div className="block pb-2 md:hidden">
           <div className="space-y-2">
             <div className="text-muted-foreground flex justify-between text-base">
               <span>Survey Progress</span>

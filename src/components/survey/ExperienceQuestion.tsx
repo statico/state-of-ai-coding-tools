@@ -91,9 +91,9 @@ export function ExperienceQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="flex flex-col gap-6">
         {/* Awareness Level with inline badges */}
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <RadioGroup
             value={awareness?.toString()}
             onValueChange={handleAwarenessChange}
@@ -110,7 +110,7 @@ export function ExperienceQuestion({
                     id={`awareness-${option.value}`}
                   />
                   <div className="flex-1">
-                    <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
+                    <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
                       <Label
                         htmlFor={`awareness-${option.value}`}
                         className="py-2 text-base"

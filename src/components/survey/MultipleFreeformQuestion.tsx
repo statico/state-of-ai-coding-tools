@@ -79,8 +79,8 @@ export function MultipleFreeformQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {responses.map((response, index) => (
             <div key={index} className="flex items-center space-x-2">
               <Input

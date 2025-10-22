@@ -76,12 +76,12 @@ export function SingleChoiceQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="flex flex-col gap-4">
         <RadioGroup
           value={selectedOption}
           onValueChange={handleOptionChange}
           disabled={isSkipped}
-          className={cn("space-y-2", isSkipped && "opacity-50")}
+          className={cn("flex flex-col gap-2", isSkipped && "opacity-50")}
         >
           {question.options.map((option) => (
             <div key={option.slug} className="flex items-center space-x-4">
@@ -99,7 +99,7 @@ export function SingleChoiceQuestion({
         </RadioGroup>
 
         {selectedOption === "other" && (
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <Label htmlFor="writein" className="text-base">
               Please specify:
             </Label>

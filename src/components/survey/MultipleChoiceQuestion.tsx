@@ -100,8 +100,8 @@ export function MultipleChoiceQuestion({
           </p>
         )}
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {question.options.map((option) => (
             <div key={option.slug} className="flex items-center space-x-4">
               <Checkbox
@@ -128,7 +128,7 @@ export function MultipleChoiceQuestion({
         </div>
 
         {selectedOptions.includes("other") && (
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <Label className="text-base">Please specify:</Label>
             {writeinTexts.map((text, index) => (
               <Input
