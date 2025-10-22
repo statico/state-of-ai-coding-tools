@@ -1,6 +1,7 @@
 import {
   getAllWeeksSinceStart,
   getAvailableWeeks,
+  getFirstResponseWeek,
   getQuestionReport,
   getWeekSummary,
 } from "@/lib/models/results";
@@ -19,6 +20,14 @@ export const resultsRouter = router({
 
   getCurrentWeek: publicProcedure.query(async () => {
     return getCurrentISOWeek();
+  }),
+
+  getEarliestResult: publicProcedure.query(async () => {
+    const firstWeek = await getFirstResponseWeek();
+    if (!firstWeek) {
+      return getCurrentISOWeek();
+    }
+    return firstWeek;
   }),
 
   getWeekSummary: publicProcedure

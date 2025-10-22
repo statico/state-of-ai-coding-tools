@@ -20,6 +20,8 @@ import {
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useQueryState, parseAsInteger } from "nuqs";
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/lib/trpc/client";
 
 interface WeekSelectorProps {
   availableWeeks: Array<{ week: number; year: number }>;
@@ -28,9 +30,15 @@ interface WeekSelectorProps {
 export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const trpc = useTRPC();
 
   // Get current week as default
   const currentWeekData = getCurrentISOWeek();
+
+  // Get earliest result week
+  const { data: earliestResult } = useQuery(
+    trpc.results.getEarliestResult.queryOptions(),
+  );
 
   // Use nuqs to manage week and year in URL query string
   const [currentWeek, setCurrentWeek] = useQueryState(
@@ -44,6 +52,15 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
 
   const isCurrent = isCurrentWeek(currentWeek, currentYear);
   const isFuture = isFutureWeek(currentWeek, currentYear);
+
+  // Check if we're at the current week (disable next button)
+  const isAtCurrentWeek = isCurrentWeek(currentWeek, currentYear);
+
+  // Check if we're at the earliest result week (disable back button)
+  const isAtEarliestWeek =
+    earliestResult &&
+    currentWeek === earliestResult.week &&
+    currentYear === earliestResult.year;
 
   const handleWeekChange = (week: number, year: number) => {
     setCurrentWeek(week);
@@ -77,7 +94,7 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
           variant="outline"
           size="sm"
           onClick={handlePrevious}
-          disabled={availableWeeks.length === 0}
+          disabled={availableWeeks.length === 0 || isAtEarliestWeek}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -86,7 +103,7 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="min-w-[200px] flex-1 justify-start text-left font-normal"
+              className="min-w-[200px] flex-1 justify-start text-left font-normal select-none"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {formatWeekDisplay(currentWeek, currentYear)}
@@ -100,6 +117,24 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
               mode="single"
               selected={selectedDate}
               onSelect={handleDateSelect}
+              disabled={(date) => {
+                const today = new Date();
+                today.setHours(23, 59, 59, 999); // End of today
+
+                // Disable future dates
+                if (date > today) return true;
+
+                // Disable dates before earliest result week
+                if (earliestResult) {
+                  const earliestDate = getWeekDateRange(
+                    earliestResult.week,
+                    earliestResult.year,
+                  ).start;
+                  return date < earliestDate;
+                }
+
+                return false;
+              }}
             />
           </PopoverContent>
         </Popover>
@@ -108,7 +143,7 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
           variant="outline"
           size="sm"
           onClick={handleNext}
-          disabled={isFuture}
+          disabled={isFuture || isAtCurrentWeek}
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
