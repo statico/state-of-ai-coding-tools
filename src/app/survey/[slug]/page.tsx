@@ -14,6 +14,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ResponseData } from "@/lib/constants";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
 export default function SurveyPage() {
@@ -103,7 +104,7 @@ export default function SurveyPage() {
 
   if (sectionsLoading || questionsLoading) {
     return (
-      <div className="container mx-auto max-w-4xl p-4">
+      <div className="container mx-auto max-w-4xl p-8">
         <div className="flex min-h-[400px] items-center justify-center">
           <Spinner />
         </div>
@@ -113,7 +114,7 @@ export default function SurveyPage() {
 
   if (!currentSection) {
     return (
-      <div className="container mx-auto max-w-4xl p-4">
+      <div className="container mx-auto max-w-4xl p-8">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Section not found</CardTitle>
@@ -131,7 +132,7 @@ export default function SurveyPage() {
 
   return (
     <>
-      <div className="container mx-auto max-w-4xl p-4">
+      <div className="container mx-auto max-w-4xl p-6">
         <SurveyHeader />
 
         <div className="space-y-6">
@@ -220,10 +221,12 @@ export default function SurveyPage() {
           {/* Navigation */}
           <div className="flex justify-between">
             <Button variant="outline" onClick={handlePrevious}>
+              <ArrowLeft className="size-4" />
               Previous
             </Button>
             <Button onClick={handleNext}>
               {nextSection ? "Next Section" : "Complete Survey"}
+              <ArrowRight className="size-4" />
             </Button>
           </div>
         </div>

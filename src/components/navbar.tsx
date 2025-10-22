@@ -45,7 +45,7 @@ export function Navbar() {
 
   return (
     <nav className="bg-background border-b select-none">
-      <div className="container mx-auto flex h-12 items-center justify-between px-4 sm:h-16">
+      <div className="container mx-auto flex h-14 items-center justify-between px-6 sm:h-16">
         <div className="flex items-center gap-1 sm:gap-4">
           <button
             onClick={handleHomeClick}

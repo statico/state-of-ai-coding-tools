@@ -4,14 +4,14 @@ import { SurveyHeader } from "@/components/survey-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { AlarmCheckIcon, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function OutroPage() {
   const router = useRouter();
 
   const handleViewResults = () => {
-    // TODO: Implement results viewing
-    alert("Results viewing will be implemented in a future update");
+    router.push("/results");
   };
 
   const handleStartOver = () => {
@@ -19,7 +19,7 @@ export default function OutroPage() {
   };
 
   return (
-    <div className="contaner mx-auto max-w-4xl px-4 py-20">
+    <div className="container mx-auto max-w-4xl px-6 pt-8 pb-20 md:pt-20">
       <div className="space-y-8">
         <div className="space-y-4 text-center">
           <h1 className="text-4xl font-bold">Thank You!</h1>
@@ -31,7 +31,8 @@ export default function OutroPage() {
 
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Button size="lg" onClick={handleViewResults}>
-            View Results (Coming Soon)
+            View Results
+            <ArrowRight className="size-4" />
           </Button>
           <Button size="lg" onClick={handleStartOver} variant="outline">
             Change My Responses
@@ -42,7 +43,9 @@ export default function OutroPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Come back next week!</CardTitle>
+            <CardTitle className="text-2xl">
+              Be sure to come back next week!
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p>

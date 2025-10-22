@@ -25,7 +25,7 @@ export default function IntroPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl px-8 pt-8 pb-20 md:pt-20">
+    <div className="container mx-auto max-w-4xl px-6 pt-8 pb-20 md:pt-20">
       <div className="space-y-8">
         <Card>
           <CardHeader>
