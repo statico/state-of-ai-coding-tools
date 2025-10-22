@@ -26,6 +26,7 @@ export function QuestionCard({
   children,
   isSkipped,
   comment,
+  hasResponse,
   onSkip,
   onCommentChange,
   className,
@@ -46,6 +47,7 @@ export function QuestionCard({
           initialComment={comment}
           onCommentChange={onCommentChange}
           disabled={isSkipped}
+          hasResponse={hasResponse}
         />
 
         <div className="absolute right-0 bottom-0 flex justify-between">

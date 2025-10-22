@@ -116,7 +116,7 @@ export function ExperienceQuestion({
       description={question.description ?? undefined}
       isSkipped={isSkipped}
       comment={comment}
-      hasResponse={awareness !== undefined || sentiment !== undefined}
+      hasResponse={awareness !== undefined}
       onSkip={handleSkip}
       onCommentChange={handleCommentChange}
       className="gap-6"
