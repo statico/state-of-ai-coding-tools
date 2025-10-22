@@ -115,12 +115,15 @@ export function MultipleChoiceQuestion({
                   (!selectedOptions.includes(option.slug) && !canSelectMore)
                 }
               />
-              <Label htmlFor={option.slug} className="flex-1 py-2 text-base">
-                {option.label}
+              <Label
+                htmlFor={option.slug}
+                className="flex flex-1 flex-col items-start gap-0 py-2 text-base"
+              >
+                <div>{option.label}</div>
                 {option.description && (
-                  <span className="text-muted-foreground block text-base">
+                  <div className="text-muted-foreground text-sm">
                     {option.description}
-                  </span>
+                  </div>
                 )}
               </Label>
             </div>

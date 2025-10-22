@@ -111,19 +111,26 @@ questions:
     multiple_max: 3
     options:
       - slug: code-quality
-        label: Code quality (AI-generated code may be low quality)
+        label: Code quality
+        description: AI-generated code may be low quality
       - slug: security
-        label: Security (May introduce vulnerabilities)
+        label: Security
+        description: May introduce vulnerabilities
       - slug: privacy
-        label: Privacy (Code being sent to AI services)
+        label: Privacy
+        description: Code being sent to AI services
       - slug: dependency
-        label: Over-dependency (Worried about becoming too dependent)
+        label: Over-dependency
+        description: Worried about becoming too dependent
       - slug: learning
-        label: Learning impact (May hinder skill development)
+        label: Learning impact
+        description: May hinder skill development
       - slug: cost
-        label: Cost (Too expensive)
+        label: Cost
+        description: Too expensive
       - slug: reliability
-        label: Reliability (Not reliable enough)
+        label: Reliability
+        description: Not reliable enough
       - slug: none
         label: No major concerns
 

@@ -10,6 +10,7 @@ import {
   ResponseData,
   ClientResponse,
 } from "@/lib/constants";
+import { XIcon } from "lucide-react";
 
 interface MultipleFreeformQuestionProps {
   question: QuestionWithOptions;
@@ -91,12 +92,12 @@ export function MultipleFreeformQuestion({
                 className="flex-1"
               />
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={() => removeResponse(index)}
                 disabled={isSkipped}
               >
-                Remove
+                <XIcon className="size-4" />
               </Button>
             </div>
           ))}
