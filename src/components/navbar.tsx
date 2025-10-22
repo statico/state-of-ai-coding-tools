@@ -43,22 +43,24 @@ export function Navbar() {
   };
 
   return (
-    <nav className="bg-background border-b">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center space-x-4">
+    <nav className="bg-background border-b select-none">
+      <div className="container mx-auto flex h-12 items-center justify-between px-2 sm:h-16 sm:px-4">
+        <div className="flex items-center space-x-1 sm:space-x-4">
           <button
             onClick={handleHomeClick}
-            className="hover:text-primary text-xl font-bold transition-colors"
+            className="hover:text-primary text-sm font-bold transition-colors sm:text-xl"
           >
-            AI Coding Tools Survey
+            <span className="hidden sm:inline">AI Coding Tools Survey</span>
+            <span className="sm:hidden">AI Survey</span>
           </button>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             <Button
               variant="ghost"
+              size="sm"
               onClick={handleHomeClick}
-              className={
+              className={`text-xs sm:text-sm ${
                 pathname === "/" || pathname === "/intro" ? "bg-muted" : ""
-              }
+              }`}
             >
               Home
             </Button>
@@ -68,8 +70,11 @@ export function Navbar() {
             "slug" in firstSection ? (
               <Button
                 variant="ghost"
+                size="sm"
                 onClick={handleSurveyClick}
-                className={pathname.startsWith("/survey") ? "bg-muted" : ""}
+                className={`text-xs sm:text-sm ${
+                  pathname.startsWith("/survey") ? "bg-muted" : ""
+                }`}
               >
                 Survey
               </Button>
@@ -78,6 +83,7 @@ export function Navbar() {
               <Button
                 variant={pathname === "/results" ? "default" : "ghost"}
                 size="sm"
+                className="text-xs sm:text-sm"
               >
                 Results
               </Button>
@@ -85,11 +91,17 @@ export function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-1 sm:space-x-4">
           <div data-testid="theme-toggle">
             <ThemeToggle />
           </div>
-          <Button variant="ghost" size="icon" asChild title="View on GitHub">
+          <Button
+            variant="ghost"
+            size="icon"
+            asChild
+            title="View on GitHub"
+            className="h-8 w-8 sm:h-10 sm:w-10"
+          >
             <a
               href="https://github.com/statico/state-of-ai-coding-tools"
               target="_blank"
@@ -98,7 +110,7 @@ export function Navbar() {
             >
               <FontAwesomeIcon
                 icon={faGithub}
-                className="h-[1.2rem] w-[1.2rem]"
+                className="h-4 w-4 sm:h-[1.2rem] sm:w-[1.2rem]"
               />
               <span className="sr-only">View on GitHub</span>
             </a>
