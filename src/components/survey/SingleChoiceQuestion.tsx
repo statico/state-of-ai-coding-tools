@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import {
   ClientResponse,
 } from "@/lib/constants";
 import { SkipButton } from "./SkipButton";
+import { CommentSection } from "./CommentSection";
 import { cn } from "@/lib/utils";
 
 interface SingleChoiceQuestionProps {
@@ -34,6 +35,9 @@ export function SingleChoiceQuestion({
   const [isSkipped, setIsSkipped] = useState<boolean>(
     () => existingResponse?.skipped || false,
   );
+  const [comment, setComment] = useState<string>(
+    () => existingResponse?.comment || "",
+  );
 
   const handleOptionChange = (value: string) => {
     setSelectedOption(value);
@@ -42,6 +46,7 @@ export function SingleChoiceQuestion({
       singleOptionSlug: value,
       singleWriteinResponse: value === "other" ? writeinText : undefined,
       skipped: false,
+      comment,
     });
   };
 
@@ -52,6 +57,7 @@ export function SingleChoiceQuestion({
         singleOptionSlug: "other",
         singleWriteinResponse: value,
         skipped: false,
+        comment,
       });
     }
   };
@@ -61,12 +67,26 @@ export function SingleChoiceQuestion({
     setWriteinText("");
     if (isSkipped) {
       setIsSkipped(false);
-      onResponseChange({ skipped: true });
+      onResponseChange({ skipped: false, comment });
     } else {
       setIsSkipped(true);
-      onResponseChange({ skipped: true });
+      onResponseChange({ skipped: true, comment });
     }
   };
+
+  const handleCommentChange = useCallback(
+    (newComment: string) => {
+      setComment(newComment);
+      onResponseChange({
+        singleOptionSlug: selectedOption,
+        singleWriteinResponse:
+          selectedOption === "other" ? writeinText : undefined,
+        skipped: isSkipped,
+        comment: newComment,
+      });
+    },
+    [selectedOption, writeinText, isSkipped, onResponseChange],
+  );
 
   return (
     <Card className="relative">
@@ -76,7 +96,7 @@ export function SingleChoiceQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 pb-4">
+      <CardContent className="flex flex-col gap-4">
         <RadioGroup
           value={selectedOption}
           onValueChange={handleOptionChange}
@@ -114,6 +134,12 @@ export function SingleChoiceQuestion({
             />
           </div>
         )}
+
+        <CommentSection
+          initialComment={comment}
+          onCommentChange={handleCommentChange}
+          disabled={isSkipped}
+        />
 
         <div className="absolute right-0 bottom-0 flex justify-between">
           <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />

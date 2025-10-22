@@ -6,7 +6,9 @@ import { SentimentBadge } from "./SentimentBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { cn } from "@/lib/utils";
+import { CommentSection } from "./CommentSection";
 import {
   QuestionWithOptions,
   ResponseData,
@@ -36,6 +38,9 @@ export function ExperienceQuestion({
   const [isSkipped, setIsSkipped] = useState<boolean>(
     () => existingResponse?.skipped || false,
   );
+  const [comment, setComment] = useState<string>(
+    () => existingResponse?.comment || "",
+  );
 
   const handleAwarenessChange = (value: string) => {
     const awarenessValue = parseInt(value);
@@ -49,6 +54,7 @@ export function ExperienceQuestion({
       experienceAwareness: awarenessValue,
       experienceSentiment: undefined,
       skipped: false,
+      comment,
     });
   };
 
@@ -61,17 +67,40 @@ export function ExperienceQuestion({
       experienceAwareness: awareness,
       experienceSentiment: sentimentValue,
       skipped: false,
+      comment,
     });
   };
 
   const handleSkip = () => {
-    setIsSkipped(true);
     setAwareness(undefined);
     setSentiment(undefined);
-    onResponseChange({
-      skipped: true,
-    });
+    if (isSkipped) {
+      setIsSkipped(false);
+      onResponseChange({
+        skipped: false,
+        comment,
+      });
+    } else {
+      setIsSkipped(true);
+      onResponseChange({
+        skipped: true,
+        comment,
+      });
+    }
   };
+
+  const handleCommentChange = useCallback(
+    (newComment: string) => {
+      setComment(newComment);
+      onResponseChange({
+        experienceAwareness: awareness,
+        experienceSentiment: sentiment,
+        skipped: isSkipped,
+        comment: newComment,
+      });
+    },
+    [awareness, sentiment, isSkipped, onResponseChange],
+  );
 
   const getSentimentOptions = (awarenessLevel?: number) => {
     const level = awarenessLevel ?? awareness;
@@ -91,9 +120,9 @@ export function ExperienceQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-6 pb-4">
+      <CardContent className="flex flex-col gap-6">
         {/* Awareness Level with inline badges */}
-        <div className="flex flex-col gap-3">
+        <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
           <RadioGroup
             value={awareness?.toString()}
             onValueChange={handleAwarenessChange}
@@ -146,6 +175,12 @@ export function ExperienceQuestion({
             })}
           </RadioGroup>
         </div>
+
+        <CommentSection
+          initialComment={comment}
+          onCommentChange={handleCommentChange}
+          disabled={isSkipped}
+        />
 
         <div className="absolute right-0 bottom-0 flex justify-between">
           <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { SkipButton } from "./SkipButton";
+import { CommentSection } from "./CommentSection";
+import { cn } from "@/lib/utils";
 import {
   QuestionWithOptions,
   ResponseData,
@@ -29,6 +31,9 @@ export function NumericQuestion({
   const [isSkipped, setIsSkipped] = useState<boolean>(
     () => existingResponse?.skipped || false,
   );
+  const [comment, setComment] = useState<string>(
+    () => existingResponse?.comment || "",
+  );
 
   const handleValueChange = (newValue: string) => {
     setValue(newValue);
@@ -38,16 +43,38 @@ export function NumericQuestion({
     onResponseChange({
       numericResponse: numericValue,
       skipped: false,
+      comment,
     });
   };
 
   const handleSkip = () => {
-    setIsSkipped(true);
     setValue("");
-    onResponseChange({
-      skipped: true,
-    });
+    if (isSkipped) {
+      setIsSkipped(false);
+      onResponseChange({
+        skipped: false,
+        comment,
+      });
+    } else {
+      setIsSkipped(true);
+      onResponseChange({
+        skipped: true,
+        comment,
+      });
+    }
   };
+
+  const handleCommentChange = useCallback(
+    (newComment: string) => {
+      setComment(newComment);
+      onResponseChange({
+        numericResponse: value ? parseFloat(value) : undefined,
+        skipped: isSkipped,
+        comment: newComment,
+      });
+    },
+    [value, isSkipped, onResponseChange],
+  );
 
   return (
     <Card className="relative">
@@ -57,8 +84,8 @@ export function NumericQuestion({
           <p className="text-muted-foreground">{question.description}</p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 pb-4">
-        <div className="flex flex-col gap-2">
+      <CardContent className="flex flex-col gap-4">
+        <div className={cn("flex flex-col gap-2", isSkipped && "opacity-50")}>
           <Input
             id="numeric-input"
             type="number"
@@ -68,6 +95,12 @@ export function NumericQuestion({
             className="w-32"
           />
         </div>
+
+        <CommentSection
+          initialComment={comment}
+          onCommentChange={handleCommentChange}
+          disabled={isSkipped}
+        />
 
         <div className="absolute right-0 bottom-0 flex justify-between">
           <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />

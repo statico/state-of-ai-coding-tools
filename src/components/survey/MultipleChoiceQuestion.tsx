@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SkipButton } from "./SkipButton";
+import { CommentSection } from "./CommentSection";
+import { cn } from "@/lib/utils";
 import {
   QuestionWithOptions,
   ResponseData,
@@ -33,6 +35,9 @@ export function MultipleChoiceQuestion({
   const [isSkipped, setIsSkipped] = useState<boolean>(
     () => existingResponse?.skipped || false,
   );
+  const [comment, setComment] = useState<string>(
+    () => existingResponse?.comment || "",
+  );
 
   const handleOptionChange = (optionSlug: string, checked: boolean) => {
     let newSelectedOptions;
@@ -58,6 +63,7 @@ export function MultipleChoiceQuestion({
       multipleOptionSlugs: newSelectedOptions,
       multipleWriteinResponses: hasOther ? writeinTexts : undefined,
       skipped: false,
+      comment,
     });
   };
 
@@ -71,18 +77,41 @@ export function MultipleChoiceQuestion({
         multipleOptionSlugs: selectedOptions,
         multipleWriteinResponses: newWriteinTexts,
         skipped: false,
+        comment,
       });
     }
   };
 
   const handleSkip = () => {
-    setIsSkipped(true);
     setSelectedOptions([]);
     setWriteinTexts([]);
-    onResponseChange({
-      skipped: true,
-    });
+    if (isSkipped) {
+      setIsSkipped(false);
+      onResponseChange({
+        skipped: false,
+        comment,
+      });
+    } else {
+      setIsSkipped(true);
+      onResponseChange({
+        skipped: true,
+        comment,
+      });
+    }
   };
+
+  const handleCommentChange = useCallback(
+    (newComment: string) => {
+      setComment(newComment);
+      onResponseChange({
+        multipleOptionSlugs: selectedOptions,
+        multipleWriteinResponses: writeinTexts,
+        skipped: isSkipped,
+        comment: newComment,
+      });
+    },
+    [selectedOptions, writeinTexts, isSkipped, onResponseChange],
+  );
 
   const maxSelections = question.multiple_max || question.options.length;
   const canSelectMore = selectedOptions.length < maxSelections;
@@ -100,8 +129,8 @@ export function MultipleChoiceQuestion({
           </p>
         )}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 pb-4">
-        <div className="flex flex-col gap-3">
+      <CardContent className="flex flex-col gap-4">
+        <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
           {question.options.map((option) => (
             <div key={option.slug} className="flex items-center space-x-4">
               <Checkbox
@@ -150,6 +179,12 @@ export function MultipleChoiceQuestion({
             </Button>
           </div>
         )}
+
+        <CommentSection
+          initialComment={comment}
+          onCommentChange={handleCommentChange}
+          disabled={isSkipped}
+        />
 
         <div className="absolute right-0 bottom-0 flex justify-between">
           <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
