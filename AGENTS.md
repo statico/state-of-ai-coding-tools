@@ -110,6 +110,12 @@ vi.mock("@/server/env", () => ({
 }));
 ```
 
+### Date Manipulation in Tests
+
+- Use `vi.setSystemTime()` instead of mocking `@/lib/utils` for date-related tests
+- Always call `vi.useRealTimers()` in `afterEach` to restore real timers
+- Example: `vi.setSystemTime(new Date("2024-01-29"))` for specific dates
+
 ## External Services
 
 ### Service Client Design
