@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import yaml from "js-yaml";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ConfigSchema,
   loadConfig,

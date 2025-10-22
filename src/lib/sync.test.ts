@@ -1,6 +1,6 @@
 import { db } from "@/server/db/index.js";
 import { migrate } from "@/server/db/migrate.js";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Question, Section } from "./config.js";
 import {
   syncConfig,

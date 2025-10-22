@@ -83,3 +83,25 @@ export interface ResponseData {
   numericResponse?: number;
   comment?: string;
 }
+
+// Simple types for seed scripts
+export interface SimpleOption {
+  slug: string;
+  label: string;
+  description?: string;
+  order: number;
+  added?: string;
+}
+
+export interface SimpleQuestion {
+  slug: string;
+  title: string;
+  description?: string;
+  type: string;
+  section: string;
+  order: number;
+  options?: SimpleOption[];
+  multiple_max?: number;
+  added?: string;
+  randomize?: boolean;
+}

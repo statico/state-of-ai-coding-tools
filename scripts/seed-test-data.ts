@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import { loadConfig } from "@/lib/config";
-import type { SimpleOption, SimpleQuestion } from "@/lib/constants";
+import type { QuestionWithOptions } from "@/lib/constants";
 import { upsertOption } from "@/lib/models/options";
 import { upsertQuestion } from "@/lib/models/questions";
 import { upsertSection } from "@/lib/models/sections";
@@ -9,10 +9,6 @@ import { db } from "@/server/db";
 import { Logger } from "@/server/logging";
 import { faker } from "@faker-js/faker";
 import { getISOWeek, getISOWeekYear, subWeeks } from "date-fns";
-
-interface QuestionWithOptions extends SimpleQuestion {
-  options?: SimpleOption[];
-}
 
 const log = Logger.forModule();
 
@@ -319,7 +315,7 @@ async function seedTestData() {
             title: q.title,
             description: q.description,
             type: q.type,
-            order: 0, // Will be set properly by the model
+            order: 0, // Default order, will be set properly by the model
             section_slug: q.section,
             multiple_max: q.multiple_max,
             randomize: q.randomize || false,
@@ -328,11 +324,11 @@ async function seedTestData() {
               slug: opt.slug,
               label: opt.label,
               description: opt.description,
-              order: 0, // Will be set properly by the model
+              order: 0, // Default order, will be set properly by the model
               question_slug: q.slug,
               active: true,
             })),
-          })),
+          })) as QuestionWithOptions[],
         );
         allResponses.push(...userResponses);
       }

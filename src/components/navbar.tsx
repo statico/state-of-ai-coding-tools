@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function Navbar() {
   const router = useRouter();
@@ -73,6 +74,14 @@ export function Navbar() {
                 Survey
               </Button>
             ) : null}
+            <Link href="/results">
+              <Button
+                variant={pathname === "/results" ? "default" : "ghost"}
+                size="sm"
+              >
+                Results
+              </Button>
+            </Link>
           </div>
         </div>
 
