@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { SkipButton } from "./SkipButton";
 import {
   QuestionWithOptions,
   ResponseData,
@@ -87,7 +88,7 @@ export function MultipleChoiceQuestion({
   const canSelectMore = selectedOptions.length < maxSelections;
 
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader>
         <CardTitle>{question.title}</CardTitle>
         {question.description && (
@@ -95,14 +96,14 @@ export function MultipleChoiceQuestion({
         )}
         {question.multiple_max && (
           <p className="text-muted-foreground text-sm">
-            Select up to {question.multiple_max} options
+            Select up to {question.multiple_max}
           </p>
         )}
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
           {question.options.map((option) => (
-            <div key={option.slug} className="flex items-start space-x-2">
+            <div key={option.slug} className="flex items-center space-x-4">
               <Checkbox
                 id={option.slug}
                 checked={selectedOptions.includes(option.slug)}
@@ -114,7 +115,7 @@ export function MultipleChoiceQuestion({
                   (!selectedOptions.includes(option.slug) && !canSelectMore)
                 }
               />
-              <Label htmlFor={option.slug} className="flex-1">
+              <Label htmlFor={option.slug} className="flex-1 py-2">
                 {option.label}
                 {option.description && (
                   <span className="text-muted-foreground block text-sm">
@@ -147,19 +148,8 @@ export function MultipleChoiceQuestion({
           </div>
         )}
 
-        <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handleSkip}
-            className={isSkipped ? "bg-muted" : ""}
-          >
-            {isSkipped ? "Skipped" : "Skip this question"}
-          </Button>
-          {selectedOptions.length > 0 && (
-            <span className="text-muted-foreground text-sm">
-              {selectedOptions.length} of {maxSelections} selected
-            </span>
-          )}
+        <div className="absolute right-0 bottom-0 flex justify-between">
+          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
         </div>
       </CardContent>
     </Card>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { SkipButton } from "./SkipButton";
 import {
   QuestionWithOptions,
   ResponseData,
@@ -48,7 +49,7 @@ export function FreeformQuestion({
   };
 
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader>
         <CardTitle>{question.title}</CardTitle>
         {question.description && (
@@ -68,14 +69,8 @@ export function FreeformQuestion({
           />
         </div>
 
-        <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handleSkip}
-            className={isSkipped ? "bg-muted" : ""}
-          >
-            {isSkipped ? "Skipped" : "Skip this question"}
-          </Button>
+        <div className="absolute right-0 bottom-0 flex justify-between">
+          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
         </div>
       </CardContent>
     </Card>

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { SkipButton } from "./SkipButton";
 import {
   QuestionWithOptions,
   ResponseData,
@@ -49,7 +50,7 @@ export function NumericQuestion({
   };
 
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader>
         <CardTitle>{question.title}</CardTitle>
         {question.description && (
@@ -58,25 +59,17 @@ export function NumericQuestion({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="numeric-input">Enter a number:</Label>
           <Input
             id="numeric-input"
             type="number"
             value={value}
             onChange={(e) => handleValueChange(e.target.value)}
-            placeholder="Enter your response..."
             disabled={isSkipped}
           />
         </div>
 
-        <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handleSkip}
-            className={isSkipped ? "bg-muted" : ""}
-          >
-            {isSkipped ? "Skipped" : "Skip this question"}
-          </Button>
+        <div className="absolute right-0 bottom-0 flex justify-between">
+          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
         </div>
       </CardContent>
     </Card>

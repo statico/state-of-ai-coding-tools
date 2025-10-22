@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { SkipButton } from "./SkipButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -81,7 +82,7 @@ export function ExperienceQuestion({
   };
 
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader>
         <CardTitle>{question.title}</CardTitle>
         {question.description && (
@@ -91,21 +92,21 @@ export function ExperienceQuestion({
       <CardContent className="space-y-6">
         {/* Awareness Level */}
         <div className="space-y-3">
-          <Label className="text-base font-medium">
-            What is your experience level?
-          </Label>
           <RadioGroup
             value={awareness?.toString()}
             onValueChange={handleAwarenessChange}
             disabled={isSkipped}
           >
             {AWARENESS_OPTIONS.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
+              <div key={option.value} className="flex items-center space-x-4">
                 <RadioGroupItem
                   value={option.value.toString()}
                   id={`awareness-${option.value}`}
                 />
-                <Label htmlFor={`awareness-${option.value}`}>
+                <Label
+                  htmlFor={`awareness-${option.value}`}
+                  className="flex-1 py-2"
+                >
                   {option.label}
                 </Label>
               </div>
@@ -127,12 +128,15 @@ export function ExperienceQuestion({
               disabled={isSkipped}
             >
               {getSentimentOptions().map((option) => (
-                <div key={option.value} className="flex items-center space-x-2">
+                <div key={option.value} className="flex items-center space-x-4">
                   <RadioGroupItem
                     value={option.value.toString()}
                     id={`sentiment-${option.value}`}
                   />
-                  <Label htmlFor={`sentiment-${option.value}`}>
+                  <Label
+                    htmlFor={`sentiment-${option.value}`}
+                    className="flex-1 py-2"
+                  >
                     {option.label}
                   </Label>
                 </div>
@@ -141,14 +145,8 @@ export function ExperienceQuestion({
           </div>
         )}
 
-        <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handleSkip}
-            className={isSkipped ? "bg-muted" : ""}
-          >
-            {isSkipped ? "Skipped" : "Skip this question"}
-          </Button>
+        <div className="absolute right-0 bottom-0 flex justify-between">
+          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
         </div>
       </CardContent>
     </Card>

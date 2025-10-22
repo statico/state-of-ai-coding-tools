@@ -11,6 +11,8 @@ import {
   ResponseData,
   ClientResponse,
 } from "@/lib/constants";
+import { SkipButton } from "./SkipButton";
+import { cn } from "@/lib/utils";
 
 interface SingleChoiceQuestionProps {
   question: QuestionWithOptions;
@@ -55,16 +57,19 @@ export function SingleChoiceQuestion({
   };
 
   const handleSkip = () => {
-    setIsSkipped(true);
     setSelectedOption("");
     setWriteinText("");
-    onResponseChange({
-      skipped: true,
-    });
+    if (isSkipped) {
+      setIsSkipped(false);
+      onResponseChange({ skipped: true });
+    } else {
+      setIsSkipped(true);
+      onResponseChange({ skipped: true });
+    }
   };
 
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader>
         <CardTitle>{question.title}</CardTitle>
         {question.description && (
@@ -76,11 +81,12 @@ export function SingleChoiceQuestion({
           value={selectedOption}
           onValueChange={handleOptionChange}
           disabled={isSkipped}
+          className={cn("space-y-2", isSkipped && "opacity-50")}
         >
           {question.options.map((option) => (
-            <div key={option.slug} className="flex items-center space-x-2">
+            <div key={option.slug} className="flex items-center space-x-4">
               <RadioGroupItem value={option.slug} id={option.slug} />
-              <Label htmlFor={option.slug} className="flex-1">
+              <Label htmlFor={option.slug} className="flex-1 py-2">
                 {option.label}
                 {option.description && (
                   <span className="text-muted-foreground block text-sm">
@@ -104,14 +110,8 @@ export function SingleChoiceQuestion({
           </div>
         )}
 
-        <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handleSkip}
-            className={isSkipped ? "bg-muted" : ""}
-          >
-            {isSkipped ? "Skipped" : "Skip this question"}
-          </Button>
+        <div className="absolute right-0 bottom-0 flex justify-between">
+          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
         </div>
       </CardContent>
     </Card>
