@@ -45,15 +45,19 @@ export function Navbar() {
   return (
     <nav className="bg-background border-b select-none">
       <div className="container mx-auto flex h-12 items-center justify-between px-2 sm:h-16 sm:px-4">
-        <div className="flex items-center space-x-1 sm:space-x-4">
+        <div className="flex items-center gap-1 sm:gap-4">
           <button
             onClick={handleHomeClick}
-            className="hover:text-primary text-sm font-bold transition-colors sm:text-xl"
+            className="hover:text-primary mr-2 text-sm font-bold transition-colors sm:text-xl"
           >
             <span className="hidden sm:inline">AI Coding Tools Survey</span>
-            <span className="sm:hidden">AI Survey</span>
+            <span className="leading-none sm:hidden">
+              AI Survey
+              <br />
+              Tools Survey
+            </span>
           </button>
-          <div className="flex items-center space-x-1 sm:space-x-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
               variant="ghost"
               size="sm"
