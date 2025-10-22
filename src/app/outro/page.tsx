@@ -1,5 +1,6 @@
 "use client";
 
+import { SurveyHeader } from "@/components/survey-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -18,7 +19,7 @@ export default function OutroPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-20">
+    <div className="contaner mx-auto max-w-4xl px-4 py-20">
       <div className="space-y-8">
         <div className="space-y-4 text-center">
           <h1 className="text-4xl font-bold">Thank You!</h1>

@@ -4,6 +4,7 @@ import { useTRPC } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
+import { Progress } from "@/components/ui/progress";
 
 export function SurveyHeader() {
   const router = useRouter();
@@ -16,6 +17,37 @@ export function SurveyHeader() {
   const isIntro = pathname === "/intro";
   const isOutro = pathname === "/outro";
   const isSurvey = pathname.startsWith("/survey/");
+
+  // Calculate completion percentage
+  const calculateProgress = () => {
+    if (!sections || !Array.isArray(sections)) return 0;
+
+    const totalSections = sections.length;
+
+    if (isIntro) {
+      return 0;
+    }
+
+    if (isOutro) {
+      return 100;
+    }
+
+    if (isSurvey) {
+      const currentSectionSlug = pathname.replace("/survey/", "");
+      const currentSectionIndex = sections.findIndex(
+        (s: any) => s.slug === currentSectionSlug,
+      );
+      if (currentSectionIndex >= 0) {
+        // Progress is based on how many sections we've completed
+        // We're currently on a section, so progress is (currentIndex + 1) / totalSections
+        return Math.round((currentSectionIndex / totalSections) * 100);
+      }
+    }
+
+    return 0;
+  };
+
+  const progressPercentage = calculateProgress();
 
   // Create navigation items
   const navItems = [
@@ -47,8 +79,20 @@ export function SurveyHeader() {
 
   return (
     <div>
-      <div className="container mx-auto">
-        <div className="flex items-center justify-center">
+      <div className="container mx-auto space-y-4">
+        {/* Mobile/Small width progress bar */}
+        <div className="block md:hidden">
+          <div className="space-y-2">
+            <div className="text-muted-foreground flex justify-between text-sm">
+              <span>Survey Progress</span>
+              <span>{progressPercentage}%</span>
+            </div>
+            <Progress value={progressPercentage} className="h-2" />
+          </div>
+        </div>
+
+        {/* Desktop navigation */}
+        <div className="hidden items-center justify-center md:flex">
           <div className="relative mt-20 flex items-center gap-8">
             {navItems.map((item, index) => (
               <div
