@@ -1,15 +1,13 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReportFooter } from "@/components/results/shared/ReportFooter";
+import { ReportHeader } from "@/components/results/shared/ReportHeader";
+import { ProgressBar } from "@/components/results/shared/ProgressBar";
+import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
+import { AWARENESS_OPTIONS } from "@/lib/constants";
+import { Percent, User } from "lucide-react";
 
 interface ExperienceReportProps {
   data: {
@@ -33,221 +31,102 @@ interface ExperienceReportProps {
   };
   totalResponses: number;
   skippedResponses: number;
+  questionTitle: string;
+  questionType: string;
+  questionDescription?: string | null;
+  comments?: Array<{
+    comment: string;
+    sessionId: string;
+  }>;
 }
 
 export function ExperienceReport({
   data,
   totalResponses,
   skippedResponses,
+  questionTitle,
+  questionType,
+  questionDescription,
+  comments = [],
 }: ExperienceReportProps) {
-  const awarenessChartData = data.awareness.map((item) => ({
-    name: item.label,
-    value: item.count,
-    percentage: item.percentage,
-  }));
+  // Sort awareness and sentiment by count (most popular first)
+  const sortedAwareness = [...data.awareness]
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count);
 
-  const sentimentChartData = data.sentiment.map((item) => ({
-    name: item.label,
-    value: item.count,
-    percentage: item.percentage,
-  }));
+  const sortedSentiment = [...data.sentiment]
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count);
+
+  const responseRate =
+    totalResponses > 0
+      ? Math.round(((totalResponses - skippedResponses) / totalResponses) * 100)
+      : 0;
 
   return (
-    <div className="space-y-6">
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Responses
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Skipped</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{skippedResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {totalResponses > 0
-                ? Math.round(
-                    ((totalResponses - skippedResponses) / totalResponses) *
-                      100,
-                  )
-                : 0}
-              %
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    <Card>
+      <ReportHeader
+        questionTitle={questionTitle}
+        questionType={questionType}
+        questionDescription={questionDescription}
+        comments={comments}
+        icon={<QuestionTypeIcon type={questionType} />}
+      />
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Awareness Level</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={awarenessChartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 12 }}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
-                />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number) => [value, "Count"]} />
-                <Bar
-                  dataKey="value"
-                  fill="hsl(var(--primary))"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Sentiment</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={sentimentChartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <XAxis
-                  dataKey="name"
-                  tick={{ fontSize: 12 }}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
-                />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number) => [value, "Count"]} />
-                <Bar
-                  dataKey="value"
-                  fill="hsl(var(--primary))"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Detailed Results */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Awareness Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {data.awareness.map((item, index) => (
-                <div
-                  key={item.level}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary">{index + 1}</Badge>
-                    <span className="font-medium">{item.label}</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-muted-foreground text-sm">
-                      {item.count} responses
-                    </span>
-                    <span className="text-sm font-medium">
-                      {item.percentage.toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Sentiment Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {data.sentiment.map((item, index) => (
-                <div
-                  key={item.level}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary">{index + 1}</Badge>
-                    <span className="font-medium">{item.label}</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-muted-foreground text-sm">
-                      {item.count} responses
-                    </span>
-                    <span className="text-sm font-medium">
-                      {item.percentage.toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Combined Analysis */}
-      {data.combined.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Combined Analysis</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {data.combined.map((item, index) => {
-                const awarenessLabel =
-                  data.awareness.find((a) => a.level === item.awareness)
-                    ?.label || `Level ${item.awareness}`;
-                const sentimentLabel =
-                  data.sentiment.find((s) => s.level === item.sentiment)
-                    ?.label || `Level ${item.sentiment}`;
+      <CardContent className="pt-0">
+        {sortedAwareness.length === 0 ? (
+          <div className="flex items-center justify-center">
+            <p className="text-muted-foreground text-sm">No data</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="space-y-3">
+              {sortedAwareness.map((item, index) => {
+                // Get the correct label from AWARENESS_OPTIONS
+                const awarenessOption = AWARENESS_OPTIONS.find(
+                  (opt) => opt.value === item.level,
+                );
+                const displayLabel = awarenessOption
+                  ? awarenessOption.label
+                  : item.label;
 
                 return (
-                  <div
-                    key={index}
-                    className="bg-muted flex items-center justify-between rounded-lg p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Badge variant="outline">{item.count}</Badge>
-                      <span className="text-sm">
-                        {awarenessLabel} + {sentimentLabel}
-                      </span>
+                  <div key={item.level} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Badge
+                          variant="outline"
+                          className="h-6 w-6 rounded-full p-0 text-xs"
+                        >
+                          {index + 1}
+                        </Badge>
+                        <span className="text-sm font-medium">
+                          {displayLabel}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm font-medium">
+                          {item.percentage.toFixed(1)}%
+                        </span>
+                        <div className="text-muted-foreground flex items-center gap-1 text-sm">
+                          <User className="h-4 w-4" />
+                          {item.count.toLocaleString()}
+                        </div>
+                      </div>
                     </div>
+                    <ProgressBar percentage={item.percentage} />
                   </div>
                 );
               })}
             </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+
+            <ReportFooter
+              totalResponses={totalResponses}
+              responseRate={responseRate}
+            />
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

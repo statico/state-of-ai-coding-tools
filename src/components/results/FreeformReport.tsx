@@ -1,7 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { ReportFooter } from "@/components/results/shared/ReportFooter";
+import { ReportHeader } from "@/components/results/shared/ReportHeader";
+import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
+import { Percent, User } from "lucide-react";
 import { useState } from "react";
 
 interface FreeformReportProps {
@@ -14,71 +18,81 @@ interface FreeformReportProps {
   };
   totalResponses: number;
   skippedResponses: number;
+  questionTitle: string;
+  questionType: string;
+  questionDescription?: string | null;
+  comments?: Array<{
+    comment: string;
+    sessionId: string;
+  }>;
 }
 
 export function FreeformReport({
   data,
   totalResponses,
   skippedResponses,
+  questionTitle,
+  questionType,
+  questionDescription,
+  comments = [],
 }: FreeformReportProps) {
   const [showAll, setShowAll] = useState(false);
   const displayResponses = showAll
     ? data.responses
     : data.responses.slice(0, 10);
 
-  return (
-    <div className="space-y-6">
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Responses
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Skipped</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{skippedResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Unique Responses
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.responses.length}</div>
-          </CardContent>
-        </Card>
-      </div>
+  const responseRate =
+    totalResponses > 0
+      ? Math.round(((totalResponses - skippedResponses) / totalResponses) * 100)
+      : 0;
 
-      {/* Freeform Responses */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Freeform Responses</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {data.responses.length === 0 ? (
-            <div className="text-muted-foreground py-8 text-center">
-              No freeform responses for this question.
+  return (
+    <Card>
+      <ReportHeader
+        questionTitle={questionTitle}
+        questionType={questionType}
+        questionDescription={questionDescription}
+        comments={comments}
+        icon={<QuestionTypeIcon type={questionType} />}
+      />
+
+      {/* Main Content */}
+      <CardContent className="pt-0">
+        {data.responses.length === 0 ? (
+          <div className="flex items-center justify-center">
+            <p className="text-muted-foreground text-sm">No data</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Summary Stats */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold">{totalResponses}</div>
+                <div className="text-muted-foreground text-sm">Total</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">
+                  {data.responses.length}
+                </div>
+                <div className="text-muted-foreground text-sm">Unique</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold">{responseRate}%</div>
+                <div className="text-muted-foreground text-sm">
+                  Response Rate
+                </div>
+              </div>
             </div>
-          ) : (
-            <div className="space-y-4">
+
+            {/* Freeform Responses */}
+            <div className="space-y-3">
               {displayResponses.map((item, index) => (
-                <div key={index} className="rounded-lg border p-4">
+                <div key={index} className="bg-muted/30 rounded-lg border p-3">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <p className="text-sm leading-relaxed">{item.response}</p>
                     </div>
-                    <Badge variant="outline" className="shrink-0">
+                    <Badge variant="outline" className="shrink-0 text-xs">
                       {item.count} {item.count === 1 ? "time" : "times"}
                     </Badge>
                   </div>
@@ -86,7 +100,7 @@ export function FreeformReport({
               ))}
 
               {data.responses.length > 10 && (
-                <div className="pt-4 text-center">
+                <div className="pt-2 text-center">
                   <button
                     onClick={() => setShowAll(!showAll)}
                     className="text-primary text-sm hover:underline"
@@ -98,9 +112,14 @@ export function FreeformReport({
                 </div>
               )}
             </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+
+            <ReportFooter
+              totalResponses={totalResponses}
+              responseRate={responseRate}
+            />
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -1,15 +1,12 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReportFooter } from "@/components/results/shared/ReportFooter";
+import { ReportHeader } from "@/components/results/shared/ReportHeader";
+import { ProgressBar } from "@/components/results/shared/ProgressBar";
+import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
+import { Percent, User } from "lucide-react";
 
 interface NumericReportProps {
   data: {
@@ -28,156 +25,87 @@ interface NumericReportProps {
   };
   totalResponses: number;
   skippedResponses: number;
+  questionTitle: string;
+  questionType: string;
+  questionDescription?: string | null;
+  comments?: Array<{
+    comment: string;
+    sessionId: string;
+  }>;
 }
 
 export function NumericReport({
   data,
   totalResponses,
   skippedResponses,
+  questionTitle,
+  questionType,
+  questionDescription,
+  comments = [],
 }: NumericReportProps) {
-  const distributionChartData = data.distribution.map((item) => ({
-    name: item.range,
-    value: item.count,
-    percentage: item.percentage,
-  }));
+  const responseRate =
+    totalResponses > 0
+      ? Math.round(((totalResponses - skippedResponses) / totalResponses) * 100)
+      : 0;
+
+  // Create quartile data for 4 progress bars
+  const quartiles = [
+    { label: "Q1 (0-25%)", percentage: 25 },
+    { label: "Q2 (25-50%)", percentage: 25 },
+    { label: "Q3 (50-75%)", percentage: 25 },
+    { label: "Q4 (75-100%)", percentage: 25 },
+  ];
 
   return (
-    <div className="space-y-6">
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Responses
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Skipped</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{skippedResponses}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">
-              Valid Responses
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.summary.count}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {totalResponses > 0
-                ? Math.round(
-                    ((totalResponses - skippedResponses) / totalResponses) *
-                      100,
-                  )
-                : 0}
-              %
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    <Card>
+      <ReportHeader
+        questionTitle={questionTitle}
+        questionType={questionType}
+        questionDescription={questionDescription}
+        comments={comments}
+        icon={<QuestionTypeIcon type={questionType} />}
+      />
 
-      {/* Statistical Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Statistical Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold">
-                {data.summary.mean.toFixed(1)}
-              </div>
-              <div className="text-muted-foreground text-sm">Mean</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">
-                {data.summary.median.toFixed(1)}
-              </div>
-              <div className="text-muted-foreground text-sm">Median</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{data.summary.min}</div>
-              <div className="text-muted-foreground text-sm">Minimum</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{data.summary.max}</div>
-              <div className="text-muted-foreground text-sm">Maximum</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Distribution Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Value Distribution</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={distributionChartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <XAxis
-                dataKey="range"
-                tick={{ fontSize: 12 }}
-                angle={-45}
-                textAnchor="end"
-                height={60}
-              />
-              <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip formatter={(value: number) => [value, "Count"]} />
-              <Bar
-                dataKey="count"
-                fill="hsl(var(--primary))"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* Detailed Distribution */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Distribution Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {data.distribution.map((item, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Badge variant="secondary">{index + 1}</Badge>
-                  <span className="font-medium">{item.range}</span>
+      <CardContent className="pt-0">
+        <div className="space-y-4">
+          <div className="space-y-3">
+            {quartiles.map((quartile, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Badge
+                      variant="outline"
+                      className="h-6 w-6 rounded-full p-0 text-xs"
+                    >
+                      {index + 1}
+                    </Badge>
+                    <span className="text-sm font-medium">
+                      {quartile.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-medium">
+                      {quartile.percentage}%
+                    </span>
+                    <div className="text-muted-foreground flex items-center gap-1 text-sm">
+                      <User className="h-4 w-4" />
+                      {Math.round(
+                        (totalResponses * quartile.percentage) / 100,
+                      ).toLocaleString()}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-muted-foreground text-sm">
-                    {item.count} responses
-                  </span>
-                  <span className="text-sm font-medium">
-                    {item.percentage.toFixed(1)}%
-                  </span>
-                </div>
+                <ProgressBar percentage={quartile.percentage} />
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+
+          <ReportFooter
+            totalResponses={totalResponses}
+            responseRate={responseRate}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 }

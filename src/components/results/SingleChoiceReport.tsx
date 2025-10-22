@@ -1,14 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
@@ -16,7 +9,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { List, MessageCircleMore, Percent, User } from "lucide-react";
+import { ReportFooter } from "@/components/results/shared/ReportFooter";
+import { ReportHeader } from "@/components/results/shared/ReportHeader";
+import { ProgressBar } from "@/components/results/shared/ProgressBar";
+import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
+import { Percent, User } from "lucide-react";
 
 interface SingleChoiceReportProps {
   data: {
@@ -66,104 +63,17 @@ export function SingleChoiceReport({
       ? Math.round(((totalResponses - skippedResponses) / totalResponses) * 100)
       : 0;
 
-  // Create human-readable question type name
-  const getQuestionTypeName = (type: string) => {
-    switch (type) {
-      case "single":
-        return "Single Choice";
-      case "multiple":
-        return "Multiple Choice";
-      case "experience":
-        return "Experience";
-      case "numeric":
-        return "Numeric";
-      case "freeform":
-        return "Freeform";
-      case "single-freeform":
-        return "Single Choice with Freeform";
-      case "multiple-freeform":
-        return "Multiple Choice with Freeform";
-      default:
-        return type;
-    }
-  };
-
-  // Create tooltip content
-  const tooltipContent = (
-    <div className="space-y-2 text-sm">
-      <div>
-        <span className="font-semibold">Title:</span> {questionTitle}
-      </div>
-      <div>
-        <span className="font-semibold">Type:</span>{" "}
-        {getQuestionTypeName(questionType)}
-      </div>
-      {questionDescription && (
-        <div>
-          <span className="font-semibold">Description:</span>{" "}
-          {questionDescription}
-        </div>
-      )}
-      {multipleMax && (
-        <div>
-          <span className="font-semibold">Max selections:</span> {multipleMax}
-        </div>
-      )}
-      {randomize && (
-        <div>
-          <span className="font-semibold">Randomize options:</span> Yes
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <Card>
-      {/* Header */}
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex cursor-help items-center gap-3">
-                  <List className="text-muted-foreground h-5 w-5" />
-                  <CardTitle className="text-lg">{questionTitle}</CardTitle>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                {tooltipContent}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          {comments.length > 0 && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm">
-                  <MessageCircleMore className="h-4 w-4" />
-                  {comments.length} comments
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-4xl">
-                <DialogHeader>
-                  <DialogTitle>Comments for "{questionTitle}"</DialogTitle>
-                </DialogHeader>
-                <ScrollArea className="h-96">
-                  <div className="space-y-3 pr-4">
-                    {comments.map((comment, index) => (
-                      <div
-                        key={index}
-                        className="bg-muted/30 rounded-lg border p-3"
-                      >
-                        <p className="text-sm">{comment.comment}</p>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
-      </CardHeader>
+      <ReportHeader
+        questionTitle={questionTitle}
+        questionType={questionType}
+        questionDescription={questionDescription}
+        multipleMax={multipleMax}
+        randomize={randomize}
+        comments={comments}
+        icon={<QuestionTypeIcon type={questionType} />}
+      />
 
       {/* Main Chart Area */}
       <CardContent className="pt-0">
@@ -220,31 +130,40 @@ export function SingleChoiceReport({
                       </div>
                     </div>
                   </div>
-                  <div className="relative">
-                    <div className="bg-muted h-2 w-full rounded-full">
-                      <div
-                        className="bg-primary h-2 rounded-full"
-                        style={{ width: `${option.percentage}%` }}
-                      />
-                    </div>
-                  </div>
+                  <ProgressBar percentage={option.percentage} />
                 </div>
               ))}
             </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-between pt-4">
-              <div className="text-muted-foreground flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-1">
-                  <User className="h-4 w-4" />
-                  {totalResponses.toLocaleString()} respondents
-                </div>
-                <div className="flex items-center gap-1">
-                  <Percent className="h-4 w-4" />
-                  {responseRate}% response rate
-                </div>
+            {/* Write-in Responses */}
+            {data.writeIns.length > 0 && (
+              <div className="space-y-2 pt-4">
+                <h4 className="text-muted-foreground text-sm font-medium">
+                  {data.writeIns.length} Write-in Response
+                  {data.writeIns.length === 1 ? "" : "s"}
+                </h4>
+                <ScrollArea className="h-32 rounded-md border md:h-48">
+                  <div className="space-y-2 p-4">
+                    {data.writeIns.map((writeIn, index) => (
+                      <div
+                        key={index}
+                        className="bg-muted/30 flex items-center justify-between rounded-lg p-2"
+                      >
+                        <span className="text-sm">{writeIn.response}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {writeIn.count}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
               </div>
-            </div>
+            )}
+
+            <ReportFooter
+              totalResponses={totalResponses}
+              responseRate={responseRate}
+            />
           </div>
         )}
       </CardContent>

@@ -102,6 +102,12 @@ export default function ReportsPage() {
                     data={question.data}
                     totalResponses={question.totalResponses}
                     skippedResponses={question.skippedResponses}
+                    questionTitle={question.questionTitle}
+                    questionType={question.questionType}
+                    questionDescription={question.questionDescription}
+                    multipleMax={question.multipleMax}
+                    randomize={question.randomize}
+                    comments={question.comments}
                   />
                 )}
 
@@ -110,6 +116,10 @@ export default function ReportsPage() {
                     data={question.data}
                     totalResponses={question.totalResponses}
                     skippedResponses={question.skippedResponses}
+                    questionTitle={question.questionTitle}
+                    questionType={question.questionType}
+                    questionDescription={question.questionDescription}
+                    comments={question.comments}
                   />
                 )}
 
@@ -118,6 +128,10 @@ export default function ReportsPage() {
                     data={question.data}
                     totalResponses={question.totalResponses}
                     skippedResponses={question.skippedResponses}
+                    questionTitle={question.questionTitle}
+                    questionType={question.questionType}
+                    questionDescription={question.questionDescription}
+                    comments={question.comments}
                   />
                 )}
 
@@ -129,6 +143,10 @@ export default function ReportsPage() {
                       data={question.data}
                       totalResponses={question.totalResponses}
                       skippedResponses={question.skippedResponses}
+                      questionTitle={question.questionTitle}
+                      questionType={question.questionType}
+                      questionDescription={question.questionDescription}
+                      comments={question.comments}
                     />
                   )}
               </div>
