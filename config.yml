@@ -171,15 +171,6 @@ questions:
       - slug: wizard-coder
         label: WizardCoder
 
-  # 1.8 Other AI Coding Tools
-  - section: ai-tools-awareness
-    slug: other-ai-tools
-    title: Are there any other AI coding tools you use that weren't listed above?
-    type: multiple-freeform
-    options:
-      - slug: other
-        label: Other (specify below)
-
   # SECTION 1.9: AI CODE REVIEW TOOLS
   - section: ai-code-review-tools
     slug: ai-code-review-experience
