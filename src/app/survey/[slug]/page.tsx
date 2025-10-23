@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { ResponseData } from "@/lib/constants";
 import { useTRPC } from "@/lib/trpc/client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -25,6 +25,7 @@ export default function SurveyPage() {
   const slug = params.slug as string;
 
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
   const { data: sections, isLoading: sectionsLoading } = useQuery(
     trpc.survey.getSections.queryOptions(),
@@ -50,6 +51,10 @@ export default function SurveyPage() {
     trpc.survey.saveResponse.mutationOptions(),
   );
 
+  const saveExperienceResponsesMutation = useMutation(
+    trpc.survey.saveExperienceResponses.mutationOptions(),
+  );
+
   const { currentSection, nextSection, prevSection, currentSectionIndex } =
     useSectionNavigation();
 
@@ -60,21 +65,38 @@ export default function SurveyPage() {
           questionSlug,
           ...responseData,
         });
+        // Invalidate completion percentage to update the header
+        queryClient.invalidateQueries({
+          queryKey: trpc.survey.getCompletionPercentage.queryKey(),
+        });
       } catch (error) {
         console.error("Failed to save response:", error);
       }
     },
-    [saveResponseMutation],
+    [saveResponseMutation, queryClient, trpc.survey.getCompletionPercentage],
   );
 
   const handleExperienceResponseChange = useCallback(
-    (questionSlug: string, data: any[]) => {
+    async (questionSlug: string, data: any[]) => {
       // For experience questions, we need to handle multiple responses
-      data.forEach((responseData) => {
-        handleResponseChange(questionSlug, responseData);
-      });
+      try {
+        await saveExperienceResponsesMutation.mutateAsync({
+          questionSlug,
+          responses: data,
+        });
+        // Invalidate completion percentage to update the header
+        queryClient.invalidateQueries({
+          queryKey: trpc.survey.getCompletionPercentage.queryKey(),
+        });
+      } catch (error) {
+        console.error("Failed to save experience responses:", error);
+      }
     },
-    [handleResponseChange],
+    [
+      saveExperienceResponsesMutation,
+      queryClient,
+      trpc.survey.getCompletionPercentage,
+    ],
   );
 
   // Memoize the response change handlers for each question

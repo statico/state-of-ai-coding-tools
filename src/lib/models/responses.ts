@@ -182,3 +182,51 @@ export async function getResponseByQuestionAndOption(
     .where("option_slug", "=", optionSlug)
     .executeTakeFirst();
 }
+
+export interface ExperienceResponse {
+  optionSlug: string;
+  experienceAwareness: number;
+  experienceSentiment?: number;
+  skipped?: boolean;
+  comment?: string;
+}
+
+export async function saveExperienceResponses(
+  sessionId: string,
+  isoWeek: number,
+  isoYear: number,
+  questionSlug: string,
+  responses: ExperienceResponse[],
+) {
+  const savedResponses = await Promise.all(
+    responses.map((responseData) =>
+      db
+        .insertInto("responses")
+        .values({
+          session_id: sessionId,
+          iso_week: isoWeek,
+          iso_year: isoYear,
+          question_slug: questionSlug,
+          option_slug: responseData.optionSlug,
+          skipped: responseData.skipped ?? false,
+          experience_awareness: responseData.experienceAwareness,
+          experience_sentiment: responseData.experienceSentiment,
+          comment: responseData.comment,
+        } as any)
+        .onConflict((oc) =>
+          oc.constraint("responses_pkey").doUpdateSet({
+            skipped: (eb) => eb.ref("excluded.skipped"),
+            experience_awareness: (eb) =>
+              eb.ref("excluded.experience_awareness"),
+            experience_sentiment: (eb) =>
+              eb.ref("excluded.experience_sentiment"),
+            comment: (eb) => eb.ref("excluded.comment"),
+          }),
+        )
+        .returningAll()
+        .executeTakeFirstOrThrow(),
+    ),
+  );
+
+  return savedResponses;
+}

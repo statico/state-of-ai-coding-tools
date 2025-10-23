@@ -1,7 +1,12 @@
 import { getActiveOptionsByQuestion } from "@/lib/models/options";
 import { getActiveQuestionsBySection } from "@/lib/models/questions";
-import { getResponsesBySession, upsertResponse } from "@/lib/models/responses";
+import {
+  getResponsesBySession,
+  upsertResponse,
+  saveExperienceResponses,
+} from "@/lib/models/responses";
 import { getActiveSections, getFirstSection } from "@/lib/models/sections";
+import { getCompletionPercentage } from "@/lib/models/completion";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 
@@ -113,22 +118,18 @@ export const surveyRouter = router({
       // Get current week and year
       const { week, year } = getCurrentWeekAndYear();
 
-      const savedResponses = await Promise.all(
-        input.responses.map((responseData) =>
-          upsertResponse({
-            session_id: ctx.sessionId!,
-            iso_week: week,
-            iso_year: year,
-            question_slug: input.questionSlug,
-            option_slug: responseData.optionSlug,
-            skipped: responseData.skipped ?? false,
-            experience_awareness: responseData.experienceAwareness,
-            experience_sentiment: responseData.experienceSentiment,
-            comment: responseData.comment,
-          }),
-        ),
+      const savedResponses = await saveExperienceResponses(
+        ctx.sessionId!,
+        week,
+        year,
+        input.questionSlug,
+        input.responses,
       );
 
       return { sessionId: ctx.sessionId, responses: savedResponses };
     }),
+
+  getCompletionPercentage: publicProcedure.query(async ({ ctx }) => {
+    return await getCompletionPercentage(ctx.sessionId!);
+  }),
 });

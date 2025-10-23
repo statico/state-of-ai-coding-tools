@@ -14,39 +14,14 @@ export function SurveyHeader() {
   const trpc = useTRPC();
 
   const { data: sections } = useQuery(trpc.survey.getSections.queryOptions());
+  const { data: completionData } = useQuery(
+    trpc.survey.getCompletionPercentage.queryOptions(),
+  );
   const { prevSection, nextSection, isIntro, isOutro, isSurvey } =
     useSectionNavigation();
 
-  // Calculate completion percentage
-  const calculateProgress = () => {
-    if (!sections || !Array.isArray(sections)) return 0;
-
-    const totalSections = sections.length;
-
-    if (isIntro) {
-      return 0;
-    }
-
-    if (isOutro) {
-      return 100;
-    }
-
-    if (isSurvey) {
-      const currentSectionSlug = pathname.replace("/survey/", "");
-      const currentSectionIndex = sections.findIndex(
-        (s: any) => s.slug === currentSectionSlug,
-      );
-      if (currentSectionIndex >= 0) {
-        // Progress is based on how many sections we've completed
-        // We're currently on a section, so progress is (currentIndex + 1) / totalSections
-        return Math.round((currentSectionIndex / totalSections) * 100);
-      }
-    }
-
-    return 0;
-  };
-
-  const progressPercentage = calculateProgress();
+  // Get completion percentage from the API
+  const progressPercentage = completionData?.overallPercentage ?? 0;
 
   // Create navigation items
   const navItems = [
@@ -161,41 +136,56 @@ export function SurveyHeader() {
       {/* Desktop navigation */}
       <div className="hidden items-center justify-center md:flex">
         <div className="relative mt-20 flex items-center gap-8">
-          {navItems.map((item, index) => (
-            <div
-              key={item.id}
-              className="group relative flex flex-col items-center"
-            >
-              <button
-                onClick={() => handleNavigation(item.path)}
-                className={cn(
-                  "z-10 h-8 w-8 rounded-full border transition-all duration-200 group-hover:scale-110",
-                  item.isActive
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-muted-foreground/30 bg-background group-hover:border-muted-foreground/60",
-                )}
+          {navItems.map((item, index) => {
+            // Get section completion percentage for survey sections
+            let sectionPercentage = 0;
+            if (isSurvey && item.id !== "intro" && item.id !== "outro") {
+              const sectionData = completionData?.sectionCompletion?.find(
+                (s: any) => s.sectionSlug === item.id,
+              );
+              sectionPercentage = sectionData?.percentage ?? 0;
+            }
+
+            return (
+              <div
+                key={item.id}
+                className="group relative flex flex-col items-center"
               >
-                <div className="flex h-full w-full items-center justify-center text-sm font-medium">
-                  {index + 1}
-                </div>
-              </button>
-              <button
-                onClick={() => handleNavigation(item.path)}
-                className={cn(
-                  "group-hover:text-primary-foreground absolute -top-4 left-7 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors",
-                  item.isActive
-                    ? "text-primary font-semibold"
-                    : "text-muted-foreground",
-                )}
-                style={{
-                  transform: "rotate(-45deg)",
-                  transformOrigin: "top left",
-                }}
-              >
-                {item.label}
-              </button>
-            </div>
-          ))}
+                <button
+                  onClick={() => handleNavigation(item.path)}
+                  className={cn(
+                    "z-10 h-8 w-8 rounded-full border transition-all duration-200 group-hover:scale-110",
+                    item.isActive
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/30 bg-background group-hover:border-muted-foreground/60",
+                  )}
+                >
+                  <div className="flex h-full w-full items-center justify-center text-sm font-medium">
+                    {isSurvey && item.id !== "intro" && item.id !== "outro" ? (
+                      <span className="text-xs">{sectionPercentage}%</span>
+                    ) : (
+                      index + 1
+                    )}
+                  </div>
+                </button>
+                <button
+                  onClick={() => handleNavigation(item.path)}
+                  className={cn(
+                    "group-hover:text-primary-foreground absolute -top-4 left-7 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors",
+                    item.isActive
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground",
+                  )}
+                  style={{
+                    transform: "rotate(-45deg)",
+                    transformOrigin: "top left",
+                  }}
+                >
+                  {item.label}
+                </button>
+              </div>
+            );
+          })}
           <div className="bg-muted-foreground/30 absolute bottom-4 h-px w-full" />
         </div>
       </div>

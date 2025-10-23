@@ -100,6 +100,7 @@ function SurveyPage() {
 - Each test runs in isolation with a fresh database state
 - NEVER mock the global `fetch()` function
 - Use MSW for HTTP request mocking in tests
+- NEVER mock database models - use real database data instead. Each test gets an isolated database, so insert real test data using `db.insertInto()` rather than mocking model functions
 
 ### Mocking Environment Variables
 

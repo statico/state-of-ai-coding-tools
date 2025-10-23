@@ -7,6 +7,7 @@ import {
   getResponsesByQuestionSlug,
   getResponsesBySession,
   getResponsesByWeek,
+  saveExperienceResponses,
   updateResponse,
   upsertResponse,
 } from "./responses";
@@ -696,6 +697,92 @@ describe("Responses Model", () => {
             r.question_slug === testQuestionSlug,
         ),
       ).toBeUndefined();
+    });
+  });
+
+  describe("saveExperienceResponses", () => {
+    it("should save multiple experience responses", async () => {
+      // Create test session and question
+      await createSession({ id: testSessionId });
+      await createSection({
+        slug: "test-section",
+        title: "Test Section",
+        order: 1,
+      });
+      await createQuestion({
+        slug: testQuestionSlug,
+        section_slug: "test-section",
+        title: "Test Question",
+        type: "experience",
+        order: 1,
+      });
+
+      const responses = [
+        {
+          optionSlug: "option1",
+          experienceAwareness: 2,
+          experienceSentiment: 1,
+          skipped: false,
+        },
+        {
+          optionSlug: "option2",
+          experienceAwareness: 1,
+          experienceSentiment: undefined,
+          skipped: false,
+        },
+      ];
+
+      const savedResponses = await saveExperienceResponses(
+        testSessionId,
+        testIsoWeek,
+        testIsoYear,
+        testQuestionSlug,
+        responses,
+      );
+
+      expect(savedResponses).toHaveLength(2);
+      expect(savedResponses[0].experience_awareness).toBe(2);
+      expect(savedResponses[0].experience_sentiment).toBe(1);
+      expect(savedResponses[1].experience_awareness).toBe(1);
+      expect(savedResponses[1].experience_sentiment).toBeNull();
+    });
+
+    it("should handle skipped experience responses", async () => {
+      // Create test session and question
+      await createSession({ id: testSessionId });
+      await createSection({
+        slug: "test-section",
+        title: "Test Section",
+        order: 1,
+      });
+      await createQuestion({
+        slug: testQuestionSlug,
+        section_slug: "test-section",
+        title: "Test Question",
+        type: "experience",
+        order: 1,
+      });
+
+      const responses = [
+        {
+          optionSlug: "option1",
+          experienceAwareness: 0,
+          experienceSentiment: undefined,
+          skipped: true,
+        },
+      ];
+
+      const savedResponses = await saveExperienceResponses(
+        testSessionId,
+        testIsoWeek,
+        testIsoYear,
+        testQuestionSlug,
+        responses,
+      );
+
+      expect(savedResponses[0].skipped).toBe(true);
+      expect(savedResponses[0].experience_awareness).toBe(0);
+      expect(savedResponses[0].experience_sentiment).toBeNull();
     });
   });
 });
