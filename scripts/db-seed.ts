@@ -69,9 +69,20 @@ function generateExperienceResponse(): {
   awareness: number;
   sentiment: number;
 } {
+  const awareness = faker.number.int({ min: 0, max: 2 }); // 0: Never heard, 1: Heard of it, 2: Used it
+  let sentiment: number;
+
+  if (awareness === 0 || awareness === 1) {
+    // For "Never heard" or "Heard of it", use interest values (1 or -1)
+    sentiment = faker.datatype.boolean() ? 1 : -1;
+  } else {
+    // For "Used it", use sentiment values (1 or -1)
+    sentiment = faker.datatype.boolean() ? 1 : -1;
+  }
+
   return {
-    awareness: faker.number.int({ min: 1, max: 5 }),
-    sentiment: faker.number.int({ min: 1, max: 5 }),
+    awareness,
+    sentiment,
   };
 }
 
