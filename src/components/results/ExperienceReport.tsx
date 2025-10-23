@@ -1,13 +1,15 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
 import { ReportFooter } from "@/components/results/shared/ReportFooter";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
-import { ProgressBar } from "@/components/results/shared/ProgressBar";
-import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
+import { Card, CardContent } from "@/components/ui/card";
 import { AWARENESS_OPTIONS } from "@/lib/constants";
-import { Percent, User } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const AWARENESS_COLORS = ["bg-blue-500", "bg-cyan-500", "bg-zinc-500"];
+
+const SENTIMENT_COLORS = ["bg-emerald-500", "bg-green-500", "bg-rose-500"];
 
 interface ExperienceReportProps {
   data: {
@@ -49,19 +51,69 @@ export function ExperienceReport({
   questionDescription,
   comments = [],
 }: ExperienceReportProps) {
-  // Sort awareness and sentiment by count (most popular first)
-  const sortedAwareness = [...data.awareness]
-    .filter((item) => item.count > 0)
-    .sort((a, b) => b.count - a.count);
-
-  const sortedSentiment = [...data.sentiment]
-    .filter((item) => item.count > 0)
-    .sort((a, b) => b.count - a.count);
-
   const responseRate =
     totalResponses > 0
       ? Math.round(((totalResponses - skippedResponses) / totalResponses) * 100)
       : 0;
+
+  const actualResponses = totalResponses - skippedResponses;
+
+  // Create breakdown by awareness level and sentiment (reversed order)
+  const breakdown = [...AWARENESS_OPTIONS].reverse().map((awarenessOption) => {
+    const awarenessData = data.awareness.find(
+      (item) => item.level === awarenessOption.value,
+    );
+
+    // Get sentiment breakdown for this awareness level
+    // Check for positive, negative, and neutral responses
+    const positiveData = data.combined.find(
+      (item) =>
+        item.awareness === awarenessOption.value && item.sentiment === 1,
+    );
+
+    const negativeData = data.combined.find(
+      (item) =>
+        item.awareness === awarenessOption.value && item.sentiment === -1,
+    );
+
+    // Calculate neutral responses (awareness responses without sentiment)
+    const totalWithSentiment =
+      (positiveData?.count || 0) + (negativeData?.count || 0);
+    const neutralCount = Math.max(
+      0,
+      (awarenessData?.count || 0) - totalWithSentiment,
+    );
+
+    const sentimentBreakdown = [
+      {
+        sentiment: "positive",
+        count: positiveData?.count || 0,
+        percentage: awarenessData?.count
+          ? ((positiveData?.count || 0) / awarenessData.count) * 100
+          : 0,
+      },
+      {
+        sentiment: "neutral",
+        count: neutralCount,
+        percentage: awarenessData?.count
+          ? (neutralCount / awarenessData.count) * 100
+          : 0,
+      },
+      {
+        sentiment: "negative",
+        count: negativeData?.count || 0,
+        percentage: awarenessData?.count
+          ? ((negativeData?.count || 0) / awarenessData.count) * 100
+          : 0,
+      },
+    ];
+
+    return {
+      awareness: awarenessOption.label,
+      awarenessCount: awarenessData?.count || 0,
+      sentimentBreakdown,
+    };
+  });
 
   return (
     <Card>
@@ -74,50 +126,82 @@ export function ExperienceReport({
       />
 
       <CardContent className="pt-0">
-        {sortedAwareness.length === 0 ? (
+        {breakdown.length === 0 ? (
           <div className="flex items-center justify-center">
             <p className="text-muted-foreground text-sm">No data</p>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="space-y-3">
-              {sortedAwareness.map((item, index) => {
-                // Get the correct label from AWARENESS_OPTIONS
-                const awarenessOption = AWARENESS_OPTIONS.find(
-                  (opt) => opt.value === item.level,
-                );
-                const displayLabel = awarenessOption
-                  ? awarenessOption.label
-                  : item.label;
+            <div>{totalResponses} respondents</div>
 
-                return (
-                  <div key={item.level} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Badge
-                          variant="outline"
-                          className="h-6 w-6 rounded-full p-0 text-xs"
-                        >
-                          {index + 1}
-                        </Badge>
-                        <span className="text-sm font-medium">
-                          {displayLabel}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="text-sm font-medium">
-                          {item.percentage.toFixed(1)}%
-                        </span>
-                        <div className="text-muted-foreground flex items-center gap-1 text-sm">
-                          <User className="h-4 w-4" />
-                          {item.count.toLocaleString()}
-                        </div>
-                      </div>
-                    </div>
-                    <ProgressBar percentage={item.percentage} />
+            <div className="flex w-full gap-1">
+              {breakdown.map((item, index) => (
+                <div
+                  key={item.awareness}
+                  className="space-y-1"
+                  style={{
+                    width: `${(item.awarenessCount / actualResponses) * 100}%`,
+                  }}
+                >
+                  <div
+                    className={cn(
+                      "h-12 overflow-hidden rounded-xs text-xs",
+                      AWARENESS_COLORS[index],
+                    )}
+                  >
+                    {item.awareness}{" "}
+                    {Math.round((item.awarenessCount / actualResponses) * 100)}%
                   </div>
-                );
-              })}
+
+                  <div className="flex w-full gap-2">
+                    {item.sentimentBreakdown.map((sentiment, index) => (
+                      <div
+                        key={sentiment.sentiment}
+                        className={cn(
+                          "h-4 overflow-hidden rounded-xs text-xs",
+                          SENTIMENT_COLORS[index],
+                        )}
+                        style={{
+                          width: `${(sentiment.percentage / 100) * 100}%`,
+                        }}
+                      >
+                        {sentiment.percentage.toFixed(1)}%
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-4">
+              {breakdown.map((item) => (
+                <div key={item.awareness} className="space-y-2">
+                  <div className="flex items-center justify-between text-sm font-medium">
+                    <span>{item.awareness.toLowerCase()}</span>
+                    <span>
+                      {item.awarenessCount > 0
+                        ? `${((item.awarenessCount / actualResponses) * 100).toFixed(1)}% (${item.awarenessCount.toLocaleString()} respondents)`
+                        : "0% (0 respondents)"}
+                    </span>
+                  </div>
+                  <div className="ml-4 space-y-1">
+                    {item.sentimentBreakdown.map((sentiment) => (
+                      <div
+                        key={sentiment.sentiment}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="text-muted-foreground">
+                          {sentiment.sentiment}:
+                        </span>
+                        <span>
+                          {sentiment.percentage.toFixed(1)}% (
+                          {sentiment.count.toLocaleString()} respondents)
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <ReportFooter

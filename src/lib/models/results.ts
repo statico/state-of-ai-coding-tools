@@ -1,3 +1,4 @@
+import { AWARENESS_OPTIONS, SENTIMENT_OPTIONS } from "@/lib/constants";
 import { getCurrentISOWeek } from "@/lib/utils";
 import { db } from "@/server/db";
 
@@ -438,53 +439,84 @@ async function aggregateExperienceQuestion(
   const sentimentCounts = new Map<number, number>();
   const combinedCounts = new Map<string, number>();
 
+  // Valid awareness values: 0, 1, 2
+  const validAwarenessValues = AWARENESS_OPTIONS.map(
+    (option) => option.value,
+  ) as number[];
+  // Valid sentiment values: -1, 1
+  const validSentimentValues = SENTIMENT_OPTIONS.map(
+    (option) => option.value,
+  ) as number[];
+
   for (const response of responses) {
-    if (response.experience_awareness !== null) {
-      awarenessCounts.set(
-        response.experience_awareness,
-        (awarenessCounts.get(response.experience_awareness) || 0) + 1,
-      );
-    }
-    if (response.experience_sentiment !== null) {
+    // Count all awareness values, including null/invalid ones as "Never heard of it" (0)
+    const awarenessLevel =
+      response.experience_awareness !== null &&
+      validAwarenessValues.includes(response.experience_awareness)
+        ? response.experience_awareness
+        : 0; // Default to "Never heard of it" for null/invalid values
+
+    awarenessCounts.set(
+      awarenessLevel,
+      (awarenessCounts.get(awarenessLevel) || 0) + 1,
+    );
+
+    // Only count valid sentiment values
+    if (
+      response.experience_sentiment !== null &&
+      validSentimentValues.includes(response.experience_sentiment)
+    ) {
       sentimentCounts.set(
         response.experience_sentiment,
         (sentimentCounts.get(response.experience_sentiment) || 0) + 1,
       );
     }
+
+    // Only count combined data for valid values
     if (
       response.experience_awareness !== null &&
-      response.experience_sentiment !== null
+      response.experience_sentiment !== null &&
+      validAwarenessValues.includes(response.experience_awareness) &&
+      validSentimentValues.includes(response.experience_sentiment)
     ) {
-      const key = `${response.experience_awareness}-${response.experience_sentiment}`;
+      const key = `${response.experience_awareness}|${response.experience_sentiment}`;
       combinedCounts.set(key, (combinedCounts.get(key) || 0) + 1);
     }
   }
 
   const totalResponses = responses.length;
-  const awarenessLabels = ["Never heard of it", "Heard of it", "Used it"];
-  const sentimentLabels = ["Negative", "Positive"];
 
   const awarenessData = Array.from(awarenessCounts.entries()).map(
-    ([level, count]) => ({
-      level,
-      label: awarenessLabels[level] || `Level ${level}`,
-      count,
-      percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
-    }),
+    ([level, count]) => {
+      const awarenessOption = AWARENESS_OPTIONS.find(
+        (option) => option.value === level,
+      );
+      return {
+        level,
+        label: awarenessOption?.label || `Level ${level}`,
+        count,
+        percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
+      };
+    },
   );
 
   const sentimentData = Array.from(sentimentCounts.entries()).map(
-    ([level, count]) => ({
-      level,
-      label: sentimentLabels[level === 1 ? 1 : 0] || `Level ${level}`,
-      count,
-      percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
-    }),
+    ([level, count]) => {
+      const sentimentOption = SENTIMENT_OPTIONS.find(
+        (option) => option.value === level,
+      );
+      return {
+        level,
+        label: sentimentOption?.label || `Level ${level}`,
+        count,
+        percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
+      };
+    },
   );
 
   const combinedData = Array.from(combinedCounts.entries()).map(
     ([key, count]) => {
-      const [awareness, sentiment] = key.split("-").map(Number);
+      const [awareness, sentiment] = key.split("|").map(Number);
       return {
         awareness,
         sentiment,
