@@ -1,6 +1,6 @@
 "use client";
 
-import { SurveyHeader } from "@/components/survey-header";
+import { SurveyHeader } from "@/components/SurveyHeader";
 import { ExperienceQuestion } from "@/components/survey/ExperienceQuestion";
 import { FreeformQuestion } from "@/components/survey/FreeformQuestion";
 import { MultipleChoiceQuestion } from "@/components/survey/MultipleChoiceQuestion";

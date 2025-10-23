@@ -1,11 +1,11 @@
 import "./globals.css";
 
-import { Navbar } from "@/components/navbar";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCProviderWrapper } from "@/lib/trpc/Provider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { Metadata } from "next";
+import { Navbar } from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "AI Coding Tools Survey",

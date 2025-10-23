@@ -1,6 +1,6 @@
 "use client";
 
-import { SurveyHeader } from "@/components/survey-header";
+import { SurveyHeader } from "@/components/SurveyHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
