@@ -128,7 +128,7 @@ export default function SurveyPage() {
     }
   };
 
-  if (sectionsLoading || questionsLoading) {
+  if (sectionsLoading) {
     return (
       <div className="container mx-auto max-w-4xl p-8">
         <div className="flex min-h-[400px] items-center justify-center">
@@ -174,86 +174,87 @@ export default function SurveyPage() {
 
           {/* Questions */}
           <div className="space-y-6">
-            {questions && Array.isArray(questions)
-              ? questions.map((question: any) => {
-                  const existingResponse =
+            {questionsLoading ? (
+              <div className="flex min-h-[200px] items-center justify-center">
+                <Spinner />
+              </div>
+            ) : questions && Array.isArray(questions) ? (
+              questions.map((question: any) => {
+                const existingResponse =
+                  responses && Array.isArray(responses)
+                    ? responses.find(
+                        (r: any) => r.question_slug === question.slug,
+                      )
+                    : undefined;
+
+                const commonProps = {
+                  question,
+                  existingResponse,
+                  onResponseChange: getResponseChangeHandler(question.slug),
+                };
+
+                const experienceProps = {
+                  question,
+                  existingResponses:
                     responses && Array.isArray(responses)
-                      ? responses.find(
+                      ? responses.filter(
                           (r: any) => r.question_slug === question.slug,
                         )
-                      : undefined;
+                      : [],
+                  onResponseChange: getExperienceResponseChangeHandler(
+                    question.slug,
+                  ),
+                };
 
-                  const commonProps = {
-                    question,
-                    existingResponse,
-                    onResponseChange: getResponseChangeHandler(question.slug),
-                  };
-
-                  const experienceProps = {
-                    question,
-                    existingResponses:
-                      responses && Array.isArray(responses)
-                        ? responses.filter(
-                            (r: any) => r.question_slug === question.slug,
-                          )
-                        : [],
-                    onResponseChange: getExperienceResponseChangeHandler(
-                      question.slug,
-                    ),
-                  };
-
-                  switch (question.type) {
-                    case "single":
-                      return (
-                        <SingleChoiceQuestion
-                          key={question.slug}
-                          {...commonProps}
-                        />
-                      );
-                    case "multiple":
-                      return (
-                        <MultipleChoiceQuestion
-                          key={question.slug}
-                          {...commonProps}
-                        />
-                      );
-                    case "experience":
-                      return (
-                        <ExperienceQuestion
-                          key={question.slug}
-                          {...experienceProps}
-                        />
-                      );
-                    case "numeric":
-                      return (
-                        <NumericQuestion key={question.slug} {...commonProps} />
-                      );
-                    case "single-freeform":
-                      return (
-                        <SingleFreeformQuestion
-                          key={question.slug}
-                          {...commonProps}
-                        />
-                      );
-                    case "multiple-freeform":
-                      return (
-                        <MultipleFreeformQuestion
-                          key={question.slug}
-                          {...commonProps}
-                        />
-                      );
-                    case "freeform":
-                      return (
-                        <FreeformQuestion
-                          key={question.slug}
-                          {...commonProps}
-                        />
-                      );
-                    default:
-                      return null;
-                  }
-                })
-              : null}
+                switch (question.type) {
+                  case "single":
+                    return (
+                      <SingleChoiceQuestion
+                        key={question.slug}
+                        {...commonProps}
+                      />
+                    );
+                  case "multiple":
+                    return (
+                      <MultipleChoiceQuestion
+                        key={question.slug}
+                        {...commonProps}
+                      />
+                    );
+                  case "experience":
+                    return (
+                      <ExperienceQuestion
+                        key={question.slug}
+                        {...experienceProps}
+                      />
+                    );
+                  case "numeric":
+                    return (
+                      <NumericQuestion key={question.slug} {...commonProps} />
+                    );
+                  case "single-freeform":
+                    return (
+                      <SingleFreeformQuestion
+                        key={question.slug}
+                        {...commonProps}
+                      />
+                    );
+                  case "multiple-freeform":
+                    return (
+                      <MultipleFreeformQuestion
+                        key={question.slug}
+                        {...commonProps}
+                      />
+                    );
+                  case "freeform":
+                    return (
+                      <FreeformQuestion key={question.slug} {...commonProps} />
+                    );
+                  default:
+                    return null;
+                }
+              })
+            ) : null}
           </div>
 
           {/* Navigation */}

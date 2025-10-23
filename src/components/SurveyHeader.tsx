@@ -157,10 +157,10 @@ export function SurveyHeader() {
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "group-hover:text-foreground group-hover:border-foreground z-10 h-8 w-8 rounded-full border transition-all duration-200",
+                    "z-10 size-9 rounded-full border transition-all duration-200",
                     item.isActive
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/30 bg-background",
+                      : "border-muted-foreground/30 bg-background group-hover:text-foreground group-hover:border-foreground",
                   )}
                 >
                   <div className="flex h-full w-full items-center justify-center text-sm font-medium">
@@ -180,10 +180,10 @@ export function SurveyHeader() {
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "group-hover:text-foreground absolute -top-4 left-7 max-w-[130px] cursor-pointer truncate text-sm font-medium whitespace-nowrap transition-colors",
+                    "absolute -top-4 left-7 max-w-[130px] cursor-pointer truncate text-sm font-medium whitespace-nowrap transition-colors",
                     item.isActive
                       ? "text-primary font-semibold"
-                      : "text-muted-foreground",
+                      : "text-muted-foreground group-hover:text-foreground",
                   )}
                   style={{
                     transform: "rotate(-45deg)",
