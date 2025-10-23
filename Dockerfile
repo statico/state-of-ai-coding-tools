@@ -24,12 +24,6 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the application
 COPY . .
 
-# Uncomment this if using Clerk
-# # Accept build arguments
-# ARG CLERK_PUBLISHABLE_KEY
-# # Set environment variable for build (Clerk expects NEXT_PUBLIC_ prefix for client-side)
-# ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$CLERK_PUBLISHABLE_KEY
-
 # Build the application
 RUN pnpm build
 
@@ -50,8 +44,10 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/patches ./patches
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/kysely.config.ts ./kysely.config.ts
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/config.yml ./config.yml
 
 # Set environment variables
 ENV NODE_ENV=production
