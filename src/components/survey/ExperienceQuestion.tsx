@@ -173,33 +173,7 @@ export function ExperienceQuestion({
           };
 
           return (
-            <Card
-              key={option.slug}
-              className={cn(
-                "hover:bg-muted/50 cursor-pointer transition-colors",
-                isSkipped && "opacity-50",
-              )}
-              onClick={() => {
-                if (!isSkipped) {
-                  // Cycle through awareness levels or reset to undefined
-                  const currentAwareness = state.awareness;
-                  let newAwareness: number | undefined;
-
-                  if (currentAwareness === undefined) {
-                    newAwareness = 0; // Start with "Never heard of it"
-                  } else if (currentAwareness < 2) {
-                    newAwareness = currentAwareness + 1; // Move to next level
-                  } else {
-                    newAwareness = undefined; // Reset to unselected
-                  }
-
-                  handleAwarenessChange(
-                    option.slug,
-                    newAwareness?.toString() || "",
-                  );
-                }
-              }}
-            >
+            <Card key={option.slug} className={cn(isSkipped && "opacity-50")}>
               <CardContent className="px-6">
                 <div className="space-y-4">
                   {/* Option header */}
@@ -208,7 +182,7 @@ export function ExperienceQuestion({
                   </h4>
 
                   {/* Awareness Level with inline badges */}
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col">
                     <RadioGroup
                       value={state.awareness?.toString()}
                       onValueChange={(value) =>
@@ -216,8 +190,9 @@ export function ExperienceQuestion({
                       }
                       disabled={isSkipped}
                       onClick={(e) => e.stopPropagation()}
+                      className="gap-0"
                     >
-                      {AWARENESS_OPTIONS.map((awarenessOption) => {
+                      {AWARENESS_OPTIONS.map((awarenessOption, index) => {
                         const showBadges =
                           state.awareness === awarenessOption.value;
                         const sentimentOptions = getSentimentOptions(
@@ -227,17 +202,41 @@ export function ExperienceQuestion({
                         return (
                           <div
                             key={awarenessOption.value}
-                            className="flex items-center space-x-4 p-2"
+                            className={cn(
+                              "hover:bg-muted/50 flex cursor-pointer items-center space-x-4 rounded-md p-3 transition-colors",
+                              index % 2 === 1 && "bg-muted/20",
+                            )}
+                            onClick={(e) => {
+                              // Don't trigger if clicking on the radio button or label
+                              if (
+                                e.target ===
+                                  e.currentTarget.querySelector(
+                                    'input[type="radio"]',
+                                  ) ||
+                                e.target ===
+                                  e.currentTarget.querySelector("label")
+                              ) {
+                                return;
+                              }
+
+                              if (!isSkipped) {
+                                handleAwarenessChange(
+                                  option.slug,
+                                  awarenessOption.value.toString(),
+                                );
+                              }
+                            }}
                           >
                             <RadioGroupItem
                               value={awarenessOption.value.toString()}
                               id={`${option.slug}-awareness-${awarenessOption.value}`}
+                              onClick={(e) => e.stopPropagation()}
                             />
                             <div className="flex-1">
                               <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
                                 <Label
                                   htmlFor={`${option.slug}-awareness-${awarenessOption.value}`}
-                                  className="py-2 text-base"
+                                  className="cursor-pointer py-2 text-base"
                                 >
                                   {awarenessOption.label}
                                 </Label>
