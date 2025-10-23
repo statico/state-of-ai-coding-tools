@@ -251,8 +251,22 @@ export async function getQuestionReport(
     .where("iso_year", "=", year)
     .execute();
 
-  const totalResponses = responses.length;
-  const skippedResponses = responses.filter((r) => r.skipped).length;
+  // For experience questions, count unique sessions instead of individual responses
+  // since each session can have multiple responses (one per option)
+  let totalResponses: number;
+  let skippedResponses: number;
+
+  if (question.type === "experience") {
+    const uniqueSessions = new Set(responses.map((r) => r.session_id));
+    totalResponses = uniqueSessions.size;
+    const skippedSessions = new Set(
+      responses.filter((r) => r.skipped).map((r) => r.session_id),
+    );
+    skippedResponses = skippedSessions.size;
+  } else {
+    totalResponses = responses.length;
+    skippedResponses = responses.filter((r) => r.skipped).length;
+  }
 
   let data: any;
 

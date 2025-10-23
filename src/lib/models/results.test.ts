@@ -608,6 +608,77 @@ describe("results", () => {
         expect(report?.data.options[0].awareness[0].count).toBe(1);
         expect(report?.data.options[0].awareness[0].percentage).toBe(100);
       });
+
+      it("should count unique sessions for experience questions", async () => {
+        const questionSlug = "experience-question-multi";
+        const optionSlug1 = "test-option-1";
+        const optionSlug2 = "test-option-2";
+
+        await db
+          .insertInto("questions")
+          .values({
+            slug: questionSlug,
+            section_slug: "test-section",
+            title: "Experience Question Multi",
+            type: "experience",
+            order: 1,
+          })
+          .execute();
+
+        // Add options
+        await db
+          .insertInto("options")
+          .values([
+            {
+              slug: optionSlug1,
+              question_slug: questionSlug,
+              label: "Test Option 1",
+              order: 1,
+              active: true,
+            },
+            {
+              slug: optionSlug2,
+              question_slug: questionSlug,
+              label: "Test Option 2",
+              order: 2,
+              active: true,
+            },
+          ])
+          .execute();
+
+        const sessionId = "550e8400-e29b-41d4-a716-446655440000";
+
+        // Add multiple responses from the same session (should count as 1 unique session)
+        await db
+          .insertInto("responses")
+          .values([
+            {
+              session_id: sessionId,
+              iso_week: 1,
+              iso_year: 2024,
+              question_slug: questionSlug,
+              option_slug: optionSlug1,
+              skipped: false,
+              experience_awareness: 1,
+              experience_sentiment: 1,
+            },
+            {
+              session_id: sessionId,
+              iso_week: 1,
+              iso_year: 2024,
+              question_slug: questionSlug,
+              option_slug: optionSlug2,
+              skipped: false,
+              experience_awareness: 2,
+              experience_sentiment: -1,
+            },
+          ])
+          .execute();
+
+        const report = await getQuestionReport(questionSlug, 1, 2024);
+        expect(report?.totalResponses).toBe(1); // Should count unique sessions, not individual responses
+        expect(report?.skippedResponses).toBe(0);
+      });
     });
 
     describe("numeric aggregation", () => {
