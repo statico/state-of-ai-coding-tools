@@ -1,7 +1,10 @@
+import { Logger } from "@/server/logging";
 import { readFileSync } from "fs";
 import yaml from "js-yaml";
 import { join } from "path";
 import { z } from "zod";
+
+const logger = Logger.forModule();
 
 // Question type constants
 export const QuestionTypes = {
@@ -116,8 +119,8 @@ export function loadConfig(configPath?: string): Config {
     const result = ConfigSchema.safeParse(yamlData);
 
     if (!result.success) {
-      console.error("❌ Config validation failed:");
-      console.error("");
+      logger.error("❌ Config validation failed:");
+      logger.error("");
 
       // Group errors by path for better readability
       const errorsByPath = new Map<string, string[]>();
@@ -134,11 +137,11 @@ export function loadConfig(configPath?: string): Config {
 
       // Display errors in a clean format
       errorsByPath.forEach((messages, path) => {
-        console.error(`  📍 ${path}:`);
+        logger.error(`  📍 ${path}:`);
         messages.forEach((message) => {
-          console.error(`    • ${message}`);
+          logger.error(`    • ${message}`);
         });
-        console.error("");
+        logger.error("");
       });
 
       throw new Error("Invalid config.yml structure");

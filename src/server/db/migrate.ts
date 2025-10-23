@@ -34,9 +34,8 @@ export const migrate = async () => {
         (errorMessage.includes("constraint") &&
           errorMessage.includes("already exists"))
       ) {
-        console.warn(
-          `Migration ${migrationFile} had objects that already exist, continuing...`,
-        );
+        // Silently continue for existing objects - this is expected in test environments
+        // where migrations may run multiple times
       } else {
         throw new Error(`Failed to run up migration ${migrationFile}: ${err}`);
       }
@@ -45,8 +44,7 @@ export const migrate = async () => {
 };
 
 export const teardown = async () => {
-  // Drop tables in dependency order, ignore errors if tables don't exist.
-  // TODO: Find a better way to do this.
+  // Drop tables in dependency order, CASCADE will handle constraints and indexes
   const tables = ["responses", "options", "questions", "sections", "sessions"];
 
   for (const table of tables) {
