@@ -44,7 +44,7 @@ export default function IntroPage() {
           <AlertTitle className="text-lg">Notice</AlertTitle>
           <AlertDescription className="text-base">
             This survey is intended to be used only by members of the private
-            community in which is was shared. This is an unofficial open-source
+            community in which it was shared. This is an unofficial open-source
             project, so we're not naming the community, but the rules of the
             community still apply.
           </AlertDescription>
