@@ -446,53 +446,6 @@ questions:
         label: I don't use these tools
 
   # SECTION 5: APPLICATIONS
-  - section: applications
-    slug: ai-use-cases
-    title: How do you use coding tools?
-    type: multiple
-    options:
-      - slug: autocomplete
-        label: Code autocomplete/inline suggestions
-      - slug: generate-code
-        label: Generate code from natural language descriptions
-      - slug: debug-fix
-        label: Debug and fix bugs
-      - slug: refactor
-        label: Refactor existing code
-      - slug: unit-tests
-        label: Write unit tests
-      - slug: integration-tests
-        label: Write integration tests
-      - slug: e2e-tests
-        label: Write end-to-end tests
-      - slug: code-review
-        label: Code review and analysis
-      - slug: documentation
-        label: Generate documentation and comments
-      - slug: explain-code
-        label: Explain existing code
-      - slug: terminal-commands
-        label: Terminal command suggestions
-      - slug: multi-file-editing
-        label: Multi-file editing
-      - slug: chat-codebase
-        label: Chat with codebase / ask questions about code
-      - slug: translate-code
-        label: Translate code between languages
-      - slug: security-detection
-        label: Security vulnerability detection
-      - slug: performance-optimization
-        label: Performance optimization
-      - slug: api-endpoints
-        label: Generate API endpoints
-      - slug: database-queries
-        label: Database query generation
-      - slug: boilerplate
-        label: Boilerplate code generation
-      - slug: learning-frameworks
-        label: Learning new frameworks/libraries
-      - slug: none
-        label: I don't use coding tools
 
   - section: applications
     slug: project-types
@@ -553,7 +506,7 @@ questions:
         label: I don't use coding tools
 
   # SECTION 3: USE CASES & APPLICATIONS
-  - section: use-cases
+  - section: applications
     slug: ai-use-cases
     title: How do you use AI coding tools?
     type: multiple
@@ -601,7 +554,7 @@ questions:
       - slug: none
         label: I don't use AI coding tools
 
-  - section: use-cases
+  - section: applications
     slug: most-valuable-use-case
     title: Which use case provides the MOST value to you?
     type: single
@@ -631,7 +584,7 @@ questions:
       - slug: none
         label: I don't use AI coding tools
 
-  - section: use-cases
+  - section: applications
     slug: avoid-ai-tasks
     title: For which tasks do you deliberately AVOID using AI tools?
     type: multiple
@@ -662,36 +615,6 @@ questions:
         label: Medical/healthcare code
       - slug: none
         label: None - I'm comfortable using AI for all tasks
-
-  - section: use-cases
-    slug: project-types
-    title: What types of projects do you use AI coding tools on?
-    type: multiple
-    options:
-      - slug: personal-projects
-        label: Personal side projects
-      - slug: open-source
-        label: Open-source projects
-      - slug: work-production
-        label: Work projects (production code)
-      - slug: work-internal
-        label: Work projects (internal tools)
-      - slug: learning-educational
-        label: Learning/educational projects
-      - slug: prototypes-mvps
-        label: Prototypes and MVPs
-      - slug: code-migrations
-        label: Code migrations and refactoring
-      - slug: bug-fixes
-        label: Bug fixes
-      - slug: new-features
-        label: New features
-      - slug: testing
-        label: Testing
-      - slug: documentation
-        label: Documentation
-      - slug: none
-        label: None of the above
 
   # SECTION 6: PRODUCTIVITY & IMPACT
   - section: productivity-impact
