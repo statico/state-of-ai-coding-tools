@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { MessageCircleMore } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface ReportHeaderProps {
   questionTitle: string;
@@ -29,6 +29,7 @@ interface ReportHeaderProps {
     sessionId: string;
   }>;
   icon: ReactNode;
+  questionId?: string;
 }
 
 export function ReportHeader({
@@ -39,7 +40,67 @@ export function ReportHeader({
   randomize,
   comments = [],
   icon,
+  questionId,
 }: ReportHeaderProps) {
+  // Generate a URL-friendly ID from the question title if no questionId is provided
+  const generateId = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+      .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+  };
+
+  const anchorId = questionId || generateId(questionTitle);
+
+  const scrollToElement = (element: HTMLElement, offset = 80) => {
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  };
+
+  const handleHeaderClick = () => {
+    const url = new URL(window.location.href);
+    url.hash = anchorId;
+    window.history.pushState(null, "", url.toString());
+
+    // Smooth scroll to the element with offset
+    const element = document.getElementById(anchorId);
+    if (element) {
+      scrollToElement(element);
+    }
+  };
+
+  // Handle initial page load with hash
+  useEffect(() => {
+    const handleHashNavigation = () => {
+      if (window.location.hash === `#${anchorId}`) {
+        // Small delay to ensure the element is rendered
+        setTimeout(() => {
+          const element = document.getElementById(anchorId);
+          if (element) {
+            scrollToElement(element);
+          }
+        }, 100);
+      }
+    };
+
+    // Handle initial load
+    handleHashNavigation();
+
+    // Handle hash changes
+    window.addEventListener("hashchange", handleHashNavigation);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashNavigation);
+    };
+  }, [anchorId]);
+
   const getQuestionTypeName = (type: string) => {
     switch (type) {
       case "single":
@@ -90,12 +151,15 @@ export function ReportHeader({
   );
 
   return (
-    <CardHeader className="pb-4">
+    <CardHeader className="pb-4" id={anchorId}>
       <div className="flex items-center justify-between">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex cursor-help items-center gap-3">
+              <div
+                className="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-80"
+                onClick={handleHeaderClick}
+              >
                 <div className="shrink-0">{icon}</div>
                 <CardTitle className="text-lg leading-6">
                   {questionTitle}
