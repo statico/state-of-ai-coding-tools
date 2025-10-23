@@ -73,11 +73,13 @@ function generateExperienceResponse(): {
   let sentiment: number;
 
   if (awareness === 0 || awareness === 1) {
-    // For "Never heard" or "Heard of it", use interest values (1 or -1)
-    sentiment = faker.datatype.boolean() ? 1 : -1;
+    // For "Never heard" or "Heard of it", use interest values (1, 0, or -1)
+    const interestChoice = faker.number.int({ min: 0, max: 2 }); // 0: negative, 1: neutral, 2: positive
+    sentiment = interestChoice === 0 ? -1 : interestChoice === 1 ? 0 : 1;
   } else {
-    // For "Used it", use sentiment values (1 or -1)
-    sentiment = faker.datatype.boolean() ? 1 : -1;
+    // For "Used it", use sentiment values (1, 0, or -1)
+    const sentimentChoice = faker.number.int({ min: 0, max: 2 }); // 0: negative, 1: neutral, 2: positive
+    sentiment = sentimentChoice === 0 ? -1 : sentimentChoice === 1 ? 0 : 1;
   }
 
   return {
