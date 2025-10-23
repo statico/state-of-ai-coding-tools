@@ -161,7 +161,7 @@ export default function SurveyPage() {
       <div className="container mx-auto max-w-4xl p-6">
         <SurveyHeader />
 
-        <div className="space-y-6">
+        <div className="space-y-6 lg:space-y-10">
           {/* Section header */}
           <div className="space-y-2">
             <h2 className="text-3xl">{currentSection.title}</h2>
@@ -173,7 +173,7 @@ export default function SurveyPage() {
           </div>
 
           {/* Questions */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:space-y-10">
             {questionsLoading ? (
               <div className="flex min-h-[200px] items-center justify-center">
                 <Spinner />
