@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { SentimentBadge } from "./SentimentBadge";
-import { QuestionCard } from "./QuestionCard";
+import { Card, CardContent } from "@/components/ui/card";
+import { CommentSection } from "./CommentSection";
+import { SkipButton } from "./SkipButton";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState, useCallback, useRef } from "react";
@@ -38,7 +40,7 @@ export function ExperienceQuestion({
       const states: Record<string, OptionState> = {};
       question.options?.forEach((option) => {
         const existingResponse = existingResponses.find(
-          (r) => r.option_slug === option.slug,
+          (r) => r.single_option_slug === option.slug,
         );
         states[option.slug] = {
           awareness: existingResponse?.experience_awareness ?? undefined,
@@ -123,12 +125,12 @@ export function ExperienceQuestion({
       Object.entries(optionStates).forEach(([optionSlug, state]) => {
         if (state.awareness !== undefined) {
           responses.push({
-            optionSlug,
+            optionSlug: optionSlug,
             experienceAwareness: state.awareness,
             experienceSentiment: state.sentiment,
             skipped: false,
             comment,
-          });
+          } as ResponseData);
         }
       });
     }
@@ -151,20 +153,19 @@ export function ExperienceQuestion({
   });
 
   return (
-    <QuestionCard
-      title={question.title}
-      description={question.description ?? undefined}
-      isSkipped={isSkipped}
-      comment={comment}
-      hasResponse={Object.values(optionStates).some(
-        (state) => state.awareness !== undefined,
-      )}
-      onSkip={handleSkip}
-      onCommentChange={handleCommentChange}
-      className="gap-6"
-    >
-      {/* Render each option with its own awareness/sentiment section */}
-      <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Question title and description outside of card */}
+      <div className="space-y-2">
+        <h3 className="text-foreground text-lg font-semibold">
+          {question.title}
+        </h3>
+        {question.description && (
+          <p className="text-muted-foreground">{question.description}</p>
+        )}
+      </div>
+
+      {/* Individual cards for each option */}
+      <div className="space-y-6">
         {displayOptions.map((option) => {
           const state = optionStates[option.slug] || {
             awareness: undefined,
@@ -172,86 +173,138 @@ export function ExperienceQuestion({
           };
 
           return (
-            <div key={option.slug} className="space-y-4">
-              {/* Option header */}
-              <h4 className="text-foreground text-lg font-medium">
-                {option.label}
-              </h4>
+            <Card
+              key={option.slug}
+              className={cn(
+                "hover:bg-muted/50 cursor-pointer transition-colors",
+                isSkipped && "opacity-50",
+              )}
+              onClick={() => {
+                if (!isSkipped) {
+                  // Cycle through awareness levels or reset to undefined
+                  const currentAwareness = state.awareness;
+                  let newAwareness: number | undefined;
 
-              {/* Awareness Level with inline badges */}
-              <div
-                className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}
-              >
-                <RadioGroup
-                  value={state.awareness?.toString()}
-                  onValueChange={(value) =>
-                    handleAwarenessChange(option.slug, value)
+                  if (currentAwareness === undefined) {
+                    newAwareness = 0; // Start with "Never heard of it"
+                  } else if (currentAwareness < 2) {
+                    newAwareness = currentAwareness + 1; // Move to next level
+                  } else {
+                    newAwareness = undefined; // Reset to unselected
                   }
-                  disabled={isSkipped}
-                >
-                  {AWARENESS_OPTIONS.map((awarenessOption) => {
-                    const showBadges =
-                      state.awareness === awarenessOption.value;
-                    const sentimentOptions = getSentimentOptions(
-                      awarenessOption.value,
-                    );
 
-                    return (
-                      <div
-                        key={awarenessOption.value}
-                        className="flex items-center space-x-4"
-                      >
-                        <RadioGroupItem
-                          value={awarenessOption.value.toString()}
-                          id={`${option.slug}-awareness-${awarenessOption.value}`}
-                        />
-                        <div className="flex-1">
-                          <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
-                            <Label
-                              htmlFor={`${option.slug}-awareness-${awarenessOption.value}`}
-                              className="py-2 text-base"
-                            >
-                              {awarenessOption.label}
-                            </Label>
-                            {showBadges && sentimentOptions.length > 0 && (
-                              <div className="ml-0 flex gap-4 sm:ml-0">
-                                {sentimentOptions.map((sentimentOption) => (
-                                  <SentimentBadge
-                                    key={sentimentOption.value}
-                                    value={sentimentOption.value}
-                                    label={sentimentOption.label}
-                                    isSelected={
-                                      state.sentiment === sentimentOption.value
-                                    }
-                                    onClick={() => {
-                                      // If this option is already selected, deselect it (set to neutral)
-                                      if (
-                                        state.sentiment ===
-                                        sentimentOption.value
-                                      ) {
-                                        handleSentimentChange(option.slug, "");
-                                      } else {
-                                        handleSentimentChange(
-                                          option.slug,
-                                          sentimentOption.value.toString(),
-                                        );
-                                      }
-                                    }}
-                                  />
-                                ))}
+                  handleAwarenessChange(
+                    option.slug,
+                    newAwareness?.toString() || "",
+                  );
+                }
+              }}
+            >
+              <CardContent className="px-6">
+                <div className="space-y-4">
+                  {/* Option header */}
+                  <h4 className="text-foreground text-xl font-medium">
+                    {option.label}
+                  </h4>
+
+                  {/* Awareness Level with inline badges */}
+                  <div className="flex flex-col gap-3">
+                    <RadioGroup
+                      value={state.awareness?.toString()}
+                      onValueChange={(value) =>
+                        handleAwarenessChange(option.slug, value)
+                      }
+                      disabled={isSkipped}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {AWARENESS_OPTIONS.map((awarenessOption) => {
+                        const showBadges =
+                          state.awareness === awarenessOption.value;
+                        const sentimentOptions = getSentimentOptions(
+                          awarenessOption.value,
+                        );
+
+                        return (
+                          <div
+                            key={awarenessOption.value}
+                            className="flex items-center space-x-4 p-2"
+                          >
+                            <RadioGroupItem
+                              value={awarenessOption.value.toString()}
+                              id={`${option.slug}-awareness-${awarenessOption.value}`}
+                            />
+                            <div className="flex-1">
+                              <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
+                                <Label
+                                  htmlFor={`${option.slug}-awareness-${awarenessOption.value}`}
+                                  className="py-2 text-base"
+                                >
+                                  {awarenessOption.label}
+                                </Label>
+                                {showBadges && sentimentOptions.length > 0 && (
+                                  <div
+                                    className="ml-0 flex gap-4 sm:ml-0"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {sentimentOptions.map((sentimentOption) => (
+                                      <SentimentBadge
+                                        key={sentimentOption.value}
+                                        value={sentimentOption.value}
+                                        label={sentimentOption.label}
+                                        isSelected={
+                                          state.sentiment ===
+                                          sentimentOption.value
+                                        }
+                                        onClick={() => {
+                                          // If this option is already selected, deselect it (set to neutral)
+                                          if (
+                                            state.sentiment ===
+                                            sentimentOption.value
+                                          ) {
+                                            handleSentimentChange(
+                                              option.slug,
+                                              "",
+                                            );
+                                          } else {
+                                            handleSentimentChange(
+                                              option.slug,
+                                              sentimentOption.value.toString(),
+                                            );
+                                          }
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                            )}
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
-              </div>
-            </div>
+                        );
+                      })}
+                    </RadioGroup>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
-    </QuestionCard>
+
+      {/* Comment section and skip button */}
+      <div className="space-y-4">
+        <CommentSection
+          initialComment={comment}
+          onCommentChange={handleCommentChange}
+          disabled={isSkipped}
+          hasResponse={Object.values(optionStates).some(
+            (state) => state.awareness !== undefined,
+          )}
+        />
+
+        <div className="flex justify-end">
+          <SkipButton isSkipped={isSkipped} onSkip={handleSkip} />
+        </div>
+      </div>
+    </div>
   );
 }
