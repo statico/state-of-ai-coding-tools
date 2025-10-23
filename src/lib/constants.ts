@@ -51,6 +51,12 @@ export const AWARENESS_OPTIONS = [
   { value: 2, label: "Used it" },
 ] as const;
 
+export const AWARENESS_LABELS = {
+  0: "Never heard of it",
+  1: "Heard of it",
+  2: "Used it",
+} as const;
+
 export const SENTIMENT_OPTIONS = [
   { value: 1, label: "Positive experience" },
   { value: -1, label: "Negative experience" },

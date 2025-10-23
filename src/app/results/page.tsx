@@ -67,12 +67,9 @@ export default function ReportsPage() {
           <Skeleton className="h-6 w-64" />
         ) : weekSummary ? (
           <p className="text-muted-foreground">
-            {weekSummary.uniqueSessions}{" "}
-            {pluralize("respondent", weekSummary.uniqueSessions)} ·{" "}
-            {weekSummary.totalResponses}{" "}
-            {pluralize("total response", weekSummary.totalResponses)} for{" "}
-            {weekSummary.questions.length}{" "}
-            {pluralize("question", weekSummary.questions.length)}
+            {pluralize("respondent", weekSummary.uniqueSessions, true)} ·{" "}
+            {pluralize("total response", weekSummary.totalResponses, true)} for{" "}
+            {pluralize("question", weekSummary.questions.length, true)}
           </p>
         ) : (
           <p className="text-muted-foreground">No data</p>

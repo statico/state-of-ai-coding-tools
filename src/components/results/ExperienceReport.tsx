@@ -3,23 +3,9 @@
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
 import { ReportFooter } from "@/components/results/shared/ReportFooter";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
+import { ExperienceChart } from "./ExperienceChart";
 import { Card, CardContent } from "@/components/ui/card";
 import { AWARENESS_OPTIONS } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-
-// Color mappings based on awareness level values
-const AWARENESS_COLOR_MAP = {
-  0: "bg-zinc-500", // Never heard of it
-  1: "bg-cyan-500", // Heard of it
-  2: "bg-blue-500", // Used it
-} as const;
-
-// Color mappings based on sentiment values
-const SENTIMENT_COLOR_MAP = {
-  positive: "bg-emerald-500",
-  neutral: "bg-zinc-500",
-  negative: "bg-rose-500",
-} as const;
 
 interface ExperienceReportProps {
   data: {
@@ -137,101 +123,17 @@ export function ExperienceReport({
       />
 
       <CardContent className="pt-0">
-        {breakdown.length === 0 ? (
-          <div className="flex items-center justify-center">
-            <p className="text-muted-foreground text-sm">No data</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div>{totalResponses} respondents</div>
+        <div className="space-y-4">
+          <ExperienceChart
+            breakdown={breakdown}
+            actualResponses={actualResponses}
+          />
 
-            <div className="flex w-full gap-2">
-              {breakdown
-                .filter((item) => item.awarenessCount > 0)
-                .map((item, index) => (
-                  <div
-                    key={item.awareness}
-                    className="space-y-1"
-                    style={{
-                      width: `${(item.awarenessCount / actualResponses) * 100}%`,
-                    }}
-                  >
-                    <div
-                      className={cn(
-                        "h-12 overflow-hidden rounded-xs text-xs",
-                        AWARENESS_COLOR_MAP[
-                          item.awarenessValue as keyof typeof AWARENESS_COLOR_MAP
-                        ],
-                      )}
-                    >
-                      {item.awareness}{" "}
-                      {Math.round(
-                        (item.awarenessCount / actualResponses) * 100,
-                      )}
-                      %
-                    </div>
-
-                    <div className="flex w-full gap-1">
-                      {item.sentimentBreakdown
-                        .filter((sentiment) => sentiment.count > 0)
-                        .map((sentiment, index) => (
-                          <div
-                            key={sentiment.sentiment}
-                            className={cn(
-                              "h-4 overflow-hidden rounded-xs text-xs",
-                              SENTIMENT_COLOR_MAP[
-                                sentiment.sentiment as keyof typeof SENTIMENT_COLOR_MAP
-                              ],
-                            )}
-                            style={{
-                              width: `${(sentiment.percentage / 100) * 100}%`,
-                            }}
-                          >
-                            {sentiment.percentage.toFixed(1)}%
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                ))}
-            </div>
-
-            <div className="space-y-4">
-              {breakdown.map((item) => (
-                <div key={item.awareness} className="space-y-2">
-                  <div className="flex items-center justify-between text-sm font-medium">
-                    <span>{item.awareness.toLowerCase()}</span>
-                    <span>
-                      {item.awarenessCount > 0
-                        ? `${((item.awarenessCount / actualResponses) * 100).toFixed(1)}% (${item.awarenessCount.toLocaleString()} respondents)`
-                        : "0% (0 respondents)"}
-                    </span>
-                  </div>
-                  <div className="ml-4 space-y-1">
-                    {item.sentimentBreakdown.map((sentiment) => (
-                      <div
-                        key={sentiment.sentiment}
-                        className="flex items-center justify-between text-sm"
-                      >
-                        <span className="text-muted-foreground">
-                          {sentiment.sentiment}:
-                        </span>
-                        <span>
-                          {sentiment.percentage.toFixed(1)}% (
-                          {sentiment.count.toLocaleString()} respondents)
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <ReportFooter
-              totalResponses={totalResponses}
-              responseRate={responseRate}
-            />
-          </div>
-        )}
+          <ReportFooter
+            totalResponses={totalResponses}
+            responseRate={responseRate}
+          />
+        </div>
       </CardContent>
     </Card>
   );
