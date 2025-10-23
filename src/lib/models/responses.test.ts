@@ -452,6 +452,7 @@ describe("Responses Model", () => {
         testIsoWeek,
         testIsoYear,
         testQuestionSlug,
+        null,
         {
           single_option_slug: "option-2",
           comment: "Updated comment",
@@ -469,6 +470,7 @@ describe("Responses Model", () => {
           testIsoWeek,
           testIsoYear,
           "non-existent-question",
+          null,
           { single_option_slug: "option-1" },
         ),
       ).rejects.toThrow();
@@ -663,6 +665,7 @@ describe("Responses Model", () => {
         testIsoWeek,
         testIsoYear,
         testQuestionSlug,
+        null,
         {
           single_option_slug: "option-2",
           comment: "Updated comment",

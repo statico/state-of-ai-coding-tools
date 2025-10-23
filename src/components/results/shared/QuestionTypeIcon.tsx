@@ -1,15 +1,15 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
+  Calculator,
+  ChartBarStacked,
   List,
   ListChecks,
-  ArrowDownUp,
-  Calculator,
-  TextCursorInput,
-  Rows3,
   MessageCircleMore,
+  Rows3,
+  TextCursorInput,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface QuestionTypeIconProps {
   type: string;
@@ -25,7 +25,7 @@ export function QuestionTypeIcon({ type, className }: QuestionTypeIconProps) {
     case "multiple":
       return <ListChecks className={iconClass} />;
     case "experience":
-      return <ArrowDownUp className={iconClass} />;
+      return <ChartBarStacked className={iconClass} />;
     case "numeric":
       return <Calculator className={iconClass} />;
     case "single-freeform":

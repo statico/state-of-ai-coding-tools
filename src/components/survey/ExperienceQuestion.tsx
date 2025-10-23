@@ -18,97 +18,126 @@ import {
 
 interface ExperienceQuestionProps {
   question: QuestionWithOptions;
-  existingResponse?: ClientResponse;
-  onResponseChange: (data: ResponseData) => void;
+  existingResponses?: ClientResponse[];
+  onResponseChange: (data: ResponseData[]) => void;
+}
+
+interface OptionState {
+  awareness: number | undefined;
+  sentiment: number | undefined;
 }
 
 export function ExperienceQuestion({
   question,
-  existingResponse,
+  existingResponses = [],
   onResponseChange,
 }: ExperienceQuestionProps) {
-  const [awareness, setAwareness] = useState<number | undefined>(
-    () => existingResponse?.experience_awareness ?? undefined,
+  // Initialize state for each option
+  const [optionStates, setOptionStates] = useState<Record<string, OptionState>>(
+    () => {
+      const states: Record<string, OptionState> = {};
+      question.options?.forEach((option) => {
+        const existingResponse = existingResponses.find(
+          (r) => r.option_slug === option.slug,
+        );
+        states[option.slug] = {
+          awareness: existingResponse?.experience_awareness ?? undefined,
+          sentiment: existingResponse?.experience_sentiment ?? undefined,
+        };
+      });
+      return states;
+    },
   );
-  const [sentiment, setSentiment] = useState<number | undefined>(
-    () => existingResponse?.experience_sentiment ?? undefined,
-  );
+
   const [isSkipped, setIsSkipped] = useState<boolean>(
-    () => existingResponse?.skipped || false,
+    () => existingResponses.some((r) => r.skipped) || false,
   );
   const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment ?? "",
+    () => existingResponses[0]?.comment ?? "",
   );
 
-  const handleAwarenessChange = (value: string) => {
+  const handleAwarenessChange = (optionSlug: string, value: string) => {
     const awarenessValue = parseInt(value);
-    setAwareness(awarenessValue);
+    setOptionStates((prev) => ({
+      ...prev,
+      [optionSlug]: {
+        ...prev[optionSlug],
+        awareness: awarenessValue,
+        sentiment: undefined, // Reset sentiment when awareness changes
+      },
+    }));
     setIsSkipped(false);
-
-    // Reset sentiment when awareness changes
-    setSentiment(undefined);
-
-    onResponseChange({
-      experienceAwareness: awarenessValue,
-      experienceSentiment: undefined,
-      skipped: false,
-      comment,
-    });
   };
 
-  const handleSentimentChange = (value: string) => {
+  const handleSentimentChange = (optionSlug: string, value: string) => {
     const sentimentValue = value === "" ? undefined : parseInt(value);
-    setSentiment(sentimentValue);
+    setOptionStates((prev) => ({
+      ...prev,
+      [optionSlug]: {
+        ...prev[optionSlug],
+        sentiment: sentimentValue,
+      },
+    }));
     setIsSkipped(false);
-
-    onResponseChange({
-      experienceAwareness: awareness,
-      experienceSentiment: sentimentValue,
-      skipped: false,
-      comment,
-    });
   };
 
   const handleSkip = () => {
-    setAwareness(undefined);
-    setSentiment(undefined);
     if (isSkipped) {
       setIsSkipped(false);
-      onResponseChange({
-        skipped: false,
-        comment,
-      });
     } else {
       setIsSkipped(true);
-      onResponseChange({
-        skipped: true,
-        comment,
+      // Clear all option states when skipping
+      setOptionStates((prev) => {
+        const newStates: Record<string, OptionState> = {};
+        Object.keys(prev).forEach((key) => {
+          newStates[key] = { awareness: undefined, sentiment: undefined };
+        });
+        return newStates;
       });
     }
   };
 
-  const handleCommentChange = useCallback(
-    (newComment: string) => {
-      setComment(newComment);
-      onResponseChange({
-        experienceAwareness: awareness,
-        experienceSentiment: sentiment,
-        skipped: isSkipped,
-        comment: newComment,
-      });
-    },
-    [awareness, sentiment, isSkipped, onResponseChange],
-  );
+  const handleCommentChange = useCallback((newComment: string) => {
+    setComment(newComment);
+  }, []);
 
   const getSentimentOptions = (awarenessLevel?: number) => {
-    const level = awarenessLevel ?? awareness;
-    if (level === 0 || level === 1) {
+    if (awarenessLevel === 0 || awarenessLevel === 1) {
       return INTEREST_OPTIONS;
-    } else if (level === 2) {
+    } else if (awarenessLevel === 2) {
       return SENTIMENT_OPTIONS;
     }
     return [];
   };
+
+  // Notify parent of changes
+  useEffect(() => {
+    if (isSkipped) {
+      onResponseChange([]);
+    } else {
+      const responses: ResponseData[] = [];
+      Object.entries(optionStates).forEach(([optionSlug, state]) => {
+        if (state.awareness !== undefined) {
+          responses.push({
+            optionSlug,
+            experienceAwareness: state.awareness,
+            experienceSentiment: state.sentiment,
+            skipped: false,
+            comment,
+          });
+        }
+      });
+      onResponseChange(responses);
+    }
+  }, [optionStates, isSkipped, comment, onResponseChange]);
+
+  // Shuffle options if randomize is enabled
+  const [displayOptions] = useState(() => {
+    if (question.randomize && question.options) {
+      return [...question.options].sort(() => Math.random() - 0.5);
+    }
+    return question.options || [];
+  });
 
   return (
     <QuestionCard
@@ -116,64 +145,101 @@ export function ExperienceQuestion({
       description={question.description ?? undefined}
       isSkipped={isSkipped}
       comment={comment}
-      hasResponse={awareness !== undefined}
+      hasResponse={Object.values(optionStates).some(
+        (state) => state.awareness !== undefined,
+      )}
       onSkip={handleSkip}
       onCommentChange={handleCommentChange}
       className="gap-6"
     >
-      {/* Awareness Level with inline badges */}
-      <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
-        <RadioGroup
-          value={awareness?.toString()}
-          onValueChange={handleAwarenessChange}
-          disabled={isSkipped}
-        >
-          {AWARENESS_OPTIONS.map((option) => {
-            const showBadges = awareness === option.value;
-            const sentimentOptions = getSentimentOptions(option.value);
+      {/* Render each option with its own awareness/sentiment section */}
+      <div className="space-y-8">
+        {displayOptions.map((option) => {
+          const state = optionStates[option.slug] || {
+            awareness: undefined,
+            sentiment: undefined,
+          };
 
-            return (
-              <div key={option.value} className="flex items-center space-x-4">
-                <RadioGroupItem
-                  value={option.value.toString()}
-                  id={`awareness-${option.value}`}
-                />
-                <div className="flex-1">
-                  <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
-                    <Label
-                      htmlFor={`awareness-${option.value}`}
-                      className="py-2 text-base"
-                    >
-                      {option.label}
-                    </Label>
-                    {showBadges && sentimentOptions.length > 0 && (
-                      <div className="ml-0 flex gap-4 sm:ml-0">
-                        {sentimentOptions.map((sentimentOption) => (
-                          <SentimentBadge
-                            key={sentimentOption.value}
-                            value={sentimentOption.value}
-                            label={sentimentOption.label}
-                            isSelected={sentiment === sentimentOption.value}
-                            onClick={() => {
-                              // If this option is already selected, deselect it (set to neutral)
-                              if (sentiment === sentimentOption.value) {
-                                handleSentimentChange("");
-                              } else {
-                                handleSentimentChange(
-                                  sentimentOption.value.toString(),
-                                );
-                              }
-                            }}
-                          />
-                        ))}
+          return (
+            <div key={option.slug} className="space-y-4">
+              {/* Option header */}
+              <h4 className="text-foreground text-lg font-medium">
+                {option.label}
+              </h4>
+
+              {/* Awareness Level with inline badges */}
+              <div
+                className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}
+              >
+                <RadioGroup
+                  value={state.awareness?.toString()}
+                  onValueChange={(value) =>
+                    handleAwarenessChange(option.slug, value)
+                  }
+                  disabled={isSkipped}
+                >
+                  {AWARENESS_OPTIONS.map((awarenessOption) => {
+                    const showBadges =
+                      state.awareness === awarenessOption.value;
+                    const sentimentOptions = getSentimentOptions(
+                      awarenessOption.value,
+                    );
+
+                    return (
+                      <div
+                        key={awarenessOption.value}
+                        className="flex items-center space-x-4"
+                      >
+                        <RadioGroupItem
+                          value={awarenessOption.value.toString()}
+                          id={`${option.slug}-awareness-${awarenessOption.value}`}
+                        />
+                        <div className="flex-1">
+                          <div className="flex flex-col items-start gap-0 sm:flex-row sm:items-center sm:gap-6">
+                            <Label
+                              htmlFor={`${option.slug}-awareness-${awarenessOption.value}`}
+                              className="py-2 text-base"
+                            >
+                              {awarenessOption.label}
+                            </Label>
+                            {showBadges && sentimentOptions.length > 0 && (
+                              <div className="ml-0 flex gap-4 sm:ml-0">
+                                {sentimentOptions.map((sentimentOption) => (
+                                  <SentimentBadge
+                                    key={sentimentOption.value}
+                                    value={sentimentOption.value}
+                                    label={sentimentOption.label}
+                                    isSelected={
+                                      state.sentiment === sentimentOption.value
+                                    }
+                                    onClick={() => {
+                                      // If this option is already selected, deselect it (set to neutral)
+                                      if (
+                                        state.sentiment ===
+                                        sentimentOption.value
+                                      ) {
+                                        handleSentimentChange(option.slug, "");
+                                      } else {
+                                        handleSentimentChange(
+                                          option.slug,
+                                          sentimentOption.value.toString(),
+                                        );
+                                      }
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </div>
+                    );
+                  })}
+                </RadioGroup>
               </div>
-            );
-          })}
-        </RadioGroup>
+            </div>
+          );
+        })}
       </div>
     </QuestionCard>
   );

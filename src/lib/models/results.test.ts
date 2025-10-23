@@ -557,6 +557,8 @@ describe("results", () => {
     describe("experience aggregation", () => {
       it("should aggregate experience responses", async () => {
         const questionSlug = "experience-question";
+        const optionSlug = "test-option";
+
         await db
           .insertInto("questions")
           .values({
@@ -568,6 +570,18 @@ describe("results", () => {
           })
           .execute();
 
+        // Add option
+        await db
+          .insertInto("options")
+          .values({
+            slug: optionSlug,
+            question_slug: questionSlug,
+            label: "Test Option",
+            order: 1,
+            active: true,
+          })
+          .execute();
+
         // Add responses
         await db
           .insertInto("responses")
@@ -576,6 +590,7 @@ describe("results", () => {
             iso_week: 1,
             iso_year: 2024,
             question_slug: questionSlug,
+            option_slug: optionSlug,
             skipped: false,
             experience_awareness: 1,
             experience_sentiment: 1,
@@ -584,12 +599,14 @@ describe("results", () => {
 
         const report = await getQuestionReport(questionSlug, 1, 2024);
         expect(report?.data).toBeDefined();
-        expect(report?.data.awareness).toHaveLength(1);
-        expect(report?.data.sentiment).toHaveLength(1);
-        expect(report?.data.combined).toHaveLength(1);
-        expect(report?.data.awareness[0].level).toBe(1);
-        expect(report?.data.awareness[0].count).toBe(1);
-        expect(report?.data.awareness[0].percentage).toBe(100);
+        expect(report?.data.options).toHaveLength(1);
+        expect(report?.data.options[0].optionSlug).toBe(optionSlug);
+        expect(report?.data.options[0].awareness).toHaveLength(1);
+        expect(report?.data.options[0].sentiment).toHaveLength(1);
+        expect(report?.data.options[0].combined).toHaveLength(1);
+        expect(report?.data.options[0].awareness[0].level).toBe(1);
+        expect(report?.data.options[0].awareness[0].count).toBe(1);
+        expect(report?.data.options[0].awareness[0].percentage).toBe(100);
       });
     });
 

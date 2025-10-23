@@ -93,4 +93,42 @@ export const surveyRouter = router({
 
       return { sessionId: ctx.sessionId, response };
     }),
+
+  saveExperienceResponses: publicProcedure
+    .input(
+      z.object({
+        questionSlug: z.string(),
+        responses: z.array(
+          z.object({
+            optionSlug: z.string(),
+            experienceAwareness: z.number(),
+            experienceSentiment: z.number().optional(),
+            skipped: z.boolean().optional(),
+            comment: z.string().optional(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      // Get current week and year
+      const { week, year } = getCurrentWeekAndYear();
+
+      const savedResponses = await Promise.all(
+        input.responses.map((responseData) =>
+          upsertResponse({
+            session_id: ctx.sessionId!,
+            iso_week: week,
+            iso_year: year,
+            question_slug: input.questionSlug,
+            option_slug: responseData.optionSlug,
+            skipped: responseData.skipped ?? false,
+            experience_awareness: responseData.experienceAwareness,
+            experience_sentiment: responseData.experienceSentiment,
+            comment: responseData.comment,
+          }),
+        ),
+      );
+
+      return { sessionId: ctx.sessionId, responses: savedResponses };
+    }),
 });

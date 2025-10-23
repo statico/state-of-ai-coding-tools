@@ -59,6 +59,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("iso_week", "integer", (col) => col.notNull())
     .addColumn("iso_year", "integer", (col) => col.notNull())
     .addColumn("question_slug", "text", (col) => col.notNull())
+    .addColumn("option_slug", "text", (col) => col.notNull().defaultTo(""))
     .addColumn("skipped", "boolean", (col) => col.notNull().defaultTo(false))
     .addColumn("single_option_slug", "text")
     .addColumn("single_writein_response", "text")
@@ -74,6 +75,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       "iso_week",
       "iso_year",
       "question_slug",
+      "option_slug",
     ])
     .execute();
 

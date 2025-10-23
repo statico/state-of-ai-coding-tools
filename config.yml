@@ -42,190 +42,131 @@ questions:
   # SECTION 1: AI CODING TOOL AWARENESS & USAGE
   # 1.1 Standalone AI-Native Editors
   - section: ai-tools-awareness
-    slug: cursor-experience
-    title: What is your experience with Cursor?
+    slug: ai-native-editors-experience
+    title: What is your experience with AI-Native Editors?
     type: experience
-
-  - section: ai-tools-awareness
-    slug: windsurf-experience
-    title: What is your experience with Windsurf (by Codeium)?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: devin-ai-experience
-    title: What is your experience with Devin AI?
-    type: experience
+    randomize: true
+    options:
+      - slug: cursor
+        label: Cursor
+      - slug: windsurf
+        label: Windsurf (by Codeium)
+      - slug: devin-ai
+        label: Devin AI
 
   # 1.2 IDE Extensions & Plugins
   - section: ai-tools-awareness
-    slug: github-copilot-experience
-    title: What is your experience with GitHub Copilot?
+    slug: ide-extensions-experience
+    title: What is your experience with IDE Extensions & Plugins?
     type: experience
-
-  - section: ai-tools-awareness
-    slug: jetbrains-ai-experience
-    title: What is your experience with JetBrains AI Assistant?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: codeium-experience
-    title: What is your experience with Codeium (Extension)?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: tabnine-experience
-    title: What is your experience with Tabnine?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: sourcegraph-cody-experience
-    title: What is your experience with Sourcegraph Cody?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: supermaven-experience
-    title: What is your experience with Supermaven?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: continue-dev-experience
-    title: What is your experience with Continue.dev?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: amazon-q-experience
-    title: What is your experience with Amazon Q Developer (formerly CodeWhisperer)?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: gemini-code-assist-experience
-    title: What is your experience with Gemini Code Assist?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: qodo-experience
-    title: What is your experience with Qodo (formerly CodiumAI)?
-    type: experience
+    randomize: true
+    options:
+      - slug: github-copilot
+        label: GitHub Copilot
+      - slug: jetbrains-ai
+        label: JetBrains AI Assistant
+      - slug: codeium
+        label: Codeium (Extension)
+      - slug: tabnine
+        label: Tabnine
+      - slug: sourcegraph-cody
+        label: Sourcegraph Cody
+      - slug: supermaven
+        label: Supermaven
+      - slug: continue-dev
+        label: Continue.dev
+      - slug: amazon-q
+        label: Amazon Q Developer (formerly CodeWhisperer)
+      - slug: gemini-code-assist
+        label: Gemini Code Assist
+      - slug: qodo
+        label: Qodo (formerly CodiumAI)
 
   # 1.3 Terminal/CLI Tools
   - section: ai-tools-awareness
-    slug: aider-experience
-    title: What is your experience with Aider?
+    slug: terminal-cli-tools-experience
+    title: What is your experience with Terminal/CLI Tools?
     type: experience
-
-  - section: ai-tools-awareness
-    slug: opencode-experience
-    title: What is your experience with OpenCode?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: claude-code-cli-experience
-    title: What is your experience with Claude Code CLI?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: goose-experience
-    title: What is your experience with Goose?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: codex-cli-experience
-    title: What is your experience with Codex CLI (OpenAI)?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: gemini-cli-experience
-    title: What is your experience with Gemini CLI?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: warp-experience
-    title: What is your experience with Warp (AI Terminal)?
-    type: experience
+    randomize: true
+    options:
+      - slug: aider
+        label: Aider
+      - slug: opencode
+        label: OpenCode
+      - slug: claude-code-cli
+        label: Claude Code CLI
+      - slug: goose
+        label: Goose
+      - slug: codex-cli
+        label: Codex CLI (OpenAI)
+      - slug: gemini-cli
+        label: Gemini CLI
+      - slug: warp
+        label: Warp (AI Terminal)
 
   # 1.4 Web-Based Platforms
   - section: ai-tools-awareness
-    slug: replit-ai-experience
-    title: What is your experience with Replit AI (Agent + Assistant)?
+    slug: web-platforms-experience
+    title: What is your experience with Web-Based Platforms?
     type: experience
-
-  - section: ai-tools-awareness
-    slug: bolt-new-experience
-    title: What is your experience with Bolt.new?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: v0-experience
-    title: What is your experience with V0 (by Vercel)?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: lovable-experience
-    title: What is your experience with Lovable?
-    type: experience
+    randomize: true
+    options:
+      - slug: replit-ai
+        label: Replit AI (Agent + Assistant)
+      - slug: bolt-new
+        label: Bolt.new
+      - slug: v0
+        label: V0 (by Vercel)
+      - slug: lovable
+        label: Lovable
 
   # 1.5 Chat-Based Coding Assistants
   - section: ai-tools-awareness
-    slug: claude-experience
-    title: What is your experience with Claude (by Anthropic) for coding?
+    slug: chat-assistants-experience
+    title: What is your experience with Chat-Based Coding Assistants?
     type: experience
-
-  - section: ai-tools-awareness
-    slug: chatgpt-experience
-    title: What is your experience with ChatGPT for coding?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: gemini-experience
-    title: What is your experience with Gemini for coding?
-    type: experience
+    randomize: true
+    options:
+      - slug: claude
+        label: Claude (by Anthropic) for coding
+      - slug: chatgpt
+        label: ChatGPT for coding
+      - slug: gemini
+        label: Gemini for coding
 
   # 1.6 Autonomous Coding Agents
   - section: ai-tools-awareness
-    slug: google-jules-experience
-    title: What is your experience with Google Jules?
+    slug: autonomous-agents-experience
+    title: What is your experience with Autonomous Coding Agents?
     type: experience
-
-  - section: ai-tools-awareness
-    slug: openai-codex-agent-experience
-    title: What is your experience with OpenAI Codex (Agent)?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: cline-experience
-    title: What is your experience with Cline (formerly Claude-Dev)?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: openhands-experience
-    title: What is your experience with OpenHands (formerly OpenDevin)?
-    type: experience
+    randomize: true
+    options:
+      - slug: google-jules
+        label: Google Jules
+      - slug: openai-codex-agent
+        label: OpenAI Codex (Agent)
+      - slug: cline
+        label: Cline (formerly Claude-Dev)
+      - slug: openhands
+        label: OpenHands (formerly OpenDevin)
 
   # 1.7 Open-Source Models for Coding
   - section: ai-tools-awareness
-    slug: starcoder-experience
-    title: What is your experience with StarCoder?
+    slug: open-source-models-experience
+    title: What is your experience with Open-Source Models for Coding?
     type: experience
-
-  - section: ai-tools-awareness
-    slug: code-llama-experience
-    title: What is your experience with Code Llama?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: qwen3-coder-experience
-    title: What is your experience with Qwen3-Coder?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: deepseek-coder-experience
-    title: What is your experience with DeepSeek-Coder?
-    type: experience
-
-  - section: ai-tools-awareness
-    slug: wizard-coder-experience
-    title: What is your experience with WizardCoder?
-    type: experience
+    randomize: true
+    options:
+      - slug: starcoder
+        label: StarCoder
+      - slug: code-llama
+        label: Code Llama
+      - slug: qwen3-coder
+        label: Qwen3-Coder
+      - slug: deepseek-coder
+        label: DeepSeek-Coder
+      - slug: wizard-coder
+        label: WizardCoder
 
   # 1.8 Other AI Coding Tools
   - section: ai-tools-awareness

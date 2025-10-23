@@ -58,6 +58,7 @@ export async function createResponse(data: {
   iso_week: number;
   iso_year: number;
   question_slug: string;
+  option_slug?: string;
   skipped?: boolean;
   single_option_slug?: string;
   single_writein_response?: string;
@@ -84,17 +85,22 @@ export async function updateResponse(
   isoWeek: number,
   isoYear: number,
   questionSlug: string,
+  optionSlug: string | null | undefined,
   data: UpdateableResponse,
 ) {
-  return await db
+  const query = db
     .updateTable("responses")
     .set(data)
     .where("session_id", "=", sessionId)
     .where("iso_week", "=", isoWeek)
     .where("iso_year", "=", isoYear)
-    .where("question_slug", "=", questionSlug)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+    .where("question_slug", "=", questionSlug);
+
+  if (optionSlug !== undefined) {
+    query.where("option_slug", "=", optionSlug);
+  }
+
+  return await query.returningAll().executeTakeFirstOrThrow();
 }
 
 export async function upsertResponse(data: InsertableResponse) {
@@ -126,13 +132,53 @@ export async function deleteResponse(
   isoWeek: number,
   isoYear: number,
   questionSlug: string,
+  optionSlug?: string | null,
 ) {
-  return await db
+  const query = db
     .deleteFrom("responses")
     .where("session_id", "=", sessionId)
     .where("iso_week", "=", isoWeek)
     .where("iso_year", "=", isoYear)
+    .where("question_slug", "=", questionSlug);
+
+  if (optionSlug !== undefined) {
+    query.where("option_slug", "=", optionSlug);
+  }
+
+  return await query.returningAll().executeTakeFirstOrThrow();
+}
+
+// New functions for handling option-specific responses
+export async function getResponsesByQuestionAndOption(
+  sessionId: string,
+  isoWeek: number,
+  isoYear: number,
+  questionSlug: string,
+) {
+  return await db
+    .selectFrom("responses")
+    .selectAll()
+    .where("session_id", "=", sessionId)
+    .where("iso_week", "=", isoWeek)
+    .where("iso_year", "=", isoYear)
     .where("question_slug", "=", questionSlug)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+    .execute();
+}
+
+export async function getResponseByQuestionAndOption(
+  sessionId: string,
+  isoWeek: number,
+  isoYear: number,
+  questionSlug: string,
+  optionSlug: string,
+) {
+  return await db
+    .selectFrom("responses")
+    .selectAll()
+    .where("session_id", "=", sessionId)
+    .where("iso_week", "=", isoWeek)
+    .where("iso_year", "=", isoYear)
+    .where("question_slug", "=", questionSlug)
+    .where("option_slug", "=", optionSlug)
+    .executeTakeFirst();
 }

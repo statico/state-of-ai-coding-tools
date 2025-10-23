@@ -448,8 +448,8 @@ describe("Config Validation", () => {
       }
     });
 
-    it("should reject experience questions with options", () => {
-      const invalidConfig = {
+    it("should allow experience questions with options", () => {
+      const validConfigWithOptions = {
         sections: [
           {
             slug: "test",
@@ -464,26 +464,16 @@ describe("Config Validation", () => {
             type: "experience",
             options: [
               {
-                slug: "never-heard",
-                label: "Never heard of it",
+                slug: "option-1",
+                label: "Option 1",
               },
             ],
           },
         ],
       };
 
-      const result = ConfigSchema.safeParse(invalidConfig);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(
-          result.error.issues.some(
-            (issue) =>
-              issue.path.join(".") === "questions.0.options" &&
-              issue.message ===
-                "Experience questions cannot have options - they use preset UI values",
-          ),
-        ).toBe(true);
-      }
+      const result = ConfigSchema.safeParse(validConfigWithOptions);
+      expect(result.success).toBe(true);
     });
 
     it("should allow randomize on valid question types", () => {

@@ -73,13 +73,11 @@ function generateExperienceResponse(): {
   let sentiment: number;
 
   if (awareness === 0 || awareness === 1) {
-    // For "Never heard" or "Heard of it", use interest values (1, 0, or -1)
-    const interestChoice = faker.number.int({ min: 0, max: 2 }); // 0: negative, 1: neutral, 2: positive
-    sentiment = interestChoice === 0 ? -1 : interestChoice === 1 ? 0 : 1;
+    // For "Never heard" or "Heard of it", use interest values (1 or -1)
+    sentiment = faker.datatype.boolean() ? 1 : -1;
   } else {
-    // For "Used it", use sentiment values (1, 0, or -1)
-    const sentimentChoice = faker.number.int({ min: 0, max: 2 }); // 0: negative, 1: neutral, 2: positive
-    sentiment = sentimentChoice === 0 ? -1 : sentimentChoice === 1 ? 0 : 1;
+    // For "Used it", use sentiment values (1 or -1)
+    sentiment = faker.datatype.boolean() ? 1 : -1;
   }
 
   return {
@@ -109,7 +107,6 @@ function generateUserResponses(
   week: number,
   year: number,
   questions: QuestionWithOptions[],
-  questionOptions: Map<string, any[]>,
 ): any[] {
   const responses: any[] = [];
 
@@ -168,30 +165,6 @@ function generateUserResponses(
         break;
 
       case "experience":
-        const options = questionOptions.get(question.slug);
-        if (options && options.length > 0) {
-          // For grouped experience questions, generate responses for each option
-          const selectedOptions = options.filter(
-            () => faker.number.float() < 0.7, // 70% chance to select each option
-          );
-
-          if (selectedOptions.length > 0) {
-            // Generate multiple responses for selected options
-            for (const option of selectedOptions) {
-              const experience = generateExperienceResponse();
-              const optionResponse = {
-                ...response,
-                option_slug: option.slug, // Use full option slug
-                experience_awareness: experience.awareness,
-                experience_sentiment: experience.sentiment,
-              };
-              responses.push(optionResponse);
-            }
-            continue; // Skip the single response below
-          }
-        }
-
-        // For single experience questions (no options), generate one response
         const experience = generateExperienceResponse();
         response.experience_awareness = experience.awareness;
         response.experience_sentiment = experience.sentiment;
@@ -331,21 +304,6 @@ async function seedTestData() {
       `📅 Generating data for weeks: ${weeks.map((w) => `${w.year}-W${w.week}`).join(", ")}`,
     );
 
-    // Build question options map for experience questions
-    const questionOptions = new Map();
-    for (const question of config.questions) {
-      if (question.options && question.type === "experience") {
-        questionOptions.set(
-          question.slug,
-          question.options.map((opt) => ({
-            slug: `${question.slug}-${opt.slug}`,
-            label: opt.label,
-            description: opt.description,
-          })),
-        );
-      }
-    }
-
     // Generate 100 users
     for (let userId = 1; userId <= 100; userId++) {
       const sessionId = faker.string.uuid();
@@ -382,7 +340,6 @@ async function seedTestData() {
               active: true,
             })),
           })) as QuestionWithOptions[],
-          questionOptions,
         );
         allResponses.push(...userResponses);
       }

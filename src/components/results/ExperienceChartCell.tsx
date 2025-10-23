@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -101,7 +102,7 @@ export function ExperienceChartCell({
           <div className="col-span-3 border-b"></div>
 
           {item.sentimentBreakdown.map((sentiment) => (
-            <>
+            <React.Fragment key={sentiment.sentiment}>
               <div className="flex items-center gap-2">
                 <div
                   className={cn(
@@ -122,7 +123,7 @@ export function ExperienceChartCell({
                 {sentiment.count.toLocaleString()}
                 <User className="h-3 w-3" />
               </div>
-            </>
+            </React.Fragment>
           ))}
         </div>
       </TooltipContent>

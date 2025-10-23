@@ -47,6 +47,7 @@ export interface Responses {
   multiple_option_slugs: string[] | null;
   multiple_writein_responses: string[] | null;
   numeric_response: Numeric | null;
+  option_slug: Generated<string>;
   question_slug: string;
   session_id: string;
   single_option_slug: string | null;

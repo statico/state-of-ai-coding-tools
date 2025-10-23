@@ -78,6 +78,7 @@ export interface QuestionWithOptions extends ClientQuestion {
 }
 
 export interface ResponseData {
+  optionSlug?: string;
   skipped?: boolean;
   singleOptionSlug?: string;
   singleWriteinResponse?: string;

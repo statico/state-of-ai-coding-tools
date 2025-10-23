@@ -56,20 +56,6 @@ export const QuestionSchema = z
   })
   .refine(
     (data) => {
-      // Experience questions must not have options since they use preset UI values
-      if (data.type === "experience" && data.options) {
-        return false;
-      }
-      return true;
-    },
-    {
-      message:
-        "Experience questions cannot have options - they use preset UI values",
-      path: ["options"],
-    },
-  )
-  .refine(
-    (data) => {
       // Randomize is only allowed for single, multiple, and experience questions
       if (
         data.randomize &&

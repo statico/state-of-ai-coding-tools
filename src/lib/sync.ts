@@ -222,7 +222,7 @@ export async function syncConfig(configPath?: string) {
     logger.warn("✅ Config synchronization completed successfully!");
   } catch (error) {
     logger.error("❌ Config synchronization failed:");
-    logger.error(error instanceof Error ? error.message : error);
+    logger.error(error instanceof Error ? error.message : String(error));
     throw error;
   }
 }
