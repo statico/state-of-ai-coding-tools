@@ -7,9 +7,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AWARENESS_OPTIONS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const AWARENESS_COLORS = ["bg-blue-500", "bg-cyan-500", "bg-zinc-500"];
+// Color mappings based on awareness level values
+const AWARENESS_COLOR_MAP = {
+  0: "bg-zinc-500", // Never heard of it
+  1: "bg-cyan-500", // Heard of it
+  2: "bg-blue-500", // Used it
+} as const;
 
-const SENTIMENT_COLORS = ["bg-emerald-500", "bg-green-500", "bg-rose-500"];
+// Color mappings based on sentiment values
+const SENTIMENT_COLOR_MAP = {
+  positive: "bg-emerald-500",
+  neutral: "bg-zinc-500",
+  negative: "bg-rose-500",
+} as const;
 
 interface ExperienceReportProps {
   data: {
@@ -110,6 +120,7 @@ export function ExperienceReport({
 
     return {
       awareness: awarenessOption.label,
+      awarenessValue: awarenessOption.value,
       awarenessCount: awarenessData?.count || 0,
       sentimentBreakdown,
     };
@@ -134,43 +145,54 @@ export function ExperienceReport({
           <div className="space-y-4">
             <div>{totalResponses} respondents</div>
 
-            <div className="flex w-full gap-1">
-              {breakdown.map((item, index) => (
-                <div
-                  key={item.awareness}
-                  className="space-y-1"
-                  style={{
-                    width: `${(item.awarenessCount / actualResponses) * 100}%`,
-                  }}
-                >
+            <div className="flex w-full gap-2">
+              {breakdown
+                .filter((item) => item.awarenessCount > 0)
+                .map((item, index) => (
                   <div
-                    className={cn(
-                      "h-12 overflow-hidden rounded-xs text-xs",
-                      AWARENESS_COLORS[index],
-                    )}
+                    key={item.awareness}
+                    className="space-y-1"
+                    style={{
+                      width: `${(item.awarenessCount / actualResponses) * 100}%`,
+                    }}
                   >
-                    {item.awareness}{" "}
-                    {Math.round((item.awarenessCount / actualResponses) * 100)}%
-                  </div>
+                    <div
+                      className={cn(
+                        "h-12 overflow-hidden rounded-xs text-xs",
+                        AWARENESS_COLOR_MAP[
+                          item.awarenessValue as keyof typeof AWARENESS_COLOR_MAP
+                        ],
+                      )}
+                    >
+                      {item.awareness}{" "}
+                      {Math.round(
+                        (item.awarenessCount / actualResponses) * 100,
+                      )}
+                      %
+                    </div>
 
-                  <div className="flex w-full gap-2">
-                    {item.sentimentBreakdown.map((sentiment, index) => (
-                      <div
-                        key={sentiment.sentiment}
-                        className={cn(
-                          "h-4 overflow-hidden rounded-xs text-xs",
-                          SENTIMENT_COLORS[index],
-                        )}
-                        style={{
-                          width: `${(sentiment.percentage / 100) * 100}%`,
-                        }}
-                      >
-                        {sentiment.percentage.toFixed(1)}%
-                      </div>
-                    ))}
+                    <div className="flex w-full gap-1">
+                      {item.sentimentBreakdown
+                        .filter((sentiment) => sentiment.count > 0)
+                        .map((sentiment, index) => (
+                          <div
+                            key={sentiment.sentiment}
+                            className={cn(
+                              "h-4 overflow-hidden rounded-xs text-xs",
+                              SENTIMENT_COLOR_MAP[
+                                sentiment.sentiment as keyof typeof SENTIMENT_COLOR_MAP
+                              ],
+                            )}
+                            style={{
+                              width: `${(sentiment.percentage / 100) * 100}%`,
+                            }}
+                          >
+                            {sentiment.percentage.toFixed(1)}%
+                          </div>
+                        ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <div className="space-y-4">
