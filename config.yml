@@ -1,45 +1,59 @@
 sections:
   - slug: ai-tools-awareness
     title: AI Coding Tool Awareness & Usage
+    description: "Hey, let's start with talking about how familiar you are with different AI coding tools. We want to know what you've tried and what you're using!"
 
   - slug: ai-code-review-tools
     title: AI Code Review Tools
+    description: "Now let's dive into AI code review tools - how are you using them and what's working for you?"
 
   - slug: tool-categories
     title: Tool Categories & Usage Patterns
+    description: "Let's talk about how you actually use these tools day-to-day and what your setup looks like."
 
   - slug: use-cases
     title: Use Cases & Applications
+    description: "What are you actually using AI for in your coding? We're curious about your real-world applications."
 
   - slug: features-capabilities
     title: Features & Capabilities
+    description: "What features matter most to you? Help us understand what makes an AI tool great for you."
 
   - slug: integration-setup
     title: Integration & Setup
+    description: "How do you actually set this stuff up? We want to know about your workflow and integrations."
 
   - slug: productivity-impact
     title: Productivity & Impact
+    description: "The big question: how is AI actually changing your work? Let's talk about the real impact."
 
   - slug: concerns-pain-points
     title: Concerns & Pain Points
+    description: "What's frustrating you? We want to hear about the challenges and concerns you're facing."
 
   - slug: pricing-business
     title: Pricing & Business Models
+    description: "Let's talk money - what are you spending and what pricing models actually work for you?"
 
   - slug: languages-frameworks
     title: Programming Languages & Frameworks
+    description: "Does AI work better with certain languages? Tell us about your tech stack and what's working."
 
   - slug: trends-future
     title: Trends & Future Outlook
+    description: "Where do you think this is all heading? We'd love to hear your predictions and hopes."
 
   - slug: company-team
     title: Company & Team Usage
+    description: "How is your team or company handling AI tools? What policies and practices are you seeing?"
 
   - slug: demographics
     title: Demographics
+    description: "Just a few quick questions about your background so we can understand our community better."
 
   - slug: final-thoughts
     title: Final Thoughts
+    description: "Anything else you want to share? This is your chance to tell us what we missed or what's on your mind."
 
 questions:
   # SECTION 1: AI CODING TOOL AWARENESS & USAGE
