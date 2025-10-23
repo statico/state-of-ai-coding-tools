@@ -99,14 +99,29 @@ export function SingleChoiceQuestion({
         value={selectedOption}
         onValueChange={handleOptionChange}
         disabled={isSkipped}
-        className={cn("flex flex-col gap-2", isSkipped && "opacity-50")}
+        className={cn("flex flex-col gap-0", isSkipped && "opacity-50")}
       >
-        {question.options.map((option) => (
-          <div key={option.slug} className="flex items-center space-x-4">
-            <RadioGroupItem value={option.slug} id={option.slug} />
+        {question.options.map((option, index) => (
+          <div
+            key={option.slug}
+            className={cn(
+              "hover:bg-muted/50 flex cursor-pointer items-center space-x-4 rounded-md p-3 transition-colors",
+              index % 2 === 1 && "bg-muted/20",
+            )}
+            onClick={() => {
+              if (!isSkipped) {
+                handleOptionChange(option.slug);
+              }
+            }}
+          >
+            <RadioGroupItem
+              value={option.slug}
+              id={option.slug}
+              onClick={(e) => e.stopPropagation()}
+            />
             <Label
               htmlFor={option.slug}
-              className="flex flex-1 flex-col items-start gap-0 py-2 text-base"
+              className="flex flex-1 cursor-pointer flex-col items-start gap-0 py-2 text-base"
             >
               <div>{option.label}</div>
               {option.description && (

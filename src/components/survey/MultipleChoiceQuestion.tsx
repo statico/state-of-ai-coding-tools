@@ -129,9 +129,35 @@ export function MultipleChoiceQuestion({
       onSkip={handleSkip}
       onCommentChange={handleCommentChange}
     >
-      <div className={cn("flex flex-col gap-3", isSkipped && "opacity-50")}>
-        {question.options.map((option) => (
-          <div key={option.slug} className="flex items-center space-x-4">
+      <div className={cn("flex flex-col gap-0", isSkipped && "opacity-50")}>
+        {question.options.map((option, index) => (
+          <div
+            key={option.slug}
+            className={cn(
+              "hover:bg-muted/50 flex cursor-pointer items-center space-x-4 rounded-md p-3 transition-colors",
+              index % 2 === 1 && "bg-muted/20",
+            )}
+            onClick={(e) => {
+              // Don't trigger if clicking on the checkbox or label
+              if (
+                e.target ===
+                  e.currentTarget.querySelector('input[type="checkbox"]') ||
+                e.target === e.currentTarget.querySelector("label")
+              ) {
+                return;
+              }
+
+              if (!isSkipped) {
+                const isCurrentlySelected = selectedOptions.includes(
+                  option.slug,
+                );
+                const canToggle = isCurrentlySelected || canSelectMore;
+                if (canToggle) {
+                  handleOptionChange(option.slug, !isCurrentlySelected);
+                }
+              }
+            }}
+          >
             <Checkbox
               id={option.slug}
               checked={selectedOptions.includes(option.slug)}
@@ -145,7 +171,7 @@ export function MultipleChoiceQuestion({
             />
             <Label
               htmlFor={option.slug}
-              className="flex flex-1 flex-col items-start gap-0 py-2 text-base"
+              className="flex flex-1 cursor-pointer flex-col items-start gap-0 py-2 text-base"
             >
               <div>{option.label}</div>
               {option.description && (
