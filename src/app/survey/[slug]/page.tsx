@@ -17,6 +17,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback } from "react";
+import { useSectionNavigation } from "@/hooks/use-section-navigation";
 
 export default function SurveyPage() {
   const params = useParams();
@@ -49,22 +50,8 @@ export default function SurveyPage() {
     trpc.survey.saveResponse.mutationOptions(),
   );
 
-  const currentSection =
-    sections && Array.isArray(sections)
-      ? sections.find((s: any) => s.slug === slug)
-      : undefined;
-  const currentSectionIndex =
-    sections && Array.isArray(sections)
-      ? sections.findIndex((s: any) => s.slug === slug)
-      : -1;
-  const nextSection =
-    currentSectionIndex >= 0 &&
-    currentSectionIndex <
-      (sections && Array.isArray(sections) ? sections.length : 0) - 1
-      ? sections && Array.isArray(sections)
-        ? sections[currentSectionIndex + 1]
-        : null
-      : null;
+  const { currentSection, nextSection, prevSection, currentSectionIndex } =
+    useSectionNavigation();
 
   const handleResponseChange = useCallback(
     async (questionSlug: string, responseData: ResponseData) => {
@@ -112,15 +99,8 @@ export default function SurveyPage() {
   };
 
   const handlePrevious = () => {
-    if (currentSectionIndex > 0 && sections && Array.isArray(sections)) {
-      const prevSection = sections[currentSectionIndex - 1];
-      if (
-        prevSection &&
-        typeof prevSection === "object" &&
-        "slug" in prevSection
-      ) {
-        router.push(`/survey/${prevSection.slug}`);
-      }
+    if (prevSection) {
+      router.push(`/survey/${prevSection.slug}`);
     } else {
       router.push("/intro");
     }
