@@ -138,14 +138,16 @@ export function MultipleChoiceQuestion({
               index % 2 === 1 && "bg-muted/20",
             )}
             onClick={(e) => {
-              // Don't trigger if clicking on the checkbox or label
+              // Don't trigger if clicking directly on the checkbox (it has its own handler)
               if (
                 e.target ===
-                  e.currentTarget.querySelector('input[type="checkbox"]') ||
-                e.target === e.currentTarget.querySelector("label")
+                e.currentTarget.querySelector('input[type="checkbox"]')
               ) {
                 return;
               }
+
+              // Prevent default label behavior to avoid double-triggering
+              e.preventDefault();
 
               if (!isSkipped) {
                 const isCurrentlySelected = selectedOptions.includes(
