@@ -7,7 +7,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "prepare": "husky",
     "db:codegen": "kysely-codegen --dialect postgres --out-file src/server/db/types.ts && prettier --write src/server/db/types.ts",
@@ -72,7 +72,6 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.11",
-    "@eslint/eslintrc": "^3.3.1",
     "@faker-js/faker": "^10.1.0",
     "@next/eslint-plugin-next": "^16.0.0",
     "@tailwindcss/postcss": "^4.1.15",
