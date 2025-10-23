@@ -7,6 +7,7 @@ import {
   getISOWeekYear,
   startOfISOWeek,
 } from "date-fns";
+import pluralize from "pluralize";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -93,4 +94,14 @@ export function getNextWeek(
   } else {
     return { week: week + 1, year };
   }
+}
+
+export function formatWithCount(
+  count: number,
+  word: string,
+  locale = "en-US",
+): string {
+  const formattedNumber = count.toLocaleString(locale);
+  const pluralizedWord = pluralize(word, count);
+  return `${formattedNumber} ${pluralizedWord}`;
 }

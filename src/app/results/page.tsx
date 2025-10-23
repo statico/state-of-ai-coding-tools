@@ -10,9 +10,8 @@ import { FreeformReport } from "@/components/results/FreeformReport";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
-import { getCurrentISOWeek, isCurrentWeek } from "@/lib/utils";
+import { getCurrentISOWeek, isCurrentWeek, formatWithCount } from "@/lib/utils";
 import { useQueryState, parseAsInteger } from "nuqs";
-import pluralize from "pluralize";
 
 export default function ReportsPage() {
   const trpc = useTRPC();
@@ -67,9 +66,9 @@ export default function ReportsPage() {
           <Skeleton className="h-6 w-64" />
         ) : weekSummary ? (
           <p className="text-muted-foreground">
-            {pluralize("respondent", weekSummary.uniqueSessions, true)} ·{" "}
-            {pluralize("total response", weekSummary.totalResponses, true)} for{" "}
-            {pluralize("question", weekSummary.questions.length, true)}
+            {formatWithCount(weekSummary.uniqueSessions, "respondent")} ·{" "}
+            {formatWithCount(weekSummary.totalResponses, "total response")} for{" "}
+            {formatWithCount(weekSummary.questions.length, "question")}
           </p>
         ) : (
           <p className="text-muted-foreground">No data</p>
