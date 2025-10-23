@@ -134,8 +134,8 @@ export function SurveyHeader() {
       </div>
 
       {/* Desktop navigation */}
-      <div className="hidden items-center justify-center pb-6 md:flex">
-        <div className="relative flex w-full items-center justify-between pt-24">
+      <div className="hidden items-center justify-center pb-8 md:flex">
+        <div className="relative flex w-full items-center justify-between pt-28">
           {navItems.map((item, index) => {
             let sectionPercentage = 0;
             const isIntro = item.id === "intro";

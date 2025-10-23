@@ -1,11 +1,13 @@
 "use client";
 
 import { SurveyHeader } from "@/components/SurveyHeader";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTRPC } from "@/lib/trpc/client";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, TriangleAlertIcon } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function IntroPage() {
@@ -28,72 +30,35 @@ export default function IntroPage() {
   return (
     <div className="container mx-auto max-w-4xl p-6">
       <SurveyHeader />
-      <div className="pt-8 pb-20 md:pt-20">
-        <div className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-3xl">About This Survey</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p>
-                This survey is designed to capture your preferences, adoption
-                rates, and experiences with various AI coding assistants, IDEs,
-                and LLMs. Your responses help provide insights through real-time
-                results visualization and trend analysis over time.
-              </p>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <h3 className="mb-2 font-semibold">What We Track</h3>
-                  <ul className="text-muted-foreground space-y-1 text-base">
-                    <li>• AI tool adoption over time</li>
-                    <li>• Developer sentiment and satisfaction</li>
-                    <li>• Tool popularity and trends</li>
-                    <li>• Community insights and feedback</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="mb-2 font-semibold">Survey Features</h3>
-                  <ul className="text-muted-foreground space-y-1 text-base">
-                    <li>• Weekly cadence (resets every Monday)</li>
-                    <li>• Anonymous responses</li>
-                    <li>• Auto-save functionality</li>
-                    <li>• Pre-filled from previous weeks</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-3xl">Privacy & Data Usage</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p>
-                <strong>This survey is for a private community</strong> of
-                engineering leaders and technology-focused professionals. The
-                data collected is not shared publicly and is used solely for
-                community insights.
-              </p>
-              <p>
-                <strong>Follow the community's code of conduct</strong> in
-                regards to responses and sharing information. Keep responses
-                professional, and use the Chatham House Rule when sharing
-                information outside of the community.
-              </p>
-            </CardContent>
-          </Card>
+      <div className="mx-auto max-w-lg space-y-8 pt-8 pb-20 md:pt-20">
+        <h1 className="text-center text-5xl font-bold">Welcome!</h1>
+        <p className="text-muted-foreground mx-auto max-w-2xl text-center text-2xl text-balance">
+          Welcome to the AI Coding Tools Weekly Survey! Come back every week to
+          share your thoughts and see how the community's opinions evolve over
+          time.
+        </p>
 
-          <div className="flex justify-center text-center">
-            <Button
-              size="lg"
-              onClick={handleStartSurvey}
-              className="w-full px-8 md:w-auto"
-              disabled={!firstSection}
-            >
-              Let's Go! <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
+        <Alert>
+          <TriangleAlertIcon className="mt-1 size-4" />
+          <AlertTitle className="text-lg">Notice</AlertTitle>
+          <AlertDescription className="text-base">
+            This survey is intended to be used only by members of the private
+            community in which is was shared. This is an unofficial open-source
+            project, so we're not naming the community, but the rules of the
+            community still apply.
+          </AlertDescription>
+        </Alert>
+
+        <div className="flex justify-center text-center">
+          <Button
+            size="lg"
+            onClick={handleStartSurvey}
+            className="w-full px-8! md:w-auto"
+            disabled={!firstSection}
+          >
+            Let's Go! <ArrowRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </div>
