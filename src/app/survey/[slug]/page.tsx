@@ -118,6 +118,8 @@ export default function SurveyPage() {
     } else {
       router.push("/outro");
     }
+    // Scroll to top when navigating
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handlePrevious = () => {
@@ -126,6 +128,8 @@ export default function SurveyPage() {
     } else {
       router.push("/intro");
     }
+    // Scroll to top when navigating
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (sectionsLoading) {

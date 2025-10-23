@@ -49,6 +49,8 @@ export function SurveyHeader() {
 
   const handleNavigation = (path: string) => {
     router.push(path);
+    // Scroll to top when navigating
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handlePrevious = () => {
@@ -67,6 +69,8 @@ export function SurveyHeader() {
     } else {
       router.push("/intro");
     }
+    // Scroll to top when navigating
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleNext = () => {
@@ -83,6 +87,8 @@ export function SurveyHeader() {
     } else {
       router.push("/outro");
     }
+    // Scroll to top when navigating
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
