@@ -2,6 +2,9 @@ sections:
   - slug: ai-tools-awareness
     title: AI Coding Tool Awareness & Usage
 
+  - slug: ai-code-review-tools
+    title: AI Code Review Tools
+
   - slug: tool-categories
     title: Tool Categories & Usage Patterns
 
@@ -177,6 +180,141 @@ questions:
       - slug: other
         label: Other (specify below)
 
+  # SECTION 1.9: AI CODE REVIEW TOOLS
+  - section: ai-code-review-tools
+    slug: ai-code-review-experience
+    title: What is your experience with AI Code Review Tools?
+    type: experience
+    randomize: true
+    options:
+      - slug: coderabbit
+        label: CodeRabbit
+      - slug: qodo-merge
+        label: Qodo Merge (formerly CodiumAI)
+      - slug: github-copilot-reviews
+        label: GitHub Copilot Reviews
+      - slug: devin-ai
+        label: Devin AI
+      - slug: amazon-codeguru-reviewer
+        label: Amazon CodeGuru Reviewer
+      - slug: snyk-deepcode
+        label: Snyk (DeepCode AI)
+      - slug: sonarqube-sonarcloud
+        label: SonarQube/SonarCloud
+      - slug: graphite-agent
+        label: Graphite Agent (Diamond)
+      - slug: greptile
+        label: Greptile
+      - slug: codeant-ai
+        label: CodeAnt AI
+      - slug: bito-ai
+        label: Bito AI Code Review Agent
+      - slug: codacy
+        label: Codacy
+      - slug: codeclimate
+        label: CodeClimate
+      - slug: refact-ai
+        label: Refact.ai
+      - slug: deepsource
+        label: DeepSource
+      - slug: pullrequest
+        label: PullRequest
+
+  - section: ai-code-review-tools
+    slug: code-review-usage-frequency
+    title: How frequently do you use AI code review tools?
+    type: single
+    options:
+      - slug: every-pr
+        label: For every pull request
+      - slug: most-prs
+        label: For most pull requests
+      - slug: occasionally
+        label: Occasionally
+      - slug: rarely
+        label: Rarely
+      - slug: never
+        label: Never used
+      - slug: not-sure
+        label: Not sure
+
+  - section: ai-code-review-tools
+    slug: code-review-features-important
+    title: Which AI code review features are most important to you?
+    type: multiple
+    multiple_max: 5
+    options:
+      - slug: security-vulnerability-detection
+        label: Security vulnerability detection
+      - slug: code-quality-analysis
+        label: Code quality analysis
+      - slug: bug-detection
+        label: Bug detection
+      - slug: performance-issues
+        label: Performance issue identification
+      - slug: code-style-consistency
+        label: Code style consistency
+      - slug: documentation-suggestions
+        label: Documentation suggestions
+      - slug: test-coverage-analysis
+        label: Test coverage analysis
+      - slug: dependency-analysis
+        label: Dependency analysis
+      - slug: architecture-review
+        label: Architecture review
+      - slug: compliance-checking
+        label: Compliance checking
+      - slug: false-positive-rate
+        label: Low false positive rate
+      - slug: context-awareness
+        label: Context awareness (understands codebase)
+      - slug: integration-depth
+        label: Deep integration with development workflow
+      - slug: privacy-security
+        label: Privacy and data security
+      - slug: cost-effectiveness
+        label: Cost effectiveness
+
+  - section: ai-code-review-tools
+    slug: code-review-tool-satisfaction
+    title: How satisfied are you with your current AI code review tools?
+    type: single
+    options:
+      - slug: very-satisfied
+        label: Very satisfied
+      - slug: satisfied
+        label: Satisfied
+      - slug: neutral
+        label: Neutral
+      - slug: dissatisfied
+        label: Dissatisfied
+      - slug: very-dissatisfied
+        label: Very dissatisfied
+      - slug: dont-use
+        label: I don't use AI code review tools
+
+  - section: ai-code-review-tools
+    slug: code-review-pricing-concerns
+    title: What are your main concerns about AI code review tool pricing?
+    type: multiple
+    options:
+      - slug: too-expensive
+        label: Too expensive for the value
+      - slug: pricing-complexity
+        label: Complex pricing models
+      - slug: hidden-costs
+        label: Hidden costs
+      - slug: per-user-pricing
+        label: Per-user pricing doesn't scale well
+      - slug: usage-based-pricing
+        label: Usage-based pricing is unpredictable
+      - slug: enterprise-pricing
+        label: Enterprise pricing is opaque
+      - slug: no-concerns
+        label: No pricing concerns
+      - slug: dont-use
+        label: I don't use AI code review tools
+
   # SECTION 2: TOOL CATEGORIES & USAGE PATTERNS
   - section: tool-categories
     slug: tool-categories-used
@@ -195,6 +333,8 @@ questions:
         label: Chat-based assistants for coding (like Claude, ChatGPT)
       - slug: autonomous-agents
         label: Autonomous coding agents (like Devin, Jules)
+      - slug: code-review-tools
+        label: AI code review tools (like CodeRabbit, SonarQube, Snyk)
       - slug: local-models
         label: Local/self-hosted AI models
       - slug: none
@@ -240,6 +380,12 @@ questions:
         label: Bolt.new
       - slug: continue-dev
         label: Continue.dev
+      - slug: coderabbit
+        label: CodeRabbit
+      - slug: sonarqube
+        label: SonarQube/SonarCloud
+      - slug: snyk
+        label: Snyk
       - slug: multiple-equally
         label: I don't have a primary tool / I use multiple equally
       - slug: none
