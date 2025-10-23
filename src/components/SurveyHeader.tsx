@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CheckIcon, ChevronLeft, ChevronRight, PlayIcon } from "lucide-react";
 import { useSectionNavigation } from "@/hooks/use-section-navigation";
 
 export function SurveyHeader() {
@@ -27,7 +27,7 @@ export function SurveyHeader() {
   const navItems = [
     {
       id: "intro",
-      label: "Intro",
+      label: "Start",
       path: "/intro",
       isActive: isIntro,
     },
@@ -41,7 +41,7 @@ export function SurveyHeader() {
       : []),
     {
       id: "outro",
-      label: "Outro",
+      label: "Finish",
       path: "/outro",
       isActive: isOutro,
     },
@@ -106,7 +106,7 @@ export function SurveyHeader() {
               >
                 <ChevronLeft className="h-4 w-4 shrink-0" />
                 <span className="truncate">
-                  {prevSection ? prevSection.title : "Intro"}
+                  {prevSection ? prevSection.title : "Start"}
                 </span>
               </button>
             )}
@@ -121,7 +121,7 @@ export function SurveyHeader() {
                 className="text-muted-foreground hover:text-foreground flex max-w-[40%] min-w-0 items-center gap-1 text-sm transition-colors"
               >
                 <span className="truncate">
-                  {nextSection ? nextSection.title : "Complete"}
+                  {nextSection ? nextSection.title : "Finish"}
                 </span>
                 <ChevronRight className="h-4 w-4 shrink-0" />
               </button>
@@ -134,12 +134,14 @@ export function SurveyHeader() {
       </div>
 
       {/* Desktop navigation */}
-      <div className="hidden items-center justify-center md:flex">
-        <div className="relative mt-20 flex items-center gap-8">
+      <div className="hidden items-center justify-center pb-6 md:flex">
+        <div className="relative flex w-full items-center justify-between pt-24">
           {navItems.map((item, index) => {
-            // Get section completion percentage for survey sections
             let sectionPercentage = 0;
-            if (isSurvey && item.id !== "intro" && item.id !== "outro") {
+            const isIntro = item.id === "intro";
+            const isOutro = item.id === "outro";
+            const isSurvey = !isIntro && !isOutro;
+            if (isSurvey) {
               const sectionData = completionData?.sectionCompletion?.find(
                 (s: any) => s.sectionSlug === item.id,
               );
@@ -151,27 +153,34 @@ export function SurveyHeader() {
                 key={item.id}
                 className="group relative flex flex-col items-center"
               >
+                {/* Circle dot */}
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "z-10 h-8 w-8 rounded-full border transition-all duration-200 group-hover:scale-110",
+                    "group-hover:text-foreground group-hover:border-foreground z-10 h-8 w-8 rounded-full border transition-all duration-200",
                     item.isActive
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/30 bg-background group-hover:border-muted-foreground/60",
+                      : "border-muted-foreground/30 bg-background",
                   )}
                 >
                   <div className="flex h-full w-full items-center justify-center text-sm font-medium">
-                    {isSurvey && item.id !== "intro" && item.id !== "outro" ? (
+                    {isIntro ? (
+                      <PlayIcon className="size-4" />
+                    ) : isOutro ? (
+                      <CheckIcon className="size-4" />
+                    ) : isSurvey ? (
                       <span className="text-xs">{sectionPercentage}%</span>
                     ) : (
                       index + 1
                     )}
                   </div>
                 </button>
+
+                {/* Text label */}
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "group-hover:text-primary-foreground absolute -top-4 left-7 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors",
+                    "group-hover:text-foreground absolute -top-4 left-7 max-w-[130px] cursor-pointer truncate text-sm font-medium whitespace-nowrap transition-colors",
                     item.isActive
                       ? "text-primary font-semibold"
                       : "text-muted-foreground",
