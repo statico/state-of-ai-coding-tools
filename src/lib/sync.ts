@@ -1,4 +1,5 @@
 import { db } from "@/server/db/index.js";
+import { Logger } from "@/server/logging.js";
 import {
   loadConfig,
   validateConfigReferences,
@@ -7,6 +8,8 @@ import {
   type Question,
   type Section,
 } from "./config.js";
+
+const logger = Logger.forModule();
 
 export async function syncSections(sections: Section[]) {
   // Get existing sections
@@ -56,8 +59,8 @@ export async function syncSections(sections: Section[]) {
       .execute();
   }
 
-  console.warn(
-    `  📊 Processed ${sections.length} sections (${missingSections.length} marked inactive)`,
+  logger.warn(
+    `📊 Processed ${sections.length} sections (${missingSections.length} marked inactive)`,
   );
 }
 
@@ -117,8 +120,8 @@ export async function syncQuestions(questions: Question[]) {
       .execute();
   }
 
-  console.warn(
-    `  📊 Processed ${questions.length} questions (${missingQuestions.length} marked inactive)`,
+  logger.warn(
+    `📊 Processed ${questions.length} questions (${missingQuestions.length} marked inactive)`,
   );
 }
 
@@ -188,38 +191,38 @@ export async function syncOptions(questions: Question[]) {
       .execute();
   }
 
-  console.warn(
-    `  📊 Processed ${configOptions.length} options (${missingOptions.length} marked inactive)`,
+  logger.warn(
+    `📊 Processed ${configOptions.length} options (${missingOptions.length} marked inactive)`,
   );
 }
 
 export async function syncConfig(configPath?: string) {
-  console.warn("🔄 Starting config synchronization...");
+  logger.warn("🔄 Starting config synchronization...");
 
   try {
     // Load and validate config
-    console.warn("📋 Loading and validating config.yml...");
+    logger.warn("📋 Loading and validating config.yml...");
     const config = loadConfig(configPath);
     validateConfigReferences(config);
     validateUniqueSlugs(config);
-    console.warn("✅ Config validation passed");
+    logger.warn("✅ Config validation passed");
 
     // Sync sections
-    console.warn("📝 Synchronizing sections...");
+    logger.warn("📝 Synchronizing sections...");
     await syncSections(config.sections);
 
     // Sync questions
-    console.warn("❓ Synchronizing questions...");
+    logger.warn("❓ Synchronizing questions...");
     await syncQuestions(config.questions);
 
     // Sync options
-    console.warn("🔘 Synchronizing options...");
+    logger.warn("🔘 Synchronizing options...");
     await syncOptions(config.questions);
 
-    console.warn("✅ Config synchronization completed successfully!");
+    logger.warn("✅ Config synchronization completed successfully!");
   } catch (error) {
-    console.error("❌ Config synchronization failed:");
-    console.error(error instanceof Error ? error.message : error);
+    logger.error("❌ Config synchronization failed:");
+    logger.error(error instanceof Error ? error.message : error);
     throw error;
   }
 }

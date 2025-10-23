@@ -1,6 +1,6 @@
 import { db } from "@/server/db/index.js";
 import { migrate } from "@/server/db/migrate.js";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import type { Question, Section } from "./config.js";
 import {
   syncConfig,
@@ -163,9 +163,6 @@ describe("Sync Functions", () => {
   });
 
   it("should sync with real config file", async () => {
-    // Mock console.warn to avoid output during tests
-    const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
     await syncConfig();
 
     // Verify sections were synced
@@ -179,8 +176,6 @@ describe("Sync Functions", () => {
     // Verify options were synced
     const options = await db.selectFrom("options").selectAll().execute();
     expect(options.length).toBeGreaterThan(0);
-
-    consoleSpy.mockRestore();
   });
 
   it("should handle validation errors", async () => {
