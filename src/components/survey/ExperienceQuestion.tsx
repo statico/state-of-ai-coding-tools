@@ -5,7 +5,7 @@ import { SentimentBadge } from "./SentimentBadge";
 import { QuestionCard } from "./QuestionCard";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import {
   QuestionWithOptions,
@@ -55,6 +55,9 @@ export function ExperienceQuestion({
   const [comment, setComment] = useState<string>(
     () => existingResponses[0]?.comment ?? "",
   );
+
+  // Track previous response data to prevent unnecessary calls
+  const prevResponseDataRef = useRef<ResponseData[]>([]);
 
   const handleAwarenessChange = (optionSlug: string, value: string) => {
     const awarenessValue = parseInt(value);
@@ -112,10 +115,11 @@ export function ExperienceQuestion({
 
   // Notify parent of changes
   useEffect(() => {
+    let responses: ResponseData[] = [];
+
     if (isSkipped) {
-      onResponseChange([]);
+      responses = [];
     } else {
-      const responses: ResponseData[] = [];
       Object.entries(optionStates).forEach(([optionSlug, state]) => {
         if (state.awareness !== undefined) {
           responses.push({
@@ -127,6 +131,13 @@ export function ExperienceQuestion({
           });
         }
       });
+    }
+
+    // Only call onResponseChange if the data has actually changed
+    const hasChanged =
+      JSON.stringify(responses) !== JSON.stringify(prevResponseDataRef.current);
+    if (hasChanged) {
+      prevResponseDataRef.current = responses;
       onResponseChange(responses);
     }
   }, [optionStates, isSkipped, comment, onResponseChange]);

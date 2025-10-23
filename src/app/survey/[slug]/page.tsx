@@ -16,6 +16,7 @@ import { useTRPC } from "@/lib/trpc/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 export default function SurveyPage() {
   const params = useParams();
@@ -65,19 +66,42 @@ export default function SurveyPage() {
         : null
       : null;
 
-  const handleResponseChange = async (
-    questionSlug: string,
-    responseData: ResponseData,
-  ) => {
-    try {
-      await saveResponseMutation.mutateAsync({
-        questionSlug,
-        ...responseData,
+  const handleResponseChange = useCallback(
+    async (questionSlug: string, responseData: ResponseData) => {
+      try {
+        await saveResponseMutation.mutateAsync({
+          questionSlug,
+          ...responseData,
+        });
+      } catch (error) {
+        console.error("Failed to save response:", error);
+      }
+    },
+    [saveResponseMutation],
+  );
+
+  const handleExperienceResponseChange = useCallback(
+    (questionSlug: string, data: any[]) => {
+      // For experience questions, we need to handle multiple responses
+      data.forEach((responseData) => {
+        handleResponseChange(questionSlug, responseData);
       });
-    } catch (error) {
-      console.error("Failed to save response:", error);
-    }
-  };
+    },
+    [handleResponseChange],
+  );
+
+  // Memoize the response change handlers for each question
+  const getResponseChangeHandler = useCallback(
+    (questionSlug: string) => (data: any) =>
+      handleResponseChange(questionSlug, data),
+    [handleResponseChange],
+  );
+
+  const getExperienceResponseChangeHandler = useCallback(
+    (questionSlug: string) => (data: any[]) =>
+      handleExperienceResponseChange(questionSlug, data),
+    [handleExperienceResponseChange],
+  );
 
   const handleNext = () => {
     if (nextSection) {
@@ -160,8 +184,20 @@ export default function SurveyPage() {
                   const commonProps = {
                     question,
                     existingResponse,
-                    onResponseChange: (data: any) =>
-                      handleResponseChange(question.slug, data),
+                    onResponseChange: getResponseChangeHandler(question.slug),
+                  };
+
+                  const experienceProps = {
+                    question,
+                    existingResponses:
+                      responses && Array.isArray(responses)
+                        ? responses.filter(
+                            (r: any) => r.question_slug === question.slug,
+                          )
+                        : [],
+                    onResponseChange: getExperienceResponseChangeHandler(
+                      question.slug,
+                    ),
                   };
 
                   switch (question.type) {
@@ -183,7 +219,7 @@ export default function SurveyPage() {
                       return (
                         <ExperienceQuestion
                           key={question.slug}
-                          {...commonProps}
+                          {...experienceProps}
                         />
                       );
                     case "numeric":
