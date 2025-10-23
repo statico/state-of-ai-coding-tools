@@ -97,6 +97,7 @@ CREATE TABLE public.responses (
   iso_week integer NOT NULL,
   iso_year integer NOT NULL,
   question_slug text NOT NULL,
+  option_slug text DEFAULT ''::text NOT NULL,
   skipped boolean DEFAULT false NOT NULL,
   single_option_slug text,
   single_writein_response text,
@@ -126,8 +127,8 @@ CREATE TABLE public.sections (
 --
 CREATE TABLE public.sessions (
   id uuid NOT NULL,
-  created_at timestamp without time zone DEFAULT '2025-10-20 13:12:33.183295'::timestamp without time zone NOT NULL,
-  updated_at timestamp without time zone DEFAULT '2025-10-20 13:12:33.183295'::timestamp without time zone NOT NULL
+  created_at timestamp without time zone DEFAULT '2025-10-22 17:36:27.844684'::timestamp without time zone NOT NULL,
+  updated_at timestamp without time zone DEFAULT '2025-10-22 17:36:27.844684'::timestamp without time zone NOT NULL
 );
 
 --
@@ -158,7 +159,13 @@ ADD CONSTRAINT questions_pkey PRIMARY KEY (slug);
 -- Name: responses responses_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 ALTER TABLE ONLY public.responses
-ADD CONSTRAINT responses_pkey PRIMARY KEY (session_id, iso_week, iso_year, question_slug);
+ADD CONSTRAINT responses_pkey PRIMARY KEY (
+  session_id,
+  iso_week,
+  iso_year,
+  question_slug,
+  option_slug
+);
 
 --
 -- Name: sections sections_pkey; Type: CONSTRAINT; Schema: public; Owner: -
