@@ -1,27 +1,23 @@
 sections:
-  - slug: ai-tools-awareness
-    title: AI Coding Tool Awareness & Usage
-    description: "Hey, let's start with talking about how familiar you are with different AI coding tools. We want to know what you've tried and what you're using!"
+  - slug: coding-tools
+    title: Coding Tools
+    description: "Let's start with the coding tools you use - editors, IDEs, plugins, and assistants."
 
-  - slug: ai-code-review-tools
-    title: AI Code Review Tools
-    description: "Now let's dive into AI code review tools - how are you using them and what's working for you?"
+  - slug: code-review-tools
+    title: Code Review Tools
+    description: "Now let's talk about code review tools - how are you using them and what's working for you?"
 
-  - slug: tool-categories
-    title: Tool Categories & Usage Patterns
-    description: "Let's talk about how you actually use these tools day-to-day and what your setup looks like."
+  - slug: models
+    title: Models
+    description: "Which AI models are you using? We want to understand your preferences between frontier and open source models."
 
-  - slug: use-cases
-    title: Use Cases & Applications
-    description: "What are you actually using AI for in your coding? We're curious about your real-world applications."
+  - slug: environment
+    title: Environment
+    description: "Where are you using these tools? IDEs, web-based platforms, agents, sandboxes, and more."
 
-  - slug: features-capabilities
-    title: Features & Capabilities
-    description: "What features matter most to you? Help us understand what makes an AI tool great for you."
-
-  - slug: integration-setup
-    title: Integration & Setup
-    description: "How do you actually set this stuff up? We want to know about your workflow and integrations."
+  - slug: applications
+    title: Applications
+    description: "How are you applying these tools? What are you building and how much are you spending?"
 
   - slug: productivity-impact
     title: Productivity & Impact
@@ -31,53 +27,30 @@ sections:
     title: Concerns & Pain Points
     description: "What's frustrating you? We want to hear about the challenges and concerns you're facing."
 
-  - slug: pricing-business
-    title: Pricing & Business Models
-    description: "Let's talk money - what are you spending and what pricing models actually work for you?"
-
   - slug: languages-frameworks
     title: Programming Languages & Frameworks
     description: "Does AI work better with certain languages? Tell us about your tech stack and what's working."
-
-  - slug: trends-future
-    title: Trends & Future Outlook
-    description: "Where do you think this is all heading? We'd love to hear your predictions and hopes."
-
-  - slug: company-team
-    title: Company & Team Usage
-    description: "How is your team or company handling AI tools? What policies and practices are you seeing?"
-
-  - slug: demographics
-    title: Demographics
-    description: "Just a few quick questions about your background so we can understand our community better."
 
   - slug: final-thoughts
     title: Final Thoughts
     description: "Anything else you want to share? This is your chance to tell us what we missed or what's on your mind."
 
 questions:
-  # SECTION 1: AI CODING TOOL AWARENESS & USAGE
-  # 1.1 Standalone AI-Native Editors
-  - section: ai-tools-awareness
-    slug: ai-native-editors-experience
-    title: What is your experience with AI-Native Editors?
+  # SECTION 1: CODING TOOLS
+  - section: coding-tools
+    slug: coding-tools-experience
+    title: What is your experience with coding tools?
     type: experience
     randomize: true
     options:
+      # AI-Native Editors
       - slug: cursor
         label: Cursor
       - slug: windsurf
         label: Windsurf (by Codeium)
       - slug: devin-ai
         label: Devin AI
-
-  # 1.2 IDE Extensions & Plugins
-  - section: ai-tools-awareness
-    slug: ide-extensions-experience
-    title: What is your experience with IDE Extensions & Plugins?
-    type: experience
-    randomize: true
-    options:
+      # IDE Extensions & Plugins
       - slug: github-copilot
         label: GitHub Copilot
       - slug: jetbrains-ai
@@ -98,14 +71,7 @@ questions:
         label: Gemini Code Assist
       - slug: qodo
         label: Qodo (formerly CodiumAI)
-
-  # 1.3 Terminal/CLI Tools
-  - section: ai-tools-awareness
-    slug: terminal-cli-tools-experience
-    title: What is your experience with Terminal/CLI Tools?
-    type: experience
-    randomize: true
-    options:
+      # Terminal/CLI Tools
       - slug: aider
         label: Aider
       - slug: opencode
@@ -120,14 +86,7 @@ questions:
         label: Gemini CLI
       - slug: warp
         label: Warp (AI Terminal)
-
-  # 1.4 Web-Based Platforms
-  - section: ai-tools-awareness
-    slug: web-platforms-experience
-    title: What is your experience with Web-Based Platforms?
-    type: experience
-    randomize: true
-    options:
+      # Web-Based Platforms
       - slug: replit-ai
         label: Replit AI (Agent + Assistant)
       - slug: bolt-new
@@ -136,28 +95,14 @@ questions:
         label: V0 (by Vercel)
       - slug: lovable
         label: Lovable
-
-  # 1.5 Chat-Based Coding Assistants
-  - section: ai-tools-awareness
-    slug: chat-assistants-experience
-    title: What is your experience with Chat-Based Coding Assistants?
-    type: experience
-    randomize: true
-    options:
+      # Chat-Based Coding Assistants
       - slug: claude
         label: Claude (by Anthropic) for coding
       - slug: chatgpt
         label: ChatGPT for coding
       - slug: gemini
         label: Gemini for coding
-
-  # 1.6 Autonomous Coding Agents
-  - section: ai-tools-awareness
-    slug: autonomous-agents-experience
-    title: What is your experience with Autonomous Coding Agents?
-    type: experience
-    randomize: true
-    options:
+      # Autonomous Coding Agents
       - slug: google-jules
         label: Google Jules
       - slug: openai-codex-agent
@@ -166,14 +111,7 @@ questions:
         label: Cline (formerly Claude-Dev)
       - slug: openhands
         label: OpenHands (formerly OpenDevin)
-
-  # 1.7 Open-Source Models for Coding
-  - section: ai-tools-awareness
-    slug: open-source-models-experience
-    title: What is your experience with Open-Source Models for Coding?
-    type: experience
-    randomize: true
-    options:
+      # Open-Source Models for Coding
       - slug: starcoder
         label: StarCoder
       - slug: code-llama
@@ -185,10 +123,68 @@ questions:
       - slug: wizard-coder
         label: WizardCoder
 
-  # SECTION 1.9: AI CODE REVIEW TOOLS
-  - section: ai-code-review-tools
-    slug: ai-code-review-experience
-    title: What is your experience with AI Code Review Tools?
+  - section: coding-tools
+    slug: coding-tools-usage-frequency
+    title: How frequently do you use coding tools?
+    type: single
+    options:
+      - slug: multiple-daily
+        label: Multiple times per day
+      - slug: once-daily
+        label: Once per day
+      - slug: few-weekly
+        label: A few times per week
+      - slug: once-weekly
+        label: Once per week
+      - slug: few-monthly
+        label: A few times per month
+      - slug: once-monthly
+        label: Once per month or less
+      - slug: tried-stopped
+        label: I've tried them but stopped using them
+      - slug: never-used
+        label: I've never used coding tools
+
+  - section: coding-tools
+    slug: coding-tools-concerns
+    title: What are your biggest concerns about coding tools?
+    type: multiple
+    options:
+      - slug: code-quality-accuracy
+        label: Code quality and accuracy
+      - slug: security-vulnerabilities
+        label: Security vulnerabilities in generated code
+      - slug: privacy-data-security
+        label: Privacy and data security
+      - slug: cost
+        label: Cost
+      - slug: over-reliance
+        label: Over-reliance on AI / skill atrophy
+      - slug: job-security
+        label: Job security
+      - slug: code-ownership
+        label: Code ownership and licensing issues
+      - slug: hallucinations
+        label: Hallucinations (AI generating non-existent packages/APIs)
+      - slug: context-limitations
+        label: Context limitations
+      - slug: lack-transparency
+        label: Lack of transparency in AI decisions
+      - slug: bias
+        label: Bias in AI-generated code
+      - slug: environmental-impact
+        label: Environmental impact
+      - slug: debugging-difficulty
+        label: Difficulty debugging AI-generated code
+      - slug: compliance-regulatory
+        label: Compliance and regulatory concerns
+      - slug: none
+        label: None - I have no concerns
+
+  # SECTION 2: CODE REVIEW TOOLS
+  - section: code-review-tools
+    slug: code-review-tools-experience
+    title: What is your experience with code review tools?
     type: experience
     randomize: true
     options:
@@ -225,9 +221,9 @@ questions:
       - slug: pullrequest
         label: PullRequest
 
-  - section: ai-code-review-tools
+  - section: code-review-tools
     slug: code-review-usage-frequency
-    title: How frequently do you use AI code review tools?
+    title: How frequently do you use code review tools?
     type: single
     options:
       - slug: every-pr
@@ -243,204 +239,133 @@ questions:
       - slug: not-sure
         label: Not sure
 
-  - section: ai-code-review-tools
-    slug: code-review-features-important
-    title: Which AI code review features are most important to you?
+  - section: code-review-tools
+    slug: code-review-concerns
+    title: What are your biggest concerns about code review tools?
     type: multiple
-    multiple_max: 5
     options:
-      - slug: security-vulnerability-detection
-        label: Security vulnerability detection
-      - slug: code-quality-analysis
-        label: Code quality analysis
-      - slug: bug-detection
-        label: Bug detection
-      - slug: performance-issues
-        label: Performance issue identification
-      - slug: code-style-consistency
-        label: Code style consistency
-      - slug: documentation-suggestions
-        label: Documentation suggestions
-      - slug: test-coverage-analysis
-        label: Test coverage analysis
-      - slug: dependency-analysis
-        label: Dependency analysis
-      - slug: architecture-review
-        label: Architecture review
-      - slug: compliance-checking
-        label: Compliance checking
-      - slug: false-positive-rate
-        label: Low false positive rate
-      - slug: context-awareness
-        label: Context awareness (understands codebase)
-      - slug: integration-depth
-        label: Deep integration with development workflow
-      - slug: privacy-security
+      - slug: code-quality-accuracy
+        label: Code quality and accuracy
+      - slug: security-vulnerabilities
+        label: Security vulnerabilities in generated code
+      - slug: privacy-data-security
         label: Privacy and data security
-      - slug: cost-effectiveness
-        label: Cost effectiveness
-
-  - section: ai-code-review-tools
-    slug: code-review-tool-satisfaction
-    title: How satisfied are you with your current AI code review tools?
-    type: single
-    options:
-      - slug: very-satisfied
-        label: Very satisfied
-      - slug: satisfied
-        label: Satisfied
-      - slug: neutral
-        label: Neutral
-      - slug: dissatisfied
-        label: Dissatisfied
-      - slug: very-dissatisfied
-        label: Very dissatisfied
-      - slug: dont-use
-        label: I don't use AI code review tools
-
-  - section: ai-code-review-tools
-    slug: code-review-pricing-concerns
-    title: What are your main concerns about AI code review tool pricing?
-    type: multiple
-    options:
-      - slug: too-expensive
-        label: Too expensive for the value
-      - slug: pricing-complexity
-        label: Complex pricing models
-      - slug: hidden-costs
-        label: Hidden costs
-      - slug: per-user-pricing
-        label: Per-user pricing doesn't scale well
-      - slug: usage-based-pricing
-        label: Usage-based pricing is unpredictable
-      - slug: enterprise-pricing
-        label: Enterprise pricing is opaque
-      - slug: no-concerns
-        label: No pricing concerns
-      - slug: dont-use
-        label: I don't use AI code review tools
-
-  # SECTION 2: TOOL CATEGORIES & USAGE PATTERNS
-  - section: tool-categories
-    slug: tool-categories-used
-    title: Which categories of AI coding tools do you use?
-    type: multiple
-    options:
-      - slug: standalone-editors
-        label: Standalone AI-native editors (like Cursor, Windsurf)
-      - slug: ide-extensions
-        label: IDE extensions/plugins (like GitHub Copilot, Codeium)
-      - slug: terminal-cli
-        label: Terminal/CLI tools (like Aider, OpenCode)
-      - slug: web-platforms
-        label: Web-based platforms (like Replit, Bolt.new)
-      - slug: chat-assistants
-        label: Chat-based assistants for coding (like Claude, ChatGPT)
-      - slug: autonomous-agents
-        label: Autonomous coding agents (like Devin, Jules)
-      - slug: code-review-tools
-        label: AI code review tools (like CodeRabbit, SonarQube, Snyk)
-      - slug: local-models
-        label: Local/self-hosted AI models
+      - slug: cost
+        label: Cost
+      - slug: over-reliance
+        label: Over-reliance on AI / skill atrophy
+      - slug: job-security
+        label: Job security
+      - slug: code-ownership
+        label: Code ownership and licensing issues
+      - slug: hallucinations
+        label: Hallucinations (AI generating non-existent packages/APIs)
+      - slug: context-limitations
+        label: Context limitations
+      - slug: lack-transparency
+        label: Lack of transparency in AI decisions
+      - slug: bias
+        label: Bias in AI-generated code
+      - slug: environmental-impact
+        label: Environmental impact
+      - slug: debugging-difficulty
+        label: Difficulty debugging AI-generated code
+      - slug: compliance-regulatory
+        label: Compliance and regulatory concerns
       - slug: none
-        label: None - I don't use AI coding tools
+        label: None - I have no concerns
 
-  - section: tool-categories
-    slug: primary-ai-tool
-    title: What is your primary AI coding tool?
-    type: single
+  # SECTION 3: MODELS
+  - section: models
+    slug: frontier-models-experience
+    title: What is your experience with frontier models?
+    type: experience
     randomize: true
     options:
-      - slug: github-copilot
-        label: GitHub Copilot
-      - slug: cursor
-        label: Cursor
-      - slug: chatgpt
-        label: ChatGPT
-      - slug: claude
-        label: Claude
-      - slug: windsurf
-        label: Windsurf
-      - slug: codeium
-        label: Codeium
-      - slug: tabnine
-        label: Tabnine
-      - slug: jetbrains-ai
-        label: JetBrains AI Assistant
-      - slug: replit-ai
-        label: Replit AI
-      - slug: aider
-        label: Aider
-      - slug: claude-code
-        label: Claude Code
-      - slug: amazon-q
-        label: Amazon Q Developer
-      - slug: gemini
-        label: Gemini/Gemini Code Assist
-      - slug: opencode
-        label: OpenCode
-      - slug: sourcegraph-cody
-        label: Sourcegraph Cody
-      - slug: bolt-new
-        label: Bolt.new
-      - slug: continue-dev
-        label: Continue.dev
-      - slug: coderabbit
-        label: CodeRabbit
-      - slug: sonarqube
-        label: SonarQube/SonarCloud
-      - slug: snyk
-        label: Snyk
-      - slug: multiple-equally
-        label: I don't have a primary tool / I use multiple equally
-      - slug: none
-        label: I don't use AI coding tools
+      - slug: gpt-4
+        label: GPT-4 (OpenAI)
+      - slug: gpt-4o
+        label: GPT-4o (OpenAI)
+      - slug: gpt-5
+        label: GPT-5 (OpenAI)
+      - slug: claude-3-opus
+        label: Claude 3 Opus (Anthropic)
+      - slug: claude-3-5-sonnet
+        label: Claude 3.5 Sonnet (Anthropic)
+      - slug: claude-4
+        label: Claude 4 (Anthropic)
+      - slug: gemini-pro
+        label: Gemini Pro (Google)
+      - slug: gemini-ultra
+        label: Gemini Ultra (Google)
+      - slug: gemini-2-0
+        label: Gemini 2.0 (Google)
+      - slug: o1
+        label: O1 (OpenAI)
+      - slug: o3
+        label: O3 (OpenAI)
 
-  - section: tool-categories
-    slug: usage-frequency
-    title: How frequently do you use AI coding tools?
+  - section: models
+    slug: open-source-models-experience
+    title: What is your experience with open source models?
+    type: experience
+    randomize: true
+    options:
+      - slug: llama-3
+        label: Llama 3 (Meta)
+      - slug: llama-3-1
+        label: Llama 3.1 (Meta)
+      - slug: llama-3-2
+        label: Llama 3.2 (Meta)
+      - slug: llama-3-3
+        label: Llama 3.3 (Meta)
+      - slug: mistral-7b
+        label: Mistral 7B
+      - slug: mixtral-8x7b
+        label: Mixtral 8x7B
+      - slug: mixtral-8x22b
+        label: Mixtral 8x22B
+      - slug: qwen-2
+        label: Qwen 2 (Alibaba)
+      - slug: qwen-2-5
+        label: Qwen 2.5 (Alibaba)
+      - slug: deepseek-coder
+        label: DeepSeek Coder
+      - slug: deepseek-v2
+        label: DeepSeek V2
+      - slug: deepseek-v3
+        label: DeepSeek V3
+      - slug: codestral
+        label: Codestral (Mistral)
+      - slug: starcoder
+        label: StarCoder
+      - slug: wizard-coder
+        label: WizardCoder
+      - slug: code-llama
+        label: Code Llama
+
+  - section: models
+    slug: model-preference
+    title: Do you prefer frontier models or open source models?
     type: single
     options:
-      - slug: multiple-daily
-        label: Multiple times per day
-      - slug: once-daily
-        label: Once per day
-      - slug: few-weekly
-        label: A few times per week
-      - slug: once-weekly
-        label: Once per week
-      - slug: few-monthly
-        label: A few times per month
-      - slug: once-monthly
-        label: Once per month or less
-      - slug: tried-stopped
-        label: I've tried them but stopped using them
-      - slug: never-used
-        label: I've never used AI coding tools
+      - slug: frontier-models
+        label: Frontier models (GPT-4, Claude, Gemini)
+      - slug: open-source-models
+        label: Open source models (Llama, Mistral, Qwen)
+      - slug: both-equally
+        label: Both equally
+      - slug: depends-on-use-case
+        label: Depends on the use case
+      - slug: not-sure
+        label: Not sure
+      - slug: dont-use
+        label: I don't use AI models
 
-  - section: tool-categories
-    slug: usage-duration
-    title: How long have you been using AI coding tools?
-    type: single
-    options:
-      - slug: less-3-months
-        label: Less than 3 months
-      - slug: 3-6-months
-        label: 3-6 months
-      - slug: 6-12-months
-        label: 6-12 months
-      - slug: 1-2-years
-        label: 1-2 years
-      - slug: 2-3-years
-        label: 2-3 years
-      - slug: more-3-years
-        label: More than 3 years
-      - slug: none
-        label: I don't use AI coding tools
-
-  - section: tool-categories
+  # SECTION 4: ENVIRONMENT
+  - section: environment
     slug: development-environments
-    title: Which development environments do you use AI coding tools in?
+    title: Which development environments do you use coding tools in?
     type: multiple
     options:
       - slug: vscode
@@ -467,8 +392,165 @@ questions:
         label: Emacs
       - slug: sublime-text
         label: Sublime Text
+      - slug: zed
+        label: Zed
       - slug: none
-        label: I don't use AI coding tools
+        label: I don't use coding tools
+
+  - section: environment
+    slug: web-based-tools
+    title: Do you use web-based coding tools?
+    type: multiple
+    options:
+      - slug: github-codespaces
+        label: GitHub Codespaces
+      - slug: replit
+        label: Replit
+      - slug: stackblitz
+        label: StackBlitz
+      - slug: codesandbox
+        label: CodeSandbox
+      - slug: gitpod
+        label: Gitpod
+      - slug: v0
+        label: V0 (by Vercel)
+      - slug: bolt-new
+        label: Bolt.new
+      - slug: lovable
+        label: Lovable
+      - slug: cursor-web
+        label: Cursor (web version)
+      - slug: none
+        label: I don't use web-based tools
+
+  - section: environment
+    slug: agents-sandboxes
+    title: Do you use agents, sandboxes, or other advanced tools?
+    type: multiple
+    options:
+      - slug: autonomous-agents
+        label: Autonomous agents (Devin, Cline, etc.)
+      - slug: sandbox-environments
+        label: Sandbox environments
+      - slug: github-copilot-workspace
+        label: GitHub Copilot Workspace
+      - slug: claude-desktop
+        label: Claude Desktop
+      - slug: local-models
+        label: Local/self-hosted models
+      - slug: docker-containers
+        label: Docker containers for development
+      - slug: kubernetes
+        label: Kubernetes for development
+      - slug: none
+        label: I don't use these tools
+
+  # SECTION 5: APPLICATIONS
+  - section: applications
+    slug: ai-use-cases
+    title: How do you use coding tools?
+    type: multiple
+    options:
+      - slug: autocomplete
+        label: Code autocomplete/inline suggestions
+      - slug: generate-code
+        label: Generate code from natural language descriptions
+      - slug: debug-fix
+        label: Debug and fix bugs
+      - slug: refactor
+        label: Refactor existing code
+      - slug: unit-tests
+        label: Write unit tests
+      - slug: integration-tests
+        label: Write integration tests
+      - slug: e2e-tests
+        label: Write end-to-end tests
+      - slug: code-review
+        label: Code review and analysis
+      - slug: documentation
+        label: Generate documentation and comments
+      - slug: explain-code
+        label: Explain existing code
+      - slug: terminal-commands
+        label: Terminal command suggestions
+      - slug: multi-file-editing
+        label: Multi-file editing
+      - slug: chat-codebase
+        label: Chat with codebase / ask questions about code
+      - slug: translate-code
+        label: Translate code between languages
+      - slug: security-detection
+        label: Security vulnerability detection
+      - slug: performance-optimization
+        label: Performance optimization
+      - slug: api-endpoints
+        label: Generate API endpoints
+      - slug: database-queries
+        label: Database query generation
+      - slug: boilerplate
+        label: Boilerplate code generation
+      - slug: learning-frameworks
+        label: Learning new frameworks/libraries
+      - slug: none
+        label: I don't use coding tools
+
+  - section: applications
+    slug: project-types
+    title: What types of projects do you use coding tools on?
+    type: multiple
+    options:
+      - slug: personal-projects
+        label: Personal side projects
+      - slug: open-source
+        label: Open-source projects
+      - slug: work-production
+        label: Work projects (production code)
+      - slug: work-internal
+        label: Work projects (internal tools)
+      - slug: learning-educational
+        label: Learning/educational projects
+      - slug: prototypes-mvps
+        label: Prototypes and MVPs
+      - slug: code-migrations
+        label: Code migrations and refactoring
+      - slug: bug-fixes
+        label: Bug fixes
+      - slug: new-features
+        label: New features
+      - slug: testing
+        label: Testing
+      - slug: documentation
+        label: Documentation
+      - slug: none
+        label: None of the above
+
+  - section: applications
+    slug: monthly-spending
+    title: How much do you pay for coding tools per month?
+    type: single
+    options:
+      - slug: 0-free-tier
+        label: $0 (free tier only)
+      - slug: 1-10
+        label: $1-10
+      - slug: 11-20
+        label: $11-20
+      - slug: 21-40
+        label: $21-40
+      - slug: 41-60
+        label: $41-60
+      - slug: 61-100
+        label: $61-100
+      - slug: 101-200
+        label: $101-200
+      - slug: 200-plus
+        label: $200+
+      - slug: employer-pays
+        label: My employer pays (I don't know the cost)
+      - slug: free-open-source
+        label: I use free/open-source tools only
+      - slug: dont-use
+        label: I don't use coding tools
 
   # SECTION 3: USE CASES & APPLICATIONS
   - section: use-cases
@@ -611,263 +693,6 @@ questions:
       - slug: none
         label: None of the above
 
-  # SECTION 4: FEATURES & CAPABILITIES
-  - section: features-capabilities
-    slug: important-features
-    title: Which features are most important to you in AI coding tools?
-    type: multiple
-    multiple_max: 5
-    options:
-      - slug: accuracy
-        label: Accuracy of code suggestions
-      - slug: speed
-        label: Speed of suggestions
-      - slug: context-awareness
-        label: Context awareness (understands full codebase)
-      - slug: multi-file-editing
-        label: Multi-file editing capabilities
-      - slug: inline-suggestions
-        label: Inline suggestions as you type
-      - slug: chat-interface
-        label: Chat interface for questions
-      - slug: terminal-integration
-        label: Terminal/CLI integration
-      - slug: multi-language-support
-        label: Support for multiple programming languages
-      - slug: privacy-security
-        label: Privacy and data security
-      - slug: local-offline
-        label: Local/offline model options
-      - slug: custom-models
-        label: Custom model selection (Claude, GPT-4, Gemini, etc.)
-      - slug: codebase-indexing
-        label: Codebase indexing and search
-      - slug: code-explanation
-        label: Code explanation capabilities
-      - slug: test-generation
-        label: Test generation
-      - slug: documentation-generation
-        label: Documentation generation
-      - slug: refactoring-suggestions
-        label: Refactoring suggestions
-      - slug: bug-detection
-        label: Bug detection and fixing
-      - slug: git-integration
-        label: Integration with version control (Git)
-      - slug: collaborative-features
-        label: Collaborative features (team sharing)
-      - slug: large-context
-        label: Large context windows
-      - slug: voice-input
-        label: Voice input
-
-  - section: features-capabilities
-    slug: context-awareness-level
-    title: What level of context awareness do you need?
-    type: single
-    options:
-      - slug: file-level
-        label: File-level only (current file)
-      - slug: project-level
-        label: Project-level (all files in workspace)
-      - slug: full-codebase
-        label: Full codebase (entire repository)
-      - slug: multi-repository
-        label: Multi-repository (across multiple repos)
-      - slug: organization-level
-        label: Organization-level (team conventions and patterns)
-      - slug: dont-care
-        label: I don't care about context awareness
-      - slug: not-sure
-        label: Not sure
-
-  - section: features-capabilities
-    slug: autonomous-agents-usage
-    title: Do you use AI tools with autonomous/agent capabilities?
-    type: single
-    options:
-      - slug: frequently
-        label: Yes, frequently
-      - slug: occasionally
-        label: Yes, occasionally
-      - slug: tried-dont-use
-        label: I've tried them but don't use them regularly
-      - slug: plan-to-use
-        label: No, but I plan to
-      - slug: no-plan
-        label: No, and I don't plan to
-      - slug: not-sure
-        label: I'm not sure what autonomous agents are
-
-  - section: features-capabilities
-    slug: autonomous-agent-use-cases
-    title: How do you use autonomous AI agents?
-    type: multiple
-    options:
-      - slug: multi-file-features
-        label: Multi-file feature implementation
-      - slug: automated-bug-fixing
-        label: Automated bug fixing
-      - slug: test-generation
-        label: Test generation
-      - slug: code-review-automation
-        label: Code review automation
-      - slug: documentation-generation
-        label: Documentation generation
-      - slug: codebase-analysis
-        label: Codebase analysis
-      - slug: project-scaffolding
-        label: Project scaffolding
-      - slug: pr-automation
-        label: PR automation
-      - slug: background-tasks
-        label: Background tasks
-
-  - section: features-capabilities
-    slug: interaction-style-preference
-    title: Which interaction style do you prefer?
-    type: single
-    options:
-      - slug: inline-only
-        label: Inline suggestions only (ghost text as you type)
-      - slug: chat-only
-        label: Chat interface only
-      - slug: both-equally
-        label: Both inline and chat equally
-      - slug: mostly-inline
-        label: Mostly inline with occasional chat
-      - slug: mostly-chat
-        label: Mostly chat with occasional inline
-      - slug: terminal-cli
-        label: Terminal/CLI interaction
-      - slug: voice-commands
-        label: Voice commands
-
-  - section: features-capabilities
-    slug: context-window-size
-    title: What context window size do you need?
-    type: single
-    options:
-      - slug: small
-        label: Small (4K-8K tokens) - single file
-      - slug: medium
-        label: Medium (16K-32K tokens) - multiple files
-      - slug: large
-        label: Large (64K-128K tokens) - small project
-      - slug: very-large
-        label: Very large (200K-500K tokens) - medium project
-      - slug: massive
-        label: Massive (1M+ tokens) - entire large codebase
-      - slug: not-sure
-        label: Not sure / I don't know what context windows are
-
-  # SECTION 5: INTEGRATION & SETUP
-  - section: integration-setup
-    slug: ides-editors-used
-    title: Which IDEs/editors do you use for coding?
-    type: multiple
-    options:
-      - slug: vscode
-        label: VS Code
-      - slug: jetbrains-intellij
-        label: JetBrains IDEs (IntelliJ IDEA)
-      - slug: jetbrains-pycharm
-        label: JetBrains IDEs (PyCharm)
-      - slug: jetbrains-webstorm
-        label: JetBrains IDEs (WebStorm)
-      - slug: jetbrains-other
-        label: JetBrains IDEs (Other)
-      - slug: visual-studio
-        label: Visual Studio
-      - slug: vim-neovim
-        label: Vim/Neovim
-      - slug: cursor
-        label: Cursor
-      - slug: windsurf
-        label: Windsurf
-      - slug: xcode
-        label: Xcode
-      - slug: android-studio
-        label: Android Studio
-      - slug: emacs
-        label: Emacs
-      - slug: sublime-text
-        label: Sublime Text
-      - slug: zed
-        label: Zed
-      - slug: terminal-cli
-        label: Terminal/CLI only
-      - slug: web-ides
-        label: Web-based IDEs
-
-  - section: integration-setup
-    slug: ide-integration-importance
-    title: How important is IDE/editor integration for AI tools?
-    type: single
-    options:
-      - slug: critical
-        label: Critical - I only use tools that integrate with my IDE
-      - slug: very-important
-        label: Very important - strong preference for IDE integration
-      - slug: somewhat-important
-        label: Somewhat important - nice to have but not essential
-      - slug: not-important
-        label: Not important - I'm flexible about how I access AI tools
-      - slug: not-applicable
-        label: Not applicable - I use standalone AI editors
-
-  - section: integration-setup
-    slug: local-models-usage
-    title: Do you use local/self-hosted AI models?
-    type: single
-    options:
-      - slug: exclusively
-        label: Yes, exclusively
-      - slug: alongside-cloud
-        label: Yes, alongside cloud-based tools
-      - slug: would-like-to
-        label: No, but I'd like to
-      - slug: no-interest
-        label: No, and I have no interest
-      - slug: not-aware
-        label: I'm not aware of local model options
-
-  - section: integration-setup
-    slug: local-model-frameworks
-    title: Which local model frameworks do you use?
-    type: multiple
-    options:
-      - slug: ollama
-        label: Ollama
-      - slug: lm-studio
-        label: LM Studio
-      - slug: localai
-        label: LocalAI
-      - slug: llama-cpp
-        label: llama.cpp
-      - slug: vllm
-        label: vLLM
-      - slug: hugging-face
-        label: Hugging Face Transformers
-
-  - section: integration-setup
-    slug: api-key-management
-    title: How do you manage AI model API keys?
-    type: multiple
-    options:
-      - slug: built-in-models
-        label: Use tool's built-in models (no API key needed)
-      - slug: byok-personal
-        label: Bring Your Own Key (BYOK) with personal API keys
-      - slug: company-provided
-        label: Company-provided API keys
-      - slug: local-models-only
-        label: Local models only (no API keys)
-      - slug: combination
-        label: Combination of the above
-      - slug: not-applicable
-        label: Not applicable
-
   # SECTION 6: PRODUCTIVITY & IMPACT
   - section: productivity-impact
     slug: productivity-impact
@@ -954,29 +779,26 @@ questions:
         label: I don't use AI coding tools
 
   - section: productivity-impact
-    slug: work-satisfaction-impact
-    title: How has AI impacted your work satisfaction?
+    slug: ai-generated-code-percentage
+    title: What percentage of your code is AI-generated or AI-assisted?
     type: single
     options:
-      - slug: much-more-satisfying
-        label: Much more satisfying - I focus on interesting problems
-      - slug: somewhat-more-satisfying
-        label: Somewhat more satisfying
-      - slug: no-change
-        label: No change
-      - slug: somewhat-less-satisfying
-        label: Somewhat less satisfying
-      - slug: much-less-satisfying
-        label: Much less satisfying - I feel deskilled
+      - slug: 0-10
+        label: 0-10%
+      - slug: 11-25
+        label: 11-25%
+      - slug: 26-50
+        label: 26-50%
+      - slug: 51-75
+        label: 51-75%
+      - slug: 76-90
+        label: 76-90%
+      - slug: 91-100
+        label: 91-100%
       - slug: not-sure
         label: Not sure
       - slug: dont-use
         label: I don't use AI coding tools
-
-  - section: productivity-impact
-    slug: ai-generated-code-percentage
-    title: What percentage of your code is AI-generated or AI-assisted?
-    type: numeric
 
   - section: productivity-impact
     slug: most-helpful-areas
@@ -1077,44 +899,6 @@ questions:
         label: None - I'm satisfied with my AI tools
 
   - section: concerns-pain-points
-    slug: security-issues-encountered
-    title: Have you encountered security issues with AI-generated code?
-    type: single
-    options:
-      - slug: frequently
-        label: Yes, frequently
-      - slug: occasionally
-        label: Yes, occasionally
-      - slug: rarely
-        label: Yes, but rarely
-      - slug: never
-        label: No, never
-      - slug: not-sure
-        label: Not sure
-      - slug: dont-use
-        label: I don't use AI coding tools
-
-  - section: concerns-pain-points
-    slug: handle-insecure-code
-    title: How do you handle potentially insecure AI-generated code?
-    type: multiple
-    options:
-      - slug: manual-review
-        label: Manual code review
-      - slug: automated-scanning
-        label: Automated security scanning (SAST/DAST)
-      - slug: peer-review
-        label: Peer review process
-      - slug: security-focused-tools
-        label: Security-focused AI tools
-      - slug: security-best-practices
-        label: Follow security best practices in prompts
-      - slug: avoid-security-critical
-        label: Avoid AI for security-critical code
-      - slug: no-precautions
-        label: Don't take special precautions
-
-  - section: concerns-pain-points
     slug: job-security-concern
     title: Do you worry about job security due to AI coding tools?
     type: single
@@ -1149,117 +933,6 @@ questions:
         label: Too early to tell
       - slug: dont-use
         label: I don't use AI coding tools
-
-  # SECTION 8: PRICING & BUSINESS MODELS
-  - section: pricing-business
-    slug: monthly-spending
-    title: How much do you pay for AI coding tools per month?
-    type: single
-    options:
-      - slug: 0-free-tier
-        label: $0 (free tier only)
-      - slug: 1-10
-        label: $1-10
-      - slug: 11-20
-        label: $11-20
-      - slug: 21-40
-        label: $21-40
-      - slug: 41-60
-        label: $41-60
-      - slug: 61-100
-        label: $61-100
-      - slug: 101-200
-        label: $101-200
-      - slug: 200-plus
-        label: $200+
-      - slug: employer-pays
-        label: My employer pays (I don't know the cost)
-      - slug: free-open-source
-        label: I use free/open-source tools only
-      - slug: dont-use
-        label: I don't use AI coding tools
-
-  - section: pricing-business
-    slug: who-pays
-    title: Who pays for your AI coding tools?
-    type: single
-    options:
-      - slug: personal
-        label: I pay personally
-      - slug: employer
-        label: My employer pays
-      - slug: mix
-        label: Mix of personal and employer
-      - slug: free-tier
-        label: Free tier / open-source only
-      - slug: dont-use
-        label: I don't use AI coding tools
-
-  - section: pricing-business
-    slug: preferred-pricing-model
-    title: What pricing model do you prefer?
-    type: single
-    options:
-      - slug: free-tier
-        label: Free tier (with limitations)
-      - slug: flat-monthly
-        label: Flat monthly subscription (unlimited use)
-      - slug: credit-based
-        label: Credit-based (pay per use with credits)
-      - slug: usage-based
-        label: Usage-based (pay per token/request)
-      - slug: one-time-purchase
-        label: One-time purchase
-      - slug: free-open-source
-        label: Free and open-source
-      - slug: employer-paid
-        label: Employer-paid (I don't care about pricing)
-
-  - section: pricing-business
-    slug: value-perception
-    title: Do you think AI coding tools are worth the cost?
-    type: single
-    options:
-      - slug: excellent-value
-        label: Excellent value - worth much more than I pay
-      - slug: good-value
-        label: Good value - worth the price
-      - slug: fair-value
-        label: Fair value - reasonable for what I get
-      - slug: poor-value
-        label: Poor value - overpriced
-      - slug: not-worth-it
-        label: Not worth it - too expensive for the benefit
-      - slug: free-tools-only
-        label: I only use free tools
-      - slug: not-sure
-        label: Not sure / Too early to tell
-
-  - section: pricing-business
-    slug: switching-factors
-    title: What would make you switch AI coding tools?
-    type: multiple
-    options:
-      - slug: lower-price
-        label: Lower price
-      - slug: better-accuracy
-        label: Better accuracy
-      - slug: more-features
-        label: More features
-      - slug: better-privacy-security
-        label: Better privacy/security
-      - slug: faster-performance
-        label: Faster performance
-      - slug: better-ide-integration
-        label: Better IDE integration
-      - slug: local-self-hosted
-        label: Local/self-hosted options
-      - slug: better-support
-        label: Better customer support
-      - slug: more-transparent
-        label: More transparent AI decisions
-      - slug: nothing
-        label: Nothing - I'm satisfied with current tools
 
   # SECTION 9: PROGRAMMING LANGUAGES & FRAMEWORKS
   - section: languages-frameworks
@@ -1445,495 +1118,6 @@ questions:
         label: Not sure / haven't compared
       - slug: one-language
         label: I only use one language
-
-  # SECTION 10: TRENDS & FUTURE OUTLOOK
-  - section: trends-future
-    slug: excited-capabilities
-    title: Which emerging AI coding capabilities are you most excited about?
-    type: multiple
-    multiple_max: 3
-    options:
-      - slug: autonomous-agents
-        label: Autonomous agents that work independently
-      - slug: multi-agent-systems
-        label: Multi-agent systems (multiple AI agents collaborating)
-      - slug: voice-based-coding
-        label: Voice-based coding
-      - slug: larger-context-windows
-        label: Larger context windows (entire codebase understanding)
-      - slug: better-multi-file-editing
-        label: Better multi-file editing
-      - slug: improved-security-scanning
-        label: Improved code security scanning
-      - slug: real-time-collaboration
-        label: Real-time collaboration with AI
-      - slug: custom-models-team
-        label: Custom AI models trained on team's codebase
-      - slug: project-management-integration
-        label: Better integration with project management tools
-      - slug: local-models-performance
-        label: Local models with cloud-level performance
-      - slug: ai-powered-code-review
-        label: AI-powered code review
-      - slug: automatic-bug-detection
-        label: Automatic bug detection and fixing
-      - slug: ai-pair-programming
-        label: AI pair programming
-      - slug: none
-        label: None - not excited about AI coding tools
-
-  - section: trends-future
-    slug: ai-evolution-expectations
-    title: How do you expect AI coding tools to evolve in the next 2 years?
-    type: multiple
-    options:
-      - slug: more-accurate-reliable
-        label: More accurate and reliable
-      - slug: better-context-understanding
-        label: Better context understanding
-      - slug: more-autonomous
-        label: More autonomous capabilities
-      - slug: cheaper-affordable
-        label: Cheaper/more affordable
-      - slug: more-specialized
-        label: More specialized for specific languages/domains
-      - slug: better-security-privacy
-        label: Better security and privacy features
-      - slug: more-transparent
-        label: More transparent and explainable
-      - slug: fully-integrated-ides
-        label: Fully integrated into IDEs (not separate tools)
-      - slug: replace-developers-simple
-        label: Replace human developers for simple tasks
-      - slug: plateau
-        label: Plateau - minimal improvements
-
-  - section: trends-future
-    slug: make-ai-more-useful
-    title: What would make AI coding tools more useful to you?
-    type: freeform
-
-  - section: trends-future
-    slug: likelihood-using-2-years
-    title: How likely are you to still be using AI coding tools in 2 years?
-    type: single
-    options:
-      - slug: extremely-likely
-        label: Extremely likely - essential to my workflow
-      - slug: very-likely
-        label: Very likely
-      - slug: somewhat-likely
-        label: Somewhat likely
-      - slug: not-very-likely
-        label: Not very likely
-      - slug: unlikely
-        label: Unlikely - I plan to stop using them
-      - slug: already-stopped
-        label: Already stopped using them
-      - slug: not-sure
-        label: Not sure
-
-  - section: trends-future
-    slug: ai-replace-developers
-    title: Do you believe AI will replace software developers?
-    type: single
-    options:
-      - slug: yes-5-years
-        label: Yes, within 5 years
-      - slug: yes-10-years
-        label: Yes, within 10 years
-      - slug: yes-eventually
-        label: Yes, eventually (10+ years)
-      - slug: no-roles-change
-        label: No, but roles will change significantly
-      - slug: no-assistive-only
-        label: No, AI will remain assistive only
-      - slug: not-sure
-        label: Not sure
-
-  - section: trends-future
-    slug: ai-usage-philosophy
-    title: How do you think AI should be used in software development?
-    type: single
-    options:
-      - slug: co-pilot-assistant
-        label: As a co-pilot/assistant with human oversight
-      - slug: autonomous-minimal-oversight
-        label: As an autonomous agent with minimal oversight
-      - slug: simple-repetitive-tasks
-        label: Only for simple, repetitive tasks
-      - slug: entire-lifecycle
-        label: Throughout the entire development lifecycle
-      - slug: not-at-all
-        label: Not at all - humans should write all code
-
-  - section: trends-future
-    slug: overall-sentiment
-    title: What's your overall sentiment toward AI coding tools?
-    type: single
-    options:
-      - slug: very-negative
-        label: Very negative
-      - slug: negative
-        label: Negative
-      - slug: neutral
-        label: Neutral
-      - slug: positive
-        label: Positive
-      - slug: very-positive
-        label: Very positive
-
-  # SECTION 11: COMPANY & TEAM USAGE
-  - section: company-team
-    slug: organization-policies
-    title: Does your organization have policies about AI coding tool usage?
-    type: single
-    options:
-      - slug: actively-encourages
-        label: Yes - actively encourages use
-      - slug: allows-guidelines
-        label: Yes - allows with guidelines
-      - slug: restricted-approval
-        label: Yes - restricted/requires approval
-      - slug: completely-banned
-        label: Yes - completely banned
-      - slug: no-policies
-        label: No policies yet
-      - slug: not-sure
-        label: Not sure
-      - slug: not-applicable
-        label: I work independently / not applicable
-
-  - section: company-team
-    slug: organization-provided-tools
-    title: Which AI tools does your organization provide/approve?
-    type: multiple
-    options:
-      - slug: github-copilot
-        label: GitHub Copilot
-      - slug: cursor
-        label: Cursor
-      - slug: jetbrains-ai
-        label: JetBrains AI Assistant
-      - slug: amazon-q
-        label: Amazon Q Developer
-      - slug: tabnine
-        label: Tabnine
-      - slug: codeium
-        label: Codeium
-      - slug: sourcegraph-cody
-        label: Sourcegraph Cody
-      - slug: gemini-code-assist
-        label: Gemini Code Assist
-      - slug: custom-self-hosted
-        label: Custom/self-hosted solutions
-      - slug: developer-choice
-        label: No specific tools - developer's choice
-      - slug: not-applicable
-        label: Not applicable
-
-  - section: company-team
-    slug: developers-using-ai
-    title: How many developers in your organization use AI coding tools?
-    type: single
-    options:
-      - slug: none
-        label: None
-      - slug: few-less-25
-        label: A few (less than 25%)
-      - slug: some-25-50
-        label: Some (25-50%)
-      - slug: most-50-75
-        label: Most (50-75%)
-      - slug: almost-all-75-plus
-        label: Almost all (75%+)
-      - slug: not-sure
-        label: Not sure
-      - slug: work-independently
-        label: I work independently
-
-  - section: company-team
-    slug: ai-code-guidelines
-    title: Does your team have guidelines for using AI-generated code?
-    type: multiple
-    options:
-      - slug: code-review-required
-        label: Code review required for AI-generated code
-      - slug: security-scanning
-        label: Security scanning required
-      - slug: testing-requirements
-        label: Testing requirements
-      - slug: documentation-usage
-        label: Documentation of AI usage
-      - slug: attribution-requirements
-        label: Attribution requirements
-      - slug: restrictions-certain-code
-        label: Restrictions on certain types of code
-      - slug: training-provided
-        label: Training provided
-      - slug: no-guidelines
-        label: No specific guidelines
-      - slug: not-sure
-        label: Not sure
-      - slug: not-applicable
-        label: Not applicable
-
-  # SECTION 12: DEMOGRAPHICS
-  - section: demographics
-    slug: years-experience
-    title: Years of professional coding experience
-    type: single
-    options:
-      - slug: less-1-year
-        label: Less than 1 year
-      - slug: 1-2-years
-        label: 1-2 years
-      - slug: 3-5-years
-        label: 3-5 years
-      - slug: 6-10-years
-        label: 6-10 years
-      - slug: 11-15-years
-        label: 11-15 years
-      - slug: 16-20-years
-        label: 16-20 years
-      - slug: 20-plus-years
-        label: 20+ years
-      - slug: student
-        label: I'm a student / not working professionally yet
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: role
-    title: What is your role?
-    type: single
-    options:
-      - slug: front-end-developer
-        label: Front-end developer
-      - slug: back-end-developer
-        label: Back-end developer
-      - slug: full-stack-developer
-        label: Full-stack developer
-      - slug: mobile-developer
-        label: Mobile developer
-      - slug: devops-sre
-        label: DevOps/SRE engineer
-      - slug: data-scientist-ml
-        label: Data scientist / ML engineer
-      - slug: engineering-manager
-        label: Engineering manager
-      - slug: cto-tech-lead
-        label: CTO / Technical lead
-      - slug: student
-        label: Student
-      - slug: hobbyist
-        label: Hobbyist
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: company-size
-    title: Company size
-    type: single
-    options:
-      - slug: just-me
-        label: Just me (freelance/solo)
-      - slug: 2-10
-        label: 2-10 employees
-      - slug: 11-50
-        label: 11-50 employees
-      - slug: 51-200
-        label: 51-200 employees
-      - slug: 201-1000
-        label: 201-1000 employees
-      - slug: 1001-5000
-        label: 1001-5000 employees
-      - slug: 5000-plus
-        label: 5000+ employees
-      - slug: not-applicable
-        label: Not applicable
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: industry-sector
-    title: Industry sector
-    type: single
-    options:
-      - slug: technology-software
-        label: Technology/Software
-      - slug: finance-fintech
-        label: Finance/FinTech
-      - slug: ecommerce-retail
-        label: E-commerce/Retail
-      - slug: healthcare-medtech
-        label: Healthcare/MedTech
-      - slug: education-edtech
-        label: Education/EdTech
-      - slug: government-public
-        label: Government/Public sector
-      - slug: consulting-agency
-        label: Consulting/Agency
-      - slug: gaming
-        label: Gaming
-      - slug: telecommunications
-        label: Telecommunications
-      - slug: manufacturing
-        label: Manufacturing
-      - slug: media-entertainment
-        label: Media/Entertainment
-      - slug: startup-pre-pmf
-        label: Startup (pre-product-market fit)
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: work-situation
-    title: Work situation
-    type: single
-    options:
-      - slug: full-time-employed
-        label: Full-time employed
-      - slug: part-time-employed
-        label: Part-time employed
-      - slug: freelance-contract
-        label: Freelance/Contract
-      - slug: self-employed-founder
-        label: Self-employed/Founder
-      - slug: student
-        label: Student
-      - slug: between-jobs
-        label: Between jobs
-      - slug: hobbyist
-        label: Hobbyist (not for income)
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: remote-work
-    title: Remote work situation
-    type: single
-    options:
-      - slug: fully-remote
-        label: Fully remote
-      - slug: mostly-remote
-        label: Mostly remote (1-2 days in office)
-      - slug: hybrid
-        label: Hybrid (equal split)
-      - slug: mostly-office
-        label: Mostly in-office (1-2 days remote)
-      - slug: fully-office
-        label: Fully in-office
-      - slug: not-applicable
-        label: Not applicable
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: country-region
-    title: Country/Region
-    type: single
-    options:
-      - slug: united-states
-        label: United States
-      - slug: canada
-        label: Canada
-      - slug: united-kingdom
-        label: United Kingdom
-      - slug: germany
-        label: Germany
-      - slug: france
-        label: France
-      - slug: netherlands
-        label: Netherlands
-      - slug: spain
-        label: Spain
-      - slug: india
-        label: India
-      - slug: china
-        label: China
-      - slug: japan
-        label: Japan
-      - slug: australia
-        label: Australia
-      - slug: brazil
-        label: Brazil
-      - slug: mexico
-        label: Mexico
-      - slug: other-europe
-        label: Other Europe
-      - slug: other-asia
-        label: Other Asia
-      - slug: other-south-america
-        label: Other South America
-      - slug: other-africa
-        label: Other Africa
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: age-range
-    title: Age range
-    type: single
-    options:
-      - slug: under-18
-        label: Under 18
-      - slug: 18-24
-        label: 18-24
-      - slug: 25-34
-        label: 25-34
-      - slug: 35-44
-        label: 35-44
-      - slug: 45-54
-        label: 45-54
-      - slug: 55-64
-        label: 55-64
-      - slug: 65-plus
-        label: 65+
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: gender
-    title: Gender
-    type: single
-    options:
-      - slug: man
-        label: Man
-      - slug: woman
-        label: Woman
-      - slug: non-binary
-        label: Non-binary
-      - slug: self-describe
-        label: Prefer to self-describe
-      - slug: prefer-not-answer
-        label: Prefer not to answer
-
-  - section: demographics
-    slug: salary-range
-    title: Salary range (annual, USD equivalent)
-    type: single
-    options:
-      - slug: less-30k
-        label: Less than $30k
-      - slug: 30k-50k
-        label: $30k-$50k
-      - slug: 50k-75k
-        label: $50k-$75k
-      - slug: 75k-100k
-        label: $75k-$100k
-      - slug: 100k-150k
-        label: $100k-$150k
-      - slug: 150k-200k
-        label: $150k-$200k
-      - slug: 200k-300k
-        label: $200k-$300k
-      - slug: 300k-plus
-        label: $300k+
-      - slug: not-applicable
-        label: Not applicable
-      - slug: prefer-not-answer
-        label: Prefer not to answer
 
   # SECTION 13: FINAL THOUGHTS
   - section: final-thoughts
