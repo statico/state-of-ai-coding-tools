@@ -22,6 +22,7 @@ export interface QuestionReport {
   data: any; // Type depends on question type
   comments?: Array<{
     comment: string;
+    sessionId: string;
   }>;
 }
 
@@ -683,10 +684,10 @@ async function getQuestionComments(
   questionSlug: string,
   week: number,
   year: number,
-): Promise<Array<{ comment: string }>> {
+): Promise<Array<{ comment: string; sessionId: string }>> {
   const comments = await db
     .selectFrom("responses")
-    .select(["comment"])
+    .select(["comment", "session_id"])
     .where("question_slug", "=", questionSlug)
     .where("iso_week", "=", week)
     .where("iso_year", "=", year)
@@ -697,5 +698,6 @@ async function getQuestionComments(
 
   return comments.map((c) => ({
     comment: c.comment!,
+    sessionId: c.session_id,
   }));
 }

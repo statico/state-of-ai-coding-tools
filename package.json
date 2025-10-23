@@ -7,7 +7,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "eslint . && tsc --noEmit --skipLibCheck",
     "format": "prettier --write .",
     "prepare": "husky",
     "db:codegen": "kysely-codegen --dialect postgres --out-file src/server/db/types.ts && prettier --write src/server/db/types.ts",
