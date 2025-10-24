@@ -17,7 +17,6 @@
 ## Testing
 
 - Assume the user is already running the server on http://localhost:3000/
-- Visit http://localhost:3000/debug-login to be automatically logged in as a test user
 
 ## Database
 
