@@ -16,7 +16,7 @@ import { useTRPC } from "@/lib/trpc/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useSectionNavigation } from "@/hooks/use-section-navigation";
 
 export default function SurveyPage() {
@@ -26,6 +26,20 @@ export default function SurveyPage() {
 
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
+  // Check authentication status
+  const { data: authData } = useQuery(trpc.auth.check.queryOptions());
+  const isAuthenticated =
+    authData && typeof authData === "object" && "isAuthenticated" in authData
+      ? authData.isAuthenticated
+      : false;
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (authData && !isAuthenticated) {
+      router.push("/");
+    }
+  }, [authData, isAuthenticated, router]);
 
   const { data: sections, isLoading: sectionsLoading } = useQuery(
     trpc.survey.getSections.queryOptions(),
@@ -132,7 +146,8 @@ export default function SurveyPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  if (sectionsLoading) {
+  // Show loading while checking authentication or loading sections
+  if (!authData || sectionsLoading) {
     return (
       <div className="container mx-auto max-w-4xl p-8">
         <div className="flex min-h-[400px] items-center justify-center">
@@ -140,6 +155,11 @@ export default function SurveyPage() {
         </div>
       </div>
     );
+  }
+
+  // If not authenticated, don't render anything (redirect will happen)
+  if (!isAuthenticated) {
+    return null;
   }
 
   if (!currentSection) {

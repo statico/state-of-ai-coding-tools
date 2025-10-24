@@ -1,14 +1,14 @@
+import { getCompletionPercentage } from "@/lib/models/completion";
 import { getActiveOptionsByQuestion } from "@/lib/models/options";
 import { getActiveQuestionsBySection } from "@/lib/models/questions";
 import {
   getResponsesBySession,
-  upsertResponse,
   saveExperienceResponses,
+  upsertResponse,
 } from "@/lib/models/responses";
 import { getActiveSections, getFirstSection } from "@/lib/models/sections";
-import { getCompletionPercentage } from "@/lib/models/completion";
 import { z } from "zod";
-import { publicProcedure, router } from "../trpc";
+import { router, userProcedure } from "../trpc";
 
 function getCurrentWeekAndYear() {
   const now = new Date();
@@ -21,15 +21,15 @@ function getCurrentWeekAndYear() {
 }
 
 export const surveyRouter = router({
-  getSections: publicProcedure.query(async () => {
+  getSections: userProcedure.query(async () => {
     return await getActiveSections();
   }),
 
-  getFirstSection: publicProcedure.query(async () => {
+  getFirstSection: userProcedure.query(async () => {
     return await getFirstSection();
   }),
 
-  getQuestionsBySection: publicProcedure
+  getQuestionsBySection: userProcedure
     .input(z.object({ sectionSlug: z.string() }))
     .query(async ({ input }) => {
       const questions = await getActiveQuestionsBySection(input.sectionSlug);
@@ -45,11 +45,11 @@ export const surveyRouter = router({
       return questionsWithOptions;
     }),
 
-  getSession: publicProcedure.query(async ({ ctx }) => {
+  getSession: userProcedure.query(async ({ ctx }) => {
     return { sessionId: ctx.sessionId };
   }),
 
-  getResponses: publicProcedure.query(async ({ ctx }) => {
+  getResponses: userProcedure.query(async ({ ctx }) => {
     // Get current week and year
     const { week, year } = getCurrentWeekAndYear();
 
@@ -59,7 +59,7 @@ export const surveyRouter = router({
     };
   }),
 
-  saveResponse: publicProcedure
+  saveResponse: userProcedure
     .input(
       z.object({
         questionSlug: z.string(),
@@ -99,7 +99,7 @@ export const surveyRouter = router({
       return { sessionId: ctx.sessionId, response };
     }),
 
-  saveExperienceResponses: publicProcedure
+  saveExperienceResponses: userProcedure
     .input(
       z.object({
         questionSlug: z.string(),
@@ -129,7 +129,7 @@ export const surveyRouter = router({
       return { sessionId: ctx.sessionId, responses: savedResponses };
     }),
 
-  getCompletionPercentage: publicProcedure.query(async ({ ctx }) => {
+  getCompletionPercentage: userProcedure.query(async ({ ctx }) => {
     return await getCompletionPercentage(ctx.sessionId!);
   }),
 });
