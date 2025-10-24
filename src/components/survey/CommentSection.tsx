@@ -35,16 +35,14 @@ export function CommentSection({
     setIsExpanded(!isExpanded);
   };
 
-  const placeholder = hasResponse
-    ? "Tell us more about your answer"
-    : "You didn't pick any response. Tell us why.";
-
   return (
-    <div>
+    <div
+      className="hover:bg-muted/50 cursor-pointer rounded-md p-3"
+      onClick={disabled ? undefined : handleToggle}
+    >
       <Button
         variant="ghost"
         size="sm"
-        onClick={handleToggle}
         disabled={disabled}
         title={
           isExpanded
@@ -54,7 +52,7 @@ export function CommentSection({
         className="text-muted-foreground hover:text-foreground -ml-2 h-8 px-2"
       >
         <MessageCircle className="size-5" />
-        {isExpanded && "Leave a Comment (optional)"}
+        Other / Comment
       </Button>
 
       {isExpanded && (
@@ -62,9 +60,10 @@ export function CommentSection({
           <Textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder={placeholder}
+            placeholder="Something else..."
             disabled={disabled}
             className="min-h-[80px] resize-none"
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

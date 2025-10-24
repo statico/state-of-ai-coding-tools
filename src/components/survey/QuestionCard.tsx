@@ -40,7 +40,7 @@ export function QuestionCard({
           <p className="text-muted-foreground text-base">{additionalInfo}</p>
         )}
       </CardHeader>
-      <CardContent className={cn("flex flex-col gap-3 pb-2", className)}>
+      <CardContent className={cn("flex flex-col pb-2", className)}>
         {children}
 
         <CommentSection
