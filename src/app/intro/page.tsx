@@ -9,10 +9,26 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, TriangleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function IntroPage() {
   const router = useRouter();
   const trpc = useTRPC();
+
+  // Check authentication status
+  const { data: authData } = useQuery(trpc.auth.check.queryOptions());
+  const isAuthenticated =
+    authData && typeof authData === "object" && "isAuthenticated" in authData
+      ? authData.isAuthenticated
+      : false;
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (authData && !isAuthenticated) {
+      router.push("/");
+    }
+  }, [authData, isAuthenticated, router]);
+
   const { data: firstSection } = useQuery(
     trpc.survey.getFirstSection.queryOptions(),
   );
@@ -26,6 +42,22 @@ export default function IntroPage() {
       router.push(`/survey/${firstSection.slug}`);
     }
   };
+
+  // Show loading while checking authentication
+  if (!authData) {
+    return (
+      <div className="container mx-auto max-w-4xl p-6">
+        <div className="flex min-h-[400px] items-center justify-center">
+          <div className="text-center">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, don't render anything (redirect will happen)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto max-w-4xl p-6">
