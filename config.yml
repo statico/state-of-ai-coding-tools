@@ -796,7 +796,6 @@ questions:
     slug: primary-languages
     title: Which programming languages do you primarily use?
     type: multiple
-    other: true
     options:
       - slug: javascript
         label: JavaScript
@@ -852,7 +851,6 @@ questions:
     title: Which programming languages work best with AI tools in your experience?
     type: multiple
     multiple_max: 3
-    other: true
     options:
       - slug: javascript
         label: JavaScript
@@ -885,7 +883,6 @@ questions:
     slug: frameworks-libraries
     title: Which frameworks/libraries do you use?
     type: multiple
-    other: true
     options:
       # Web Front-end
       - slug: react
