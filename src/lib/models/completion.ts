@@ -43,25 +43,53 @@ export async function getCompletionPercentage(
       sectionQuestions.some((q) => q.slug === response.question_slug),
     );
 
-    // Count responses that have actual values (not just skipped or empty)
-    const completedQuestions = sectionResponses.filter((response) => {
-      // If skipped, it counts as completed
-      if (response.skipped) {
-        return true;
+    // For experience questions, we need to group by question_slug since each option gets its own row
+    const questionCompletionMap = new Map<string, boolean>();
+
+    sectionResponses.forEach((response) => {
+      const questionSlug = response.question_slug;
+      const sectionQuestion = sectionQuestions.find(
+        (q) => q.slug === questionSlug,
+      );
+
+      // Skip if this question is not in this section
+      if (!sectionQuestion) return;
+
+      // If already marked as completed, don't override
+      if (
+        questionCompletionMap.has(questionSlug) &&
+        questionCompletionMap.get(questionSlug)
+      ) {
+        return;
       }
 
-      // If not skipped, check if it has actual values
-      return !!(
-        response.single_option_slug ||
-        response.single_writein_response ||
-        response.multiple_option_slugs?.length ||
-        response.multiple_writein_responses ||
-        response.experience_awareness !== null ||
-        response.experience_sentiment !== null ||
-        response.freeform_response ||
-        response.numeric_response !== null
-      );
-    }).length;
+      // Check if this response indicates completion
+      let isCompleted = false;
+
+      // If skipped, it counts as completed
+      if (response.skipped) {
+        isCompleted = true;
+      } else {
+        // If not skipped, check if it has actual values
+        isCompleted = !!(
+          response.single_option_slug ||
+          response.single_writein_response ||
+          response.multiple_option_slugs?.length ||
+          response.multiple_writein_responses ||
+          response.experience_awareness !== null ||
+          response.experience_sentiment !== null ||
+          response.freeform_response ||
+          response.numeric_response !== null
+        );
+      }
+
+      questionCompletionMap.set(questionSlug, isCompleted);
+    });
+
+    // Count unique completed questions
+    const completedQuestions = Array.from(
+      questionCompletionMap.values(),
+    ).filter(Boolean).length;
     const totalQuestions = sectionQuestions.length;
 
     return {
@@ -77,24 +105,46 @@ export async function getCompletionPercentage(
   });
 
   // Calculate overall completion percentage (including skipped responses)
-  const totalCompletedQuestions = userResponses.filter((response) => {
-    // If skipped, it counts as completed
-    if (response.skipped) {
-      return true;
+  // For experience questions, we need to group by question_slug since each option gets its own row
+  const overallQuestionCompletionMap = new Map<string, boolean>();
+
+  userResponses.forEach((response) => {
+    const questionSlug = response.question_slug;
+
+    // If already marked as completed, don't override
+    if (
+      overallQuestionCompletionMap.has(questionSlug) &&
+      overallQuestionCompletionMap.get(questionSlug)
+    ) {
+      return;
     }
 
-    // If not skipped, check if it has actual values
-    return !!(
-      response.single_option_slug ||
-      response.single_writein_response ||
-      response.multiple_option_slugs?.length ||
-      response.multiple_writein_responses ||
-      response.experience_awareness !== null ||
-      response.experience_sentiment !== null ||
-      response.freeform_response ||
-      response.numeric_response !== null
-    );
-  }).length;
+    // Check if this response indicates completion
+    let isCompleted = false;
+
+    // If skipped, it counts as completed
+    if (response.skipped) {
+      isCompleted = true;
+    } else {
+      // If not skipped, check if it has actual values
+      isCompleted = !!(
+        response.single_option_slug ||
+        response.single_writein_response ||
+        response.multiple_option_slugs?.length ||
+        response.multiple_writein_responses ||
+        response.experience_awareness !== null ||
+        response.experience_sentiment !== null ||
+        response.freeform_response ||
+        response.numeric_response !== null
+      );
+    }
+
+    overallQuestionCompletionMap.set(questionSlug, isCompleted);
+  });
+
+  const totalCompletedQuestions = Array.from(
+    overallQuestionCompletionMap.values(),
+  ).filter(Boolean).length;
   const totalQuestions = flatQuestions.length;
   const overallPercentage =
     totalQuestions > 0

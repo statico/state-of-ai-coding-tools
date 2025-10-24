@@ -40,7 +40,7 @@ export function ExperienceQuestion({
       const states: Record<string, OptionState> = {};
       question.options?.forEach((option) => {
         const existingResponse = existingResponses.find(
-          (r) => r.single_option_slug === option.slug,
+          (r) => r.option_slug === option.slug,
         );
         states[option.slug] = {
           awareness: existingResponse?.experience_awareness ?? undefined,
