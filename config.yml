@@ -38,25 +38,42 @@ sections:
 questions:
   # SECTION 1: CODING TOOLS
   - section: coding-tools
-    slug: coding-tools-experience
-    title: What is your experience with coding tools?
+    slug: coding-tools-xp-cli
+    title: What is your experience with CLI coding tools?
     type: experience
     randomize: true
     options:
-      # AI-Native Editors
+      - slug: aider
+        label: Aider
+      - slug: opencode
+        label: OpenCode
+      - slug: claude-code
+        label: Claude Code
+      - slug: goose
+        label: Goose
+      - slug: codex
+        label: Codex
+      - slug: gemini-cli
+        label: Gemini CLI
+      - slug: warp
+        label: Warp
+
+  - section: coding-tools
+    slug: coding-tools-xp-ide
+    title: What is your experience with IDE tools?
+    type: experience
+    randomize: true
+    options:
       - slug: cursor
         label: Cursor
       - slug: windsurf
-        label: Windsurf (by Codeium)
-      - slug: devin-ai
-        label: Devin AI
-      # IDE Extensions & Plugins
+        label: Windsurf
+      - slug: devin
+        label: Devin
       - slug: github-copilot
         label: GitHub Copilot
       - slug: jetbrains-ai
         label: JetBrains AI Assistant
-      - slug: codeium
-        label: Codeium (Extension)
       - slug: tabnine
         label: Tabnine
       - slug: sourcegraph-cody
@@ -70,58 +87,32 @@ questions:
       - slug: gemini-code-assist
         label: Gemini Code Assist
       - slug: qodo
-        label: Qodo (formerly CodiumAI)
-      # Terminal/CLI Tools
-      - slug: aider
-        label: Aider
-      - slug: opencode
-        label: OpenCode
-      - slug: claude-code-cli
-        label: Claude Code CLI
-      - slug: goose
-        label: Goose
-      - slug: codex-cli
-        label: Codex CLI (OpenAI)
-      - slug: gemini-cli
-        label: Gemini CLI
-      - slug: warp
-        label: Warp (AI Terminal)
-      # Web-Based Platforms
-      - slug: replit-ai
-        label: Replit AI (Agent + Assistant)
-      - slug: bolt-new
+        label: Qodo
+
+  - section: coding-tools
+    slug: coding-tools-xp-web
+    title: What is your experience with cloud-based coding tools?
+    type: experience
+    randomize: true
+    options:
+      - slug: replit
+        label: Replit
+      - slug: bolt
         label: Bolt.new
       - slug: v0
         label: V0 (by Vercel)
       - slug: lovable
         label: Lovable
-      # Chat-Based Coding Assistants
-      - slug: claude
-        label: Claude (by Anthropic) for coding
-      - slug: chatgpt
-        label: ChatGPT for coding
-      - slug: gemini
-        label: Gemini for coding
-      # Autonomous Coding Agents
-      - slug: google-jules
+      - slug: amp
+        label: Amp
+      - slug: jules
         label: Google Jules
-      - slug: openai-codex-agent
-        label: OpenAI Codex (Agent)
       - slug: cline
-        label: Cline (formerly Claude-Dev)
+        label: Cline
       - slug: openhands
-        label: OpenHands (formerly OpenDevin)
-      # Open-Source Models for Coding
-      - slug: starcoder
-        label: StarCoder
-      - slug: code-llama
-        label: Code Llama
+        label: OpenHands
       - slug: qwen3-coder
         label: Qwen3-Coder
-      - slug: deepseek-coder
-        label: DeepSeek-Coder
-      - slug: wizard-coder
-        label: WizardCoder
 
   - section: coding-tools
     slug: coding-tools-usage-frequency
@@ -145,42 +136,6 @@ questions:
       - slug: never-used
         label: I've never used coding tools
 
-  - section: coding-tools
-    slug: coding-tools-concerns
-    title: What are your biggest concerns about coding tools?
-    type: multiple
-    options:
-      - slug: code-quality-accuracy
-        label: Code quality and accuracy
-      - slug: security-vulnerabilities
-        label: Security vulnerabilities in generated code
-      - slug: privacy-data-security
-        label: Privacy and data security
-      - slug: cost
-        label: Cost
-      - slug: over-reliance
-        label: Over-reliance on AI / skill atrophy
-      - slug: job-security
-        label: Job security
-      - slug: code-ownership
-        label: Code ownership and licensing issues
-      - slug: hallucinations
-        label: Hallucinations (AI generating non-existent packages/APIs)
-      - slug: context-limitations
-        label: Context limitations
-      - slug: lack-transparency
-        label: Lack of transparency in AI decisions
-      - slug: bias
-        label: Bias in AI-generated code
-      - slug: environmental-impact
-        label: Environmental impact
-      - slug: debugging-difficulty
-        label: Difficulty debugging AI-generated code
-      - slug: compliance-regulatory
-        label: Compliance and regulatory concerns
-      - slug: none
-        label: None - I have no concerns
-
   # SECTION 2: CODE REVIEW TOOLS
   - section: code-review-tools
     slug: code-review-tools-experience
@@ -191,25 +146,25 @@ questions:
       - slug: coderabbit
         label: CodeRabbit
       - slug: qodo-merge
-        label: Qodo Merge (formerly CodiumAI)
-      - slug: github-copilot-reviews
+        label: Qodo Merge
+      - slug: github-copilot
         label: GitHub Copilot Reviews
-      - slug: devin-ai
-        label: Devin AI
-      - slug: amazon-codeguru-reviewer
+      - slug: devin
+        label: Devin
+      - slug: codeguru
         label: Amazon CodeGuru Reviewer
-      - slug: snyk-deepcode
-        label: Snyk (DeepCode AI)
-      - slug: sonarqube-sonarcloud
-        label: SonarQube/SonarCloud
+      - slug: snyk
+        label: Snyk
+      - slug: sonarqube
+        label: SonarQube
       - slug: graphite-agent
         label: Graphite Agent (Diamond)
       - slug: greptile
         label: Greptile
       - slug: codeant-ai
-        label: CodeAnt AI
-      - slug: bito-ai
-        label: Bito AI Code Review Agent
+        label: CodeAnt
+      - slug: bito
+        label: Bito
       - slug: codacy
         label: Codacy
       - slug: codeclimate
@@ -220,6 +175,8 @@ questions:
         label: DeepSource
       - slug: pullrequest
         label: PullRequest
+      - slug: bugbot
+        label: Cursor Bugbot
 
   - section: code-review-tools
     slug: code-review-usage-frequency
@@ -244,6 +201,8 @@ questions:
     title: What are your biggest concerns about code review tools?
     type: multiple
     options:
+      - slug: signal-to-noise
+        label: Signal to noise ratio
       - slug: code-quality-accuracy
         label: Code quality and accuracy
       - slug: security-vulnerabilities
@@ -723,33 +682,6 @@ questions:
       - slug: dont-use
         label: I don't use AI coding tools
 
-  - section: productivity-impact
-    slug: most-helpful-areas
-    title: In which areas has AI been most helpful?
-    type: multiple
-    multiple_max: 3
-    options:
-      - slug: boilerplate-code
-        label: Writing boilerplate code
-      - slug: learning-technologies
-        label: Learning new technologies
-      - slug: debugging
-        label: Debugging
-      - slug: writing-tests
-        label: Writing tests
-      - slug: documentation
-        label: Documentation
-      - slug: code-refactoring
-        label: Code refactoring
-      - slug: searching-solutions
-        label: Searching for solutions
-      - slug: understanding-code
-        label: Understanding existing code
-      - slug: rapid-prototyping
-        label: Rapid prototyping
-      - slug: none
-        label: None - AI hasn't been helpful
-
   # SECTION 7: CONCERNS & PAIN POINTS
   - section: concerns-pain-points
     slug: biggest-concerns
@@ -792,6 +724,8 @@ questions:
     title: What frustrations do you experience with AI coding tools?
     type: multiple
     options:
+      - slug: slop
+        label: Excess or unnecessary code
       - slug: almost-right
         label: Suggestions are almost right but not quite
       - slug: debugging-takes-time
@@ -862,6 +796,7 @@ questions:
     slug: primary-languages
     title: Which programming languages do you primarily use?
     type: multiple
+    other: true
     options:
       - slug: javascript
         label: JavaScript
@@ -917,6 +852,7 @@ questions:
     title: Which programming languages work best with AI tools in your experience?
     type: multiple
     multiple_max: 3
+    other: true
     options:
       - slug: javascript
         label: JavaScript
@@ -949,6 +885,7 @@ questions:
     slug: frameworks-libraries
     title: Which frameworks/libraries do you use?
     type: multiple
+    other: true
     options:
       # Web Front-end
       - slug: react
