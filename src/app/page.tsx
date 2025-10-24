@@ -5,27 +5,63 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/lib/trpc/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function HomePage() {
   const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isPolling, setIsPolling] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
   const trpc = useTRPC();
 
+  // Poll auth.check when we're waiting for authentication
+  const { data: authData, error: authError } = useQuery({
+    ...trpc.auth.check.queryOptions(),
+    enabled: isPolling,
+    refetchInterval: 1000, // Poll every second
+    refetchIntervalInBackground: false,
+    retry: false, // Don't retry on error
+  });
+
+  // Check if we're authenticated and redirect
+  useEffect(() => {
+    if (authData?.isAuthenticated) {
+      router.push("/intro");
+    }
+  }, [authData, router]);
+
+  // Handle auth error by stopping polling
+  useEffect(() => {
+    if (authError && isPolling) {
+      // Use setTimeout to defer the setState call
+      const timeoutId = setTimeout(() => {
+        setIsPolling(false);
+      }, 0);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [authError, isPolling]);
+
+  // Stop polling after a timeout to prevent infinite polling
+  useEffect(() => {
+    if (isPolling) {
+      const timeout = setTimeout(() => {
+        setIsPolling(false);
+        setError("Authentication timeout. Please try again.");
+      }, 10000); // 10 second timeout
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isPolling]);
+
   const loginMutation = useMutation(
     trpc.auth.login.mutationOptions({
       onSuccess: (data) => {
         if (data.success) {
-          setIsAuthenticated(true);
-          // Redirect to intro page after a brief delay
-          setTimeout(() => {
-            router.push("/intro");
-          }, 1000);
+          // Start polling for authentication status
+          setIsPolling(true);
         } else {
           setError(data.message);
         }
@@ -39,16 +75,17 @@ export default function HomePage() {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsPolling(false); // Reset polling state
     loginMutation.mutate({ password });
   };
 
-  if (isAuthenticated) {
+  if (isPolling && !authError) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-20">
         <div className="space-y-8">
           <div className="space-y-4 text-center">
             <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
-              Redirecting you to the survey...
+              Verifying authentication...
             </p>
           </div>
         </div>
@@ -85,9 +122,12 @@ export default function HomePage() {
                     {loginMutation.isPending ? "Verifying..." : "Access Survey"}
                   </Button>
                 </div>
-                {error && (
+                {(error || authError) && (
                   <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription>
+                      {error ||
+                        "Failed to verify authentication. Please try again."}
+                    </AlertDescription>
                   </Alert>
                 )}
               </div>
