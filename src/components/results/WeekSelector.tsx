@@ -12,6 +12,7 @@ import {
   getWeekFromDate,
   getWeekDateRange,
   formatWeekDisplay,
+  formatWeekDisplayShort,
   getPreviousWeek,
   getNextWeek,
   isCurrentWeek,
@@ -106,7 +107,12 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
               className="min-w-[200px] flex-1 justify-start text-left font-normal select-none"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {formatWeekDisplay(currentWeek, currentYear)}
+              <span className="hidden sm:inline">
+                {formatWeekDisplay(currentWeek, currentYear)}
+              </span>
+              <span className="sm:hidden">
+                {formatWeekDisplayShort(currentWeek, currentYear)}
+              </span>
               {isCurrent && (
                 <span className="text-destructive">(Incomplete)</span>
               )}

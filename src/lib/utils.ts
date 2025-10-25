@@ -47,6 +47,13 @@ export function formatWeekDisplay(week: number, year: number): string {
   return `Week of ${formattedDate}`;
 }
 
+export function formatWeekDisplayShort(week: number, year: number): string {
+  const weekDateRange = getWeekDateRange(week, year);
+  // Use UTC to avoid timezone issues
+  const startDate = new Date(weekDateRange.start.getTime());
+  return format(startDate, "M/d/yyyy");
+}
+
 export function getWeekFromDate(date: Date): { week: number; year: number } {
   return {
     week: getISOWeek(date),
