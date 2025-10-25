@@ -55,10 +55,7 @@ export function ExperienceControls({
           variant="outline"
           size="sm"
           onClick={() => onGroupByChange("awareness")}
-          className={cn(
-            "truncate",
-            groupBy === "awareness" && "bg-primary text-primary-foreground",
-          )}
+          className={cn("truncate", groupBy === "awareness" && "bg-accent!")}
         >
           Awareness
         </Button>
@@ -66,10 +63,7 @@ export function ExperienceControls({
           variant="outline"
           size="sm"
           onClick={() => onGroupByChange("sentiment")}
-          className={cn(
-            "truncate",
-            groupBy === "sentiment" && "bg-primary text-primary-foreground",
-          )}
+          className={cn("truncate", groupBy === "sentiment" && "bg-accent!")}
         >
           Sentiment
         </Button>
@@ -88,7 +82,7 @@ export function ExperienceControls({
                   onClick={() => handleSortOptionClick(option.value.toString())}
                   className={cn(
                     "flex items-center gap-2 truncate",
-                    isSelected && "bg-primary text-primary-foreground",
+                    isSelected && "bg-accent!",
                   )}
                 >
                   <div
@@ -132,7 +126,7 @@ export function ExperienceControls({
                   }
                   className={cn(
                     "flex items-center gap-2 truncate",
-                    isSelected && "bg-primary text-primary-foreground",
+                    isSelected && "bg-accent!",
                   )}
                 >
                   <div
