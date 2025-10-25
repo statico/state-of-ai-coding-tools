@@ -3,7 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { cn } from "@/lib/utils";
-import { AWARENESS_OPTIONS } from "@/lib/constants";
+import {
+  AWARENESS_OPTIONS,
+  AWARENESS_SHORT_LABELS,
+  SENTIMENT_SHORT_LABELS,
+} from "@/lib/constants";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 // Color mappings for awareness levels (matching ExperienceChartCell)
@@ -46,7 +50,7 @@ export function ExperienceControls({
   };
 
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex flex-wrap items-center gap-6">
       <span className="text-muted-foreground text-sm">Sort:</span>
 
       {/* Group By Controls */}
@@ -93,7 +97,13 @@ export function ExperienceControls({
                       ],
                     )}
                   />
-                  <span className="truncate">{option.label}</span>
+                  <span className="truncate">
+                    {
+                      AWARENESS_SHORT_LABELS[
+                        option.value as keyof typeof AWARENESS_SHORT_LABELS
+                      ]
+                    }
+                  </span>
                   {isSelected && (
                     <span className="ml-1 shrink-0">
                       {sortDirection === "asc" ? (
@@ -109,11 +119,9 @@ export function ExperienceControls({
           : // Reverse sentiment options to match chart order
             [1, 0, -1].map((sentimentValue) => {
               const sentimentLabel =
-                sentimentValue === 1
-                  ? "Positive"
-                  : sentimentValue === 0
-                    ? "Neutral"
-                    : "Negative";
+                SENTIMENT_SHORT_LABELS[
+                  sentimentValue as keyof typeof SENTIMENT_SHORT_LABELS
+                ];
               const isSelected =
                 groupBy === "sentiment" && sortBy === sentimentValue.toString();
               return (

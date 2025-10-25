@@ -56,7 +56,7 @@ export function ExperienceChartCell({
         >
           <div
             className={cn(
-              "flex h-10 items-center justify-center overflow-hidden rounded-xs p-1 text-xs",
+              "flex h-8 items-center justify-center overflow-hidden rounded-xs p-1 text-xs lg:h-10",
               AWARENESS_COLOR_MAP[
                 item.awarenessValue as keyof typeof AWARENESS_COLOR_MAP
               ],

@@ -59,6 +59,13 @@ export const AWARENESS_LABELS = {
   3: "Actively using it",
 } as const;
 
+export const AWARENESS_SHORT_LABELS = {
+  0: "Not heard",
+  1: "Heard of it",
+  2: "Used it",
+  3: "Using it",
+} as const;
+
 export const SENTIMENT_OPTIONS = [
   { value: 1, label: "It's great" },
   { value: 0, label: "Neutral" },
@@ -70,6 +77,12 @@ export const INTEREST_OPTIONS = [
   { value: 0, label: "Indifferent" },
   { value: -1, label: "Not interested" },
 ] as const;
+
+export const SENTIMENT_SHORT_LABELS = {
+  1: "Positive",
+  0: "Neutral",
+  "-1": "Negative",
+} as const;
 
 // Type guards
 export function isQuestionType(type: string): type is QuestionType {
