@@ -67,9 +67,9 @@ export const AWARENESS_SHORT_LABELS = {
 } as const;
 
 export const SENTIMENT_OPTIONS = [
-  { value: 1, label: "It's great" },
+  { value: 1, label: "Liked it" },
   { value: 0, label: "Neutral" },
-  { value: -1, label: "It stinks" },
+  { value: -1, label: "Disliked it" },
 ] as const;
 
 export const INTEREST_OPTIONS = [
