@@ -82,6 +82,9 @@ export function ExperienceReport({
                 0,
               );
 
+              const activelyUsingData = option.awareness.find(
+                (item) => item.level === 3,
+              );
               const usedItData = option.awareness.find(
                 (item) => item.level === 2,
               );
@@ -92,6 +95,10 @@ export function ExperienceReport({
                 (item) => item.level === 0,
               );
 
+              const activelyUsingPercent =
+                totalResponses > 0
+                  ? ((activelyUsingData?.count || 0) / totalResponses) * 100
+                  : 0;
               const usedItPercent =
                 totalResponses > 0
                   ? ((usedItData?.count || 0) / totalResponses) * 100
@@ -105,7 +112,18 @@ export function ExperienceReport({
                   ? ((neverHeardData?.count || 0) / totalResponses) * 100
                   : 0;
 
-              // Calculate positive sentiment percentage for "Used it" responses
+              // Calculate positive sentiment percentage for "Actively using it" responses
+              const activelyUsingPositiveData = option.combined.find(
+                (item) => item.awareness === 3 && item.sentiment === 1,
+              );
+              const activelyUsingPositivePercent =
+                (activelyUsingData?.count || 0) > 0
+                  ? ((activelyUsingPositiveData?.count || 0) /
+                      (activelyUsingData?.count || 1)) *
+                    100
+                  : 0;
+
+              // Calculate positive sentiment percentage for "Used it in the past" responses
               const usedItPositiveData = option.combined.find(
                 (item) => item.awareness === 2 && item.sentiment === 1,
               );
@@ -118,29 +136,47 @@ export function ExperienceReport({
 
               return {
                 ...option,
+                activelyUsingPercent,
                 usedItPercent,
                 heardOfItPercent,
                 neverHeardPercent,
+                activelyUsingPositivePercent,
                 usedItPositivePercent,
               };
             })
             .sort((a, b) => {
-              // Primary sort: by "Used it" percentage (descending)
+              // Primary sort: by "Actively using it" percentage (descending)
+              if (b.activelyUsingPercent !== a.activelyUsingPercent) {
+                return b.activelyUsingPercent - a.activelyUsingPercent;
+              }
+
+              // Secondary sort: by "Used it in the past" percentage (descending)
               if (b.usedItPercent !== a.usedItPercent) {
                 return b.usedItPercent - a.usedItPercent;
               }
 
-              // Secondary sort: by "Heard of it" percentage (descending)
+              // Tertiary sort: by "Heard of it" percentage (descending)
               if (b.heardOfItPercent !== a.heardOfItPercent) {
                 return b.heardOfItPercent - a.heardOfItPercent;
               }
 
-              // Tertiary sort: by "Never heard of it" percentage (ascending - lower is better)
+              // Quaternary sort: by "Never heard of it" percentage (ascending - lower is better)
               if (a.neverHeardPercent !== b.neverHeardPercent) {
                 return a.neverHeardPercent - b.neverHeardPercent;
               }
 
-              // Final sort: by positive sentiment percentage for "Used it" (descending)
+              // Final sort: by positive sentiment percentage for "Actively using it" (descending)
+              if (
+                b.activelyUsingPositivePercent !==
+                a.activelyUsingPositivePercent
+              ) {
+                return (
+                  b.activelyUsingPositivePercent -
+                  a.activelyUsingPositivePercent
+                );
+              }
+
+              // Fallback: by positive sentiment percentage for "Used it in the past" (descending)
               return b.usedItPositivePercent - a.usedItPositivePercent;
             })
             .map((option) => {

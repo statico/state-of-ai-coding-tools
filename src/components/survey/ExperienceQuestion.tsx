@@ -110,7 +110,7 @@ export function ExperienceQuestion({
   const getSentimentOptions = (awarenessLevel?: number) => {
     if (awarenessLevel === 0 || awarenessLevel === 1) {
       return INTEREST_OPTIONS;
-    } else if (awarenessLevel === 2) {
+    } else if (awarenessLevel === 2 || awarenessLevel === 3) {
       return SENTIMENT_OPTIONS;
     }
     return [];

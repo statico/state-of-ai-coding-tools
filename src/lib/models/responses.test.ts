@@ -330,12 +330,12 @@ describe("Responses Model", () => {
         iso_year: testIsoYear,
         question_slug: testQuestionSlug,
         experience_awareness: 3,
-        experience_sentiment: 4,
+        experience_sentiment: 1,
       };
       const response = await createResponse(input);
 
       expect(response.experience_awareness).toBe(3);
-      expect(response.experience_sentiment).toBe(4);
+      expect(response.experience_sentiment).toBe(1);
     });
 
     it("should create response with freeform text", async () => {

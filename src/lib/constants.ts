@@ -48,13 +48,15 @@ export type QuestionType = (typeof QUESTION_TYPES)[keyof typeof QUESTION_TYPES];
 export const AWARENESS_OPTIONS = [
   { value: 0, label: "Never heard of it" },
   { value: 1, label: "Heard of it" },
-  { value: 2, label: "Used it" },
+  { value: 2, label: "Used it in the past" },
+  { value: 3, label: "Actively using it" },
 ] as const;
 
 export const AWARENESS_LABELS = {
   0: "Never heard of it",
   1: "Heard of it",
-  2: "Used it",
+  2: "Used it in the past",
+  3: "Actively using it",
 } as const;
 
 export const SENTIMENT_OPTIONS = [

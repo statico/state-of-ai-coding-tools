@@ -679,6 +679,62 @@ describe("results", () => {
         expect(report?.totalResponses).toBe(1); // Should count unique sessions, not individual responses
         expect(report?.skippedResponses).toBe(0);
       });
+
+      it("should handle awareness level 3 (Actively using it)", async () => {
+        const questionSlug = "experience-question-level3";
+        const optionSlug = "test-option-level3";
+
+        await db
+          .insertInto("questions")
+          .values({
+            slug: questionSlug,
+            section_slug: "test-section",
+            title: "Experience Question Level 3",
+            type: "experience",
+            order: 1,
+          })
+          .execute();
+
+        // Add option
+        await db
+          .insertInto("options")
+          .values({
+            slug: optionSlug,
+            question_slug: questionSlug,
+            label: "Test Option Level 3",
+            order: 1,
+            active: true,
+          })
+          .execute();
+
+        // Add response with awareness level 3
+        await db
+          .insertInto("responses")
+          .values({
+            session_id: "550e8400-e29b-41d4-a716-446655440000",
+            iso_week: 1,
+            iso_year: 2024,
+            question_slug: questionSlug,
+            option_slug: optionSlug,
+            skipped: false,
+            experience_awareness: 3,
+            experience_sentiment: 1,
+          })
+          .execute();
+
+        const report = await getQuestionReport(questionSlug, 1, 2024);
+        expect(report?.data).toBeDefined();
+        expect(report?.data.options).toHaveLength(1);
+        expect(report?.data.options[0].optionSlug).toBe(optionSlug);
+        expect(report?.data.options[0].awareness).toHaveLength(1);
+        expect(report?.data.options[0].awareness[0].level).toBe(3);
+        expect(report?.data.options[0].awareness[0].count).toBe(1);
+        expect(report?.data.options[0].awareness[0].percentage).toBe(100);
+        expect(report?.data.options[0].combined).toHaveLength(1);
+        expect(report?.data.options[0].combined[0].awareness).toBe(3);
+        expect(report?.data.options[0].combined[0].sentiment).toBe(1);
+        expect(report?.data.options[0].combined[0].count).toBe(1);
+      });
     });
 
     describe("numeric aggregation", () => {

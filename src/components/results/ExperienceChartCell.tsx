@@ -14,7 +14,8 @@ import { User } from "lucide-react";
 const AWARENESS_COLOR_MAP = {
   0: "bg-zinc-400 dark:bg-zinc-500", // Never heard of it
   1: "bg-cyan-400 dark:bg-cyan-500", // Heard of it
-  2: "bg-blue-400 dark:bg-blue-500", // Used it
+  2: "bg-blue-400 dark:bg-blue-500", // Used it in the past
+  3: "bg-indigo-400 dark:bg-indigo-500", // Actively using it
 } as const;
 
 // Color mappings based on sentiment values

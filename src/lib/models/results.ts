@@ -462,7 +462,7 @@ async function aggregateExperienceQuestion(
     .orderBy("order", "asc")
     .execute();
 
-  // Valid awareness values: 0, 1, 2
+  // Valid awareness values: 0, 1, 2, 3 (Never heard, Heard of it, Used it in the past, Actively using it)
   const validAwarenessValues = AWARENESS_OPTIONS.map(
     (option) => option.value,
   ) as number[];

@@ -69,7 +69,7 @@ function generateExperienceResponse(): {
   awareness: number;
   sentiment: number;
 } {
-  const awareness = faker.number.int({ min: 0, max: 2 }); // 0: Never heard, 1: Heard of it, 2: Used it
+  const awareness = faker.number.int({ min: 0, max: 3 }); // 0: Never heard, 1: Heard of it, 2: Used it in the past, 3: Actively using it
   let sentiment: number;
 
   if (awareness === 0 || awareness === 1) {
@@ -77,7 +77,7 @@ function generateExperienceResponse(): {
     const interestChoice = faker.number.int({ min: 0, max: 2 }); // 0: negative, 1: neutral, 2: positive
     sentiment = interestChoice === 0 ? -1 : interestChoice === 1 ? 0 : 1;
   } else {
-    // For "Used it", use sentiment values (1, 0, or -1)
+    // For "Used it in the past" or "Actively using it", use sentiment values (1, 0, or -1)
     const sentimentChoice = faker.number.int({ min: 0, max: 2 }); // 0: negative, 1: neutral, 2: positive
     sentiment = sentimentChoice === 0 ? -1 : sentimentChoice === 1 ? 0 : 1;
   }
