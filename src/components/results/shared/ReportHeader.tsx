@@ -182,27 +182,50 @@ export function ReportHeader({
           {/* Responses and Response Rate Info */}
           {totalResponses !== undefined && responseRate !== undefined && (
             <div className="text-muted-foreground flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <User className="h-4 w-4" />
-                {totalResponses.toLocaleString()} respondents
-              </div>
-              <div className="flex items-center gap-1">
-                <Percent className="h-4 w-4" />
-                {responseRate}% response rate
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex cursor-help items-center gap-1">
+                      <User className="h-4 w-4" />
+                      {totalResponses.toLocaleString()}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {totalResponses.toLocaleString()} respondents
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex cursor-help items-center gap-1">
+                      <Percent className="h-4 w-4" />
+                      {responseRate}%
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>{responseRate}% response rate</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           )}
           {/* Comments Button */}
           {comments.length > 0 && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
-                  <MessageCircleMore className="h-4 w-4" />
-                  <span className="hidden sm:inline">
-                    {comments.length} comments
-                  </span>
-                  <span className="sm:hidden">{comments.length}</span>
-                </button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
+                        <MessageCircleMore className="h-4 w-4" />
+                        <span className="hidden sm:inline">
+                          {comments.length}
+                        </span>
+                        <span className="sm:hidden">{comments.length}</span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>{comments.length} comments</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </DialogTrigger>
               <DialogContent className="max-w-4xl">
                 <DialogHeader>
@@ -252,13 +275,20 @@ export function ReportHeader({
           {comments.length > 0 && (
             <Dialog>
               <DialogTrigger asChild>
-                <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
-                  <MessageCircleMore className="h-4 w-4" />
-                  <span className="hidden sm:inline">
-                    {comments.length} comments
-                  </span>
-                  <span className="sm:hidden">{comments.length}</span>
-                </button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
+                        <MessageCircleMore className="h-4 w-4" />
+                        <span className="hidden sm:inline">
+                          {comments.length}
+                        </span>
+                        <span className="sm:hidden">{comments.length}</span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>{comments.length} comments</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </DialogTrigger>
               <DialogContent className="max-w-4xl">
                 <DialogHeader>
@@ -284,14 +314,30 @@ export function ReportHeader({
         {/* Bottom row: Stats */}
         {totalResponses !== undefined && responseRate !== undefined && (
           <div className="text-muted-foreground flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-1">
-              <User className="h-4 w-4" />
-              {totalResponses.toLocaleString()} respondents
-            </div>
-            <div className="flex items-center gap-1">
-              <Percent className="h-4 w-4" />
-              {responseRate}% response rate
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex cursor-help items-center gap-1">
+                    <User className="h-4 w-4" />
+                    {totalResponses.toLocaleString()}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {totalResponses.toLocaleString()} respondents
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex cursor-help items-center gap-1">
+                    <Percent className="h-4 w-4" />
+                    {responseRate}%
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>{responseRate}% response rate</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         )}
       </div>

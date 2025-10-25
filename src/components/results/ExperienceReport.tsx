@@ -3,11 +3,17 @@
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ExperienceChart } from "./ExperienceChart";
+import {
+  ExperienceControls,
+  GroupByOption,
+  SortDirection,
+} from "./ExperienceControls";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AWARENESS_OPTIONS } from "@/lib/constants";
 import { User } from "lucide-react";
 import { MarkdownText } from "@/components/ui/markdown-text";
+import { useState, useMemo } from "react";
 
 interface ExperienceReportProps {
   data: {
@@ -60,6 +66,42 @@ export function ExperienceReport({
 
   const actualResponses = totalResponses - skippedResponses;
 
+  // State for grouping and sorting
+  const [groupBy, setGroupBy] = useState<GroupByOption>("awareness");
+  const [sortBy, setSortBy] = useState("3"); // Default to "Actively using it"
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  // Handle groupBy changes with appropriate sortBy reset
+  const handleGroupByChange = (newGroupBy: GroupByOption) => {
+    setGroupBy(newGroupBy);
+    if (newGroupBy === "awareness") {
+      setSortBy("3"); // Reset to "Actively using it" when switching to awareness
+    } else if (newGroupBy === "sentiment") {
+      setSortBy("sentiment"); // Set to sentiment when switching to sentiment
+    }
+  };
+
+  // Sort and group the options based on current settings
+  const sortedOptions = useMemo(() => {
+    return [...data.options].sort((a, b) => {
+      if (groupBy === "awareness") {
+        const sortValue = parseInt(sortBy);
+        const aValue =
+          a.awareness.find((aw) => aw.level === sortValue)?.count || 0;
+        const bValue =
+          b.awareness.find((aw) => aw.level === sortValue)?.count || 0;
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      } else {
+        // For sentiment grouping, we'll sort by total positive sentiment
+        const aPositive = a.sentiment.find((s) => s.level === 1)?.count || 0;
+        const bPositive = b.sentiment.find((s) => s.level === 1)?.count || 0;
+        return sortDirection === "asc"
+          ? aPositive - bPositive
+          : bPositive - aPositive;
+      }
+    });
+  }, [data.options, groupBy, sortBy, sortDirection]);
+
   return (
     <Card>
       <ReportHeader
@@ -73,8 +115,20 @@ export function ExperienceReport({
       />
 
       <CardContent className="pt-0">
+        {/* Controls */}
+        <div className="mb-6 flex items-center justify-between">
+          <ExperienceControls
+            groupBy={groupBy}
+            onGroupByChange={handleGroupByChange}
+            sortBy={sortBy}
+            onSortByChange={setSortBy}
+            sortDirection={sortDirection}
+            onSortDirectionChange={setSortDirection}
+          />
+        </div>
+
         <div className="space-y-8">
-          {data.options
+          {sortedOptions
             .map((option) => {
               // Calculate percentages for each awareness level
               const totalResponses = option.awareness.reduce(
@@ -143,41 +197,6 @@ export function ExperienceReport({
                 activelyUsingPositivePercent,
                 usedItPositivePercent,
               };
-            })
-            .sort((a, b) => {
-              // Primary sort: by "Actively using it" percentage (descending)
-              if (b.activelyUsingPercent !== a.activelyUsingPercent) {
-                return b.activelyUsingPercent - a.activelyUsingPercent;
-              }
-
-              // Secondary sort: by "Used it in the past" percentage (descending)
-              if (b.usedItPercent !== a.usedItPercent) {
-                return b.usedItPercent - a.usedItPercent;
-              }
-
-              // Tertiary sort: by "Heard of it" percentage (descending)
-              if (b.heardOfItPercent !== a.heardOfItPercent) {
-                return b.heardOfItPercent - a.heardOfItPercent;
-              }
-
-              // Quaternary sort: by "Never heard of it" percentage (ascending - lower is better)
-              if (a.neverHeardPercent !== b.neverHeardPercent) {
-                return a.neverHeardPercent - b.neverHeardPercent;
-              }
-
-              // Final sort: by positive sentiment percentage for "Actively using it" (descending)
-              if (
-                b.activelyUsingPositivePercent !==
-                a.activelyUsingPositivePercent
-              ) {
-                return (
-                  b.activelyUsingPositivePercent -
-                  a.activelyUsingPositivePercent
-                );
-              }
-
-              // Fallback: by positive sentiment percentage for "Used it in the past" (descending)
-              return b.usedItPositivePercent - a.usedItPositivePercent;
             })
             .map((option) => {
               // Calculate the total responses for this specific option
