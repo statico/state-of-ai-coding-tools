@@ -15,7 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { MessageCircleMore } from "lucide-react";
+import { MessageCircleMore, Percent, User } from "lucide-react";
 import { ReactNode, useEffect } from "react";
 
 interface ReportHeaderProps {
@@ -30,6 +30,8 @@ interface ReportHeaderProps {
   }>;
   icon: ReactNode;
   questionId?: string;
+  totalResponses?: number;
+  responseRate?: number;
 }
 
 export function ReportHeader({
@@ -41,6 +43,8 @@ export function ReportHeader({
   comments = [],
   icon,
   questionId,
+  totalResponses,
+  responseRate,
 }: ReportHeaderProps) {
   // Generate a URL-friendly ID from the question title if no questionId is provided
   const generateId = (title: string) => {
@@ -152,7 +156,8 @@ export function ReportHeader({
 
   return (
     <CardHeader className="pb-4" id={anchorId}>
-      <div className="flex items-center justify-between">
+      {/* Desktop layout: stats to the right */}
+      <div className="hidden items-center justify-between lg:flex">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -171,35 +176,121 @@ export function ReportHeader({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        {comments.length > 0 && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 ml-4 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
-                <MessageCircleMore className="h-4 w-4" />
-                <span className="hidden sm:inline">
-                  {comments.length} comments
-                </span>
-                <span className="sm:hidden">{comments.length}</span>
-              </button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl">
-              <DialogHeader>
-                <DialogTitle>Comments for "{questionTitle}"</DialogTitle>
-              </DialogHeader>
-              <ScrollArea className="h-96">
-                <div className="space-y-3 pr-4">
-                  {comments.map((comment, index) => (
-                    <div
-                      key={index}
-                      className="bg-muted/30 rounded-lg border p-3"
-                    >
-                      <p className="text-sm">{comment.comment}</p>
-                    </div>
-                  ))}
+        <div className="flex items-center gap-4">
+          {/* Responses and Response Rate Info */}
+          {totalResponses !== undefined && responseRate !== undefined && (
+            <div className="text-muted-foreground flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-1">
+                <User className="h-4 w-4" />
+                {totalResponses.toLocaleString()} respondents
+              </div>
+              <div className="flex items-center gap-1">
+                <Percent className="h-4 w-4" />
+                {responseRate}% response rate
+              </div>
+            </div>
+          )}
+          {/* Comments Button */}
+          {comments.length > 0 && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
+                  <MessageCircleMore className="h-4 w-4" />
+                  <span className="hidden sm:inline">
+                    {comments.length} comments
+                  </span>
+                  <span className="sm:hidden">{comments.length}</span>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl">
+                <DialogHeader>
+                  <DialogTitle>Comments for "{questionTitle}"</DialogTitle>
+                </DialogHeader>
+                <ScrollArea className="h-96">
+                  <div className="space-y-3 pr-4">
+                    {comments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="bg-muted/30 rounded-lg border p-3"
+                      >
+                        <p className="text-sm">{comment.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile/tablet layout: stats under title */}
+      <div className="flex flex-col gap-3 lg:hidden">
+        {/* Top row: Question title and comments button */}
+        <div className="flex items-center justify-between">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-80"
+                  onClick={handleHeaderClick}
+                >
+                  <div className="shrink-0">{icon}</div>
+                  <CardTitle className="text-lg leading-6">
+                    {questionTitle}
+                  </CardTitle>
                 </div>
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs">
+                {tooltipContent}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          {/* Comments Button */}
+          {comments.length > 0 && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
+                  <MessageCircleMore className="h-4 w-4" />
+                  <span className="hidden sm:inline">
+                    {comments.length} comments
+                  </span>
+                  <span className="sm:hidden">{comments.length}</span>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl">
+                <DialogHeader>
+                  <DialogTitle>Comments for "{questionTitle}"</DialogTitle>
+                </DialogHeader>
+                <ScrollArea className="h-96">
+                  <div className="space-y-3 pr-4">
+                    {comments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="bg-muted/30 rounded-lg border p-3"
+                      >
+                        <p className="text-sm">{comment.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
+
+        {/* Bottom row: Stats */}
+        {totalResponses !== undefined && responseRate !== undefined && (
+          <div className="text-muted-foreground flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <User className="h-4 w-4" />
+              {totalResponses.toLocaleString()} respondents
+            </div>
+            <div className="flex items-center gap-1">
+              <Percent className="h-4 w-4" />
+              {responseRate}% response rate
+            </div>
+          </div>
         )}
       </div>
     </CardHeader>

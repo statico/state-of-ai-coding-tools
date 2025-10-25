@@ -1,7 +1,6 @@
 "use client";
 
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
-import { ReportFooter } from "@/components/results/shared/ReportFooter";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ExperienceChart } from "./ExperienceChart";
 import { Card, CardContent } from "@/components/ui/card";
@@ -67,6 +66,8 @@ export function ExperienceReport({
         questionDescription={questionDescription}
         comments={comments}
         icon={<QuestionTypeIcon type={questionType} />}
+        totalResponses={totalResponses}
+        responseRate={responseRate}
       />
 
       <CardContent className="pt-0">
@@ -231,11 +232,6 @@ export function ExperienceReport({
                 </div>
               );
             })}
-
-          <ReportFooter
-            totalResponses={totalResponses}
-            responseRate={responseRate}
-          />
         </div>
       </CardContent>
     </Card>

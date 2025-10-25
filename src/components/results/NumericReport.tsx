@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ReportFooter } from "@/components/results/shared/ReportFooter";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ProgressBar } from "@/components/results/shared/ProgressBar";
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
@@ -64,6 +63,8 @@ export function NumericReport({
         questionDescription={questionDescription}
         comments={comments}
         icon={<QuestionTypeIcon type={questionType} />}
+        totalResponses={totalResponses}
+        responseRate={responseRate}
       />
 
       <CardContent className="pt-0">
@@ -99,11 +100,6 @@ export function NumericReport({
               </div>
             ))}
           </div>
-
-          <ReportFooter
-            totalResponses={totalResponses}
-            responseRate={responseRate}
-          />
         </div>
       </CardContent>
     </Card>

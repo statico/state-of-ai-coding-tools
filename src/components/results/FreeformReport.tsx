@@ -3,7 +3,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ReportFooter } from "@/components/results/shared/ReportFooter";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
 import { Percent, User } from "lucide-react";
@@ -50,6 +49,8 @@ export function FreeformReport({
         questionDescription={questionDescription}
         comments={comments}
         icon={<QuestionTypeIcon type={questionType} />}
+        totalResponses={totalResponses}
+        responseRate={responseRate}
       />
 
       {/* Main Content */}
@@ -88,11 +89,6 @@ export function FreeformReport({
                 ))}
               </div>
             </ScrollArea>
-
-            <ReportFooter
-              totalResponses={totalResponses}
-              responseRate={responseRate}
-            />
           </div>
         )}
       </CardContent>
