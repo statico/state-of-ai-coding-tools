@@ -1,12 +1,10 @@
 sections:
   - slug: coding-tools
     title: Coding Tools
-    short_name: Tools
     description: "Let's start with the coding tools you use - editors, IDEs, plugins, and assistants."
 
   - slug: code-review-tools
     title: Code Reviews
-    short_name: Review
     description: "Now let's talk about code review tools - how are you using them and what's working for you?"
 
   - slug: models
@@ -203,8 +201,9 @@ questions:
 
   - section: code-review-tools
     slug: code-review-concerns
-    title: What are your biggest concerns about code review tools?
+    title: What are top concerns about code review tools?
     type: multiple
+    multiple_max: 3
     options:
       - slug: signal-to-noise
         label: Signal to noise ratio
@@ -298,8 +297,6 @@ questions:
         label: Depends on the use case
       - slug: not-sure
         label: Not sure
-      - slug: dont-use
-        label: I don't use AI models
 
   # SECTION 4: ENVIRONMENT
   - section: environment
@@ -309,8 +306,10 @@ questions:
     options:
       - slug: vscode
         label: VS Code
+        description: "(but not forks like Cursor)"
       - slug: jetbrains-intellij
-        label: JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc.)
+        label: JetBrains IDEs
+        description: "(IntelliJ, PyCharm, WebStorm, etc.)"
       - slug: visual-studio
         label: Visual Studio
       - slug: neovim
@@ -318,7 +317,8 @@ questions:
       - slug: terminal-cli
         label: Terminal/CLI only
       - slug: web-ides
-        label: Web-based IDEs (Replit, StackBlitz, etc.)
+        label: Web-based IDEs
+        description: "(Replit, StackBlitz, etc.)"
       - slug: cursor-standalone
         label: Cursor (standalone)
       - slug: windsurf-standalone
@@ -334,7 +334,7 @@ questions:
       - slug: zed
         label: Zed
       - slug: none
-        label: I don't use coding tools
+        label: None of the above
 
   - section: environment
     slug: web-based-tools
@@ -392,17 +392,11 @@ questions:
     type: multiple
     options:
       - slug: personal-projects
-        label: Personal side projects
-      - slug: open-source
-        label: Open-source projects
+        label: Personal projects and hobbies
       - slug: work-production
         label: Work projects (production code)
-      - slug: work-internal
-        label: Work projects (internal tools)
       - slug: learning-educational
         label: Learning/educational projects
-      - slug: prototypes-mvps
-        label: Prototypes and MVPs
       - slug: code-migrations
         label: Code migrations and refactoring
       - slug: bug-fixes
@@ -423,26 +417,18 @@ questions:
     options:
       - slug: 0-free-tier
         label: $0 (free tier only)
-      - slug: 1-10
-        label: $1-10
-      - slug: 11-20
-        label: $11-20
-      - slug: 21-40
-        label: $21-40
-      - slug: 41-60
-        label: $41-60
-      - slug: 61-100
-        label: $61-100
-      - slug: 101-200
-        label: $101-200
-      - slug: 200-plus
-        label: $200+
+      - slug: 1-25
+        label: $1-25
+      - slug: 26-50
+        label: $26-50
+      - slug: 51-100
+        label: $51-100
+      - slug: 101-plus
+        label: $101+
       - slug: employer-pays
         label: My employer pays (I don't know the cost)
       - slug: free-open-source
         label: I use free/open-source tools only
-      - slug: dont-use
-        label: I don't use coding tools
 
   # SECTION 3: USE CASES & APPLICATIONS
   - section: applications
@@ -458,12 +444,8 @@ questions:
         label: Debug and fix bugs
       - slug: refactor
         label: Refactor existing code
-      - slug: unit-tests
-        label: Write unit tests
-      - slug: integration-tests
-        label: Write integration tests
-      - slug: e2e-tests
-        label: Write end-to-end tests
+      - slug: writing-tests
+        label: Writing tests (unit, integration, e2e)
       - slug: code-review
         label: Code review and analysis
       - slug: documentation
@@ -472,26 +454,8 @@ questions:
         label: Explain existing code
       - slug: terminal-commands
         label: Terminal command suggestions
-      - slug: multi-file-editing
-        label: Multi-file editing
       - slug: chat-codebase
         label: Chat with codebase / ask questions about code
-      - slug: translate-code
-        label: Translate code between languages
-      - slug: security-detection
-        label: Security vulnerability detection
-      - slug: performance-optimization
-        label: Performance optimization
-      - slug: api-endpoints
-        label: Generate API endpoints
-      - slug: database-queries
-        label: Database query generation
-      - slug: boilerplate
-        label: Boilerplate code generation
-      - slug: learning-frameworks
-        label: Learning new frameworks/libraries
-      - slug: none
-        label: I don't use AI coding tools
 
   - section: applications
     slug: most-valuable-use-case
@@ -514,14 +478,6 @@ questions:
         label: Documentation generation
       - slug: explain-code
         label: Code explanation and learning
-      - slug: terminal-commands
-        label: Terminal command suggestions
-      - slug: multi-file-editing
-        label: Multi-file editing
-      - slug: chat-codebase
-        label: Chat with codebase
-      - slug: none
-        label: I don't use AI coding tools
 
   - section: applications
     slug: avoid-ai-tasks
@@ -542,16 +498,8 @@ questions:
         label: Performance-critical code
       - slug: architecture-decisions
         label: Architecture decisions
-      - slug: api-design
-        label: API design
-      - slug: complex-algorithms
-        label: Complex algorithms
       - slug: domain-knowledge
-        label: Code that requires deep domain knowledge
-      - slug: legal-compliance
-        label: Legal/compliance-related code
-      - slug: medical-healthcare
-        label: Medical/healthcare code
+        label: Code requiring deep domain knowledge
       - slug: none
         label: None - I'm comfortable using AI for all tasks
 
@@ -575,30 +523,32 @@ questions:
         label: Moderately decreased (significantly slower)
       - slug: too-early
         label: Too early to tell
-      - slug: dont-use
-        label: I don't use AI coding tools
 
   - section: productivity-impact
     slug: time-saved-per-week
     title: How much time do AI tools save you per week?
     type: single
     options:
-      - slug: 10-plus-hours
-        label: 10+ hours
-      - slug: 5-10-hours
-        label: 5-10 hours
-      - slug: 3-5-hours
-        label: 3-5 hours
-      - slug: 1-3-hours
-        label: 1-3 hours
-      - slug: less-1-hour
-        label: Less than 1 hour
       - slug: no-time-saved
-        label: No time saved / Takes more time
+        label: none
+        description: No time saved
+      - slug: less-1-hour
+        label: A few minutes
+        description: Less than 1 hour
+      - slug: 1-5-hours
+        label: A few hours
+        description: 1-5 hours
+      - slug: 6-10-hours
+        label: Several hours
+        description: 6-10 hours
+      - slug: 11-20-hours
+        label: Many hours
+        description: 11-20 hours
+      - slug: 20-plus-hours
+        label: Most of my time
+        description: 20 hours or more
       - slug: not-sure
         label: Not sure
-      - slug: dont-use
-        label: I don't use AI coding tools
 
   - section: productivity-impact
     slug: code-quality-impact
@@ -607,16 +557,12 @@ questions:
     options:
       - slug: significantly-improved
         label: Significantly improved
-      - slug: moderately-improved
-        label: Moderately improved
-      - slug: slightly-improved
-        label: Slightly improved
+      - slug: somewhat-improved
+        label: Somewhat improved
       - slug: no-change
         label: No change
-      - slug: slightly-worse
-        label: Slightly worse
-      - slug: moderately-worse
-        label: Moderately worse
+      - slug: somewhat-worse
+        label: Somewhat worse
       - slug: significantly-worse
         label: Significantly worse
       - slug: not-sure
@@ -627,46 +573,53 @@ questions:
     title: How much do you trust the accuracy of AI-generated code?
     type: single
     options:
-      - slug: highly-trust
-        label: Highly trust - rarely needs changes
-      - slug: generally-trust
-        label: Generally trust - usually correct with minor edits
+      - slug: significantly-trust
+        label: Highly trust
+        description: Rarely needs changes
       - slug: somewhat-trust
-        label: Somewhat trust - often needs significant changes
-      - slug: low-trust
-        label: Low trust - frequently incorrect or incomplete
-      - slug: dont-trust
-        label: Don't trust - always requires extensive review and changes
-      - slug: dont-use
-        label: I don't use AI coding tools
+        label: Somewhat trust
+        description: Usually correct with minor edits
+      - slug: neutral
+        label: Neutral
+        description: Sometimes correct, sometimes incorrect
+      - slug: somewhat-untrust
+        label: Somewhat untrust
+        description: Often needs significant changes
+      - slug: highly-untrust
+        label: Highly untrust
+        description: Frequently incorrect or incomplete
+      - slug: not-sure
+        label: Not sure
 
   - section: productivity-impact
     slug: ai-generated-code-percentage
     title: What percentage of your code is AI-generated or AI-assisted?
     type: single
     options:
-      - slug: 0-10
-        label: 0-10%
-      - slug: 11-25
-        label: 11-25%
-      - slug: 26-50
-        label: 26-50%
-      - slug: 51-75
-        label: 51-75%
-      - slug: 76-90
-        label: 76-90%
-      - slug: 91-100
-        label: 91-100%
+      - slug: none
+        label: None
+        description: 0%
+      - slug: some
+        label: Some
+        description: 1-25%
+      - slug: moderate
+        label: Moderate
+        description: 26-50%
+      - slug: significant
+        label: Significant
+        description: 51-75%
+      - slug: most
+        label: Most
+        description: 76-100%
       - slug: not-sure
         label: Not sure
-      - slug: dont-use
-        label: I don't use AI coding tools
 
   # SECTION 7: CONCERNS & PAIN POINTS
   - section: concerns-pain-points
     slug: biggest-concerns
-    title: What are your biggest concerns about AI coding tools?
+    title: What are top concerns about AI coding tools?
     type: multiple
+    multiple_max: 3
     options:
       - slug: code-quality-accuracy
         label: Code quality and accuracy
@@ -701,8 +654,9 @@ questions:
 
   - section: concerns-pain-points
     slug: frustrations
-    title: What frustrations do you experience with AI coding tools?
+    title: What are your top frustrations with AI coding tools?
     type: multiple
+    multiple_max: 3
     options:
       - slug: slop
         label: Excess or unnecessary code
@@ -768,13 +722,12 @@ questions:
         label: Mixed - some skills improving, others declining
       - slug: too-early
         label: Too early to tell
-      - slug: dont-use
-        label: I don't use AI coding tools
 
   # SECTION 9: PROGRAMMING LANGUAGES & FRAMEWORKS
   - section: languages-frameworks
     slug: primary-languages
     title: Which programming languages do you primarily use?
+    description: Add a comment if we're missing your favorite language.
     type: multiple
     options:
       - slug: javascript
@@ -803,65 +756,13 @@ questions:
         label: Swift
       - slug: kotlin
         label: Kotlin
-      - slug: objective-c
-        label: Objective-C
-      - slug: dart
-        label: Dart
       - slug: scala
         label: Scala
-      - slug: haskell
-        label: Haskell
-      - slug: clojure
-        label: Clojure
-      - slug: elixir
-        label: Elixir
-      - slug: r
-        label: R
-      - slug: matlab
-        label: MATLAB
-      - slug: sql
-        label: SQL
-      - slug: shell-bash
-        label: Shell/Bash
-      - slug: powershell
-        label: PowerShell
-
-  - section: languages-frameworks
-    slug: best-ai-languages
-    title: Which programming languages work best with AI tools in your experience?
-    type: multiple
-    multiple_max: 3
-    options:
-      - slug: javascript
-        label: JavaScript
-      - slug: typescript
-        label: TypeScript
-      - slug: python
-        label: Python
-      - slug: java
-        label: Java
-      - slug: csharp
-        label: C#
-      - slug: cpp
-        label: C++
-      - slug: go
-        label: Go
-      - slug: rust
-        label: Rust
-      - slug: php
-        label: PHP
-      - slug: ruby
-        label: Ruby
-      - slug: swift
-        label: Swift
-      - slug: kotlin
-        label: Kotlin
-      - slug: no-difference
-        label: No significant difference across languages
 
   - section: languages-frameworks
     slug: frameworks-libraries
     title: Which frameworks/libraries do you use?
+    description: Add a comment if we're missing your favorite framework/library.
     type: multiple
     options:
       # Web Front-end
@@ -875,61 +776,14 @@ questions:
         label: Svelte
       - slug: nextjs
         label: Next.js
-      - slug: nuxt
-        label: Nuxt
-      - slug: remix
-        label: Remix
-      - slug: astro
-        label: Astro
-      - slug: solidjs
-        label: SolidJS
-      - slug: qwik
-        label: Qwik
       # Web Back-end
-      - slug: nodejs-express
-        label: Node.js/Express
-      - slug: django
-        label: Django
-      - slug: flask
-        label: Flask
-      - slug: fastapi
-        label: FastAPI
       - slug: ruby-on-rails
         label: Ruby on Rails
-      - slug: laravel
-        label: Laravel
-      - slug: spring-boot
-        label: Spring Boot
-      - slug: aspnet-core
-        label: ASP.NET Core
-      - slug: nestjs
-        label: NestJS
-      - slug: gin-go
-        label: Gin (Go)
       # Mobile
       - slug: react-native
         label: React Native
       - slug: flutter
         label: Flutter
-      - slug: swift-swiftui
-        label: Swift/SwiftUI
-      - slug: kotlin-jetpack
-        label: Kotlin/Jetpack Compose
-      - slug: ionic
-        label: Ionic
-      # AI/ML
-      - slug: pytorch
-        label: PyTorch
-      - slug: tensorflow
-        label: TensorFlow
-      - slug: langchain
-        label: LangChain
-      - slug: llamaindex
-        label: LlamaIndex
-      - slug: hugging-face-transformers
-        label: Hugging Face Transformers
-      - slug: scikit-learn
-        label: scikit-learn
       # Other
       - slug: docker
         label: Docker
@@ -946,15 +800,17 @@ questions:
     type: single
     options:
       - slug: yes-consistent
-        label: Yes - consistent across all languages
+        label: Yes
+        description: Consistent across all languages
       - slug: mostly-minor-differences
-        label: Mostly - minor differences
+        label: Mostly
+        description: Minor differences
       - slug: no-significant-differences
-        label: No - significant differences between languages
+        label: No
+        description: Significant differences between languages
       - slug: not-sure
-        label: Not sure / haven't compared
-      - slug: one-language
-        label: I only use one language
+        label: Not sure
+        description: Haven't compared
 
   # SECTION 13: FINAL THOUGHTS
   - section: final-thoughts
@@ -964,5 +820,6 @@ questions:
 
   - section: final-thoughts
     slug: additional-comments
-    title: Additional comments
+    title: Additional comments about the survey
+    description: Any feedback? Anything we missed or need to change?
     type: freeform
