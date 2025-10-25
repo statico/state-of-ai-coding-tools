@@ -4,7 +4,7 @@ import { SurveyHeader } from "@/components/SurveyHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AlarmCheckIcon, ArrowRight } from "lucide-react";
+import { AlarmCheckIcon, ArrowLeft, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTRPC } from "@/lib/trpc/client";
 import { useQuery } from "@tanstack/react-query";
@@ -65,13 +65,14 @@ export default function OutroPage() {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="mx-auto grid max-w-lg grid-cols-1 gap-4 sm:grid-cols-2">
+            <Button size="lg" onClick={handleStartOver} variant="outline">
+              <ArrowLeft className="size-4" />
+              Change My Responses
+            </Button>
             <Button size="lg" onClick={handleViewResults}>
               View Results
               <ArrowRight className="size-4" />
-            </Button>
-            <Button size="lg" onClick={handleStartOver} variant="outline">
-              Change My Responses
             </Button>
           </div>
 
