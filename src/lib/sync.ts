@@ -62,7 +62,7 @@ export async function syncSections(sections: Section[]) {
   }
 
   logger.warn(
-    `📊 Processed ${sections.length} sections (${missingSections.length} marked inactive)`,
+    `Processed ${sections.length} sections (${missingSections.length} marked inactive)`,
   );
 }
 
@@ -123,7 +123,7 @@ export async function syncQuestions(questions: Question[]) {
   }
 
   logger.warn(
-    `📊 Processed ${questions.length} questions (${missingQuestions.length} marked inactive)`,
+    `Processed ${questions.length} questions (${missingQuestions.length} marked inactive)`,
   );
 }
 
@@ -194,36 +194,36 @@ export async function syncOptions(questions: Question[]) {
   }
 
   logger.warn(
-    `📊 Processed ${configOptions.length} options (${missingOptions.length} marked inactive)`,
+    `Processed ${configOptions.length} options (${missingOptions.length} marked inactive)`,
   );
 }
 
 export async function syncConfig(configPath?: string) {
-  logger.warn("🔄 Starting config synchronization...");
+  logger.warn("Starting config synchronization...");
 
   try {
     // Load and validate config
-    logger.warn("📋 Loading and validating config.yml...");
+    logger.warn("Loading and validating config.yml...");
     const config = loadConfig(configPath);
     validateConfigReferences(config);
     validateUniqueSlugs(config);
-    logger.warn("✅ Config validation passed");
+    logger.warn("Config validation passed");
 
     // Sync sections
-    logger.warn("📝 Synchronizing sections...");
+    logger.warn("Synchronizing sections...");
     await syncSections(config.sections);
 
     // Sync questions
-    logger.warn("❓ Synchronizing questions...");
+    logger.warn("Synchronizing questions...");
     await syncQuestions(config.questions);
 
     // Sync options
-    logger.warn("🔘 Synchronizing options...");
+    logger.warn("Synchronizing options...");
     await syncOptions(config.questions);
 
-    logger.warn("✅ Config synchronization completed successfully!");
+    logger.warn("Config synchronization completed successfully!");
   } catch (error) {
-    logger.error("❌ Config synchronization failed:");
+    logger.error("Config synchronization failed:");
     logger.error(error instanceof Error ? error.message : String(error));
     throw error;
   }

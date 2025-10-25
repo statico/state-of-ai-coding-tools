@@ -10,7 +10,7 @@ import { Logger } from "@/server/logging";
 import { faker } from "@faker-js/faker";
 import { getISOWeek, getISOWeekYear, subWeeks } from "date-fns";
 
-const log = Logger.forModule();
+const log = new Logger("db-seed");
 
 // Set seed for consistent results
 faker.seed(12345);
@@ -246,17 +246,17 @@ function generateUserResponses(
 }
 
 async function seedTestData() {
-  log.info("🌱 Starting test data seeding...");
+  log.info("Starting test data seeding...");
 
   try {
     // Load configuration
     const config = loadConfig();
     log.info(
-      `📋 Loaded config with ${config.sections.length} sections and ${config.questions.length} questions`,
+      `Loaded config with ${config.sections.length} sections and ${config.questions.length} questions`,
     );
 
     // Clear existing data
-    log.info("🧹 Clearing existing data...");
+    log.info("Clearing existing data...");
     await db.deleteFrom("responses").execute();
     await db.deleteFrom("sessions").execute();
     await db.deleteFrom("options").execute();
@@ -264,7 +264,7 @@ async function seedTestData() {
     await db.deleteFrom("sections").execute();
 
     // Insert sections and questions from config
-    log.info("📝 Inserting sections and questions...");
+    log.info("Inserting sections and questions...");
 
     // Insert sections using model functions
     for (const [index, section] of config.sections.entries()) {
@@ -328,7 +328,7 @@ async function seedTestData() {
     }
 
     log.info(
-      `📅 Generating data for weeks: ${weeks.map((w) => `${w.year}-W${w.week}`).join(", ")}`,
+      `Generating data for weeks: ${weeks.map((w) => `${w.year}-W${w.week}`).join(", ")}`,
     );
 
     // Build question options map for experience questions
@@ -388,16 +388,16 @@ async function seedTestData() {
       }
 
       if (userId % 20 === 0) {
-        log.info(`👤 Generated data for ${userId} users...`);
+        log.info(`Generated data for ${userId} users...`);
       }
     }
 
     // Batch insert sessions
-    log.info("💾 Inserting sessions...");
+    log.info("Inserting sessions...");
     await db.insertInto("sessions").values(sessions).execute();
 
     // Batch insert responses (in chunks to avoid memory issues)
-    log.info("💾 Inserting responses...");
+    log.info("Inserting responses...");
     const chunkSize = 1000;
     for (let i = 0; i < allResponses.length; i += chunkSize) {
       const chunk = allResponses.slice(i, i + chunkSize);
@@ -405,20 +405,20 @@ async function seedTestData() {
 
       if (i % (chunkSize * 5) === 0) {
         log.info(
-          `📊 Inserted ${Math.min(i + chunkSize, allResponses.length)} responses...`,
+          `Inserted ${Math.min(i + chunkSize, allResponses.length)} responses...`,
         );
       }
     }
 
-    log.info("✅ Test data seeding completed!");
+    log.info("Test data seeding completed!");
     log.info(
-      `📈 Generated ${sessions.length} sessions with ${allResponses.length} responses`,
+      `Generated ${sessions.length} sessions with ${allResponses.length} responses`,
     );
     log.info(
-      `📊 Average responses per user: ${Math.round(allResponses.length / sessions.length)}`,
+      `Average responses per user: ${Math.round(allResponses.length / sessions.length)}`,
     );
   } catch (error) {
-    log.error("❌ Error seeding test data:", error);
+    log.error("Error seeding test data:", error);
     process.exit(1);
   } finally {
     await db.destroy();
