@@ -123,7 +123,11 @@ export function ExperienceOption({
                         </Label>
                         {showBadges && sentimentOptions.length > 0 && (
                           <div
-                            className="ml-0 flex gap-4 sm:ml-0"
+                            className={cn(
+                              "ml-0 flex gap-4 sm:ml-0",
+                              state.awareness !== awarenessOption.value &&
+                                "opacity-80",
+                            )}
                             onClick={(e) => e.stopPropagation()}
                           >
                             {sentimentOptions.map((sentimentOption) => (
