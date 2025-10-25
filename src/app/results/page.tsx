@@ -28,7 +28,7 @@ export default function ReportsPage() {
   // Show loading while checking authentication
   if (!authData) {
     return (
-      <div className="container mx-auto max-w-7xl p-6">
+      <div className="container mx-auto max-w-4xl p-6">
         <div className="flex min-h-[400px] items-center justify-center">
           <div className="text-center">Loading...</div>
         </div>
@@ -42,7 +42,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl p-6">
+    <div className="container mx-auto max-w-4xl p-6">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col gap-4">
