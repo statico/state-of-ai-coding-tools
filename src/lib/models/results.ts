@@ -30,8 +30,10 @@ export interface SingleChoiceData {
   options: Array<{
     optionSlug: string;
     label: string;
+    description?: string;
     count: number;
     percentage: number;
+    order: number;
   }>;
   writeIns: Array<{
     response: string;
@@ -43,8 +45,10 @@ export interface MultipleChoiceData {
   options: Array<{
     optionSlug: string;
     label: string;
+    description?: string;
     count: number;
     percentage: number;
+    order: number;
   }>;
   writeIns: Array<{
     response: string;
@@ -56,6 +60,8 @@ export interface ExperienceData {
   options: Array<{
     optionSlug: string;
     label: string;
+    description?: string;
+    order: number;
     awareness: Array<{
       level: number;
       label: string;
@@ -347,11 +353,13 @@ async function aggregateSingleChoiceQuestion(
   const optionsData = options.map((option) => ({
     optionSlug: option.slug,
     label: option.label,
+    description: option.description || undefined,
     count: optionCounts.get(option.slug) || 0,
     percentage:
       totalResponses > 0
         ? ((optionCounts.get(option.slug) || 0) / totalResponses) * 100
         : 0,
+    order: option.order,
   }));
 
   const writeInsData = Array.from(writeInCounts.entries()).map(
@@ -416,11 +424,13 @@ async function aggregateMultipleChoiceQuestion(
   const optionsData = options.map((option) => ({
     optionSlug: option.slug,
     label: option.label,
+    description: option.description || undefined,
     count: optionCounts.get(option.slug) || 0,
     percentage:
       totalSelections > 0
         ? ((optionCounts.get(option.slug) || 0) / totalSelections) * 100
         : 0,
+    order: option.order,
   }));
 
   const writeInsData = Array.from(writeInCounts.entries()).map(
@@ -563,6 +573,8 @@ async function aggregateExperienceQuestion(
     optionsData.push({
       optionSlug: option.slug,
       label: option.label,
+      description: option.description || undefined,
+      order: option.order,
       awareness: awarenessData,
       sentiment: sentimentData,
       combined: combinedData,

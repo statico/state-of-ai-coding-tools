@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -12,7 +14,7 @@ import {
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ProgressBar } from "@/components/results/shared/ProgressBar";
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
-import { Percent, User } from "lucide-react";
+import { Percent, User, Eye, EyeOff } from "lucide-react";
 import { MarkdownText } from "@/components/ui/markdown-text";
 
 interface SingleChoiceReportProps {
@@ -23,6 +25,7 @@ interface SingleChoiceReportProps {
       description?: string;
       count: number;
       percentage: number;
+      order: number;
     }>;
     writeIns: Array<{
       response: string;
@@ -53,10 +56,17 @@ export function SingleChoiceReport({
   randomize,
   comments = [],
 }: SingleChoiceReportProps) {
+  const [showAll, setShowAll] = useState(false);
+
   // Filter out options with zero respondents and sort by count (most popular first)
-  const sortedOptions = [...data.options]
+  const filteredOptions = [...data.options]
     .filter((option) => option.count > 0)
     .sort((a, b) => b.count - a.count);
+
+  // Show all options sorted by database order
+  const allOptions = [...data.options].sort((a, b) => a.order - b.order);
+
+  const sortedOptions = showAll ? allOptions : filteredOptions;
 
   const responseRate =
     totalResponses > 0
@@ -138,6 +148,26 @@ export function SingleChoiceReport({
                 </div>
               ))}
             </div>
+
+            {/* Toggle Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAll(!showAll)}
+              className="text-muted-foreground hover:text-foreground gap-2 text-sm"
+            >
+              {showAll ? (
+                <>
+                  <EyeOff className="h-4 w-4" />
+                  Show Popular Only
+                </>
+              ) : (
+                <>
+                  <Eye className="h-4 w-4" />
+                  Show All
+                </>
+              )}
+            </Button>
 
             {/* Write-in Responses */}
             {data.writeIns.length > 0 && (
