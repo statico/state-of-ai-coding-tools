@@ -28,6 +28,7 @@ export function SurveyHeader() {
     {
       id: "intro",
       label: "Start",
+      shortLabel: "Start",
       path: "/intro",
       isActive: isIntro,
     },
@@ -35,6 +36,7 @@ export function SurveyHeader() {
       ? sections.map((section: any) => ({
           id: section.slug,
           label: section.title,
+          shortLabel: section.short_name || section.title,
           path: `/survey/${section.slug}`,
           isActive: isSurvey && pathname === `/survey/${section.slug}`,
         }))
@@ -42,6 +44,7 @@ export function SurveyHeader() {
     {
       id: "outro",
       label: "Finish",
+      shortLabel: "Finish",
       path: "/outro",
       isActive: isOutro,
     },
@@ -196,7 +199,7 @@ export function SurveyHeader() {
                     transformOrigin: "top left",
                   }}
                 >
-                  {item.label}
+                  {item.shortLabel}
                 </button>
               </div>
             );

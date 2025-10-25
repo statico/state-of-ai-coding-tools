@@ -119,7 +119,8 @@ CREATE TABLE public.sections (
   description text,
   active boolean DEFAULT true NOT NULL,
   "order" integer NOT NULL,
-  added_at date
+  added_at date,
+  short_name text
 );
 
 --

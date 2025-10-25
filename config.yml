@@ -1,10 +1,12 @@
 sections:
   - slug: coding-tools
     title: Coding Tools
+    short_name: Tools
     description: "Let's start with the coding tools you use - editors, IDEs, plugins, and assistants."
 
   - slug: code-review-tools
-    title: Code Review Tools
+    title: Code Reviews
+    short_name: Review
     description: "Now let's talk about code review tools - how are you using them and what's working for you?"
 
   - slug: models
@@ -21,14 +23,17 @@ sections:
 
   - slug: productivity-impact
     title: Productivity & Impact
+    short_name: Productivity
     description: "The big question: how is AI actually changing your work? Let's talk about the real impact."
 
   - slug: concerns-pain-points
     title: Concerns & Pain Points
+    short_name: Concerns
     description: "What's frustrating you? We want to hear about the challenges and concerns you're facing."
 
   - slug: languages-frameworks
     title: Programming Languages & Frameworks
+    short_name: Languages
     description: "Does AI work better with certain languages? Tell us about your tech stack and what's working."
 
   - slug: final-thoughts

@@ -60,6 +60,7 @@ export interface Sections {
   added_at: Timestamp | null;
   description: string | null;
   order: number;
+  short_name: string | null;
   slug: string;
   title: string;
 }

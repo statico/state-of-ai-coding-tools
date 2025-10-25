@@ -75,6 +75,7 @@ export const QuestionSchema = z
 export const SectionSchema = z.object({
   slug: z.string().min(1, "Section slug cannot be empty"),
   title: z.string().min(1, "Section title cannot be empty"),
+  short_name: z.string().optional(),
   description: z.string().optional(),
   added: z
     .string()

@@ -28,6 +28,7 @@ export async function syncSections(sections: Section[]) {
       .values({
         slug: section.slug,
         title: section.title,
+        short_name: section.short_name || null,
         description: section.description || null,
         active: true,
         order: i,
@@ -36,6 +37,7 @@ export async function syncSections(sections: Section[]) {
       .onConflict((oc) =>
         oc.column("slug").doUpdateSet({
           title: section.title,
+          short_name: section.short_name || null,
           description: section.description || null,
           active: true,
           order: i,
