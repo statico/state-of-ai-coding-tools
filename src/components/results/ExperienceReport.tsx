@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AWARENESS_OPTIONS } from "@/lib/constants";
 import { User } from "lucide-react";
+import { MarkdownText } from "@/components/ui/markdown-text";
 
 interface ExperienceReportProps {
   data: {
@@ -218,7 +219,7 @@ export function ExperienceReport({
                   {/* Option header */}
                   <div className="flex items-center justify-between">
                     <h4 className="text-foreground text-lg font-medium">
-                      {option.label}
+                      <MarkdownText>{option.label}</MarkdownText>
                     </h4>
                     <div className="text-muted-foreground flex items-center gap-1 text-sm">
                       <User className="h-4 w-4" />

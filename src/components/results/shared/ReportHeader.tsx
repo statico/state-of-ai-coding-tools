@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import { MessageCircleMore, Percent, User } from "lucide-react";
 import { ReactNode, useEffect } from "react";
+import { MarkdownText } from "@/components/ui/markdown-text";
 
 interface ReportHeaderProps {
   questionTitle: string;
@@ -129,7 +130,8 @@ export function ReportHeader({
   const tooltipContent = (
     <div className="space-y-2 text-sm">
       <div>
-        <span className="font-semibold">Title:</span> {questionTitle}
+        <span className="font-semibold">Title:</span>{" "}
+        <MarkdownText>{questionTitle}</MarkdownText>
       </div>
       <div>
         <span className="font-semibold">Type:</span>{" "}
@@ -138,7 +140,7 @@ export function ReportHeader({
       {questionDescription && (
         <div>
           <span className="font-semibold">Description:</span>{" "}
-          {questionDescription}
+          <MarkdownText>{questionDescription}</MarkdownText>
         </div>
       )}
       {multipleMax && (
@@ -167,7 +169,7 @@ export function ReportHeader({
               >
                 <div className="shrink-0">{icon}</div>
                 <CardTitle className="text-lg leading-6">
-                  {questionTitle}
+                  <MarkdownText>{questionTitle}</MarkdownText>
                 </CardTitle>
               </div>
             </TooltipTrigger>
@@ -237,7 +239,7 @@ export function ReportHeader({
                 >
                   <div className="shrink-0">{icon}</div>
                   <CardTitle className="text-lg leading-6">
-                    {questionTitle}
+                    <MarkdownText>{questionTitle}</MarkdownText>
                   </CardTitle>
                 </div>
               </TooltipTrigger>

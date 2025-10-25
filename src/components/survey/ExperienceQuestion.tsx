@@ -7,6 +7,7 @@ import { CommentSection } from "./CommentSection";
 import { SkipButton } from "./SkipButton";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { MarkdownText } from "@/components/ui/markdown-text";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -157,10 +158,12 @@ export function ExperienceQuestion({
       {/* Question title and description outside of card */}
       <div className="space-y-2">
         <h3 className="text-foreground text-lg font-semibold">
-          {question.title}
+          <MarkdownText>{question.title}</MarkdownText>
         </h3>
         {question.description && (
-          <p className="text-muted-foreground">{question.description}</p>
+          <p className="text-muted-foreground">
+            <MarkdownText>{question.description}</MarkdownText>
+          </p>
         )}
       </div>
 
@@ -178,7 +181,7 @@ export function ExperienceQuestion({
                 <div className="space-y-4">
                   {/* Option header */}
                   <h4 className="text-foreground text-xl font-medium">
-                    {option.label}
+                    <MarkdownText>{option.label}</MarkdownText>
                   </h4>
 
                   {/* Awareness Level with inline badges */}

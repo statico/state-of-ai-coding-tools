@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { QuestionCard } from "./QuestionCard";
+import { MarkdownText } from "@/components/ui/markdown-text";
 import { cn } from "@/lib/utils";
 import {
   QuestionWithOptions,
@@ -175,10 +176,12 @@ export function MultipleChoiceQuestion({
               htmlFor={option.slug}
               className="flex flex-1 cursor-pointer flex-col items-start gap-0 py-2 text-base"
             >
-              <div>{option.label}</div>
+              <div>
+                <MarkdownText>{option.label}</MarkdownText>
+              </div>
               {option.description && (
                 <div className="text-muted-foreground text-sm">
-                  {option.description}
+                  <MarkdownText>{option.description}</MarkdownText>
                 </div>
               )}
             </Label>

@@ -459,7 +459,7 @@ questions:
 
   - section: applications
     slug: most-valuable-use-case
-    title: Which use case provides the MOST value to you?
+    title: Which use case provides the _most_ value to you?
     type: single
     options:
       - slug: autocomplete
@@ -481,7 +481,7 @@ questions:
 
   - section: applications
     slug: avoid-ai-tasks
-    title: For which tasks do you deliberately AVOID using AI tools?
+    title: For which tasks do you deliberately _avoid_ using AI tools?
     type: multiple
     options:
       - slug: security-critical

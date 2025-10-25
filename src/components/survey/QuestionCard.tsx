@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CommentSection } from "./CommentSection";
 import { SkipButton } from "./SkipButton";
+import { MarkdownText } from "@/components/ui/markdown-text";
 import { cn } from "@/lib/utils";
 
 interface QuestionCardProps {
@@ -34,10 +35,18 @@ export function QuestionCard({
   return (
     <Card className={cn("relative", className)}>
       <CardHeader>
-        <CardTitle className="text-xl">{title}</CardTitle>
-        {description && <p className="text-muted-foreground">{description}</p>}
+        <CardTitle className="text-xl">
+          <MarkdownText>{title}</MarkdownText>
+        </CardTitle>
+        {description && (
+          <p className="text-muted-foreground">
+            <MarkdownText>{description}</MarkdownText>
+          </p>
+        )}
         {additionalInfo && (
-          <p className="text-muted-foreground text-base">{additionalInfo}</p>
+          <p className="text-muted-foreground text-base">
+            <MarkdownText>{additionalInfo}</MarkdownText>
+          </p>
         )}
       </CardHeader>
       <CardContent className={cn("flex flex-col pb-2", className)}>

@@ -13,6 +13,7 @@ import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ProgressBar } from "@/components/results/shared/ProgressBar";
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
 import { Percent, User } from "lucide-react";
+import { MarkdownText } from "@/components/ui/markdown-text";
 
 interface MultipleChoiceReportProps {
   data: {
@@ -100,21 +101,23 @@ export function MultipleChoiceReport({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span className="cursor-help text-sm font-medium">
-                              {option.label}
+                              <MarkdownText>{option.label}</MarkdownText>
                             </span>
                           </TooltipTrigger>
                           <TooltipContent side="top" className="max-w-xs">
                             <div className="space-y-2 text-sm">
                               <div>
                                 <span className="font-semibold">Title:</span>{" "}
-                                {option.label}
+                                <MarkdownText>{option.label}</MarkdownText>
                               </div>
                               <div>
                                 <span className="font-semibold">
                                   Description:
                                 </span>{" "}
-                                {option.description ||
-                                  "No description available"}
+                                <MarkdownText>
+                                  {option.description ||
+                                    "No description available"}
+                                </MarkdownText>
                               </div>
                             </div>
                           </TooltipContent>

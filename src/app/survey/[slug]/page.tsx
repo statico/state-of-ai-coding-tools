@@ -11,6 +11,7 @@ import { SingleFreeformQuestion } from "@/components/survey/SingleFreeformQuesti
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { MarkdownText } from "@/components/ui/markdown-text";
 import { ResponseData } from "@/lib/constants";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -188,10 +189,12 @@ export default function SurveyPage() {
         <div className="space-y-6 lg:space-y-10">
           {/* Section header */}
           <div className="space-y-2">
-            <h2 className="text-3xl">{currentSection.title}</h2>
+            <h2 className="text-3xl">
+              <MarkdownText>{currentSection.title}</MarkdownText>
+            </h2>
             {currentSection.description && (
               <p className="text-muted-foreground">
-                {currentSection.description}
+                <MarkdownText>{currentSection.description}</MarkdownText>
               </p>
             )}
           </div>
