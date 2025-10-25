@@ -77,7 +77,7 @@ export function ExperienceReport({
     if (newGroupBy === "awareness") {
       setSortBy("3"); // Reset to "Actively using it" when switching to awareness
     } else if (newGroupBy === "sentiment") {
-      setSortBy("sentiment"); // Set to sentiment when switching to sentiment
+      setSortBy("1"); // Set to positive sentiment when switching to sentiment
     }
   };
 
@@ -92,12 +92,16 @@ export function ExperienceReport({
           b.awareness.find((aw) => aw.level === sortValue)?.count || 0;
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       } else {
-        // For sentiment grouping, we'll sort by total positive sentiment
-        const aPositive = a.sentiment.find((s) => s.level === 1)?.count || 0;
-        const bPositive = b.sentiment.find((s) => s.level === 1)?.count || 0;
-        return sortDirection === "asc"
-          ? aPositive - bPositive
-          : bPositive - aPositive;
+        // For sentiment grouping, sort by the selected sentiment level
+        // Total up sentiment counts across all awareness levels
+        const sortValue = parseInt(sortBy);
+        const aValue = a.combined
+          .filter((item) => item.sentiment === sortValue)
+          .reduce((sum, item) => sum + item.count, 0);
+        const bValue = b.combined
+          .filter((item) => item.sentiment === sortValue)
+          .reduce((sum, item) => sum + item.count, 0);
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
     });
   }, [data.options, groupBy, sortBy, sortDirection]);

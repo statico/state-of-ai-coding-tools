@@ -121,15 +121,15 @@ export function ExperienceControls({
                     ? "Neutral"
                     : "Negative";
               const isSelected =
-                groupBy === "sentiment" &&
-                sortBy === "sentiment" &&
-                sentimentValue === 1;
+                groupBy === "sentiment" && sortBy === sentimentValue.toString();
               return (
                 <Button
                   key={sentimentValue}
                   variant="outline"
                   size="sm"
-                  onClick={() => handleSortOptionClick("sentiment")}
+                  onClick={() =>
+                    handleSortOptionClick(sentimentValue.toString())
+                  }
                   className={cn(
                     "flex items-center gap-2 truncate",
                     isSelected && "bg-primary text-primary-foreground",
