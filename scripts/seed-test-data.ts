@@ -207,8 +207,9 @@ function generateUserResponses(
         break;
     }
 
-    // Add occasional comments (10% chance)
-    if (faker.number.float() < 0.1) {
+    // Add occasional comments (higher chance for experience questions)
+    const commentChance = question.type === "experience" ? 0.3 : 0.1; // 30% for experience, 10% for others
+    if (faker.number.float() < commentChance) {
       response.comment = faker.lorem.sentence({ min: 3, max: 8 });
     }
 

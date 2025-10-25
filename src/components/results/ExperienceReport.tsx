@@ -4,6 +4,7 @@ import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ExperienceChart } from "./ExperienceChart";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AWARENESS_OPTIONS } from "@/lib/constants";
 import { User } from "lucide-react";
 
@@ -233,6 +234,27 @@ export function ExperienceReport({
               );
             })}
         </div>
+
+        {/* Comments Section */}
+        {comments.length > 0 && (
+          <div className="mt-8 space-y-2">
+            <h4 className="text-muted-foreground text-sm font-medium">
+              {comments.length} Comment{comments.length === 1 ? "" : "s"}
+            </h4>
+            <ScrollArea className="h-32 rounded-md border md:h-48">
+              <div className="space-y-2 p-4">
+                {comments.map((comment, index) => (
+                  <div
+                    key={index}
+                    className="bg-muted/30 rounded-lg border p-3"
+                  >
+                    <p className="text-sm">{comment.comment}</p>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
