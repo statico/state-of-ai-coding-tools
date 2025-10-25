@@ -530,7 +530,7 @@ questions:
     type: single
     options:
       - slug: no-time-saved
-        label: none
+        label: None
         description: No time saved
       - slug: less-1-hour
         label: A few minutes
