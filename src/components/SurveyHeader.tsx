@@ -166,7 +166,7 @@ export function SurveyHeader() {
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "z-10 size-9 rounded-full border transition-all duration-200",
+                    "z-10 size-10 rounded-full border transition-all duration-200 select-none",
                     item.isActive
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-muted-foreground/30 bg-background group-hover:text-foreground group-hover:border-foreground",
@@ -189,7 +189,7 @@ export function SurveyHeader() {
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "absolute -top-4 left-7 max-w-[130px] cursor-pointer truncate text-sm font-medium whitespace-nowrap transition-colors",
+                    "absolute -top-4 left-7 max-w-[130px] cursor-pointer truncate text-sm font-medium whitespace-nowrap transition-colors select-none",
                     item.isActive
                       ? "text-primary font-semibold"
                       : "text-muted-foreground group-hover:text-foreground",
