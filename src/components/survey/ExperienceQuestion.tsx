@@ -258,21 +258,10 @@ export function ExperienceQuestion({
                                           sentimentOption.value
                                         }
                                         onClick={() => {
-                                          // If this option is already selected, deselect it (set to neutral)
-                                          if (
-                                            state.sentiment ===
-                                            sentimentOption.value
-                                          ) {
-                                            handleSentimentChange(
-                                              option.slug,
-                                              "",
-                                            );
-                                          } else {
-                                            handleSentimentChange(
-                                              option.slug,
-                                              sentimentOption.value.toString(),
-                                            );
-                                          }
+                                          handleSentimentChange(
+                                            option.slug,
+                                            sentimentOption.value.toString(),
+                                          );
                                         }}
                                       />
                                     ))}

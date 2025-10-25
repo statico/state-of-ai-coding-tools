@@ -208,13 +208,23 @@ export function ExperienceReport({
                       item.sentiment === -1,
                   );
 
-                  // Calculate neutral responses (awareness responses without sentiment)
-                  const totalWithSentiment =
-                    (positiveData?.count || 0) + (negativeData?.count || 0);
-                  const neutralCount = Math.max(
-                    0,
-                    (awarenessData?.count || 0) - totalWithSentiment,
+                  const neutralData = option.combined.find(
+                    (item) =>
+                      item.awareness === awarenessOption.value &&
+                      item.sentiment === 0,
                   );
+
+                  // Calculate neutral responses (explicit neutral + awareness responses without sentiment)
+                  const totalWithExplicitSentiment =
+                    (positiveData?.count || 0) +
+                    (negativeData?.count || 0) +
+                    (neutralData?.count || 0);
+                  const implicitNeutralCount = Math.max(
+                    0,
+                    (awarenessData?.count || 0) - totalWithExplicitSentiment,
+                  );
+                  const neutralCount =
+                    (neutralData?.count || 0) + implicitNeutralCount;
 
                   const sentimentBreakdown = [
                     {

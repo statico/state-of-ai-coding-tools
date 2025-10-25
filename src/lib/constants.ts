@@ -60,12 +60,14 @@ export const AWARENESS_LABELS = {
 } as const;
 
 export const SENTIMENT_OPTIONS = [
-  { value: 1, label: "Positive experience" },
-  { value: -1, label: "Negative experience" },
+  { value: 1, label: "It's great" },
+  { value: 0, label: "Neutral" },
+  { value: -1, label: "It stinks" },
 ] as const;
 
 export const INTEREST_OPTIONS = [
   { value: 1, label: "Interested" },
+  { value: 0, label: "Indifferent" },
   { value: -1, label: "Not interested" },
 ] as const;
 
