@@ -17,6 +17,7 @@
     "db:url": "grep DATABASE_URL .env | cut -d= -f2",
     "db:schema": "mkdir -p docs && pg_dump --schema-only --no-tablespaces --no-comments --no-owner --no-privileges --schema public $(pnpm -s db:url) | grep -v '^\\\\restrict' | grep -v '^\\\\unrestrict' | pnpm sql-formatter --language postgresql > docs/schema.sql",
     "db:sync": "tsx scripts/db-sync.ts",
+    "db:sync:watch": "fswatch -o config.yml | xargs -n1 -I{} pnpm db:sync",
     "db:seed": "tsx scripts/db-seed.ts",
     "db:clear": "tsx scripts/db-clear.ts",
     "config:check": "tsx scripts/config-check.ts",
