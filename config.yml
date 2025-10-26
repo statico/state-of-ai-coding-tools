@@ -156,10 +156,6 @@ questions:
         label: Devin
       - slug: codeguru
         label: Amazon CodeGuru Reviewer
-      - slug: snyk
-        label: Snyk
-      - slug: sonarqube
-        label: SonarQube
       - slug: graphite-agent
         label: Graphite Agent (Diamond)
       - slug: greptile
@@ -170,16 +166,10 @@ questions:
         label: Bito
       - slug: codacy
         label: Codacy
-      - slug: codeclimate
-        label: CodeClimate
-      - slug: refact-ai
-        label: Refact.ai
-      - slug: deepsource
-        label: DeepSource
       - slug: pullrequest
         label: PullRequest
       - slug: bugbot
-        label: Cursor Bugbot
+        label: Bugbot (Cursor)
 
   - section: code-review-tools
     slug: code-review-usage-frequency
