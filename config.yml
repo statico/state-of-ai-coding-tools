@@ -14,6 +14,7 @@ sections:
   - slug: environment
     title: Environment
     description: "Where are you using these tools? IDEs, web-based platforms, agents, sandboxes, and more."
+    active: false
 
   - slug: applications
     title: Applications
@@ -23,16 +24,19 @@ sections:
     title: Productivity & Impact
     short_name: Productivity
     description: "The big question: how is AI actually changing your work? Let's talk about the real impact."
+    active: false
 
   - slug: concerns-pain-points
     title: Concerns & Pain Points
     short_name: Concerns
     description: "What's frustrating you? We want to hear about the challenges and concerns you're facing."
+    active: false
 
   - slug: languages-frameworks
     title: Programming Languages & Frameworks
     short_name: Languages
     description: "Does AI work better with certain languages? Tell us about your tech stack and what's working."
+    active: false
 
   - slug: final-thoughts
     title: Final Thoughts
@@ -118,6 +122,7 @@ questions:
         label: Qwen3-Coder
 
   - section: coding-tools
+    active: false
     slug: coding-tools-usage-frequency
     title: How frequently do you use coding tools?
     type: single
@@ -166,12 +171,13 @@ questions:
         label: Bito
       - slug: codacy
         label: Codacy
-      - slug: pullrequest
+      - slug: pullrequest (HackerOne)
         label: PullRequest
       - slug: bugbot
         label: Bugbot (Cursor)
 
   - section: code-review-tools
+    active: false
     slug: code-review-usage-frequency
     title: How frequently do you use code review tools?
     type: single
@@ -190,6 +196,7 @@ questions:
         label: Not sure
 
   - section: code-review-tools
+    active: false
     slug: code-review-concerns
     title: What are top concerns about code review tools?
     type: multiple
@@ -377,6 +384,7 @@ questions:
   # SECTION 5: APPLICATIONS
 
   - section: applications
+    active: false
     slug: project-types
     title: What types of projects do you use coding tools on?
     type: multiple
@@ -407,21 +415,36 @@ questions:
     options:
       - slug: 0-free-tier
         label: $0 (free tier only)
-      - slug: 1-25
-        label: $1-25
-      - slug: 26-50
-        label: $26-50
+      - slug: 0-50
+        label: $0-50
       - slug: 51-100
         label: $51-100
-      - slug: 101-plus
-        label: $101+
-      - slug: employer-pays
-        label: My employer pays (I don't know the cost)
+      - slug: 101-200
+        label: $101-200
+      - slug: 200-plus
+        label: $200+
+      - slug: dont-know-cost
+        label: I don't know the cost
       - slug: free-open-source
         label: I use free/open-source tools only
 
+  - section: applications
+    slug: who-is-paying
+    title: Who is paying for your coding tools?
+    type: single
+    options:
+      - slug: myself
+        label: Myself
+      - slug: employer
+        label: My employer
+      - slug: both
+        label: Both
+      - slug: someone-else
+        label: Someone else
+
   # SECTION 3: USE CASES & APPLICATIONS
   - section: applications
+    active: false
     slug: ai-use-cases
     title: How do you use AI coding tools?
     type: multiple
@@ -448,6 +471,7 @@ questions:
         label: Chat with codebase / ask questions about code
 
   - section: applications
+    active: false
     slug: most-valuable-use-case
     title: Which use case provides the _most_ value to you?
     type: single
@@ -470,6 +494,7 @@ questions:
         label: Code explanation and learning
 
   - section: applications
+    active: false
     slug: avoid-ai-tasks
     title: For which tasks do you deliberately _avoid_ using AI tools?
     type: multiple
