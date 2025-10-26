@@ -48,6 +48,7 @@ export const QuestionSchema = z
       .int()
       .positive("multiple_max must be a positive integer")
       .optional(),
+    active: z.boolean().optional(),
     added: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD")
@@ -77,6 +78,7 @@ export const SectionSchema = z.object({
   title: z.string().min(1, "Section title cannot be empty"),
   short_name: z.string().optional(),
   description: z.string().optional(),
+  active: z.boolean().optional(),
   added: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD")
