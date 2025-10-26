@@ -7,18 +7,9 @@ import {
   upsertResponse,
 } from "@/lib/models/responses";
 import { getActiveSections, getFirstSection } from "@/lib/models/sections";
+import { getCurrentISOWeek } from "@/lib/utils";
 import { z } from "zod";
 import { router, userProcedure } from "../trpc";
-
-function getCurrentWeekAndYear() {
-  const now = new Date();
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
-  const days = Math.floor(
-    (now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000),
-  );
-  const weekNumber = Math.ceil((days + startOfYear.getDay() + 1) / 7);
-  return { week: weekNumber, year: now.getFullYear() };
-}
 
 export const surveyRouter = router({
   getSections: userProcedure.query(async () => {
@@ -50,8 +41,8 @@ export const surveyRouter = router({
   }),
 
   getResponses: userProcedure.query(async ({ ctx }) => {
-    // Get current week and year
-    const { week, year } = getCurrentWeekAndYear();
+    // Get current week and year using ISO week calculation
+    const { week, year } = getCurrentISOWeek();
 
     return {
       sessionId: ctx.sessionId,
@@ -76,8 +67,8 @@ export const surveyRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // Get current week and year
-      const { week, year } = getCurrentWeekAndYear();
+      // Get current week and year using ISO week calculation
+      const { week, year } = getCurrentISOWeek();
 
       const response = await upsertResponse({
         session_id: ctx.sessionId!,
@@ -115,8 +106,8 @@ export const surveyRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // Get current week and year
-      const { week, year } = getCurrentWeekAndYear();
+      // Get current week and year using ISO week calculation
+      const { week, year } = getCurrentISOWeek();
 
       const savedResponses = await saveExperienceResponses(
         ctx.sessionId!,
