@@ -1,3 +1,4 @@
+import { getCurrentISOWeek } from "@/lib/utils";
 import { db } from "@/server/db";
 import { setupTestData } from "@/test/setup";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -185,14 +186,8 @@ describe("Survey Router", () => {
         })
         .execute();
 
-      // Get current week and year
-      const now = new Date();
-      const startOfYear = new Date(now.getFullYear(), 0, 1);
-      const days = Math.floor(
-        (now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000),
-      );
-      const weekNumber = Math.ceil((days + startOfYear.getDay() + 1) / 7);
-      const currentYear = now.getFullYear();
+      // Get current week and year using ISO week calculation
+      const { week: weekNumber, year: currentYear } = getCurrentISOWeek();
 
       // Insert test responses
       await db
