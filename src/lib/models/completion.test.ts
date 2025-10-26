@@ -1,5 +1,6 @@
 import { setupTestData } from "@/test/setup";
 import { beforeEach, describe, expect, it } from "vitest";
+import { getCurrentISOWeek } from "../utils";
 import { getCompletionPercentage } from "./completion";
 import { createQuestion } from "./questions";
 import { createResponse } from "./responses";
@@ -56,14 +57,8 @@ describe("Completion Model", () => {
         active: true,
       });
 
-      // Get current week and year
-      const now = new Date();
-      const startOfYear = new Date(now.getFullYear(), 0, 1);
-      const days = Math.floor(
-        (now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000),
-      );
-      const weekNumber = Math.ceil((days + startOfYear.getDay() + 1) / 7);
-      const currentYear = now.getFullYear();
+      // Get current week and year using the same method as completion function
+      const { week: weekNumber, year: currentYear } = getCurrentISOWeek();
 
       // Insert test responses (2 completed, 1 skipped)
       await createResponse({

@@ -311,6 +311,51 @@ describe("results", () => {
       expect(summary.questions).toHaveLength(1);
       expect(summary.questions[0].questionSlug).toBe(questionSlug);
     });
+
+    it("should exclude questions from inactive sections", async () => {
+      // Create inactive section with active question
+      const inactiveSectionSlug = "inactive-section";
+      await db
+        .insertInto("sections")
+        .values({
+          slug: inactiveSectionSlug,
+          title: "Inactive Section",
+          order: 1,
+          active: false,
+        })
+        .execute();
+
+      const questionSlug = "question-in-inactive-section";
+      await db
+        .insertInto("questions")
+        .values({
+          slug: questionSlug,
+          section_slug: inactiveSectionSlug,
+          title: "Question in Inactive Section",
+          type: "single",
+          order: 1,
+          active: true, // Question is active but section is inactive
+        })
+        .execute();
+
+      // Add a response for this question
+      const sessionId = "550e8400-e29b-41d4-a716-446655440000";
+      await db.insertInto("sessions").values({ id: sessionId }).execute();
+
+      await db
+        .insertInto("responses")
+        .values({
+          session_id: sessionId,
+          iso_week: 1,
+          iso_year: 2024,
+          question_slug: questionSlug,
+          skipped: false,
+        })
+        .execute();
+
+      const summary = await getWeekSummary(1, 2024);
+      expect(summary.questions).toHaveLength(0); // Should exclude question from inactive section
+    });
   });
 
   describe("getQuestionReport", () => {
@@ -341,6 +386,36 @@ describe("results", () => {
           type: "single",
           order: 1,
           active: false,
+        })
+        .execute();
+
+      const report = await getQuestionReport(questionSlug, 1, 2024);
+      expect(report).toBeNull();
+    });
+
+    it("should return null for question in inactive section", async () => {
+      // Create inactive section with active question
+      const inactiveSectionSlug = "inactive-section";
+      await db
+        .insertInto("sections")
+        .values({
+          slug: inactiveSectionSlug,
+          title: "Inactive Section",
+          order: 1,
+          active: false,
+        })
+        .execute();
+
+      const questionSlug = "question-in-inactive-section";
+      await db
+        .insertInto("questions")
+        .values({
+          slug: questionSlug,
+          section_slug: inactiveSectionSlug,
+          title: "Question in Inactive Section",
+          type: "single",
+          order: 1,
+          active: true, // Question is active but section is inactive
         })
         .execute();
 

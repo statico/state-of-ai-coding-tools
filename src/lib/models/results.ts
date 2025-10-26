@@ -191,11 +191,14 @@ export async function getWeekSummary(
     .executeTakeFirst();
 
   // Get all questions with their aggregated data
+  // Only include questions from active sections
   const questions = await db
     .selectFrom("questions")
-    .selectAll()
-    .where("active", "=", true)
-    .orderBy("order", "asc")
+    .innerJoin("sections", "questions.section_slug", "sections.slug")
+    .selectAll("questions")
+    .where("questions.active", "=", true)
+    .where("sections.active", "=", true)
+    .orderBy("questions.order", "asc")
     .execute();
 
   const questionReports: QuestionReport[] = [];
@@ -242,9 +245,11 @@ export async function getQuestionReport(
 } | null> {
   const question = await db
     .selectFrom("questions")
-    .selectAll()
-    .where("slug", "=", questionSlug)
-    .where("active", "=", true)
+    .innerJoin("sections", "questions.section_slug", "sections.slug")
+    .selectAll("questions")
+    .where("questions.slug", "=", questionSlug)
+    .where("questions.active", "=", true)
+    .where("sections.active", "=", true)
     .executeTakeFirst();
 
   if (!question) return null;

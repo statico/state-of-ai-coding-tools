@@ -35,10 +35,12 @@ export async function getQuestionsBySection(sectionSlug: string) {
 export async function getActiveQuestionsBySection(sectionSlug: string) {
   return await db
     .selectFrom("questions")
-    .selectAll()
-    .where("section_slug", "=", sectionSlug)
-    .where("active", "=", true)
-    .orderBy("order")
+    .innerJoin("sections", "questions.section_slug", "sections.slug")
+    .selectAll("questions")
+    .where("questions.section_slug", "=", sectionSlug)
+    .where("questions.active", "=", true)
+    .where("sections.active", "=", true)
+    .orderBy("questions.order")
     .execute();
 }
 
