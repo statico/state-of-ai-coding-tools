@@ -18,7 +18,12 @@ sections:
 
   - slug: applications
     title: Applications
-    description: "How are you applying these tools? What are you building and how much are you spending?"
+    description: "How are you applying these tools? What are you building?"
+    active: false
+
+  - slug: cost
+    title: Cost
+    description: "How much are you spending on these tools?"
 
   - slug: productivity-impact
     title: Productivity & Impact
@@ -408,9 +413,9 @@ questions:
       - slug: none
         label: None of the above
 
-  - section: applications
-    slug: monthly-spending
-    title: How much do you pay for coding tools per month?
+  - section: cost
+    slug: monthly-spending-personal
+    title: For *personal use*, how much do you pay for coding tools per month?
     type: single
     options:
       - slug: 0-free-tier
@@ -421,26 +426,40 @@ questions:
         label: $51-100
       - slug: 101-200
         label: $101-200
-      - slug: 200-plus
-        label: $200+
+      - slug: 200-500
+        label: $200-500
+      - slug: 501-1000
+        label: $501-1000
+      - slug: 1001-plus
+        label: $1001+
       - slug: dont-know-cost
-        label: I don't know the cost
+        label: I don't know the cost for personal use
       - slug: free-open-source
-        label: I use free/open-source tools only
+        label: I use free/open-source tools only for personal use
 
-  - section: applications
-    slug: who-is-paying
-    title: Who is paying for your coding tools?
+  - section: cost
+    slug: monthly-spending-work
+    title: For *work use*, how much do you pay for coding tools per month?
     type: single
     options:
-      - slug: myself
-        label: Myself
-      - slug: employer
-        label: My employer
-      - slug: both
-        label: Both
-      - slug: someone-else
-        label: Someone else
+      - slug: 0-free-tier
+        label: $0 (free tier only)
+      - slug: 0-50
+        label: $0-50
+      - slug: 51-100
+        label: $51-100
+      - slug: 101-200
+        label: $101-200
+      - slug: 200-500
+        label: $200-500
+      - slug: 501-1000
+        label: $501-1000
+      - slug: 1001-plus
+        label: $1001+
+      - slug: dont-know-cost
+        label: I don't know the cost for work use
+      - slug: free-open-source
+        label: I use free/open-source tools only for work use
 
   # SECTION 3: USE CASES & APPLICATIONS
   - section: applications
