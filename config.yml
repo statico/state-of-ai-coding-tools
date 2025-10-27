@@ -258,8 +258,6 @@ questions:
         label: Gemini
       - slug: grok
         label: Grok
-      - slug: perplexity
-        label: Perplexity
       - slug: microsoft-copilot
         label: Microsoft Copilot
 
