@@ -426,8 +426,8 @@ questions:
         label: $51-100
       - slug: 101-200
         label: $101-200
-      - slug: 200-500
-        label: $200-500
+      - slug: 201-500
+        label: $201-500
       - slug: 501-1000
         label: $501-1000
       - slug: 1001-plus
