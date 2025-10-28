@@ -35,7 +35,6 @@ interface ExperienceChartCellProps {
       count: number;
       percentage: number;
     }>;
-    // New fields for sentiment grouping
     sentiment?: string;
     sentimentValue?: number;
     sentimentCount?: number;
@@ -56,7 +55,6 @@ export function ExperienceChartCell({
   groupBy = "awareness",
 }: ExperienceChartCellProps) {
   if (groupBy === "awareness") {
-    // Original awareness grouping behavior
     const percentage = Math.round(
       ((item.awarenessCount || 0) / actualResponses) * 100,
     );
@@ -147,7 +145,6 @@ export function ExperienceChartCell({
       </Tooltip>
     );
   } else {
-    // New sentiment grouping behavior
     const percentage = Math.round(
       ((item.sentimentCount || 0) / actualResponses) * 100,
     );

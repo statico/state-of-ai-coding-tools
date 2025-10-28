@@ -33,7 +33,6 @@ export interface SortingConfig {
 
 /**
  * Sort experience options based on awareness levels
- * Uses multi-level sorting: primary by selected level, then by remaining levels in order
  */
 export function sortByAwareness(
   options: ExperienceOption[],
@@ -42,11 +41,9 @@ export function sortByAwareness(
 ): ExperienceOption[] {
   const sortValue = parseInt(sortBy);
 
-  // Define the order of awareness levels for secondary sorting
-  const awarenessOrder = [3, 2, 1, 0]; // Using it, Used it, Heard of it, Not heard of it
+  const awarenessOrder = [3, 2, 1, 0];
 
   return [...options].sort((a, b) => {
-    // Primary sort: by the selected awareness level percentage (rounded to integers)
     const aPrimaryValue = Math.round(
       a.awareness.find((aw) => aw.level === sortValue)?.percentage || 0,
     );
@@ -60,9 +57,8 @@ export function sortByAwareness(
         : bPrimaryValue - aPrimaryValue;
     }
 
-    // Secondary sort: by remaining awareness levels in order (using rounded percentages)
     for (const level of awarenessOrder) {
-      if (level === sortValue) continue; // Skip the primary sort level
+      if (level === sortValue) continue;
 
       const aValue = Math.round(
         a.awareness.find((aw) => aw.level === level)?.percentage || 0,
@@ -76,13 +72,12 @@ export function sortByAwareness(
       }
     }
 
-    return 0; // All values are equal
+    return 0;
   });
 }
 
 /**
  * Sort experience options based on sentiment levels
- * Uses multi-level sorting: primary by selected sentiment, then by remaining sentiments in order
  */
 export function sortBySentiment(
   options: ExperienceOption[],
@@ -91,11 +86,9 @@ export function sortBySentiment(
 ): ExperienceOption[] {
   const sortValue = parseInt(sortBy);
 
-  // Define the order of sentiment levels for secondary sorting
-  const sentimentOrder = [1, 0, -1]; // Positive, Neutral, Negative
+  const sentimentOrder = [1, 0, -1];
 
   return [...options].sort((a, b) => {
-    // Calculate total responses for each option to get percentages
     const aTotalResponses = a.awareness.reduce(
       (sum, item) => sum + item.count,
       0,
@@ -105,7 +98,6 @@ export function sortBySentiment(
       0,
     );
 
-    // Primary sort: by the selected sentiment level percentage (across all awareness levels)
     const aPrimaryCount = a.combined
       .filter((item) => item.sentiment === sortValue)
       .reduce((sum, item) => sum + item.count, 0);
@@ -126,9 +118,8 @@ export function sortBySentiment(
         : bPrimaryValue - aPrimaryValue;
     }
 
-    // Secondary sort: by remaining sentiment levels in order (using rounded percentages)
     for (const sentiment of sentimentOrder) {
-      if (sentiment === sortValue) continue; // Skip the primary sort level
+      if (sentiment === sortValue) continue;
 
       const aCount = a.combined
         .filter((item) => item.sentiment === sentiment)
@@ -149,7 +140,7 @@ export function sortBySentiment(
       }
     }
 
-    return 0; // All values are equal
+    return 0;
   });
 }
 

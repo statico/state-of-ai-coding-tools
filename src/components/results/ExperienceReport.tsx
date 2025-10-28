@@ -197,8 +197,7 @@ export function ExperienceReport({
               // Create breakdown based on groupBy setting
               const breakdown =
                 groupBy === "awareness"
-                  ? // Group by awareness level (original behavior)
-                    [...AWARENESS_OPTIONS].reverse().map((awarenessOption) => {
+                  ? [...AWARENESS_OPTIONS].reverse().map((awarenessOption) => {
                       const awarenessData = option.awareness.find(
                         (item) => item.level === awarenessOption.value,
                       );
@@ -271,8 +270,7 @@ export function ExperienceReport({
                         sentimentBreakdown,
                       };
                     })
-                  : // Group by sentiment level (new behavior)
-                    [1, 0, -1].map((sentimentValue) => {
+                  : [1, 0, -1].map((sentimentValue) => {
                       const sentimentLabel =
                         sentimentValue === 1
                           ? "Positive"

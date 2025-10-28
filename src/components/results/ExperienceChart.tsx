@@ -13,7 +13,6 @@ interface ExperienceChartProps {
       count: number;
       percentage: number;
     }>;
-    // New fields for sentiment grouping
     sentiment?: string;
     sentimentValue?: number;
     sentimentCount?: number;
@@ -44,8 +43,7 @@ export function ExperienceChart({
   return (
     <div className="flex w-full gap-2">
       {groupBy === "awareness"
-        ? // Original awareness grouping
-          breakdown
+        ? breakdown
             .filter((item) => item.awarenessCount && item.awarenessCount > 0)
             .map((item) => (
               <ExperienceChartCell
@@ -55,8 +53,7 @@ export function ExperienceChart({
                 groupBy="awareness"
               />
             ))
-        : // New sentiment grouping
-          breakdown
+        : breakdown
             .filter((item) => item.sentimentCount && item.sentimentCount > 0)
             .map((item) => (
               <ExperienceChartCell
