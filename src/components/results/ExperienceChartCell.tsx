@@ -161,19 +161,6 @@ export function ExperienceChartCell({
               width: `${((item.sentimentCount || 0) / actualResponses) * 100}%`,
             }}
           >
-            <div
-              className={cn(
-                "flex h-8 items-center justify-center overflow-hidden rounded-xs p-1 text-xs lg:h-10",
-                SENTIMENT_COLOR_MAP[
-                  (
-                    item.sentiment || "neutral"
-                  ).toLowerCase() as keyof typeof SENTIMENT_COLOR_MAP
-                ],
-              )}
-            >
-              {percentage}%
-            </div>
-
             <div className="flex w-full gap-1">
               {item.awarenessBreakdown
                 ?.filter((awareness) => awareness.awarenessCount > 0)
@@ -181,7 +168,7 @@ export function ExperienceChartCell({
                   <div
                     key={awareness.awareness}
                     className={cn(
-                      "h-2 overflow-hidden rounded-xs",
+                      "h-8 overflow-hidden rounded-xs lg:h-10",
                       AWARENESS_COLOR_MAP[
                         awareness.awarenessValue as keyof typeof AWARENESS_COLOR_MAP
                       ],
@@ -189,8 +176,28 @@ export function ExperienceChartCell({
                     style={{
                       width: `${(awareness.percentage / 100) * 100}%`,
                     }}
-                  ></div>
+                  >
+                    <div className="flex h-full items-center justify-center text-xs">
+                      {Math.round(awareness.percentage)}%
+                    </div>
+                  </div>
                 ))}
+            </div>
+
+            <div className="flex w-full gap-1">
+              <div
+                className={cn(
+                  "h-2 overflow-hidden rounded-xs",
+                  SENTIMENT_COLOR_MAP[
+                    (
+                      item.sentiment || "neutral"
+                    ).toLowerCase() as keyof typeof SENTIMENT_COLOR_MAP
+                  ],
+                )}
+                style={{
+                  width: "100%",
+                }}
+              ></div>
             </div>
           </div>
         </TooltipTrigger>
