@@ -194,79 +194,127 @@ export function ExperienceReport({
                 0,
               );
 
-              // Create breakdown by awareness level and sentiment (reversed order)
-              const breakdown = [...AWARENESS_OPTIONS]
-                .reverse()
-                .map((awarenessOption) => {
-                  const awarenessData = option.awareness.find(
-                    (item) => item.level === awarenessOption.value,
-                  );
+              // Create breakdown based on groupBy setting
+              const breakdown =
+                groupBy === "awareness"
+                  ? // Group by awareness level (original behavior)
+                    [...AWARENESS_OPTIONS].reverse().map((awarenessOption) => {
+                      const awarenessData = option.awareness.find(
+                        (item) => item.level === awarenessOption.value,
+                      );
 
-                  // Get sentiment breakdown for this awareness level
-                  // Check for positive, negative, and neutral responses
-                  const positiveData = option.combined.find(
-                    (item) =>
-                      item.awareness === awarenessOption.value &&
-                      item.sentiment === 1,
-                  );
+                      // Get sentiment breakdown for this awareness level
+                      // Check for positive, negative, and neutral responses
+                      const positiveData = option.combined.find(
+                        (item) =>
+                          item.awareness === awarenessOption.value &&
+                          item.sentiment === 1,
+                      );
 
-                  const negativeData = option.combined.find(
-                    (item) =>
-                      item.awareness === awarenessOption.value &&
-                      item.sentiment === -1,
-                  );
+                      const negativeData = option.combined.find(
+                        (item) =>
+                          item.awareness === awarenessOption.value &&
+                          item.sentiment === -1,
+                      );
 
-                  const neutralData = option.combined.find(
-                    (item) =>
-                      item.awareness === awarenessOption.value &&
-                      item.sentiment === 0,
-                  );
+                      const neutralData = option.combined.find(
+                        (item) =>
+                          item.awareness === awarenessOption.value &&
+                          item.sentiment === 0,
+                      );
 
-                  // Calculate neutral responses (explicit neutral + awareness responses without sentiment)
-                  const totalWithExplicitSentiment =
-                    (positiveData?.count || 0) +
-                    (negativeData?.count || 0) +
-                    (neutralData?.count || 0);
-                  const implicitNeutralCount = Math.max(
-                    0,
-                    (awarenessData?.count || 0) - totalWithExplicitSentiment,
-                  );
-                  const neutralCount =
-                    (neutralData?.count || 0) + implicitNeutralCount;
+                      // Calculate neutral responses (explicit neutral + awareness responses without sentiment)
+                      const totalWithExplicitSentiment =
+                        (positiveData?.count || 0) +
+                        (negativeData?.count || 0) +
+                        (neutralData?.count || 0);
+                      const implicitNeutralCount = Math.max(
+                        0,
+                        (awarenessData?.count || 0) -
+                          totalWithExplicitSentiment,
+                      );
+                      const neutralCount =
+                        (neutralData?.count || 0) + implicitNeutralCount;
 
-                  const sentimentBreakdown = [
-                    {
-                      sentiment: "positive",
-                      count: positiveData?.count || 0,
-                      percentage: awarenessData?.count
-                        ? ((positiveData?.count || 0) / awarenessData.count) *
-                          100
-                        : 0,
-                    },
-                    {
-                      sentiment: "neutral",
-                      count: neutralCount,
-                      percentage: awarenessData?.count
-                        ? (neutralCount / awarenessData.count) * 100
-                        : 0,
-                    },
-                    {
-                      sentiment: "negative",
-                      count: negativeData?.count || 0,
-                      percentage: awarenessData?.count
-                        ? ((negativeData?.count || 0) / awarenessData.count) *
-                          100
-                        : 0,
-                    },
-                  ];
+                      const sentimentBreakdown = [
+                        {
+                          sentiment: "positive",
+                          count: positiveData?.count || 0,
+                          percentage: awarenessData?.count
+                            ? ((positiveData?.count || 0) /
+                                awarenessData.count) *
+                              100
+                            : 0,
+                        },
+                        {
+                          sentiment: "neutral",
+                          count: neutralCount,
+                          percentage: awarenessData?.count
+                            ? (neutralCount / awarenessData.count) * 100
+                            : 0,
+                        },
+                        {
+                          sentiment: "negative",
+                          count: negativeData?.count || 0,
+                          percentage: awarenessData?.count
+                            ? ((negativeData?.count || 0) /
+                                awarenessData.count) *
+                              100
+                            : 0,
+                        },
+                      ];
 
-                  return {
-                    awareness: awarenessOption.label,
-                    awarenessValue: awarenessOption.value,
-                    awarenessCount: awarenessData?.count || 0,
-                    sentimentBreakdown,
-                  };
-                });
+                      return {
+                        awareness: awarenessOption.label,
+                        awarenessValue: awarenessOption.value,
+                        awarenessCount: awarenessData?.count || 0,
+                        sentimentBreakdown,
+                      };
+                    })
+                  : // Group by sentiment level (new behavior)
+                    [1, 0, -1].map((sentimentValue) => {
+                      const sentimentLabel =
+                        sentimentValue === 1
+                          ? "Positive"
+                          : sentimentValue === 0
+                            ? "Neutral"
+                            : "Negative";
+
+                      // Calculate total count for this sentiment across all awareness levels
+                      const sentimentCount = option.combined
+                        .filter((item) => item.sentiment === sentimentValue)
+                        .reduce((sum, item) => sum + item.count, 0);
+
+                      // Create awareness breakdown for this sentiment level
+                      const awarenessBreakdown = [...AWARENESS_OPTIONS]
+                        .reverse()
+                        .map((awarenessOption) => {
+                          const awarenessData = option.combined.find(
+                            (item) =>
+                              item.awareness === awarenessOption.value &&
+                              item.sentiment === sentimentValue,
+                          );
+
+                          return {
+                            awareness: awarenessOption.label,
+                            awarenessValue: awarenessOption.value,
+                            awarenessCount: awarenessData?.count || 0,
+                            percentage:
+                              sentimentCount > 0
+                                ? ((awarenessData?.count || 0) /
+                                    sentimentCount) *
+                                  100
+                                : 0,
+                          };
+                        });
+
+                      return {
+                        sentiment: sentimentLabel,
+                        sentimentValue,
+                        sentimentCount,
+                        awarenessBreakdown,
+                      };
+                    });
 
               return (
                 <div key={option.optionSlug} className="space-y-4">
@@ -284,6 +332,7 @@ export function ExperienceReport({
                   <ExperienceChart
                     breakdown={breakdown}
                     actualResponses={optionTotalResponses}
+                    groupBy={groupBy}
                   />
                 </div>
               );
