@@ -14,6 +14,7 @@ import { AWARENESS_OPTIONS } from "@/lib/constants";
 import { User } from "lucide-react";
 import { MarkdownText } from "@/components/ui/markdown-text";
 import { useState, useMemo } from "react";
+import { sortExperienceOptions, type ExperienceOption } from "@/lib/sorting";
 
 interface ExperienceReportProps {
   data: {
@@ -83,26 +84,10 @@ export function ExperienceReport({
 
   // Sort and group the options based on current settings
   const sortedOptions = useMemo(() => {
-    return [...data.options].sort((a, b) => {
-      if (groupBy === "awareness") {
-        const sortValue = parseInt(sortBy);
-        const aValue =
-          a.awareness.find((aw) => aw.level === sortValue)?.count || 0;
-        const bValue =
-          b.awareness.find((aw) => aw.level === sortValue)?.count || 0;
-        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
-      } else {
-        // For sentiment grouping, sort by the selected sentiment level
-        // Total up sentiment counts across all awareness levels
-        const sortValue = parseInt(sortBy);
-        const aValue = a.combined
-          .filter((item) => item.sentiment === sortValue)
-          .reduce((sum, item) => sum + item.count, 0);
-        const bValue = b.combined
-          .filter((item) => item.sentiment === sortValue)
-          .reduce((sum, item) => sum + item.count, 0);
-        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
-      }
+    return sortExperienceOptions(data.options as ExperienceOption[], {
+      groupBy,
+      sortBy,
+      sortDirection,
     });
   }, [data.options, groupBy, sortBy, sortDirection]);
 
