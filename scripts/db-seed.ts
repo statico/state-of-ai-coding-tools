@@ -283,7 +283,7 @@ async function seedTestData() {
         slug: section.slug,
         title: section.title,
         description: section.description || null,
-        active: true,
+        active: section.active ?? true,
         order: index + 1,
         added_at: section.added ? new Date(section.added) : null,
       });
@@ -297,7 +297,7 @@ async function seedTestData() {
         title: question.title,
         description: question.description || null,
         type: question.type,
-        active: true,
+        active: question.active ?? true,
         order: index + 1,
         multiple_max: question.multiple_max || null,
         added_at: question.added ? new Date(question.added) : null,
@@ -314,7 +314,7 @@ async function seedTestData() {
             question_slug: question.slug,
             label: option.label,
             description: option.description || null,
-            active: true,
+            active: option.active ?? true,
             order: optionIndex + 1,
             added_at: option.added ? new Date(option.added) : null,
           });
@@ -346,14 +346,20 @@ async function seedTestData() {
     const questionOptions = new Map();
     for (const question of config.questions) {
       if (question.options && question.type === "experience") {
-        questionOptions.set(
-          question.slug,
-          question.options.map((opt) => ({
-            slug: `${question.slug}-${opt.slug}`,
-            label: opt.label,
-            description: opt.description,
-          })),
+        // Only include questions that are active AND in active sections
+        const section = config.sections.find(
+          (s) => s.slug === question.section,
         );
+        if (question.active !== false && section?.active !== false) {
+          questionOptions.set(
+            question.slug,
+            question.options.map((opt) => ({
+              slug: `${question.slug}-${opt.slug}`,
+              label: opt.label,
+              description: opt.description,
+            })),
+          );
+        }
       }
     }
 
@@ -374,25 +380,31 @@ async function seedTestData() {
           sessionId,
           week,
           year,
-          config.questions.map((q) => ({
-            slug: q.slug,
-            title: q.title,
-            description: q.description,
-            type: q.type,
-            order: 0, // Default order, will be set properly by the model
-            section_slug: q.section,
-            multiple_max: q.multiple_max,
-            randomize: q.randomize || false,
-            active: true,
-            options: q.options?.map((opt) => ({
-              slug: opt.slug,
-              label: opt.label,
-              description: opt.description,
+          config.questions
+            .filter((q) => {
+              // Only include questions that are active AND in active sections
+              const section = config.sections.find((s) => s.slug === q.section);
+              return q.active !== false && section?.active !== false;
+            })
+            .map((q) => ({
+              slug: q.slug,
+              title: q.title,
+              description: q.description,
+              type: q.type,
               order: 0, // Default order, will be set properly by the model
-              question_slug: q.slug,
-              active: true,
-            })),
-          })) as QuestionWithOptions[],
+              section_slug: q.section,
+              multiple_max: q.multiple_max,
+              randomize: q.randomize || false,
+              active: q.active ?? true,
+              options: q.options?.map((opt) => ({
+                slug: opt.slug,
+                label: opt.label,
+                description: opt.description,
+                order: 0, // Default order, will be set properly by the model
+                question_slug: q.slug,
+                active: opt.active ?? true,
+              })),
+            })) as QuestionWithOptions[],
           questionOptions,
         );
         allResponses.push(...userResponses);
