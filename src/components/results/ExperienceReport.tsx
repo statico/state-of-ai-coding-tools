@@ -189,10 +189,10 @@ export function ExperienceReport({
             })
             .map((option) => {
               // Calculate the total responses for this specific option
-              const optionTotalResponses = option.awareness.reduce(
-                (sum, item) => sum + item.count,
-                0,
-              );
+              const optionTotalResponses =
+                groupBy === "awareness"
+                  ? option.awareness.reduce((sum, item) => sum + item.count, 0)
+                  : option.sentiment.reduce((sum, item) => sum + item.count, 0);
 
               // Create breakdown based on groupBy setting
               const breakdown =
@@ -278,10 +278,11 @@ export function ExperienceReport({
                             ? "Neutral"
                             : "Negative";
 
-                      // Calculate total count for this sentiment across all awareness levels
-                      const sentimentCount = option.combined
-                        .filter((item) => item.sentiment === sentimentValue)
-                        .reduce((sum, item) => sum + item.count, 0);
+                      // Calculate total count for this sentiment using sentimentData (includes all responses with sentiment)
+                      const sentimentData = option.sentiment.find(
+                        (item) => item.level === sentimentValue,
+                      );
+                      const sentimentCount = sentimentData?.count || 0;
 
                       // Create awareness breakdown for this sentiment level
                       const awarenessBreakdown = [...AWARENESS_OPTIONS]
