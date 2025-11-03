@@ -166,18 +166,12 @@ questions:
         label: Devin
       - slug: codeguru
         label: Amazon CodeGuru Reviewer
-      - slug: graphite-agent
-        label: Graphite Agent (Diamond)
       - slug: greptile
         label: Greptile
       - slug: codeant-ai
         label: CodeAnt
-      - slug: bito
-        label: Bito
       - slug: codacy
         label: Codacy
-      - slug: pullrequest (HackerOne)
-        label: PullRequest
       - slug: bugbot
         label: Bugbot (Cursor)
 
