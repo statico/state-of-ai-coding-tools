@@ -314,7 +314,7 @@ async function seedTestData() {
             question_slug: question.slug,
             label: option.label,
             description: option.description || null,
-            active: option.active ?? true,
+            active: true,
             order: optionIndex + 1,
             added_at: option.added ? new Date(option.added) : null,
           });
@@ -402,7 +402,7 @@ async function seedTestData() {
                 description: opt.description,
                 order: 0, // Default order, will be set properly by the model
                 question_slug: q.slug,
-                active: opt.active ?? true,
+                active: true,
               })),
             })) as QuestionWithOptions[],
           questionOptions,
