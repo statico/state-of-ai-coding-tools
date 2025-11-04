@@ -8,7 +8,7 @@ import { upsertSection } from "@/lib/models/sections";
 import { db } from "@/server/db";
 import { Logger } from "@/server/logging";
 import { faker } from "@faker-js/faker";
-import { getISOWeek, getISOWeekYear, subWeeks } from "date-fns";
+import { getMonth, getYear, subMonths } from "date-fns";
 
 const log = Logger.forModule();
 
@@ -101,10 +101,10 @@ function generateWriteInResponse(): string {
   return faker.lorem.sentence({ min: 3, max: 10 });
 }
 
-// Generate responses for a single user for a specific week
+// Generate responses for a single user for a specific month
 function generateUserResponses(
   sessionId: string,
-  week: number,
+  month: number,
   year: number,
   questions: QuestionWithOptions[],
 ): any[] {
@@ -115,8 +115,8 @@ function generateUserResponses(
     if (faker.number.float() < 0.05) {
       responses.push({
         session_id: sessionId,
-        iso_week: week,
-        iso_year: year,
+        month: month,
+        year: year,
         question_slug: question.slug,
         skipped: true as const,
       });
@@ -125,8 +125,8 @@ function generateUserResponses(
 
     const response: any = {
       session_id: sessionId,
-      iso_week: week,
-      iso_year: year,
+      month: month,
+      year: year,
       question_slug: question.slug,
       skipped: false,
     };
@@ -290,19 +290,19 @@ async function seedTestData() {
       [];
     const allResponses: any[] = [];
 
-    // Generate 4 weeks of data
+    // Generate 4 months of data
     const currentDate = new Date();
-    const weeks = [];
+    const months = [];
     for (let i = 0; i < 4; i++) {
-      const weekDate = subWeeks(currentDate, i);
-      weeks.push({
-        week: getISOWeek(weekDate),
-        year: getISOWeekYear(weekDate),
+      const monthDate = subMonths(currentDate, i);
+      months.push({
+        month: getMonth(monthDate) + 1, // getMonth returns 0-11, we need 1-12
+        year: getYear(monthDate),
       });
     }
 
     log.info(
-      `📅 Generating data for weeks: ${weeks.map((w) => `${w.year}-W${w.week}`).join(", ")}`,
+      `📅 Generating data for months: ${months.map((m) => `${m.year}-${m.month}`).join(", ")}`,
     );
 
     // Generate 100 users
@@ -316,11 +316,11 @@ async function seedTestData() {
         updated_at: createdAt,
       });
 
-      // Generate responses for each week
-      for (const { week, year } of weeks) {
+      // Generate responses for each month
+      for (const { month, year } of months) {
         const userResponses = generateUserResponses(
           sessionId,
-          week,
+          month,
           year,
           config.questions.map((q) => ({
             slug: q.slug,

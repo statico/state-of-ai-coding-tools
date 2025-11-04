@@ -8,15 +8,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  getCurrentISOWeek,
-  getWeekFromDate,
-  getWeekDateRange,
-  formatWeekDisplay,
-  formatWeekDisplayShort,
-  getPreviousWeek,
-  getNextWeek,
-  isCurrentWeek,
-  isFutureWeek,
+  getCurrentMonth,
+  getMonthFromDate,
+  getMonthDateRange,
+  formatMonthDisplay,
+  formatMonthDisplayShort,
+  getPreviousMonth,
+  getNextMonth,
+  isCurrentMonth,
+  isFutureMonth,
 } from "@/lib/utils";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
@@ -24,69 +24,69 @@ import { useQueryState, parseAsInteger } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
 
-interface WeekSelectorProps {
-  availableWeeks: Array<{ week: number; year: number }>;
+interface MonthSelectorProps {
+  availableMonths: Array<{ month: number; year: number }>;
 }
 
-export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
+export function MonthSelector({ availableMonths }: MonthSelectorProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const trpc = useTRPC();
 
-  // Get current week as default
-  const currentWeekData = getCurrentISOWeek();
+  // Get current month as default
+  const currentMonthData = getCurrentMonth();
 
-  // Get earliest result week
+  // Get earliest result month
   const { data: earliestResult } = useQuery(
     trpc.results.getEarliestResult.queryOptions(),
   );
 
-  // Use nuqs to manage week and year in URL query string
-  const [currentWeek, setCurrentWeek] = useQueryState(
-    "week",
-    parseAsInteger.withDefault(currentWeekData.week),
+  // Use nuqs to manage month and year in URL query string
+  const [currentMonth, setCurrentMonth] = useQueryState(
+    "month",
+    parseAsInteger.withDefault(currentMonthData.month),
   );
   const [currentYear, setCurrentYear] = useQueryState(
     "year",
-    parseAsInteger.withDefault(currentWeekData.year),
+    parseAsInteger.withDefault(currentMonthData.year),
   );
 
-  const isCurrent = isCurrentWeek(currentWeek, currentYear);
-  const isFuture = isFutureWeek(currentWeek, currentYear);
+  const isCurrent = isCurrentMonth(currentMonth, currentYear);
+  const isFuture = isFutureMonth(currentMonth, currentYear);
 
-  // Check if we're at the current week (disable next button)
-  const isAtCurrentWeek = isCurrentWeek(currentWeek, currentYear);
+  // Check if we're at the current month (disable next button)
+  const isAtCurrentMonth = isCurrentMonth(currentMonth, currentYear);
 
-  // Check if we're at the earliest result week (disable back button)
-  const isAtEarliestWeek =
+  // Check if we're at the earliest result month (disable back button)
+  const isAtEarliestMonth =
     earliestResult &&
-    currentWeek === earliestResult.week &&
+    currentMonth === earliestResult.month &&
     currentYear === earliestResult.year;
 
-  const handleWeekChange = (week: number, year: number) => {
-    setCurrentWeek(week);
+  const handleMonthChange = (month: number, year: number) => {
+    setCurrentMonth(month);
     setCurrentYear(year);
   };
 
   const handlePrevious = () => {
-    const prev = getPreviousWeek(currentWeek, currentYear);
-    handleWeekChange(prev.week, prev.year);
+    const prev = getPreviousMonth(currentMonth, currentYear);
+    handleMonthChange(prev.month, prev.year);
   };
 
   const handleNext = () => {
-    const next = getNextWeek(currentWeek, currentYear);
-    handleWeekChange(next.week, next.year);
+    const next = getNextMonth(currentMonth, currentYear);
+    handleMonthChange(next.month, next.year);
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const week = getWeekFromDate(date);
-      handleWeekChange(week.week, week.year);
+      const month = getMonthFromDate(date);
+      handleMonthChange(month.month, month.year);
       setIsCalendarOpen(false);
     }
   };
 
-  const weekDateRange = getWeekDateRange(currentWeek, currentYear);
+  const monthDateRange = getMonthDateRange(currentMonth, currentYear);
 
   return (
     <div className="flex items-center gap-4">
@@ -95,7 +95,7 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
           variant="outline"
           size="sm"
           onClick={handlePrevious}
-          disabled={availableWeeks.length === 0 || isAtEarliestWeek}
+          disabled={availableMonths.length === 0 || isAtEarliestMonth}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -108,10 +108,10 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               <span className="hidden sm:inline">
-                {formatWeekDisplay(currentWeek, currentYear)}
+                {formatMonthDisplay(currentMonth, currentYear)}
               </span>
               <span className="sm:hidden">
-                {formatWeekDisplayShort(currentWeek, currentYear)}
+                {formatMonthDisplayShort(currentMonth, currentYear)}
               </span>
               {isCurrent && (
                 <span className="text-destructive">(Incomplete)</span>
@@ -130,10 +130,10 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
                 // Disable future dates
                 if (date > today) return true;
 
-                // Disable dates before earliest result week
+                // Disable dates before earliest result month
                 if (earliestResult) {
-                  const earliestDate = getWeekDateRange(
-                    earliestResult.week,
+                  const earliestDate = getMonthDateRange(
+                    earliestResult.month,
                     earliestResult.year,
                   ).start;
                   return date < earliestDate;
@@ -149,7 +149,7 @@ export function WeekSelector({ availableWeeks }: WeekSelectorProps) {
           variant="outline"
           size="sm"
           onClick={handleNext}
-          disabled={isFuture || isAtCurrentWeek}
+          disabled={isFuture || isAtCurrentMonth}
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

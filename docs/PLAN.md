@@ -1,8 +1,8 @@
-# AI Coding Tools Weekly Survey - Product Documentation
+# AI Coding Tools Monthly Survey - Product Documentation
 
 ## Executive Summary
 
-The **AI Coding Tools Weekly Survey** is a comprehensive web-based survey platform designed to track the evolving landscape of AI-powered coding tools through weekly community feedback. The platform captures developer preferences, adoption rates, and experiences across various AI coding assistants, IDEs, and LLMs, providing insights through real-time results visualization and trend analysis over time.
+The **AI Coding Tools Monthly Survey** is a comprehensive web-based survey platform designed to track the evolving landscape of AI-powered coding tools through monthly community feedback. The platform captures developer preferences, adoption rates, and experiences across various AI coding assistants, IDEs, and LLMs, providing insights through real-time results visualization and trend analysis over time.
 
 ## Product Vision & Goals
 
@@ -24,23 +24,23 @@ Access will be limited to a large but semi-private community of engineering lead
 
 A single shared password system (configurable via `SURVEY_PASSWORD` environment variable) will be used to access the survey on the home page. No information will be shared publicly, and the survey will be accessible to anyone who knows the password.
 
-Every user will be given a unique session ID stored in a permanent cookie. The session ID will be used to track their responses, which will be combined with the ISO year and ISO week to preserve the history of the survey. Users could theoretically reset their session to game responses, but we expect this to not be common since doing so would ruin the survey for everyone. Responses will be anonymous and cannot be linked to a specific user.
+Every user will be given a unique session ID stored in a permanent cookie. The session ID will be used to track their responses, which will be combined with the year and month to preserve the history of the survey. Users could theoretically reset their session to game responses, but we expect this to not be common since doing so would ruin the survey for everyone. Responses will be anonymous and cannot be linked to a specific user.
 
-### 2. Weekly Cadence
+### 2. Monthly Cadence
 
-The survey will be conducted on a rolling, weekly basis, and will reset every Monday at 12:00AM UTC (ISO weeks). During the week, users will be able to access the survey and submit their responses. Users will be able to access the survey and view the results at any time, but any responses submitted will count towards the current week's results. An admin will review the responses and update the database accordingly.
+The survey will be conducted on a rolling, monthly basis, and will reset on the first day of each month. During the month, users will be able to access the survey and submit their responses. Users will be able to access the survey and view the results at any time, but any responses submitted will count towards the current month's results. An admin will review the responses and update the database accordingly.
 
 ### 3. Survey & Reporting Interface
 
 The survey interface will be a simple, single-page app that will be easy to use and navigate. It will be responsive and mobile-friendly. It will have a clean, modern design with a focus on readability and usability.
 
-Users will be able to access results and trends for the current week, as well as historical results.
+Users will be able to access results and trends for the current month, as well as historical results.
 
 ### 4. Sections and Questions
 
-The survey will be organized into sections and questions. Each section will have a title and a description. Each question will have a type, title, description, and type. Sections and questions can be activated or deactivated as the survey evolves. Questions may be required or optional. Questions may allow free-form text input as write-in responses. Responses will be tied to a session ID and ISO year + ISO week tuple.
+The survey will be organized into sections and questions. Each section will have a title and a description. Each question will have a type, title, description, and type. Sections and questions can be activated or deactivated as the survey evolves. Questions may be required or optional. Questions may allow free-form text input as write-in responses. Responses will be tied to a session ID and year + month tuple.
 
-Responses will be tied to a session ID and ISO year + ISO week tuple in order to preserve the history of the survey. Returning users will have their previous responses automatically pre-filled from the previous week's survey.
+Responses will be tied to a session ID and year + month tuple in order to preserve the history of the survey. Returning users will have their previous responses automatically pre-filled from the previous month's survey.
 
 Questions and options will have a label and optional description. Questions will also have a way for users to provide feedback about the question or options. Questions can also be skipped by the user. Labels and descriptions will support Markdown formatting.
 
@@ -61,7 +61,7 @@ Sections will have a title and optional description. Titles and descriptions wil
 
 ### 5. Reporting & Analytics
 
-Users will be able to view results for the current week and all previous weeks. Users will also be able to view trends over time for each question type.
+Users will be able to view results for the current month and all previous months. Users will also be able to view trends over time for each question type.
 
 Details TBD. No exports (JSON/CSV) are planned.
 
@@ -75,7 +75,7 @@ Section, question, and option data will be stored in the database. However, the 
 
 Since this is a survey, we should not expect 100% completion rate. We should therefore be prepared to handle missing responses and incomplete surveys.
 
-All responses will be saved to the database as the survey is completed. If a user starts the survey at 11:59PM UTC on Sunday and finishes minutes later, some responses may be counted towards the previous week's results. This doesn't seem like a major issue but we might consider fixing this in the future.
+All responses will be saved to the database as the survey is completed. If a user starts the survey at 11:59PM UTC on the last day of a month and finishes minutes later, some responses may be counted towards the previous month's results. This doesn't seem like a major issue but we might consider fixing this in the future.
 
 ### Public vs Private Data
 
@@ -156,10 +156,10 @@ Missing sections, questions, and options will be marked as inactive automaticall
   - *`added_at`* - The date when the option was added (date, nullable)
 
 - *`responses`*
-  - Primary key: `(session_id, iso_week, iso_year, question_slug)` - This ensures that each question can only be answered once per week per session
+  - Primary key: `(session_id, month, year, question_slug)` - This ensures that each question can only be answered once per month per session
   - *`session_id`* - The ID of the session (UUID, foreign key to sessions.id, not null)
-  - *`iso_week`* - The ISO week of the session (integer, not null)
-  - *`iso_year`* - The ISO year of the session (integer, not null)
+  - *`month`* - The month of the session (integer, 1-12, not null)
+  - *`year`* - The year of the session (integer, not null)
   - *`question_slug`* - The slug of the question the response belongs to (text, foreign key to questions.slug, not null)
   - *`skipped`* - Whether the question was explicitly skipped by the user (boolean, not null, default false)
   - *`single_option_slug`* - The slug of the selected option (text, foreign key to options.slug, nullable)

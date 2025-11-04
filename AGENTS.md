@@ -45,7 +45,7 @@
 - Direct service usage: Use external services directly where needed
 - Consolidate functionality: Combine related functionality into single endpoints/files
 - Avoid unnecessary docstrings: function names and types should be self-explanatory
-- Use `date-fns` for date operations, especially getISOWeek and getISOWeekYear
+- Use `date-fns` for date operations, especially getMonth and getYear
 - Use `gap-<n>` instead of `space-y-<n>` for vertical spacing to avoid extra margins
 - Use constants from `src/lib/constants.ts`
 

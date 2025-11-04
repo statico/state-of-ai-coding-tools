@@ -6,7 +6,7 @@ import {
   getResponseByQuestion,
   getResponsesByQuestionSlug,
   getResponsesBySession,
-  getResponsesByWeek,
+  getResponsesByMonth,
   saveExperienceResponses,
   updateResponse,
   upsertResponse,
@@ -16,7 +16,7 @@ import { createSession } from "./sessions";
 
 describe("Responses Model", () => {
   const testSessionId = "550e8400-e29b-41d4-a716-446655440000";
-  const testIsoWeek = 42;
+  const testMonth = 6; // June (1-12)
   const testIsoYear = 2024;
   const testQuestionSlug = "test-question";
 
@@ -24,7 +24,7 @@ describe("Responses Model", () => {
     it("should return empty array when no responses exist", async () => {
       const responses = await getResponsesBySession(
         "550e8400-e29b-41d4-a716-446655440001",
-        testIsoWeek,
+        testMonth,
         testIsoYear,
       );
       expect(responses).toEqual([]);
@@ -56,22 +56,22 @@ describe("Responses Model", () => {
       // Create test responses
       const response1 = await createResponse({
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: "question-1",
         single_option_slug: "option-1",
       });
       const response2 = await createResponse({
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: "question-2",
         single_option_slug: "option-2",
       });
 
       const responses = await getResponsesBySession(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
       );
       expect(responses).toHaveLength(2);
@@ -103,15 +103,15 @@ describe("Responses Model", () => {
 
       const response = await createResponse({
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
       });
 
       const foundResponse = await getResponseByQuestion(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         testQuestionSlug,
       );
@@ -124,7 +124,7 @@ describe("Responses Model", () => {
     it("should return undefined for non-existent response", async () => {
       const foundResponse = await getResponseByQuestion(
         "550e8400-e29b-41d4-a716-446655440001",
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         "non-existent-question",
       );
@@ -132,7 +132,7 @@ describe("Responses Model", () => {
     });
   });
 
-  describe("getResponsesByWeek", () => {
+  describe("getResponsesByMonth", () => {
     it("should return responses for specific week", async () => {
       // Create test sessions and questions
       await createSession({ id: "550e8400-e29b-41d4-a716-446655440001" });
@@ -159,20 +159,20 @@ describe("Responses Model", () => {
 
       const response1 = await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440001",
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: "question-1",
         single_option_slug: "option-1",
       });
       const response2 = await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440002",
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: "question-2",
         single_option_slug: "option-2",
       });
 
-      const responses = await getResponsesByWeek(testIsoWeek, testIsoYear);
+      const responses = await getResponsesByMonth(testMonth, testIsoYear);
       expect(responses).toHaveLength(2);
     });
   });
@@ -197,15 +197,15 @@ describe("Responses Model", () => {
 
       const response1 = await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440001",
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
       });
       const response2 = await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440002",
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-2",
       });
@@ -237,16 +237,16 @@ describe("Responses Model", () => {
 
       const input = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
       };
       const response = await createResponse(input);
 
       expect(response.session_id).toBe(testSessionId);
-      expect(response.iso_week).toBe(testIsoWeek);
-      expect(response.iso_year).toBe(testIsoYear);
+      expect(response.month).toBe(testMonth);
+      expect(response.year).toBe(testIsoYear);
       expect(response.question_slug).toBe(testQuestionSlug);
       expect(response.single_option_slug).toBe("option-1");
       expect(response.skipped).toBe(false);
@@ -270,8 +270,8 @@ describe("Responses Model", () => {
 
       const input = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         multiple_option_slugs: ["option-1", "option-2"],
       };
@@ -298,8 +298,8 @@ describe("Responses Model", () => {
 
       const input = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_writein_response: "Custom response",
       };
@@ -326,8 +326,8 @@ describe("Responses Model", () => {
 
       const input = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         experience_awareness: 3,
         experience_sentiment: 1,
@@ -356,8 +356,8 @@ describe("Responses Model", () => {
 
       const input = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         freeform_response: "This is a freeform response",
       };
@@ -384,8 +384,8 @@ describe("Responses Model", () => {
 
       const input = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         numeric_response: 42,
       };
@@ -412,8 +412,8 @@ describe("Responses Model", () => {
 
       const input = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         skipped: true,
       };
@@ -442,15 +442,15 @@ describe("Responses Model", () => {
 
       const response = await createResponse({
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
       });
 
       const updatedResponse = await updateResponse(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         testQuestionSlug,
         null,
@@ -468,7 +468,7 @@ describe("Responses Model", () => {
       await expect(
         updateResponse(
           "550e8400-e29b-41d4-a716-446655440001",
-          testIsoWeek,
+          testMonth,
           testIsoYear,
           "non-existent-question",
           null,
@@ -497,8 +497,8 @@ describe("Responses Model", () => {
 
       const data = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
         skipped: false,
@@ -530,8 +530,8 @@ describe("Responses Model", () => {
       // Create initial response
       await createResponse({
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
       });
@@ -539,8 +539,8 @@ describe("Responses Model", () => {
       // Upsert with updated data
       const data = {
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-2",
         comment: "Updated comment",
@@ -575,15 +575,15 @@ describe("Responses Model", () => {
 
       const response = await createResponse({
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
       });
 
       const deletedResponse = await deleteResponse(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         testQuestionSlug,
       );
@@ -594,7 +594,7 @@ describe("Responses Model", () => {
       // Verify response is actually deleted
       const responses = await getResponsesBySession(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
       );
       expect(
@@ -610,7 +610,7 @@ describe("Responses Model", () => {
       await expect(
         deleteResponse(
           "550e8400-e29b-41d4-a716-446655440001",
-          testIsoWeek,
+          testMonth,
           testIsoYear,
           "non-existent-question",
         ),
@@ -638,8 +638,8 @@ describe("Responses Model", () => {
       // Create
       const response = await createResponse({
         session_id: testSessionId,
-        iso_week: testIsoWeek,
-        iso_year: testIsoYear,
+        month: testMonth,
+        year: testIsoYear,
         question_slug: testQuestionSlug,
         single_option_slug: "option-1",
       });
@@ -649,7 +649,7 @@ describe("Responses Model", () => {
       // Read
       const responses = await getResponsesBySession(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
       );
       expect(
@@ -663,7 +663,7 @@ describe("Responses Model", () => {
       // Update
       const updatedResponse = await updateResponse(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         testQuestionSlug,
         null,
@@ -678,7 +678,7 @@ describe("Responses Model", () => {
       // Delete
       const deletedResponse = await deleteResponse(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         testQuestionSlug,
       );
@@ -687,7 +687,7 @@ describe("Responses Model", () => {
       // Verify deletion
       const finalResponses = await getResponsesBySession(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
       );
       expect(
@@ -734,7 +734,7 @@ describe("Responses Model", () => {
 
       const savedResponses = await saveExperienceResponses(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         testQuestionSlug,
         responses,
@@ -774,7 +774,7 @@ describe("Responses Model", () => {
 
       const savedResponses = await saveExperienceResponses(
         testSessionId,
-        testIsoWeek,
+        testMonth,
         testIsoYear,
         testQuestionSlug,
         responses,

@@ -1,7 +1,7 @@
 "use client";
 
-import { WeekSelector } from "@/components/results/WeekSelector";
-import { IncompleteWeekBanner } from "@/components/results/IncompleteWeekBanner";
+import { MonthSelector } from "@/components/results/MonthSelector";
+import { IncompleteMonthBanner } from "@/components/results/IncompleteWeekBanner";
 import { SingleChoiceReport } from "@/components/results/SingleChoiceReport";
 import { MultipleChoiceReport } from "@/components/results/MultipleChoiceReport";
 import { ExperienceReport } from "@/components/results/ExperienceReport";
@@ -10,37 +10,37 @@ import { FreeformReport } from "@/components/results/FreeformReport";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
-import { getCurrentISOWeek, isCurrentWeek, formatWithCount } from "@/lib/utils";
+import { getCurrentMonth, isCurrentMonth, formatWithCount } from "@/lib/utils";
 import { useQueryState, parseAsInteger } from "nuqs";
 
 export function ReportsPageContent() {
   const trpc = useTRPC();
-  const current = getCurrentISOWeek();
+  const current = getCurrentMonth();
 
-  // Read week and year from URL query parameters
-  const [selectedWeek] = useQueryState(
-    "week",
-    parseAsInteger.withDefault(current.week),
+  // Read month and year from URL query parameters
+  const [selectedMonth] = useQueryState(
+    "month",
+    parseAsInteger.withDefault(current.month),
   );
   const [selectedYear] = useQueryState(
     "year",
     parseAsInteger.withDefault(current.year),
   );
 
-  const { data: availableWeeks = [], isLoading: weeksLoading } = useQuery(
-    trpc.results.getAllWeeksSinceStart.queryOptions(),
+  const { data: availableMonths = [], isLoading: monthsLoading } = useQuery(
+    trpc.results.getAllMonthsSinceStart.queryOptions(),
   );
 
-  const { data: weekSummary, isLoading: summaryLoading } = useQuery(
-    trpc.results.getWeekSummary.queryOptions(
-      { week: selectedWeek, year: selectedYear },
-      { enabled: !!selectedWeek && !!selectedYear },
+  const { data: monthSummary, isLoading: summaryLoading } = useQuery(
+    trpc.results.getMonthSummary.queryOptions(
+      { month: selectedMonth, year: selectedYear },
+      { enabled: !!selectedMonth && !!selectedYear },
     ),
   );
 
-  const isCurrent = isCurrentWeek(selectedWeek, selectedYear);
+  const isCurrent = isCurrentMonth(selectedMonth, selectedYear);
 
-  if (weeksLoading) {
+  if (monthsLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-16 w-full" />
@@ -52,25 +52,25 @@ export function ReportsPageContent() {
 
   return (
     <div className="space-y-6">
-      <WeekSelector availableWeeks={availableWeeks} />
+      <MonthSelector availableMonths={availableMonths} />
 
-      {/* Week Summary */}
+      {/* Month Summary */}
       {summaryLoading ? (
         <Skeleton className="h-6 w-64" />
-      ) : weekSummary ? (
+      ) : monthSummary ? (
         <p className="text-muted-foreground">
-          {formatWithCount(weekSummary.uniqueSessions, "respondent")} ·{" "}
-          {formatWithCount(weekSummary.totalResponses, "total response")} for{" "}
-          {formatWithCount(weekSummary.questions.length, "question")}
+          {formatWithCount(monthSummary.uniqueSessions, "respondent")} ·{" "}
+          {formatWithCount(monthSummary.totalResponses, "total response")} for{" "}
+          {formatWithCount(monthSummary.questions.length, "question")}
         </p>
       ) : (
         <p className="text-muted-foreground">No data</p>
       )}
 
       {/* Question Reports */}
-      {weekSummary && weekSummary.questions.length > 0 && (
+      {monthSummary && monthSummary.questions.length > 0 && (
         <div className="space-y-6">
-          {weekSummary.questions.map((question) => (
+          {monthSummary.questions.map((question) => (
             <div key={question.questionSlug}>
               {question.questionType === "single" && question.data && (
                 <SingleChoiceReport

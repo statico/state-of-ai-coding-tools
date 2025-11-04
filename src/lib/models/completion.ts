@@ -1,4 +1,4 @@
-import { getCurrentISOWeek } from "../utils";
+import { getCurrentMonth } from "../utils";
 import { getActiveQuestionsBySection } from "./questions";
 import { getResponsesBySession } from "./responses";
 import { getActiveSections } from "./sections";
@@ -21,8 +21,8 @@ export interface CompletionData {
 export async function getCompletionPercentage(
   sessionId: string,
 ): Promise<CompletionData> {
-  // Get current week and year
-  const { week, year } = getCurrentISOWeek();
+  // Get current month and year
+  const { month, year } = getCurrentMonth();
 
   // Get all active sections
   const sections = await getActiveSections();
@@ -33,8 +33,8 @@ export async function getCompletionPercentage(
   );
   const flatQuestions = allQuestions.flat();
 
-  // Get user's responses for current week
-  const userResponses = await getResponsesBySession(sessionId, week, year);
+  // Get user's responses for current month
+  const userResponses = await getResponsesBySession(sessionId, month, year);
 
   // Calculate completion percentage for each section
   const sectionCompletion = sections.map((section) => {

@@ -42,8 +42,8 @@ export interface Responses {
   experience_awareness: number | null;
   experience_sentiment: number | null;
   freeform_response: string | null;
-  iso_week: number;
-  iso_year: number;
+  month: number;
+  year: number;
   multiple_option_slugs: string[] | null;
   multiple_writein_responses: string[] | null;
   numeric_response: Numeric | null;

@@ -2,11 +2,11 @@ import { db } from "@/server/db";
 import { setupTestData } from "@/test/setup";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  getAllWeeksSinceStart,
-  getAvailableWeeks,
-  getFirstResponseWeek,
+  getAllMonthsSinceStart,
+  getAvailableMonths,
+  getFirstResponseMonth,
   getQuestionReport,
-  getWeekSummary,
+  getMonthSummary,
 } from "./results";
 
 describe("results", () => {
@@ -18,13 +18,13 @@ describe("results", () => {
     vi.useRealTimers();
   });
 
-  describe("getAvailableWeeks", () => {
+  describe("getAvailableMonths", () => {
     it("should return empty array when no responses exist", async () => {
-      const weeks = await getAvailableWeeks();
-      expect(weeks).toEqual([]);
+      const months = await getAvailableMonths();
+      expect(months).toEqual([]);
     });
 
-    it("should return weeks with response data", async () => {
+    it("should return months with response data", async () => {
       // Create test data
       const sessionId = "550e8400-e29b-41d4-a716-446655440000";
       await db.insertInto("sessions").values({ id: sessionId }).execute();
@@ -51,13 +51,13 @@ describe("results", () => {
         })
         .execute();
 
-      // Add responses for different weeks
+      // Add responses for different months
       await db
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 1,
-          iso_year: 2024,
+          month: 1,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
@@ -67,28 +67,28 @@ describe("results", () => {
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 3,
-          iso_year: 2024,
+          month: 3,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
         .execute();
 
-      const weeks = await getAvailableWeeks();
-      expect(weeks).toEqual([
-        { week: 1, year: 2024 },
-        { week: 3, year: 2024 },
+      const months = await getAvailableMonths();
+      expect(months).toEqual([
+        { month: 1, year: 2024 },
+        { month: 3, year: 2024 },
       ]);
     });
   });
 
-  describe("getFirstResponseWeek", () => {
+  describe("getFirstResponseMonth", () => {
     it("should return null when no responses exist", async () => {
-      const firstWeek = await getFirstResponseWeek();
-      expect(firstWeek).toBeNull();
+      const firstMonth = await getFirstResponseMonth();
+      expect(firstMonth).toBeNull();
     });
 
-    it("should return the earliest week with responses", async () => {
+    it("should return the earliest month with responses", async () => {
       // Create test data
       const sessionId = "550e8400-e29b-41d4-a716-446655440000";
       await db.insertInto("sessions").values({ id: sessionId }).execute();
@@ -120,8 +120,8 @@ describe("results", () => {
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 3,
-          iso_year: 2024,
+          month: 3,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
@@ -131,26 +131,26 @@ describe("results", () => {
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 1,
-          iso_year: 2024,
+          month: 1,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
         .execute();
 
-      const firstWeek = await getFirstResponseWeek();
-      expect(firstWeek).toEqual({ week: 1, year: 2024 });
+      const firstMonth = await getFirstResponseMonth();
+      expect(firstMonth).toEqual({ month: 1, year: 2024 });
     });
   });
 
-  describe("getAllWeeksSinceStart", () => {
+  describe("getAllMonthsSinceStart", () => {
     it("should return empty array when no responses exist", async () => {
-      const weeks = await getAllWeeksSinceStart();
-      expect(weeks).toEqual([]);
+      const months = await getAllMonthsSinceStart();
+      expect(months).toEqual([]);
     });
 
-    it("should return all weeks from first response to current week", async () => {
-      // Set system time to a date in week 5, 2024 (January 29, 2024 is in week 5)
+    it("should return all months from first response to current month", async () => {
+      // Set system time to a date in month 1, 2024 (January 29, 2024)
       vi.setSystemTime(new Date("2024-01-29"));
 
       // Create test data
@@ -179,26 +179,21 @@ describe("results", () => {
         })
         .execute();
 
-      // Add response for week 2, 2024
+      // Add response for month 1, 2024
       await db
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 2,
-          iso_year: 2024,
+          month: 1,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
         .execute();
 
-      // Mock current week as week 5, 2024
-      const weeks = await getAllWeeksSinceStart();
-      expect(weeks).toEqual([
-        { week: 2, year: 2024 },
-        { week: 3, year: 2024 },
-        { week: 4, year: 2024 },
-        { week: 5, year: 2024 },
-      ]);
+      // Mock current month as month 1, 2024
+      const months = await getAllMonthsSinceStart();
+      expect(months).toEqual([{ month: 1, year: 2024 }]);
     });
 
     it("should handle year boundary correctly", async () => {
@@ -228,35 +223,34 @@ describe("results", () => {
         })
         .execute();
 
-      // Add response for week 52, 2023
+      // Add response for month 12, 2023
       await db
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 52,
-          iso_year: 2023,
+          month: 12,
+          year: 2023,
           question_slug: questionSlug,
           skipped: false,
         })
         .execute();
 
-      // Set system time to a date in week 2, 2024 (January 8, 2024 is in week 2)
+      // Set system time to a date in month 1, 2024 (January 8, 2024)
       vi.setSystemTime(new Date("2024-01-08"));
 
-      const weeks = await getAllWeeksSinceStart();
-      expect(weeks).toEqual([
-        { week: 52, year: 2023 },
-        { week: 1, year: 2024 },
-        { week: 2, year: 2024 },
+      const months = await getAllMonthsSinceStart();
+      expect(months).toEqual([
+        { month: 12, year: 2023 },
+        { month: 1, year: 2024 },
       ]);
     });
   });
 
-  describe("getWeekSummary", () => {
-    it("should return week summary with no responses", async () => {
-      const summary = await getWeekSummary(1, 2024);
+  describe("getMonthSummary", () => {
+    it("should return month summary with no responses", async () => {
+      const summary = await getMonthSummary(1, 2024);
       expect(summary).toEqual({
-        week: 1,
+        month: 1,
         year: 2024,
         totalResponses: 0,
         uniqueSessions: 0,
@@ -264,7 +258,7 @@ describe("results", () => {
       });
     });
 
-    it("should return week summary with responses", async () => {
+    it("should return month summary with responses", async () => {
       // Create test data
       const sessionId = "550e8400-e29b-41d4-a716-446655440000";
       await db.insertInto("sessions").values({ id: sessionId }).execute();
@@ -296,15 +290,15 @@ describe("results", () => {
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 1,
-          iso_year: 2024,
+          month: 1,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
         .execute();
 
-      const summary = await getWeekSummary(1, 2024);
-      expect(summary.week).toBe(1);
+      const summary = await getMonthSummary(1, 2024);
+      expect(summary.month).toBe(1);
       expect(summary.year).toBe(2024);
       expect(summary.totalResponses).toBe(1);
       expect(summary.uniqueSessions).toBe(1);
@@ -346,14 +340,14 @@ describe("results", () => {
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 1,
-          iso_year: 2024,
+          month: 1,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
         .execute();
 
-      const summary = await getWeekSummary(1, 2024);
+      const summary = await getMonthSummary(1, 2024);
       expect(summary.questions).toHaveLength(0); // Should exclude question from inactive section
     });
   });
@@ -494,8 +488,8 @@ describe("results", () => {
         .insertInto("responses")
         .values({
           session_id: sessionId,
-          iso_week: 1,
-          iso_year: 2024,
+          month: 1,
+          year: 2024,
           question_slug: questionSlug,
           skipped: false,
         })
@@ -505,8 +499,8 @@ describe("results", () => {
         .insertInto("responses")
         .values({
           session_id: sessionId2,
-          iso_week: 1,
-          iso_year: 2024,
+          month: 1,
+          year: 2024,
           question_slug: questionSlug,
           skipped: true,
         })
@@ -565,8 +559,8 @@ describe("results", () => {
           .insertInto("responses")
           .values({
             session_id: "550e8400-e29b-41d4-a716-446655440000",
-            iso_week: 1,
-            iso_year: 2024,
+            month: 1,
+            year: 2024,
             question_slug: questionSlug,
             skipped: false,
             single_option_slug: optionSlug,
@@ -612,8 +606,8 @@ describe("results", () => {
           .insertInto("responses")
           .values({
             session_id: "550e8400-e29b-41d4-a716-446655440000",
-            iso_week: 1,
-            iso_year: 2024,
+            month: 1,
+            year: 2024,
             question_slug: questionSlug,
             skipped: false,
             multiple_option_slugs: [optionSlug],
@@ -662,8 +656,8 @@ describe("results", () => {
           .insertInto("responses")
           .values({
             session_id: "550e8400-e29b-41d4-a716-446655440000",
-            iso_week: 1,
-            iso_year: 2024,
+            month: 1,
+            year: 2024,
             question_slug: questionSlug,
             option_slug: optionSlug,
             skipped: false,
@@ -729,8 +723,8 @@ describe("results", () => {
           .values([
             {
               session_id: sessionId,
-              iso_week: 1,
-              iso_year: 2024,
+              month: 1,
+              year: 2024,
               question_slug: questionSlug,
               option_slug: optionSlug1,
               skipped: false,
@@ -739,8 +733,8 @@ describe("results", () => {
             },
             {
               session_id: sessionId,
-              iso_week: 1,
-              iso_year: 2024,
+              month: 1,
+              year: 2024,
               question_slug: questionSlug,
               option_slug: optionSlug2,
               skipped: false,
@@ -787,8 +781,8 @@ describe("results", () => {
           .insertInto("responses")
           .values({
             session_id: "550e8400-e29b-41d4-a716-446655440000",
-            iso_week: 1,
-            iso_year: 2024,
+            month: 1,
+            year: 2024,
             question_slug: questionSlug,
             option_slug: optionSlug,
             skipped: false,
@@ -841,8 +835,8 @@ describe("results", () => {
           .insertInto("responses")
           .values({
             session_id: "550e8400-e29b-41d4-a716-446655440002",
-            iso_week: 1,
-            iso_year: 2024,
+            month: 1,
+            year: 2024,
             question_slug: questionSlug,
             skipped: false,
             numeric_response: 5,
@@ -853,8 +847,8 @@ describe("results", () => {
           .insertInto("responses")
           .values({
             session_id: "550e8400-e29b-41d4-a716-446655440003",
-            iso_week: 1,
-            iso_year: 2024,
+            month: 1,
+            year: 2024,
             question_slug: questionSlug,
             skipped: false,
             numeric_response: 10,
@@ -890,8 +884,8 @@ describe("results", () => {
           .insertInto("responses")
           .values({
             session_id: "550e8400-e29b-41d4-a716-446655440000",
-            iso_week: 1,
-            iso_year: 2024,
+            month: 1,
+            year: 2024,
             question_slug: questionSlug,
             skipped: false,
             freeform_response: "Great tool!",

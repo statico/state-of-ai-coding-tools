@@ -1,6 +1,6 @@
 import { setupTestData } from "@/test/setup";
 import { beforeEach, describe, expect, it } from "vitest";
-import { getCurrentISOWeek } from "../utils";
+import { getCurrentMonth } from "../utils";
 import { getCompletionPercentage } from "./completion";
 import { createQuestion } from "./questions";
 import { createResponse } from "./responses";
@@ -57,30 +57,30 @@ describe("Completion Model", () => {
         active: true,
       });
 
-      // Get current week and year using the same method as completion function
-      const { week: weekNumber, year: currentYear } = getCurrentISOWeek();
+      // Get current month and year using the same method as completion function
+      const { month: monthNumber, year: currentYear } = getCurrentMonth();
 
       // Insert test responses (2 completed, 1 skipped)
       await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440000",
-        iso_week: weekNumber,
-        iso_year: currentYear,
+        month: monthNumber,
+        year: currentYear,
         question_slug: "question1",
         skipped: false,
         single_option_slug: "option1",
       });
       await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440000",
-        iso_week: weekNumber,
-        iso_year: currentYear,
+        month: monthNumber,
+        year: currentYear,
         question_slug: "question2",
         skipped: false,
         single_option_slug: "option2",
       });
       await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440000",
-        iso_week: weekNumber,
-        iso_year: currentYear,
+        month: monthNumber,
+        year: currentYear,
         question_slug: "question3",
         skipped: true,
       });
@@ -184,15 +184,15 @@ describe("Completion Model", () => {
         active: true,
       });
 
-      // Get current week and year using ISO week calculation
-      const { week: weekNumber, year: currentYear } = getCurrentISOWeek();
+      // Get current month and year
+      const { month: monthNumber, year: currentYear } = getCurrentMonth();
 
       // Create a response that was unskipped but has no actual values
       // This simulates: user enters choice, skips, then unskips without re-entering values
       await createResponse({
         session_id: "550e8400-e29b-41d4-a716-446655440000",
-        iso_week: weekNumber,
-        iso_year: currentYear,
+        month: monthNumber,
+        year: currentYear,
         question_slug: "question1",
         skipped: false, // unskipped
         // No actual values provided (no single_option_slug, etc.)

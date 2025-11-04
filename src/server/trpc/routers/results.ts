@@ -1,58 +1,58 @@
 import {
-  getAllWeeksSinceStart,
-  getAvailableWeeks,
-  getFirstResponseWeek,
+  getAllMonthsSinceStart,
+  getAvailableMonths,
+  getFirstResponseMonth,
   getQuestionReport,
-  getWeekSummary,
+  getMonthSummary,
 } from "@/lib/models/results";
-import { getCurrentISOWeek } from "@/lib/utils";
+import { getCurrentMonth } from "@/lib/utils";
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 
 export const resultsRouter = router({
-  getAvailableWeeks: publicProcedure.query(async () => {
-    return await getAvailableWeeks();
+  getAvailableMonths: publicProcedure.query(async () => {
+    return await getAvailableMonths();
   }),
 
-  getAllWeeksSinceStart: publicProcedure.query(async () => {
-    return await getAllWeeksSinceStart();
+  getAllMonthsSinceStart: publicProcedure.query(async () => {
+    return await getAllMonthsSinceStart();
   }),
 
-  getCurrentWeek: publicProcedure.query(async () => {
-    return getCurrentISOWeek();
+  getCurrentMonth: publicProcedure.query(async () => {
+    return getCurrentMonth();
   }),
 
   getEarliestResult: publicProcedure.query(async () => {
-    const firstWeek = await getFirstResponseWeek();
-    if (!firstWeek) {
-      return getCurrentISOWeek();
+    const firstMonth = await getFirstResponseMonth();
+    if (!firstMonth) {
+      return getCurrentMonth();
     }
-    return firstWeek;
+    return firstMonth;
   }),
 
-  getWeekSummary: publicProcedure
+  getMonthSummary: publicProcedure
     .input(
       z.object({
-        week: z.number(),
+        month: z.number(),
         year: z.number(),
       }),
     )
     .query(async ({ input }) => {
-      return await getWeekSummary(input.week, input.year);
+      return await getMonthSummary(input.month, input.year);
     }),
 
   getQuestionReport: publicProcedure
     .input(
       z.object({
         questionSlug: z.string(),
-        week: z.number(),
+        month: z.number(),
         year: z.number(),
       }),
     )
     .query(async ({ input }) => {
       return await getQuestionReport(
         input.questionSlug,
-        input.week,
+        input.month,
         input.year,
       );
     }),
@@ -64,20 +64,20 @@ export const resultsRouter = router({
       }),
     )
     .query(async ({ input }) => {
-      // Get all weeks with data for this question
-      const weeks = await getAvailableWeeks();
+      // Get all months with data for this question
+      const months = await getAvailableMonths();
       const trends = [];
 
-      for (const week of weeks) {
+      for (const month of months) {
         const report = await getQuestionReport(
           input.questionSlug,
-          week.week,
-          week.year,
+          month.month,
+          month.year,
         );
         if (report) {
           trends.push({
-            week: week.week,
-            year: week.year,
+            month: month.month,
+            year: month.year,
             totalResponses: report.totalResponses,
             skippedResponses: report.skippedResponses,
             data: report.data,

@@ -1,11 +1,12 @@
 import { type ClassValue, clsx } from "clsx";
 import {
-  addWeeks,
-  endOfISOWeek,
   format,
-  getISOWeek,
-  getISOWeekYear,
-  startOfISOWeek,
+  getMonth,
+  getYear,
+  startOfMonth,
+  endOfMonth,
+  addMonths,
+  subMonths,
 } from "date-fns";
 import pluralize from "pluralize";
 import { twMerge } from "tailwind-merge";
@@ -14,92 +15,79 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Week utility functions
-export function getCurrentISOWeek(): { week: number; year: number } {
+// Month utility functions
+export function getCurrentMonth(): { month: number; year: number } {
   const now = new Date();
   return {
-    week: getISOWeek(now),
-    year: getISOWeekYear(now),
+    month: getMonth(now) + 1, // getMonth returns 0-11, we need 1-12
+    year: getYear(now),
   };
 }
 
-export function getWeekDateRange(
-  week: number,
+export function getMonthDateRange(
+  month: number,
   year: number,
 ): { start: Date; end: Date } {
-  // Create a date in the given ISO week/year
-  // ISO week 1 is the first week with at least 4 days in the new year
-  const jan4 = new Date(year, 0, 4); // January 4th
-  const week1Start = startOfISOWeek(jan4);
-  const targetWeekStart = addWeeks(week1Start, week - 1);
+  // Create a date in the given month/year (month is 1-12)
+  const date = new Date(year, month - 1, 1); // Date constructor expects 0-11 for month
 
   return {
-    start: startOfISOWeek(targetWeekStart),
-    end: endOfISOWeek(targetWeekStart),
+    start: startOfMonth(date),
+    end: endOfMonth(date),
   };
 }
 
-export function formatWeekDisplay(week: number, year: number): string {
-  const weekDateRange = getWeekDateRange(week, year);
-  // Use UTC to avoid timezone issues
-  const startDate = new Date(weekDateRange.start.getTime());
-  const formattedDate = format(startDate, "MMMM d, yyyy");
-  return `Week of ${formattedDate}`;
+export function formatMonthDisplay(month: number, year: number): string {
+  const date = new Date(year, month - 1, 1); // month is 1-12, Date constructor expects 0-11
+  const formattedDate = format(date, "MMMM yyyy");
+  return formattedDate;
 }
 
-export function formatWeekDisplayShort(week: number, year: number): string {
-  const weekDateRange = getWeekDateRange(week, year);
-  // Use UTC to avoid timezone issues
-  const startDate = new Date(weekDateRange.start.getTime());
-  return format(startDate, "M/d/yyyy");
+export function formatMonthDisplayShort(month: number, year: number): string {
+  const date = new Date(year, month - 1, 1); // month is 1-12, Date constructor expects 0-11
+  return format(date, "M/yyyy");
 }
 
-export function getWeekFromDate(date: Date): { week: number; year: number } {
+export function getMonthFromDate(date: Date): { month: number; year: number } {
   return {
-    week: getISOWeek(date),
-    year: getISOWeekYear(date),
+    month: getMonth(date) + 1, // getMonth returns 0-11, we need 1-12
+    year: getYear(date),
   };
 }
 
-export function isCurrentWeek(week: number, year: number): boolean {
-  const current = getCurrentISOWeek();
-  return current.week === week && current.year === year;
+export function isCurrentMonth(month: number, year: number): boolean {
+  const current = getCurrentMonth();
+  return current.month === month && current.year === year;
 }
 
-export function isFutureWeek(week: number, year: number): boolean {
-  const current = getCurrentISOWeek();
-  return year > current.year || (year === current.year && week > current.week);
+export function isFutureMonth(month: number, year: number): boolean {
+  const current = getCurrentMonth();
+  return (
+    year > current.year || (year === current.year && month > current.month)
+  );
 }
 
-export function getPreviousWeek(
-  week: number,
+export function getPreviousMonth(
+  month: number,
   year: number,
-): { week: number; year: number } {
-  if (week === 1) {
-    // Previous week is week 52 or 53 of previous year
-    const prevYear = year - 1;
-    const jan4 = new Date(prevYear, 0, 4);
-    const week1Start = startOfISOWeek(jan4);
-    const lastWeekStart = addWeeks(week1Start, 51); // Week 52
-    const lastWeek = getISOWeek(lastWeekStart);
-    return { week: lastWeek, year: prevYear };
+): { month: number; year: number } {
+  if (month === 1) {
+    // Previous month is December of previous year
+    return { month: 12, year: year - 1 };
   } else {
-    return { week: week - 1, year };
+    return { month: month - 1, year };
   }
 }
 
-export function getNextWeek(
-  week: number,
+export function getNextMonth(
+  month: number,
   year: number,
-): { week: number; year: number } {
-  const current = getCurrentISOWeek();
-  const maxWeek = getISOWeek(new Date(year, 11, 28)); // December 28th to get max week
-
-  if (week >= maxWeek) {
-    // Next week is week 1 of next year
-    return { week: 1, year: year + 1 };
+): { month: number; year: number } {
+  if (month === 12) {
+    // Next month is January of next year
+    return { month: 1, year: year + 1 };
   } else {
-    return { week: week + 1, year };
+    return { month: month + 1, year };
   }
 }
 

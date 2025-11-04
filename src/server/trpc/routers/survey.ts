@@ -7,7 +7,7 @@ import {
   upsertResponse,
 } from "@/lib/models/responses";
 import { getActiveSections, getFirstSection } from "@/lib/models/sections";
-import { getCurrentISOWeek } from "@/lib/utils";
+import { getCurrentMonth } from "@/lib/utils";
 import { z } from "zod";
 import { router, userProcedure } from "../trpc";
 
@@ -41,12 +41,12 @@ export const surveyRouter = router({
   }),
 
   getResponses: userProcedure.query(async ({ ctx }) => {
-    // Get current week and year using ISO week calculation
-    const { week, year } = getCurrentISOWeek();
+    // Get current month and year
+    const { month, year } = getCurrentMonth();
 
     return {
       sessionId: ctx.sessionId,
-      responses: await getResponsesBySession(ctx.sessionId!, week, year),
+      responses: await getResponsesBySession(ctx.sessionId!, month, year),
     };
   }),
 
@@ -67,13 +67,13 @@ export const surveyRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // Get current week and year using ISO week calculation
-      const { week, year } = getCurrentISOWeek();
+      // Get current month and year
+      const { month, year } = getCurrentMonth();
 
       const response = await upsertResponse({
         session_id: ctx.sessionId!,
-        iso_week: week,
-        iso_year: year,
+        month: month,
+        year: year,
         question_slug: input.questionSlug,
         skipped: input.skipped ?? false,
         single_option_slug: input.singleOptionSlug,
@@ -106,12 +106,12 @@ export const surveyRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      // Get current week and year using ISO week calculation
-      const { week, year } = getCurrentISOWeek();
+      // Get current month and year
+      const { month, year } = getCurrentMonth();
 
       const savedResponses = await saveExperienceResponses(
         ctx.sessionId!,
-        week,
+        month,
         year,
         input.questionSlug,
         input.responses,

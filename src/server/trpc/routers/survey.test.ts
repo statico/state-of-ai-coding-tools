@@ -1,4 +1,4 @@
-import { getCurrentISOWeek } from "@/lib/utils";
+import { getCurrentMonth } from "@/lib/utils";
 import { db } from "@/server/db";
 import { setupTestData } from "@/test/setup";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -186,8 +186,8 @@ describe("Survey Router", () => {
         })
         .execute();
 
-      // Get current week and year using ISO week calculation
-      const { week: weekNumber, year: currentYear } = getCurrentISOWeek();
+      // Get current month and year
+      const { month: monthNumber, year: currentYear } = getCurrentMonth();
 
       // Insert test responses
       await db
@@ -195,8 +195,8 @@ describe("Survey Router", () => {
         .values([
           {
             session_id: "550e8400-e29b-41d4-a716-446655440000",
-            iso_week: weekNumber,
-            iso_year: currentYear,
+            month: monthNumber,
+            year: currentYear,
             question_slug: "question1",
             skipped: false,
             single_option_slug: "option1",

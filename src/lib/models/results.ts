@@ -1,9 +1,9 @@
 import { AWARENESS_OPTIONS, SENTIMENT_OPTIONS } from "@/lib/constants";
-import { getCurrentISOWeek } from "@/lib/utils";
+import { getCurrentMonth } from "@/lib/utils";
 import { db } from "@/server/db";
 
-export interface WeekSummary {
-  week: number;
+export interface MonthSummary {
+  month: number;
   year: number;
   totalResponses: number;
   uniqueSessions: number;
@@ -106,88 +106,89 @@ export interface FreeformData {
 }
 
 /**
- * Get all weeks that have response data
+ * Get all months that have response data
  */
-export async function getAvailableWeeks(): Promise<
-  Array<{ week: number; year: number }>
+export async function getAvailableMonths(): Promise<
+  Array<{ month: number; year: number }>
 > {
-  const weeks = await db
+  const months = await db
     .selectFrom("responses")
-    .select(["iso_week", "iso_year"])
-    .groupBy(["iso_week", "iso_year"])
-    .orderBy("iso_year", "asc")
-    .orderBy("iso_week", "asc")
+    .select(["month", "year"])
+    .groupBy(["month", "year"])
+    .orderBy("year", "asc")
+    .orderBy("month", "asc")
     .execute();
 
-  return weeks.map((w) => ({ week: w.iso_week, year: w.iso_year }));
+  return months.map((m) => ({ month: m.month, year: m.year }));
 }
 
 /**
- * Get the first week with response data
+ * Get the first month with response data
  */
-export async function getFirstResponseWeek(): Promise<{
-  week: number;
+export async function getFirstResponseMonth(): Promise<{
+  month: number;
   year: number;
 } | null> {
-  const firstWeek = await db
+  const firstMonth = await db
     .selectFrom("responses")
-    .select(["iso_week", "iso_year"])
-    .orderBy("iso_year", "asc")
-    .orderBy("iso_week", "asc")
+    .select(["month", "year"])
+    .orderBy("year", "asc")
+    .orderBy("month", "asc")
     .limit(1)
     .executeTakeFirst();
 
-  return firstWeek
-    ? { week: firstWeek.iso_week, year: firstWeek.iso_year }
-    : null;
+  return firstMonth ? { month: firstMonth.month, year: firstMonth.year } : null;
 }
 
 /**
- * Get all weeks from first response to current week
+ * Get all months from first response to current month
  */
-export async function getAllWeeksSinceStart(): Promise<
-  Array<{ week: number; year: number }>
+export async function getAllMonthsSinceStart(): Promise<
+  Array<{ month: number; year: number }>
 > {
-  const firstWeek = await getFirstResponseWeek();
-  if (!firstWeek) return [];
+  const firstMonth = await getFirstResponseMonth();
+  if (!firstMonth) return [];
 
-  const current = getCurrentISOWeek();
-  const weeks: Array<{ week: number; year: number }> = [];
+  const current = getCurrentMonth();
+  const months: Array<{ month: number; year: number }> = [];
 
-  let currentWeek = firstWeek;
+  let currentMonth = firstMonth;
   while (
-    currentWeek.year < current.year ||
-    (currentWeek.year === current.year && currentWeek.week <= current.week)
+    currentMonth.year < current.year ||
+    (currentMonth.year === current.year && currentMonth.month <= current.month)
   ) {
-    weeks.push({ ...currentWeek });
+    months.push({ ...currentMonth });
 
-    // Move to next week
-    if (currentWeek.week === 52) {
-      currentWeek = { week: 1, year: currentWeek.year + 1 };
+    // Move to next month
+    if (currentMonth.month === 12) {
+      currentMonth = { month: 1, year: currentMonth.year + 1 };
     } else {
-      currentWeek = { week: currentWeek.week + 1, year: currentWeek.year };
+      currentMonth = {
+        month: currentMonth.month + 1,
+        year: currentMonth.year,
+      };
     }
   }
 
-  return weeks;
+  return months;
 }
 
 /**
- * Get aggregated data for a specific week
+ * Get aggregated data for a specific month
  */
-export async function getWeekSummary(
-  week: number,
+export async function getMonthSummary(
+  month: number,
   year: number,
-): Promise<WeekSummary> {
-  // Get total responses and unique sessions for the week
+): Promise<MonthSummary> {
+  // Get total responses and unique sessions for the month
   const responseStats = await db
     .selectFrom("responses")
     .select([
       (eb) => eb.fn.countAll().as("totalResponses"),
       (eb) => eb.fn.count("session_id").distinct().as("uniqueSessions"),
     ])
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .executeTakeFirst();
 
   // Get all questions with their aggregated data
@@ -204,9 +205,9 @@ export async function getWeekSummary(
   const questionReports: QuestionReport[] = [];
 
   for (const question of questions) {
-    const report = await getQuestionReport(question.slug, week, year);
+    const report = await getQuestionReport(question.slug, month, year);
     if (report) {
-      const comments = await getQuestionComments(question.slug, week, year);
+      const comments = await getQuestionComments(question.slug, month, year);
       questionReports.push({
         questionSlug: question.slug,
         questionTitle: question.title,
@@ -223,7 +224,7 @@ export async function getWeekSummary(
   }
 
   return {
-    week,
+    month,
     year,
     totalResponses: Number(responseStats?.totalResponses || 0),
     uniqueSessions: Number(responseStats?.uniqueSessions || 0),
@@ -232,11 +233,11 @@ export async function getWeekSummary(
 }
 
 /**
- * Get aggregated data for a specific question in a specific week
+ * Get aggregated data for a specific question in a specific month
  */
 export async function getQuestionReport(
   questionSlug: string,
-  week: number,
+  month: number,
   year: number,
 ): Promise<{
   totalResponses: number;
@@ -258,8 +259,8 @@ export async function getQuestionReport(
     .selectFrom("responses")
     .selectAll()
     .where("question_slug", "=", questionSlug)
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .execute();
 
   // For experience questions, count unique sessions instead of individual responses
@@ -283,21 +284,21 @@ export async function getQuestionReport(
 
   switch (question.type) {
     case "single":
-      data = await aggregateSingleChoiceQuestion(questionSlug, week, year);
+      data = await aggregateSingleChoiceQuestion(questionSlug, month, year);
       break;
     case "multiple":
-      data = await aggregateMultipleChoiceQuestion(questionSlug, week, year);
+      data = await aggregateMultipleChoiceQuestion(questionSlug, month, year);
       break;
     case "experience":
-      data = await aggregateExperienceQuestion(questionSlug, week, year);
+      data = await aggregateExperienceQuestion(questionSlug, month, year);
       break;
     case "numeric":
-      data = await aggregateNumericQuestion(questionSlug, week, year);
+      data = await aggregateNumericQuestion(questionSlug, month, year);
       break;
     case "freeform":
     case "single-freeform":
     case "multiple-freeform":
-      data = await aggregateFreeformQuestion(questionSlug, week, year);
+      data = await aggregateFreeformQuestion(questionSlug, month, year);
       break;
     default:
       data = null;
@@ -315,15 +316,15 @@ export async function getQuestionReport(
  */
 async function aggregateSingleChoiceQuestion(
   questionSlug: string,
-  week: number,
+  month: number,
   year: number,
 ): Promise<SingleChoiceData> {
   const responses = await db
     .selectFrom("responses")
     .selectAll()
     .where("question_slug", "=", questionSlug)
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .where("skipped", "=", false)
     .execute();
 
@@ -385,15 +386,15 @@ async function aggregateSingleChoiceQuestion(
  */
 async function aggregateMultipleChoiceQuestion(
   questionSlug: string,
-  week: number,
+  month: number,
   year: number,
 ): Promise<MultipleChoiceData> {
   const responses = await db
     .selectFrom("responses")
     .selectAll()
     .where("question_slug", "=", questionSlug)
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .where("skipped", "=", false)
     .execute();
 
@@ -456,15 +457,15 @@ async function aggregateMultipleChoiceQuestion(
  */
 async function aggregateExperienceQuestion(
   questionSlug: string,
-  week: number,
+  month: number,
   year: number,
 ): Promise<ExperienceData> {
   const responses = await db
     .selectFrom("responses")
     .selectAll()
     .where("question_slug", "=", questionSlug)
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .where("skipped", "=", false)
     .execute();
 
@@ -596,15 +597,15 @@ async function aggregateExperienceQuestion(
  */
 async function aggregateNumericQuestion(
   questionSlug: string,
-  week: number,
+  month: number,
   year: number,
 ): Promise<NumericData> {
   const responses = await db
     .selectFrom("responses")
     .selectAll()
     .where("question_slug", "=", questionSlug)
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .where("skipped", "=", false)
     .where("numeric_response", "is not", null)
     .execute();
@@ -657,15 +658,15 @@ async function aggregateNumericQuestion(
  */
 async function aggregateFreeformQuestion(
   questionSlug: string,
-  week: number,
+  month: number,
   year: number,
 ): Promise<FreeformData> {
   const responses = await db
     .selectFrom("responses")
     .selectAll()
     .where("question_slug", "=", questionSlug)
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .where("skipped", "=", false)
     .where("freeform_response", "is not", null)
     .execute();
@@ -695,19 +696,19 @@ async function aggregateFreeformQuestion(
 }
 
 /**
- * Get comments for a specific question in a specific week
+ * Get comments for a specific question in a specific month
  */
 async function getQuestionComments(
   questionSlug: string,
-  week: number,
+  month: number,
   year: number,
 ): Promise<Array<{ comment: string; sessionId: string }>> {
   const comments = await db
     .selectFrom("responses")
     .select(["comment", "session_id"])
     .where("question_slug", "=", questionSlug)
-    .where("iso_week", "=", week)
-    .where("iso_year", "=", year)
+    .where("month", "=", month)
+    .where("year", "=", year)
     .where("skipped", "=", false)
     .where("comment", "is not", null)
     .where("comment", "!=", "")
