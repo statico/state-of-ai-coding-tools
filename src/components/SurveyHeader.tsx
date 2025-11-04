@@ -1,12 +1,54 @@
 "use client";
 
+import { Progress } from "@/components/ui/progress";
+import { useSectionNavigation } from "@/hooks/use-section-navigation";
 import { useTRPC } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { usePathname, useRouter } from "next/navigation";
-import { Progress } from "@/components/ui/progress";
 import { CheckIcon, ChevronLeft, ChevronRight, PlayIcon } from "lucide-react";
-import { useSectionNavigation } from "@/hooks/use-section-navigation";
+import { usePathname, useRouter } from "next/navigation";
+
+function PieChart({ percentage, size }: { percentage: number; size: number }) {
+  const radius = size / 2;
+  const center = radius;
+  const angle = (percentage / 100) * 360;
+  const radians = (angle * Math.PI) / 180;
+
+  // Calculate the endpoint of the arc
+  const x = center + radius * Math.sin(radians);
+  const y = center - radius * Math.cos(radians);
+
+  // Determine if we need a large arc (more than 180 degrees)
+  const largeArcFlag = angle > 180 ? 1 : 0;
+
+  // Create the path for the pie slice
+  const pathData = `M ${center} ${center} L ${center} 0 A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x} ${y} Z`;
+
+  if (percentage === 0) {
+    return null;
+  }
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      className="absolute inset-0"
+      viewBox={`0 0 ${size} ${size}`}
+    >
+      {percentage === 100 ? (
+        <circle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="var(--primary)"
+          opacity="0.50"
+        />
+      ) : (
+        <path d={pathData} fill="var(--primary)" opacity="0.50" />
+      )}
+    </svg>
+  );
+}
 
 export function SurveyHeader() {
   const router = useRouter();
@@ -166,19 +208,27 @@ export function SurveyHeader() {
                 <button
                   onClick={() => handleNavigation(item.path)}
                   className={cn(
-                    "z-10 size-10 rounded-full border transition-all duration-200 select-none",
+                    "bg-background relative z-10 size-10 overflow-hidden rounded-full border transition-all duration-200 select-none",
                     item.isActive
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/30 bg-background group-hover:text-foreground group-hover:border-foreground",
+                      ? "border-primary"
+                      : "border-muted-foreground/30 group-hover:text-foreground group-hover:border-foreground",
                   )}
                 >
-                  <div className="flex h-full w-full items-center justify-center text-sm font-medium">
+                  {/* Pie chart background */}
+                  {isSurvey && sectionPercentage > 0 && (
+                    <div className="absolute inset-[3px] flex items-center justify-center">
+                      <PieChart percentage={sectionPercentage} size={32} />
+                    </div>
+                  )}
+                  <div className="relative z-10 flex h-full w-full items-center justify-center text-sm font-medium">
                     {isIntro ? (
                       <PlayIcon className="size-4" />
                     ) : isOutro ? (
                       <CheckIcon className="size-4" />
                     ) : isSurvey ? (
-                      <span className="text-xs">{sectionPercentage}%</span>
+                      <span className="text-foreground text-xs font-medium">
+                        {sectionPercentage}%
+                      </span>
                     ) : (
                       index + 1
                     )}
