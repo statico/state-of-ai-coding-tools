@@ -104,7 +104,7 @@ export function MonthSelector({ availableMonths }: MonthSelectorProps) {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="min-w-[200px] flex-1 justify-start text-left font-normal select-none"
+              className="min-w-[200px] flex-1 justify-center text-center font-normal select-none"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               <span className="hidden sm:inline">
