@@ -67,6 +67,7 @@ export default function SurveyPage() {
   // Log session ID when survey is loaded
   useEffect(() => {
     if (sessionData?.sessionId) {
+      // eslint-disable-next-line no-console
       console.log("Survey session ID:", sessionData.sessionId);
     }
   }, [sessionData?.sessionId]);
