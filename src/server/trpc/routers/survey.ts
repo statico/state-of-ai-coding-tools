@@ -2,6 +2,8 @@ import { getCompletionPercentage } from "@/lib/models/completion";
 import { getActiveOptionsByQuestion } from "@/lib/models/options";
 import { getActiveQuestionsBySection } from "@/lib/models/questions";
 import {
+  canFillFromPreviousMonth,
+  fillFromPreviousMonth,
   getResponsesBySession,
   saveExperienceResponses,
   upsertResponse,
@@ -122,5 +124,14 @@ export const surveyRouter = router({
 
   getCompletionPercentage: userProcedure.query(async ({ ctx }) => {
     return await getCompletionPercentage(ctx.sessionId!);
+  }),
+
+  canFillFromPreviousMonth: userProcedure.query(async ({ ctx }) => {
+    return await canFillFromPreviousMonth(ctx.sessionId!);
+  }),
+
+  fillFromPreviousMonth: userProcedure.mutation(async ({ ctx }) => {
+    const responses = await fillFromPreviousMonth(ctx.sessionId!);
+    return { responses };
   }),
 });

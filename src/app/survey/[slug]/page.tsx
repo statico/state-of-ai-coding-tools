@@ -55,6 +55,8 @@ export default function SurveyPage() {
     trpc.survey.getResponses.queryOptions(),
   );
 
+  const { data: sessionData } = useQuery(trpc.survey.getSession.queryOptions());
+
   const responses =
     responsesData &&
     typeof responsesData === "object" &&
@@ -62,12 +64,27 @@ export default function SurveyPage() {
       ? responsesData.responses
       : [];
 
+  // Log session ID when survey is loaded
+  useEffect(() => {
+    if (sessionData?.sessionId) {
+      console.log("Survey session ID:", sessionData.sessionId);
+    }
+  }, [sessionData?.sessionId]);
+
   const saveResponseMutation = useMutation(
     trpc.survey.saveResponse.mutationOptions(),
   );
 
   const saveExperienceResponsesMutation = useMutation(
     trpc.survey.saveExperienceResponses.mutationOptions(),
+  );
+
+  const { data: canFillFromPrevious } = useQuery(
+    trpc.survey.canFillFromPreviousMonth.queryOptions(),
+  );
+
+  const fillFromPreviousMonthMutation = useMutation(
+    trpc.survey.fillFromPreviousMonth.mutationOptions(),
   );
 
   const { currentSection, nextSection, prevSection, currentSectionIndex } =
@@ -126,6 +143,24 @@ export default function SurveyPage() {
       handleExperienceResponseChange(questionSlug, data),
     [handleExperienceResponseChange],
   );
+
+  const handleFillFromPreviousMonth = useCallback(async () => {
+    try {
+      await fillFromPreviousMonthMutation.mutateAsync();
+      // Invalidate queries to refresh the UI
+      queryClient.invalidateQueries({
+        queryKey: trpc.survey.canFillFromPreviousMonth.queryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: trpc.survey.getCompletionPercentage.queryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: trpc.survey.getResponses.queryKey(),
+      });
+    } catch (error) {
+      console.error("Failed to fill from previous month:", error);
+    }
+  }, [fillFromPreviousMonthMutation, queryClient, trpc]);
 
   const handleNext = () => {
     if (nextSection) {
@@ -188,14 +223,29 @@ export default function SurveyPage() {
 
         <div className="space-y-6 lg:space-y-10">
           {/* Section header */}
-          <div className="space-y-2">
-            <h2 className="text-3xl">
-              <MarkdownText>{currentSection.title}</MarkdownText>
-            </h2>
-            {currentSection.description && (
-              <p className="text-muted-foreground">
-                <MarkdownText>{currentSection.description}</MarkdownText>
-              </p>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 space-y-2">
+              <h2 className="text-3xl">
+                <MarkdownText>{currentSection.title}</MarkdownText>
+              </h2>
+              {currentSection.description && (
+                <p className="text-muted-foreground">
+                  <MarkdownText>{currentSection.description}</MarkdownText>
+                </p>
+              )}
+            </div>
+            {canFillFromPrevious && (
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-muted-foreground text-sm">Welcome back!</p>
+                <Button
+                  onClick={handleFillFromPreviousMonth}
+                  disabled={fillFromPreviousMonthMutation.isPending}
+                >
+                  {fillFromPreviousMonthMutation.isPending
+                    ? "Copying..."
+                    : "Copy Previous Responses"}
+                </Button>
+              </div>
             )}
           </div>
 

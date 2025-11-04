@@ -1,6 +1,9 @@
 import { db } from "@/server/db";
 import type { Responses } from "@/server/db/types";
 import type { Insertable, Selectable, Updateable } from "kysely";
+import { getCurrentMonth, getPreviousMonth } from "@/lib/utils";
+import { getActiveQuestions } from "./questions";
+import { getActiveSections } from "./sections";
 
 export type SelectableResponse = Selectable<Responses>;
 export type InsertableResponse = Insertable<Responses>;
@@ -229,4 +232,100 @@ export async function saveExperienceResponses(
   );
 
   return savedResponses;
+}
+
+export async function canFillFromPreviousMonth(
+  sessionId: string,
+): Promise<boolean> {
+  const current = getCurrentMonth();
+  const previous = getPreviousMonth(current.month, current.year);
+
+  // Check if there are responses for the previous month
+  const previousMonthResponses = await getResponsesBySession(
+    sessionId,
+    previous.month,
+    previous.year,
+  );
+
+  // Check if there are responses for the current month
+  const currentMonthResponses = await getResponsesBySession(
+    sessionId,
+    current.month,
+    current.year,
+  );
+
+  // Return true if there are previous month responses but no current month responses
+  return (
+    previousMonthResponses.length > 0 && currentMonthResponses.length === 0
+  );
+}
+
+export async function fillFromPreviousMonth(
+  sessionId: string,
+): Promise<SelectableResponse[]> {
+  const current = getCurrentMonth();
+  const previous = getPreviousMonth(current.month, current.year);
+
+  // Get all active sections and questions
+  const activeSections = await getActiveSections();
+  const activeSectionSlugs = new Set(activeSections.map((s) => s.slug));
+
+  const activeQuestions = await getActiveQuestions();
+  const activeQuestionSlugs = new Set(activeQuestions.map((q) => q.slug));
+
+  // Get previous month responses
+  const previousResponses = await getResponsesBySession(
+    sessionId,
+    previous.month,
+    previous.year,
+  );
+
+  // Filter to only active questions (and their sections must be active)
+  const responsesToCopy = previousResponses.filter((response) => {
+    // Check if the question is active
+    if (!activeQuestionSlugs.has(response.question_slug)) {
+      return false;
+    }
+
+    // Find the question to check its section
+    const question = activeQuestions.find(
+      (q) => q.slug === response.question_slug,
+    );
+    if (!question) {
+      return false;
+    }
+
+    // Check if the question's section is active
+    return activeSectionSlugs.has(question.section_slug);
+  });
+
+  // Copy each response to the current month
+  const copiedResponses = await Promise.all(
+    responsesToCopy.map((previousResponse) =>
+      upsertResponse({
+        session_id: sessionId,
+        month: current.month,
+        year: current.year,
+        question_slug: previousResponse.question_slug,
+        option_slug: previousResponse.option_slug ?? undefined,
+        skipped: previousResponse.skipped ?? false,
+        single_option_slug: previousResponse.single_option_slug ?? undefined,
+        single_writein_response:
+          previousResponse.single_writein_response ?? undefined,
+        multiple_option_slugs:
+          previousResponse.multiple_option_slugs ?? undefined,
+        multiple_writein_responses:
+          previousResponse.multiple_writein_responses ?? undefined,
+        experience_awareness:
+          previousResponse.experience_awareness ?? undefined,
+        experience_sentiment:
+          previousResponse.experience_sentiment ?? undefined,
+        freeform_response: previousResponse.freeform_response ?? undefined,
+        numeric_response: previousResponse.numeric_response ?? undefined,
+        comment: previousResponse.comment ?? undefined,
+      }),
+    ),
+  );
+
+  return copiedResponses;
 }
