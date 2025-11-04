@@ -229,9 +229,9 @@ export default function SurveyPage() {
                 <MarkdownText>{currentSection.title}</MarkdownText>
               </h2>
               {currentSection.description && (
-                <p className="text-muted-foreground">
+                <div className="text-muted-foreground">
                   <MarkdownText>{currentSection.description}</MarkdownText>
-                </p>
+                </div>
               )}
             </div>
             {canFillFromPrevious && (

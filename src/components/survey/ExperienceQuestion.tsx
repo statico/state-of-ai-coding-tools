@@ -144,9 +144,9 @@ export function ExperienceQuestion({
           <MarkdownText>{question.title}</MarkdownText>
         </h3>
         {question.description && (
-          <p className="text-muted-foreground">
+          <div className="text-muted-foreground">
             <MarkdownText>{question.description}</MarkdownText>
-          </p>
+          </div>
         )}
       </div>
 

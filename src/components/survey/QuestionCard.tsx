@@ -39,14 +39,14 @@ export function QuestionCard({
           <MarkdownText>{title}</MarkdownText>
         </CardTitle>
         {description && (
-          <p className="text-muted-foreground">
+          <div className="text-muted-foreground">
             <MarkdownText>{description}</MarkdownText>
-          </p>
+          </div>
         )}
         {additionalInfo && (
-          <p className="text-muted-foreground text-base">
+          <div className="text-muted-foreground text-base">
             <MarkdownText>{additionalInfo}</MarkdownText>
-          </p>
+          </div>
         )}
       </CardHeader>
       <CardContent className={cn("flex flex-col pb-2", className)}>
