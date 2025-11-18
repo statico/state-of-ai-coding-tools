@@ -46,7 +46,7 @@ export default function ReportsPage() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col gap-4">
-          <h1 className="text-3xl">Results by Week</h1>
+          <h1 className="text-3xl">Results by Month</h1>
           <Suspense fallback={<Skeleton className="h-10 w-full" />}>
             <ReportsPageContent />
           </Suspense>
