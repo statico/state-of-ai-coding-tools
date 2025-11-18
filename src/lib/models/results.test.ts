@@ -899,6 +899,328 @@ describe("results", () => {
         expect(report?.data.responses[0].count).toBe(1);
         expect(report?.data.totalCount).toBe(1);
       });
+
+      it("should group freeform responses by trimmed and lowercased text", async () => {
+        const questionSlug = "freeform-question-grouped";
+        await db
+          .insertInto("questions")
+          .values({
+            slug: questionSlug,
+            section_slug: "test-section",
+            title: "Freeform Question",
+            type: "freeform",
+            order: 1,
+          })
+          .execute();
+
+        // Create sessions for the responses
+        await db
+          .insertInto("sessions")
+          .values([
+            { id: "550e8400-e29b-41d4-a716-446655440001" },
+            { id: "550e8400-e29b-41d4-a716-446655440002" },
+            { id: "550e8400-e29b-41d4-a716-446655440003" },
+            { id: "550e8400-e29b-41d4-a716-446655440004" },
+            { id: "550e8400-e29b-41d4-a716-446655440005" },
+          ])
+          .execute();
+
+        // Add responses with different casing and whitespace
+        await db
+          .insertInto("responses")
+          .values([
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440001",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "FooBar",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440002",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "foobar",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440003",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: " FooBar ",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440004",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "FOOBAR",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440005",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Different Tool",
+            },
+          ])
+          .execute();
+
+        const report = await getQuestionReport(questionSlug, 1, 2024);
+        expect(report?.data).toBeDefined();
+        // Should have 2 unique responses: "FooBar" (grouped) and "Different Tool"
+        expect(report?.data.responses).toHaveLength(2);
+        expect(report?.data.totalCount).toBe(5);
+
+        // Find the grouped response
+        const foobarResponse = report?.data.responses.find(
+          (r: any) => r.response.toLowerCase() === "foobar",
+        );
+        expect(foobarResponse).toBeDefined();
+        // All 4 variations should be counted together
+        expect(foobarResponse?.count).toBe(4);
+        // Should preserve the original trimmed text (first occurrence)
+        expect(foobarResponse?.response).toBe("FooBar");
+
+        // Find the different response
+        const differentResponse = report?.data.responses.find(
+          (r: any) => r.response === "Different Tool",
+        );
+        expect(differentResponse).toBeDefined();
+        expect(differentResponse?.count).toBe(1);
+      });
+
+      it("should handle empty and whitespace-only responses correctly", async () => {
+        const questionSlug = "freeform-question-empty";
+        await db
+          .insertInto("questions")
+          .values({
+            slug: questionSlug,
+            section_slug: "test-section",
+            title: "Freeform Question",
+            type: "freeform",
+            order: 1,
+          })
+          .execute();
+
+        // Create sessions
+        await db
+          .insertInto("sessions")
+          .values([
+            { id: "550e8400-e29b-41d4-a716-446655440010" },
+            { id: "550e8400-e29b-41d4-a716-446655440011" },
+            { id: "550e8400-e29b-41d4-a716-446655440012" },
+          ])
+          .execute();
+
+        // Add responses including whitespace-only
+        await db
+          .insertInto("responses")
+          .values([
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440010",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "   ",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440011",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "\t\n",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440012",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Valid Response",
+            },
+          ])
+          .execute();
+
+        const report = await getQuestionReport(questionSlug, 1, 2024);
+        expect(report?.data).toBeDefined();
+        // Whitespace-only responses should be grouped together (both become empty after trim)
+        // Should have 2 unique responses: empty string (from whitespace) and "Valid Response"
+        expect(report?.data.responses).toHaveLength(2);
+        expect(report?.data.totalCount).toBe(3);
+
+        // Find the empty response (from whitespace)
+        const emptyResponse = report?.data.responses.find(
+          (r: any) => r.response === "",
+        );
+        expect(emptyResponse).toBeDefined();
+        expect(emptyResponse?.count).toBe(2);
+
+        // Find the valid response
+        const validResponse = report?.data.responses.find(
+          (r: any) => r.response === "Valid Response",
+        );
+        expect(validResponse).toBeDefined();
+        expect(validResponse?.count).toBe(1);
+      });
+
+      it("should handle special characters and unicode correctly", async () => {
+        const questionSlug = "freeform-question-special";
+        await db
+          .insertInto("questions")
+          .values({
+            slug: questionSlug,
+            section_slug: "test-section",
+            title: "Freeform Question",
+            type: "freeform",
+            order: 1,
+          })
+          .execute();
+
+        // Create sessions
+        await db
+          .insertInto("sessions")
+          .values([
+            { id: "550e8400-e29b-41d4-a716-446655440020" },
+            { id: "550e8400-e29b-41d4-a716-446655440021" },
+          ])
+          .execute();
+
+        // Add responses with special characters
+        await db
+          .insertInto("responses")
+          .values([
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440020",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Tool@2024",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440021",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "tool@2024",
+            },
+          ])
+          .execute();
+
+        const report = await getQuestionReport(questionSlug, 1, 2024);
+        expect(report?.data).toBeDefined();
+        // Should group by lowercase
+        expect(report?.data.responses).toHaveLength(1);
+        expect(report?.data.totalCount).toBe(2);
+        expect(report?.data.responses[0].count).toBe(2);
+        // Should preserve original casing from first occurrence
+        expect(report?.data.responses[0].response).toBe("Tool@2024");
+      });
+
+      it("should sort responses by count descending", async () => {
+        const questionSlug = "freeform-question-sorted";
+        await db
+          .insertInto("questions")
+          .values({
+            slug: questionSlug,
+            section_slug: "test-section",
+            title: "Freeform Question",
+            type: "freeform",
+            order: 1,
+          })
+          .execute();
+
+        // Create sessions
+        await db
+          .insertInto("sessions")
+          .values([
+            { id: "550e8400-e29b-41d4-a716-446655440030" },
+            { id: "550e8400-e29b-41d4-a716-446655440031" },
+            { id: "550e8400-e29b-41d4-a716-446655440032" },
+            { id: "550e8400-e29b-41d4-a716-446655440033" },
+            { id: "550e8400-e29b-41d4-a716-446655440034" },
+            { id: "550e8400-e29b-41d4-a716-446655440035" },
+          ])
+          .execute();
+
+        // Add responses with different counts
+        await db
+          .insertInto("responses")
+          .values([
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440030",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Tool A",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440031",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Tool B",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440032",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Tool B",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440033",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Tool B",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440034",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Tool C",
+            },
+            {
+              session_id: "550e8400-e29b-41d4-a716-446655440035",
+              month: 1,
+              year: 2024,
+              question_slug: questionSlug,
+              skipped: false,
+              freeform_response: "Tool C",
+            },
+          ])
+          .execute();
+
+        const report = await getQuestionReport(questionSlug, 1, 2024);
+        expect(report?.data).toBeDefined();
+        expect(report?.data.responses).toHaveLength(3);
+        expect(report?.data.totalCount).toBe(6);
+
+        // Verify sorting: Tool B (3), Tool C (2), Tool A (1)
+        expect(report?.data.responses[0].response).toBe("Tool B");
+        expect(report?.data.responses[0].count).toBe(3);
+        expect(report?.data.responses[1].response).toBe("Tool C");
+        expect(report?.data.responses[1].count).toBe(2);
+        expect(report?.data.responses[2].response).toBe("Tool A");
+        expect(report?.data.responses[2].count).toBe(1);
+      });
     });
   });
 });

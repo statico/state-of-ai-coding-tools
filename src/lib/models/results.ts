@@ -655,6 +655,8 @@ async function aggregateNumericQuestion(
 
 /**
  * Aggregate freeform question responses
+ * Groups responses by trimmed and lowercased text to combine variations
+ * like "FooBar", "foobar", " FooBar " into a single count
  */
 async function aggregateFreeformQuestion(
   questionSlug: string,
@@ -671,23 +673,37 @@ async function aggregateFreeformQuestion(
     .where("freeform_response", "is not", null)
     .execute();
 
-  const responseCounts = new Map<string, number>();
+  // Map: normalized key -> { original response, count }
+  const responseCounts = new Map<
+    string,
+    { originalResponse: string; count: number }
+  >();
 
   for (const response of responses) {
     if (response.freeform_response) {
-      responseCounts.set(
-        response.freeform_response,
-        (responseCounts.get(response.freeform_response) || 0) + 1,
-      );
+      // Normalize: trim and lowercase for grouping
+      const normalized = response.freeform_response.trim().toLowerCase();
+
+      if (responseCounts.has(normalized)) {
+        // Increment count for existing normalized response
+        const existing = responseCounts.get(normalized)!;
+        existing.count += 1;
+      } else {
+        // First occurrence - store the original response text for display
+        responseCounts.set(normalized, {
+          originalResponse: response.freeform_response.trim(),
+          count: 1,
+        });
+      }
     }
   }
 
-  const responsesData = Array.from(responseCounts.entries()).map(
-    ([response, count]) => ({
-      response,
+  const responsesData = Array.from(responseCounts.values())
+    .map(({ originalResponse, count }) => ({
+      response: originalResponse,
       count,
-    }),
-  );
+    }))
+    .sort((a, b) => b.count - a.count); // Sort by count descending
 
   return {
     responses: responsesData,
