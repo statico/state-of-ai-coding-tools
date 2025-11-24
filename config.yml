@@ -76,6 +76,8 @@ questions:
     type: experience
     randomize: true
     options:
+      - slug: antigravity
+        label: Google Antigravity
       - slug: cursor
         label: Cursor
       - slug: windsurf
