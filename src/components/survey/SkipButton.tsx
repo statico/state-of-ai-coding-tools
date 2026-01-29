@@ -15,14 +15,8 @@ export function SkipButton({ isSkipped, onSkip, className }: SkipButtonProps) {
     <Button
       variant="ghost"
       onClick={onSkip}
-      title={
-        isSkipped ? "This question has been skipped" : "Skip this question"
-      }
-      className={cn(
-        "text-sm",
-        !isSkipped && "text-muted-foreground",
-        className,
-      )}
+      title={isSkipped ? "This question has been skipped" : "Skip this question"}
+      className={cn("text-sm", !isSkipped && "text-muted-foreground", className)}
     >
       {isSkipped ? "Skipped" : "Skip"}
       <BanIcon className="size-4" />

@@ -4,11 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { QuestionCard } from "./QuestionCard";
 import { cn } from "@/lib/utils";
-import {
-  QuestionWithOptions,
-  ResponseData,
-  ClientResponse,
-} from "@/lib/constants";
+import { QuestionWithOptions, ResponseData, ClientResponse } from "@/lib/constants";
 
 interface FreeformQuestionProps {
   question: QuestionWithOptions;
@@ -21,15 +17,9 @@ export function FreeformQuestion({
   existingResponse,
   onResponseChange,
 }: FreeformQuestionProps) {
-  const [value, setValue] = useState<string>(
-    () => existingResponse?.freeform_response || "",
-  );
-  const [isSkipped, setIsSkipped] = useState<boolean>(
-    () => existingResponse?.skipped || false,
-  );
-  const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment ?? "",
-  );
+  const [value, setValue] = useState<string>(() => existingResponse?.freeform_response || "");
+  const [isSkipped, setIsSkipped] = useState<boolean>(() => existingResponse?.skipped || false);
+  const [comment, setComment] = useState<string>(() => existingResponse?.comment ?? "");
 
   const handleValueChange = (newValue: string) => {
     setValue(newValue);

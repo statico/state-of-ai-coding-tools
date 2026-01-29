@@ -1058,9 +1058,7 @@ describe("results", () => {
         expect(report?.data.totalCount).toBe(3);
 
         // Find the empty response (from whitespace)
-        const emptyResponse = report?.data.responses.find(
-          (r: any) => r.response === "",
-        );
+        const emptyResponse = report?.data.responses.find((r: any) => r.response === "");
         expect(emptyResponse).toBeDefined();
         expect(emptyResponse?.count).toBe(2);
 

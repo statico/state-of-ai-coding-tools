@@ -3,11 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { cn } from "@/lib/utils";
-import {
-  AWARENESS_OPTIONS,
-  AWARENESS_SHORT_LABELS,
-  SENTIMENT_SHORT_LABELS,
-} from "@/lib/constants";
+import { AWARENESS_OPTIONS, AWARENESS_SHORT_LABELS, SENTIMENT_SHORT_LABELS } from "@/lib/constants";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 // Color mappings for awareness levels (matching ExperienceChartCell)
@@ -84,25 +80,16 @@ export function ExperienceControls({
                   variant="outline"
                   size="sm"
                   onClick={() => handleSortOptionClick(option.value.toString())}
-                  className={cn(
-                    "flex items-center gap-2 truncate",
-                    isSelected && "bg-accent!",
-                  )}
+                  className={cn("flex items-center gap-2 truncate", isSelected && "bg-accent!")}
                 >
                   <div
                     className={cn(
                       "h-2 w-2 shrink-0 rounded-full",
-                      AWARENESS_COLOR_MAP[
-                        option.value as keyof typeof AWARENESS_COLOR_MAP
-                      ],
+                      AWARENESS_COLOR_MAP[option.value as keyof typeof AWARENESS_COLOR_MAP],
                     )}
                   />
                   <span className="truncate">
-                    {
-                      AWARENESS_SHORT_LABELS[
-                        option.value as keyof typeof AWARENESS_SHORT_LABELS
-                      ]
-                    }
+                    {AWARENESS_SHORT_LABELS[option.value as keyof typeof AWARENESS_SHORT_LABELS]}
                   </span>
                   {isSelected && (
                     <span className="ml-1 shrink-0">
@@ -119,23 +106,15 @@ export function ExperienceControls({
           : // Reverse sentiment options to match chart order
             [1, 0, -1].map((sentimentValue) => {
               const sentimentLabel =
-                SENTIMENT_SHORT_LABELS[
-                  sentimentValue as keyof typeof SENTIMENT_SHORT_LABELS
-                ];
-              const isSelected =
-                groupBy === "sentiment" && sortBy === sentimentValue.toString();
+                SENTIMENT_SHORT_LABELS[sentimentValue as keyof typeof SENTIMENT_SHORT_LABELS];
+              const isSelected = groupBy === "sentiment" && sortBy === sentimentValue.toString();
               return (
                 <Button
                   key={sentimentValue}
                   variant="outline"
                   size="sm"
-                  onClick={() =>
-                    handleSortOptionClick(sentimentValue.toString())
-                  }
-                  className={cn(
-                    "flex items-center gap-2 truncate",
-                    isSelected && "bg-accent!",
-                  )}
+                  onClick={() => handleSortOptionClick(sentimentValue.toString())}
+                  className={cn("flex items-center gap-2 truncate", isSelected && "bg-accent!")}
                 >
                   <div
                     className={cn(

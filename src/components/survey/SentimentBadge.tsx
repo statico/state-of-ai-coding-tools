@@ -11,12 +11,7 @@ interface SentimentBadgeProps {
   onClick: () => void;
 }
 
-export function SentimentBadge({
-  value,
-  label,
-  isSelected,
-  onClick,
-}: SentimentBadgeProps) {
+export function SentimentBadge({ value, label, isSelected, onClick }: SentimentBadgeProps) {
   const isPositive = value === 1;
   const isNeutral = value === 0;
   const isNegative = value === -1;

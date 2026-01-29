@@ -4,11 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { QuestionCard } from "./QuestionCard";
 import { cn } from "@/lib/utils";
-import {
-  QuestionWithOptions,
-  ResponseData,
-  ClientResponse,
-} from "@/lib/constants";
+import { QuestionWithOptions, ResponseData, ClientResponse } from "@/lib/constants";
 
 interface NumericQuestionProps {
   question: QuestionWithOptions;
@@ -24,12 +20,8 @@ export function NumericQuestion({
   const [value, setValue] = useState<string>(
     () => existingResponse?.numeric_response?.toString() || "",
   );
-  const [isSkipped, setIsSkipped] = useState<boolean>(
-    () => existingResponse?.skipped || false,
-  );
-  const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment ?? "",
-  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(() => existingResponse?.skipped || false);
+  const [comment, setComment] = useState<string>(() => existingResponse?.comment ?? "");
 
   const handleValueChange = (newValue: string) => {
     setValue(newValue);

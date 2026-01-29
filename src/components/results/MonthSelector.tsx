@@ -2,11 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   getCurrentMonth,
   getMonthFromDate,
@@ -37,9 +33,7 @@ export function MonthSelector({ availableMonths }: MonthSelectorProps) {
   const currentMonthData = getCurrentMonth();
 
   // Get earliest result month
-  const { data: earliestResult } = useQuery(
-    trpc.results.getEarliestResult.queryOptions(),
-  );
+  const { data: earliestResult } = useQuery(trpc.results.getEarliestResult.queryOptions());
 
   // Use nuqs to manage month and year in URL query string
   const [currentMonth, setCurrentMonth] = useQueryState(
@@ -59,9 +53,7 @@ export function MonthSelector({ availableMonths }: MonthSelectorProps) {
 
   // Check if we're at the earliest result month (disable back button)
   const isAtEarliestMonth =
-    earliestResult &&
-    currentMonth === earliestResult.month &&
-    currentYear === earliestResult.year;
+    earliestResult && currentMonth === earliestResult.month && currentYear === earliestResult.year;
 
   const handleMonthChange = (month: number, year: number) => {
     setCurrentMonth(month);
@@ -113,9 +105,7 @@ export function MonthSelector({ availableMonths }: MonthSelectorProps) {
               <span className="sm:hidden">
                 {formatMonthDisplayShort(currentMonth, currentYear)}
               </span>
-              {isCurrent && (
-                <span className="text-destructive">(Incomplete)</span>
-              )}
+              {isCurrent && <span className="text-destructive">(Incomplete)</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">

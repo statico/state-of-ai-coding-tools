@@ -9,9 +9,7 @@ export interface Context {
   setAuthCookie?: boolean;
 }
 
-export const createContext = async (opts: {
-  req?: Request;
-}): Promise<Context> => {
+export const createContext = async (opts: { req?: Request }): Promise<Context> => {
   let sessionId: string | undefined;
   let isAuthenticated = false;
 

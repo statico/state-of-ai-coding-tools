@@ -63,9 +63,7 @@ export class Logger {
         case "%o":
           return JSON.stringify(value);
         case "%s":
-          return typeof value === "object"
-            ? JSON.stringify(value)
-            : String(value);
+          return typeof value === "object" ? JSON.stringify(value) : String(value);
         case "%f":
           return String(value);
         case "%d":

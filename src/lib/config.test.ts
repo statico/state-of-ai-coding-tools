@@ -68,9 +68,7 @@ describe("Config Validation", () => {
         throw error;
       });
 
-      expect(() => loadConfig("nonexistent.yml")).toThrow(
-        "Config file not found: nonexistent.yml",
-      );
+      expect(() => loadConfig("nonexistent.yml")).toThrow("Config file not found: nonexistent.yml");
     });
 
     it("should throw error for invalid YAML structure", () => {
@@ -307,8 +305,7 @@ describe("Config Validation", () => {
           {
             section: "demographics",
             slug: "experience-years",
-            title:
-              "How many years of professional software development experience do you have?",
+            title: "How many years of professional software development experience do you have?",
             type: "numeric",
           },
           {
@@ -602,8 +599,7 @@ describe("Config Validation", () => {
         expect(
           result.error.issues.some(
             (issue) =>
-              issue.path.join(".") === "sections.0.added" &&
-              issue.message === "Format: YYYY-MM-DD",
+              issue.path.join(".") === "sections.0.added" && issue.message === "Format: YYYY-MM-DD",
           ),
         ).toBe(true);
       }

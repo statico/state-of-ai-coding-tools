@@ -6,12 +6,8 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("sessions")
     .addColumn("id", "uuid", (col) => col.primaryKey().notNull())
-    .addColumn("created_at", "timestamp", (col) =>
-      col.notNull().defaultTo("now()"),
-    )
-    .addColumn("updated_at", "timestamp", (col) =>
-      col.notNull().defaultTo("now()"),
-    )
+    .addColumn("created_at", "timestamp", (col) => col.notNull().defaultTo("now()"))
+    .addColumn("updated_at", "timestamp", (col) => col.notNull().defaultTo("now()"))
     .execute();
 
   // Create sections table

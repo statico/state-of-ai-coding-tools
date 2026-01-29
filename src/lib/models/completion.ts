@@ -18,9 +18,7 @@ export interface CompletionData {
   sectionCompletion: SectionCompletion[];
 }
 
-export async function getCompletionPercentage(
-  sessionId: string,
-): Promise<CompletionData> {
+export async function getCompletionPercentage(sessionId: string): Promise<CompletionData> {
   // Get current month and year
   const { month, year } = getCurrentMonth();
 
@@ -48,18 +46,13 @@ export async function getCompletionPercentage(
 
     sectionResponses.forEach((response) => {
       const questionSlug = response.question_slug;
-      const sectionQuestion = sectionQuestions.find(
-        (q) => q.slug === questionSlug,
-      );
+      const sectionQuestion = sectionQuestions.find((q) => q.slug === questionSlug);
 
       // Skip if this question is not in this section
       if (!sectionQuestion) return;
 
       // If already marked as completed, don't override
-      if (
-        questionCompletionMap.has(questionSlug) &&
-        questionCompletionMap.get(questionSlug)
-      ) {
+      if (questionCompletionMap.has(questionSlug) && questionCompletionMap.get(questionSlug)) {
         return;
       }
 
@@ -87,9 +80,7 @@ export async function getCompletionPercentage(
     });
 
     // Count unique completed questions
-    const completedQuestions = Array.from(
-      questionCompletionMap.values(),
-    ).filter(Boolean).length;
+    const completedQuestions = Array.from(questionCompletionMap.values()).filter(Boolean).length;
     const totalQuestions = sectionQuestions.length;
 
     return {
@@ -97,10 +88,7 @@ export async function getCompletionPercentage(
       sectionTitle: section.title,
       completedQuestions,
       totalQuestions,
-      percentage:
-        totalQuestions > 0
-          ? Math.round((completedQuestions / totalQuestions) * 100)
-          : 0,
+      percentage: totalQuestions > 0 ? Math.round((completedQuestions / totalQuestions) * 100) : 0,
     };
   });
 
@@ -142,14 +130,12 @@ export async function getCompletionPercentage(
     overallQuestionCompletionMap.set(questionSlug, isCompleted);
   });
 
-  const totalCompletedQuestions = Array.from(
-    overallQuestionCompletionMap.values(),
-  ).filter(Boolean).length;
+  const totalCompletedQuestions = Array.from(overallQuestionCompletionMap.values()).filter(
+    Boolean,
+  ).length;
   const totalQuestions = flatQuestions.length;
   const overallPercentage =
-    totalQuestions > 0
-      ? Math.round((totalCompletedQuestions / totalQuestions) * 100)
-      : 0;
+    totalQuestions > 0 ? Math.round((totalCompletedQuestions / totalQuestions) * 100) : 0;
 
   return {
     overallPercentage,

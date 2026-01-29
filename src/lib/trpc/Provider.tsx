@@ -6,11 +6,7 @@ import { useState } from "react";
 import { TRPCProvider } from "./client";
 import { AppRouter } from "@/server/trpc/routers";
 
-export function TRPCProviderWrapper({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function TRPCProviderWrapper({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     createTRPCClient<AppRouter>({

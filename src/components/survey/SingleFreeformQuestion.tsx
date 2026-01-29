@@ -4,11 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { QuestionCard } from "./QuestionCard";
 import { cn } from "@/lib/utils";
-import {
-  QuestionWithOptions,
-  ResponseData,
-  ClientResponse,
-} from "@/lib/constants";
+import { QuestionWithOptions, ResponseData, ClientResponse } from "@/lib/constants";
 
 interface SingleFreeformQuestionProps {
   question: QuestionWithOptions;
@@ -21,15 +17,9 @@ export function SingleFreeformQuestion({
   existingResponse,
   onResponseChange,
 }: SingleFreeformQuestionProps) {
-  const [value, setValue] = useState<string>(
-    () => existingResponse?.single_writein_response || "",
-  );
-  const [isSkipped, setIsSkipped] = useState<boolean>(
-    () => existingResponse?.skipped || false,
-  );
-  const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment ?? "",
-  );
+  const [value, setValue] = useState<string>(() => existingResponse?.single_writein_response || "");
+  const [isSkipped, setIsSkipped] = useState<boolean>(() => existingResponse?.skipped || false);
+  const [comment, setComment] = useState<string>(() => existingResponse?.comment ?? "");
 
   const handleValueChange = (newValue: string) => {
     setValue(newValue);

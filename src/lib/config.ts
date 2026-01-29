@@ -36,18 +36,11 @@ export const QuestionSchema = z
     slug: z.string().min(1, "Question slug cannot be empty"),
     title: z.string().min(1, "Question title cannot be empty"),
     description: z.string().optional(),
-    type: z.enum(
-      Object.keys(QuestionTypes) as [QuestionType, ...QuestionType[]],
-      {
-        message: `Question type must be one of: ${Object.keys(QuestionTypes).join(", ")}`,
-      },
-    ),
+    type: z.enum(Object.keys(QuestionTypes) as [QuestionType, ...QuestionType[]], {
+      message: `Question type must be one of: ${Object.keys(QuestionTypes).join(", ")}`,
+    }),
     options: z.array(OptionSchema).optional(),
-    multiple_max: z
-      .number()
-      .int()
-      .positive("multiple_max must be a positive integer")
-      .optional(),
+    multiple_max: z.number().int().positive("multiple_max must be a positive integer").optional(),
     active: z.boolean().optional(),
     added: z
       .string()
@@ -58,17 +51,13 @@ export const QuestionSchema = z
   .refine(
     (data) => {
       // Randomize is only allowed for single, multiple, and experience questions
-      if (
-        data.randomize &&
-        !["single", "multiple", "experience"].includes(data.type)
-      ) {
+      if (data.randomize && !["single", "multiple", "experience"].includes(data.type)) {
         return false;
       }
       return true;
     },
     {
-      message:
-        "Randomize is only allowed for single, multiple, and experience questions",
+      message: "Randomize is only allowed for single, multiple, and experience questions",
       path: ["randomize"],
     },
   );
@@ -87,9 +76,7 @@ export const SectionSchema = z.object({
 
 export const ConfigSchema = z.object({
   sections: z.array(SectionSchema).min(1, "At least one section is required"),
-  questions: z
-    .array(QuestionSchema)
-    .min(1, "At least one question is required"),
+  questions: z.array(QuestionSchema).min(1, "At least one question is required"),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;
@@ -167,9 +154,7 @@ export function validateUniqueSlugs(config: Config): void {
     (slug, index) => sectionSlugs.indexOf(slug) !== index,
   );
   if (duplicateSections.length > 0) {
-    throw new Error(
-      `Duplicate section slugs found: ${duplicateSections.join(", ")}`,
-    );
+    throw new Error(`Duplicate section slugs found: ${duplicateSections.join(", ")}`);
   }
 
   // Check for duplicate question slugs
@@ -177,9 +162,7 @@ export function validateUniqueSlugs(config: Config): void {
     (slug, index) => questionSlugs.indexOf(slug) !== index,
   );
   if (duplicateQuestions.length > 0) {
-    throw new Error(
-      `Duplicate question slugs found: ${duplicateQuestions.join(", ")}`,
-    );
+    throw new Error(`Duplicate question slugs found: ${duplicateQuestions.join(", ")}`);
   }
 
   // Check for duplicate option slugs within each question

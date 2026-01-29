@@ -7,11 +7,7 @@ export type InsertableQuestion = Insertable<Questions>;
 export type UpdateableQuestion = Updateable<Questions>;
 
 export async function getAllQuestions() {
-  return await db
-    .selectFrom("questions")
-    .selectAll()
-    .orderBy("order")
-    .execute();
+  return await db.selectFrom("questions").selectAll().orderBy("order").execute();
 }
 
 export async function getActiveQuestions() {
@@ -45,11 +41,7 @@ export async function getActiveQuestionsBySection(sectionSlug: string) {
 }
 
 export async function getQuestionBySlug(slug: string) {
-  return await db
-    .selectFrom("questions")
-    .selectAll()
-    .where("slug", "=", slug)
-    .executeTakeFirst();
+  return await db.selectFrom("questions").selectAll().where("slug", "=", slug).executeTakeFirst();
 }
 
 export async function createQuestion(data: InsertableQuestion) {

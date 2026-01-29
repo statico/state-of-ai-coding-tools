@@ -3,11 +3,7 @@
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ExperienceChart } from "./ExperienceChart";
-import {
-  ExperienceControls,
-  GroupByOption,
-  SortDirection,
-} from "./ExperienceControls";
+import { ExperienceControls, GroupByOption, SortDirection } from "./ExperienceControls";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AWARENESS_OPTIONS } from "@/lib/constants";
@@ -120,40 +116,21 @@ export function ExperienceReport({
           {sortedOptions
             .map((option) => {
               // Calculate percentages for each awareness level
-              const totalResponses = option.awareness.reduce(
-                (sum, item) => sum + item.count,
-                0,
-              );
+              const totalResponses = option.awareness.reduce((sum, item) => sum + item.count, 0);
 
-              const activelyUsingData = option.awareness.find(
-                (item) => item.level === 3,
-              );
-              const usedItData = option.awareness.find(
-                (item) => item.level === 2,
-              );
-              const heardOfItData = option.awareness.find(
-                (item) => item.level === 1,
-              );
-              const neverHeardData = option.awareness.find(
-                (item) => item.level === 0,
-              );
+              const activelyUsingData = option.awareness.find((item) => item.level === 3);
+              const usedItData = option.awareness.find((item) => item.level === 2);
+              const heardOfItData = option.awareness.find((item) => item.level === 1);
+              const neverHeardData = option.awareness.find((item) => item.level === 0);
 
               const activelyUsingPercent =
-                totalResponses > 0
-                  ? ((activelyUsingData?.count || 0) / totalResponses) * 100
-                  : 0;
+                totalResponses > 0 ? ((activelyUsingData?.count || 0) / totalResponses) * 100 : 0;
               const usedItPercent =
-                totalResponses > 0
-                  ? ((usedItData?.count || 0) / totalResponses) * 100
-                  : 0;
+                totalResponses > 0 ? ((usedItData?.count || 0) / totalResponses) * 100 : 0;
               const heardOfItPercent =
-                totalResponses > 0
-                  ? ((heardOfItData?.count || 0) / totalResponses) * 100
-                  : 0;
+                totalResponses > 0 ? ((heardOfItData?.count || 0) / totalResponses) * 100 : 0;
               const neverHeardPercent =
-                totalResponses > 0
-                  ? ((neverHeardData?.count || 0) / totalResponses) * 100
-                  : 0;
+                totalResponses > 0 ? ((neverHeardData?.count || 0) / totalResponses) * 100 : 0;
 
               // Calculate positive sentiment percentage for "Actively using it" responses
               const activelyUsingPositiveData = option.combined.find(
@@ -161,8 +138,7 @@ export function ExperienceReport({
               );
               const activelyUsingPositivePercent =
                 (activelyUsingData?.count || 0) > 0
-                  ? ((activelyUsingPositiveData?.count || 0) /
-                      (activelyUsingData?.count || 1)) *
+                  ? ((activelyUsingPositiveData?.count || 0) / (activelyUsingData?.count || 1)) *
                     100
                   : 0;
 
@@ -172,9 +148,7 @@ export function ExperienceReport({
               );
               const usedItPositivePercent =
                 (usedItData?.count || 0) > 0
-                  ? ((usedItPositiveData?.count || 0) /
-                      (usedItData?.count || 1)) *
-                    100
+                  ? ((usedItPositiveData?.count || 0) / (usedItData?.count || 1)) * 100
                   : 0;
 
               return {
@@ -205,21 +179,15 @@ export function ExperienceReport({
                       // Get sentiment breakdown for this awareness level
                       // Check for positive, negative, and neutral responses
                       const positiveData = option.combined.find(
-                        (item) =>
-                          item.awareness === awarenessOption.value &&
-                          item.sentiment === 1,
+                        (item) => item.awareness === awarenessOption.value && item.sentiment === 1,
                       );
 
                       const negativeData = option.combined.find(
-                        (item) =>
-                          item.awareness === awarenessOption.value &&
-                          item.sentiment === -1,
+                        (item) => item.awareness === awarenessOption.value && item.sentiment === -1,
                       );
 
                       const neutralData = option.combined.find(
-                        (item) =>
-                          item.awareness === awarenessOption.value &&
-                          item.sentiment === 0,
+                        (item) => item.awareness === awarenessOption.value && item.sentiment === 0,
                       );
 
                       // Calculate neutral responses (explicit neutral + awareness responses without sentiment)
@@ -229,20 +197,16 @@ export function ExperienceReport({
                         (neutralData?.count || 0);
                       const implicitNeutralCount = Math.max(
                         0,
-                        (awarenessData?.count || 0) -
-                          totalWithExplicitSentiment,
+                        (awarenessData?.count || 0) - totalWithExplicitSentiment,
                       );
-                      const neutralCount =
-                        (neutralData?.count || 0) + implicitNeutralCount;
+                      const neutralCount = (neutralData?.count || 0) + implicitNeutralCount;
 
                       const sentimentBreakdown = [
                         {
                           sentiment: "positive",
                           count: positiveData?.count || 0,
                           percentage: awarenessData?.count
-                            ? ((positiveData?.count || 0) /
-                                awarenessData.count) *
-                              100
+                            ? ((positiveData?.count || 0) / awarenessData.count) * 100
                             : 0,
                         },
                         {
@@ -256,9 +220,7 @@ export function ExperienceReport({
                           sentiment: "negative",
                           count: negativeData?.count || 0,
                           percentage: awarenessData?.count
-                            ? ((negativeData?.count || 0) /
-                                awarenessData.count) *
-                              100
+                            ? ((negativeData?.count || 0) / awarenessData.count) * 100
                             : 0,
                         },
                       ];
@@ -300,9 +262,7 @@ export function ExperienceReport({
                             awarenessCount: awarenessData?.count || 0,
                             percentage:
                               sentimentCount > 0
-                                ? ((awarenessData?.count || 0) /
-                                    sentimentCount) *
-                                  100
+                                ? ((awarenessData?.count || 0) / sentimentCount) * 100
                                 : 0,
                           };
                         });
@@ -347,10 +307,7 @@ export function ExperienceReport({
             <ScrollArea className="h-32 rounded-md border md:h-48">
               <div className="space-y-2 p-4">
                 {comments.map((comment, index) => (
-                  <div
-                    key={index}
-                    className="bg-muted/30 rounded-lg border p-3"
-                  >
+                  <div key={index} className="bg-muted/30 rounded-lg border p-3">
                     <p className="text-sm">{comment.comment}</p>
                   </div>
                 ))}

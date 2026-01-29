@@ -14,10 +14,7 @@ function createTestOption(
   awarenessData: Array<{ level: number; count: number }>,
   sentimentData: Array<{ sentiment: number; count: number }>,
 ): ExperienceOption {
-  const totalResponses = awarenessData.reduce(
-    (sum, item) => sum + item.count,
-    0,
-  );
+  const totalResponses = awarenessData.reduce((sum, item) => sum + item.count, 0);
 
   const awareness = awarenessData.map((item) => ({
     level: item.level,

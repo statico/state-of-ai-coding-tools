@@ -16,9 +16,7 @@ export function Navbar() {
   const trpc = useTRPC();
 
   const { data: authData } = useQuery(trpc.auth.check.queryOptions());
-  const { data: firstSection } = useQuery(
-    trpc.survey.getFirstSection.queryOptions(),
-  );
+  const { data: firstSection } = useQuery(trpc.survey.getFirstSection.queryOptions());
 
   const isAuthenticated =
     authData && typeof authData === "object" && "isAuthenticated" in authData
@@ -34,11 +32,7 @@ export function Navbar() {
   };
 
   const handleSurveyClick = () => {
-    if (
-      firstSection &&
-      typeof firstSection === "object" &&
-      "slug" in firstSection
-    ) {
+    if (firstSection && typeof firstSection === "object" && "slug" in firstSection) {
       router.push(`/survey/${firstSection.slug}`);
     }
   };
@@ -71,17 +65,12 @@ export function Navbar() {
               >
                 Home
               </Button>
-              {firstSection &&
-              typeof firstSection === "object" &&
-              "slug" in firstSection ? (
+              {firstSection && typeof firstSection === "object" && "slug" in firstSection ? (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleSurveyClick}
-                  className={cn(
-                    "text-xs sm:text-sm",
-                    pathname.startsWith("/survey") && "bg-muted",
-                  )}
+                  className={cn("text-xs sm:text-sm", pathname.startsWith("/survey") && "bg-muted")}
                 >
                   Survey
                 </Button>
@@ -119,10 +108,7 @@ export function Navbar() {
               rel="noopener noreferrer"
               aria-label="View on GitHub"
             >
-              <FontAwesomeIcon
-                icon={faGithub}
-                className="h-4 w-4 sm:h-[1.2rem] sm:w-[1.2rem]"
-              />
+              <FontAwesomeIcon icon={faGithub} className="h-4 w-4 sm:h-[1.2rem] sm:w-[1.2rem]" />
               <span className="sr-only">View on GitHub</span>
             </a>
           </Button>

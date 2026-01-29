@@ -129,9 +129,7 @@ describe("Sections Model", () => {
     });
 
     it("should throw error when updating non-existent section", async () => {
-      await expect(
-        updateSection("non-existent", { title: "Updated" }),
-      ).rejects.toThrow();
+      await expect(updateSection("non-existent", { title: "Updated" })).rejects.toThrow();
     });
   });
 
@@ -253,9 +251,7 @@ describe("Sections Model", () => {
 
       // Verify deletion
       const finalSections = await getAllSections();
-      expect(
-        finalSections.find((s) => s.slug === "lifecycle-test"),
-      ).toBeUndefined();
+      expect(finalSections.find((s) => s.slug === "lifecycle-test")).toBeUndefined();
     });
   });
 });

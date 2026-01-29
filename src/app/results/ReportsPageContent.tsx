@@ -18,14 +18,8 @@ export function ReportsPageContent() {
   const current = getCurrentMonth();
 
   // Read month and year from URL query parameters
-  const [selectedMonth] = useQueryState(
-    "month",
-    parseAsInteger.withDefault(current.month),
-  );
-  const [selectedYear] = useQueryState(
-    "year",
-    parseAsInteger.withDefault(current.year),
-  );
+  const [selectedMonth] = useQueryState("month", parseAsInteger.withDefault(current.month));
+  const [selectedYear] = useQueryState("year", parseAsInteger.withDefault(current.year));
 
   const { data: availableMonths = [], isLoading: monthsLoading } = useQuery(
     trpc.results.getAllMonthsSinceStart.queryOptions(),

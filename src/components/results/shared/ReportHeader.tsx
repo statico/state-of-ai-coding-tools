@@ -9,12 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MessageCircleMore, Percent, User } from "lucide-react";
 import { ReactNode, useEffect } from "react";
 import { MarkdownText } from "@/components/ui/markdown-text";
@@ -130,12 +125,10 @@ export function ReportHeader({
   const tooltipContent = (
     <div className="space-y-2 text-sm">
       <div>
-        <span className="font-semibold">Title:</span>{" "}
-        <MarkdownText>{questionTitle}</MarkdownText>
+        <span className="font-semibold">Title:</span> <MarkdownText>{questionTitle}</MarkdownText>
       </div>
       <div>
-        <span className="font-semibold">Type:</span>{" "}
-        {getQuestionTypeName(questionType)}
+        <span className="font-semibold">Type:</span> {getQuestionTypeName(questionType)}
       </div>
       {questionDescription && (
         <div>
@@ -190,9 +183,7 @@ export function ReportHeader({
                       {totalResponses.toLocaleString()}
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    {totalResponses.toLocaleString()} respondents
-                  </TooltipContent>
+                  <TooltipContent>{totalResponses.toLocaleString()} respondents</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               <TooltipProvider>
@@ -217,9 +208,7 @@ export function ReportHeader({
                     <TooltipTrigger asChild>
                       <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
                         <MessageCircleMore className="h-4 w-4" />
-                        <span className="hidden sm:inline">
-                          {comments.length}
-                        </span>
+                        <span className="hidden sm:inline">{comments.length}</span>
                         <span className="sm:hidden">{comments.length}</span>
                       </button>
                     </TooltipTrigger>
@@ -234,10 +223,7 @@ export function ReportHeader({
                 <ScrollArea className="h-96">
                   <div className="space-y-3 pr-4">
                     {comments.map((comment, index) => (
-                      <div
-                        key={index}
-                        className="bg-muted/30 rounded-lg border p-3"
-                      >
+                      <div key={index} className="bg-muted/30 rounded-lg border p-3">
                         <p className="text-sm">{comment.comment}</p>
                       </div>
                     ))}
@@ -280,9 +266,7 @@ export function ReportHeader({
                     <TooltipTrigger asChild>
                       <button className="border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-lg border border-dashed px-3 py-1.5 text-sm whitespace-nowrap">
                         <MessageCircleMore className="h-4 w-4" />
-                        <span className="hidden sm:inline">
-                          {comments.length}
-                        </span>
+                        <span className="hidden sm:inline">{comments.length}</span>
                         <span className="sm:hidden">{comments.length}</span>
                       </button>
                     </TooltipTrigger>
@@ -297,10 +281,7 @@ export function ReportHeader({
                 <ScrollArea className="h-96">
                   <div className="space-y-3 pr-4">
                     {comments.map((comment, index) => (
-                      <div
-                        key={index}
-                        className="bg-muted/30 rounded-lg border p-3"
-                      >
+                      <div key={index} className="bg-muted/30 rounded-lg border p-3">
                         <p className="text-sm">{comment.comment}</p>
                       </div>
                     ))}
@@ -322,9 +303,7 @@ export function ReportHeader({
                     {totalResponses.toLocaleString()}
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
-                  {totalResponses.toLocaleString()} respondents
-                </TooltipContent>
+                <TooltipContent>{totalResponses.toLocaleString()} respondents</TooltipContent>
               </Tooltip>
             </TooltipProvider>
             <TooltipProvider>

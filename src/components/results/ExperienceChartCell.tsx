@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AWARENESS_LABELS, AWARENESS_OPTIONS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { User } from "lucide-react";
@@ -55,9 +51,7 @@ export function ExperienceChartCell({
   groupBy = "awareness",
 }: ExperienceChartCellProps) {
   if (groupBy === "awareness") {
-    const percentage = Math.round(
-      ((item.awarenessCount || 0) / actualResponses) * 100,
-    );
+    const percentage = Math.round(((item.awarenessCount || 0) / actualResponses) * 100);
 
     return (
       <Tooltip>
@@ -71,9 +65,7 @@ export function ExperienceChartCell({
             <div
               className={cn(
                 "flex h-8 items-center justify-center overflow-hidden rounded-xs p-1 text-xs lg:h-10",
-                AWARENESS_COLOR_MAP[
-                  (item.awarenessValue || 0) as keyof typeof AWARENESS_COLOR_MAP
-                ],
+                AWARENESS_COLOR_MAP[(item.awarenessValue || 0) as keyof typeof AWARENESS_COLOR_MAP],
               )}
             >
               {percentage}%
@@ -87,9 +79,7 @@ export function ExperienceChartCell({
                     key={sentiment.sentiment}
                     className={cn(
                       "h-2 overflow-hidden rounded-xs",
-                      SENTIMENT_COLOR_MAP[
-                        sentiment.sentiment as keyof typeof SENTIMENT_COLOR_MAP
-                      ],
+                      SENTIMENT_COLOR_MAP[sentiment.sentiment as keyof typeof SENTIMENT_COLOR_MAP],
                     )}
                     style={{
                       width: `${(sentiment.percentage / 100) * 100}%`,
@@ -102,11 +92,7 @@ export function ExperienceChartCell({
         <TooltipContent>
           <div className="grid grid-cols-3 gap-2 text-sm">
             <div className="font-bold">
-              {
-                AWARENESS_LABELS[
-                  (item.awarenessValue || 0) as keyof typeof AWARENESS_LABELS
-                ]
-              }
+              {AWARENESS_LABELS[(item.awarenessValue || 0) as keyof typeof AWARENESS_LABELS]}
             </div>
             <div className="text-right font-bold">{percentage.toFixed(1)}%</div>
             <div className="flex items-center justify-end gap-1 font-bold">
@@ -122,18 +108,12 @@ export function ExperienceChartCell({
                   <div
                     className={cn(
                       "h-2 w-2 rounded-full",
-                      SENTIMENT_COLOR_MAP[
-                        sentiment.sentiment as keyof typeof SENTIMENT_COLOR_MAP
-                      ],
+                      SENTIMENT_COLOR_MAP[sentiment.sentiment as keyof typeof SENTIMENT_COLOR_MAP],
                     )}
                   />
-                  <span className="text-muted-foreground capitalize">
-                    {sentiment.sentiment}:
-                  </span>
+                  <span className="text-muted-foreground capitalize">{sentiment.sentiment}:</span>
                 </div>
-                <div className="text-right">
-                  {sentiment.percentage.toFixed(1)}%{" "}
-                </div>
+                <div className="text-right">{sentiment.percentage.toFixed(1)}% </div>
                 <div className="flex items-center justify-end gap-1">
                   {sentiment.count.toLocaleString()}
                   <User className="h-3 w-3" />
@@ -145,9 +125,7 @@ export function ExperienceChartCell({
       </Tooltip>
     );
   } else {
-    const percentage = Math.round(
-      ((item.sentimentCount || 0) / actualResponses) * 100,
-    );
+    const percentage = Math.round(((item.sentimentCount || 0) / actualResponses) * 100);
 
     return (
       <Tooltip>
@@ -186,9 +164,7 @@ export function ExperienceChartCell({
                 className={cn(
                   "h-2 overflow-hidden rounded-xs",
                   SENTIMENT_COLOR_MAP[
-                    (
-                      item.sentiment || "neutral"
-                    ).toLowerCase() as keyof typeof SENTIMENT_COLOR_MAP
+                    (item.sentiment || "neutral").toLowerCase() as keyof typeof SENTIMENT_COLOR_MAP
                   ],
                 )}
                 style={{
@@ -220,13 +196,9 @@ export function ExperienceChartCell({
                       ],
                     )}
                   />
-                  <span className="text-muted-foreground">
-                    {awareness.awareness}:
-                  </span>
+                  <span className="text-muted-foreground">{awareness.awareness}:</span>
                 </div>
-                <div className="text-right">
-                  {awareness.percentage.toFixed(1)}%{" "}
-                </div>
+                <div className="text-right">{awareness.percentage.toFixed(1)}% </div>
                 <div className="flex items-center justify-end gap-1">
                   {awareness.awarenessCount.toLocaleString()}
                   <User className="h-3 w-3" />

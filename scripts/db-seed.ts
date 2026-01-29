@@ -152,10 +152,7 @@ function generateUserResponses(
         if (question.options) {
           const maxSelections = question.multiple_max || 3;
           const weightedOptions = generateOptionWeights(question.options);
-          const selectedOptions = selectMultipleWeighted(
-            weightedOptions,
-            maxSelections,
-          );
+          const selectedOptions = selectMultipleWeighted(weightedOptions, maxSelections);
           response.multiple_option_slugs = selectedOptions.map(
             (opt) => `${question.slug}-${opt.slug}`,
           );
@@ -323,8 +320,7 @@ async function seedTestData() {
     }
 
     // Generate sessions and responses
-    const sessions: Array<{ id: string; created_at: Date; updated_at: Date }> =
-      [];
+    const sessions: Array<{ id: string; created_at: Date; updated_at: Date }> = [];
     const allResponses: any[] = [];
 
     // Generate 4 months of data
@@ -338,18 +334,14 @@ async function seedTestData() {
       });
     }
 
-    log.info(
-      `Generating data for months: ${months.map((m) => `${m.year}-${m.month}`).join(", ")}`,
-    );
+    log.info(`Generating data for months: ${months.map((m) => `${m.year}-${m.month}`).join(", ")}`);
 
     // Build question options map for experience questions
     const questionOptions = new Map();
     for (const question of config.questions) {
       if (question.options && question.type === "experience") {
         // Only include questions that are active AND in active sections
-        const section = config.sections.find(
-          (s) => s.slug === question.section,
-        );
+        const section = config.sections.find((s) => s.slug === question.section);
         if (question.active !== false && section?.active !== false) {
           questionOptions.set(
             question.slug,
@@ -427,19 +419,13 @@ async function seedTestData() {
       await db.insertInto("responses").values(chunk).execute();
 
       if (i % (chunkSize * 5) === 0) {
-        log.info(
-          `Inserted ${Math.min(i + chunkSize, allResponses.length)} responses...`,
-        );
+        log.info(`Inserted ${Math.min(i + chunkSize, allResponses.length)} responses...`);
       }
     }
 
     log.info("Test data seeding completed!");
-    log.info(
-      `Generated ${sessions.length} sessions with ${allResponses.length} responses`,
-    );
-    log.info(
-      `Average responses per user: ${Math.round(allResponses.length / sessions.length)}`,
-    );
+    log.info(`Generated ${sessions.length} sessions with ${allResponses.length} responses`);
+    log.info(`Average responses per user: ${Math.round(allResponses.length / sessions.length)}`);
   } catch (error) {
     log.error("Error seeding test data:", error);
     process.exit(1);

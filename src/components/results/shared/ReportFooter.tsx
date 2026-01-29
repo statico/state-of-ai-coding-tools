@@ -1,22 +1,14 @@
 "use client";
 
 import { Percent, User } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ReportFooterProps {
   totalResponses: number;
   responseRate: number;
 }
 
-export function ReportFooter({
-  totalResponses,
-  responseRate,
-}: ReportFooterProps) {
+export function ReportFooter({ totalResponses, responseRate }: ReportFooterProps) {
   return (
     <div className="flex items-center justify-between pt-4">
       <div className="text-muted-foreground flex items-center gap-4 text-sm">
@@ -28,9 +20,7 @@ export function ReportFooter({
                 {totalResponses.toLocaleString()}
               </div>
             </TooltipTrigger>
-            <TooltipContent>
-              {totalResponses.toLocaleString()} respondents
-            </TooltipContent>
+            <TooltipContent>{totalResponses.toLocaleString()} respondents</TooltipContent>
           </Tooltip>
         </TooltipProvider>
         <TooltipProvider>

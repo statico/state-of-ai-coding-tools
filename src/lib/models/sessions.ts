@@ -17,11 +17,7 @@ export async function getAllSessions() {
 }
 
 export async function getSessionById(id: string) {
-  return await db
-    .selectFrom("sessions")
-    .selectAll()
-    .where("id", "=", id)
-    .executeTakeFirst();
+  return await db.selectFrom("sessions").selectAll().where("id", "=", id).executeTakeFirst();
 }
 
 export async function createSession(data: { id: string }) {
@@ -51,9 +47,7 @@ export async function deleteSession(id: string) {
     .executeTakeFirstOrThrow();
 }
 
-export async function getOrCreateSession(
-  providedSessionId?: string,
-): Promise<string> {
+export async function getOrCreateSession(providedSessionId?: string): Promise<string> {
   // If a session ID is provided, validate it
   if (providedSessionId) {
     if (!isValidUUID(providedSessionId)) {

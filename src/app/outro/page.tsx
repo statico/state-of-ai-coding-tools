@@ -60,8 +60,8 @@ export default function OutroPage() {
           <div className="space-y-4 text-center">
             <h1 className="text-5xl font-bold">Thank You!</h1>
             <p className="text-muted-foreground mx-auto max-w-2xl text-2xl">
-              Your responses have been saved and will contribute to the
-              community's understanding of AI coding tools.
+              Your responses have been saved and will contribute to the community's understanding of
+              AI coding tools.
             </p>
           </div>
 
@@ -80,29 +80,26 @@ export default function OutroPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-3xl">
-                Be sure to come back next week!
-              </CardTitle>
+              <CardTitle className="text-3xl">Be sure to come back next week!</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p>
-                This survey operates on a weekly cycle, resetting every Monday
-                at 12:00 AM UTC. This allows us to track changes in the AI
-                coding landscape over time.
+                This survey operates on a weekly cycle, resetting every Monday at 12:00 AM UTC. This
+                allows us to track changes in the AI coding landscape over time.
               </p>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <h3 className="mb-2 font-semibold">Current Week</h3>
                   <p className="text-muted-foreground text-base">
-                    Your responses are counted towards the current week's
-                    results. You can return anytime to update your responses.
+                    Your responses are counted towards the current week's results. You can return
+                    anytime to update your responses.
                   </p>
                 </div>
                 <div>
                   <h3 className="mb-2 font-semibold">Next Week</h3>
                   <p className="text-muted-foreground text-base">
-                    The survey will reset on Monday, and you can provide fresh
-                    responses based on your current tool usage.
+                    The survey will reset on Monday, and you can provide fresh responses based on
+                    your current tool usage.
                   </p>
                 </div>
               </div>

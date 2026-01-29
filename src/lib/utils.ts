@@ -24,10 +24,7 @@ export function getCurrentMonth(): { month: number; year: number } {
   };
 }
 
-export function getMonthDateRange(
-  month: number,
-  year: number,
-): { start: Date; end: Date } {
+export function getMonthDateRange(month: number, year: number): { start: Date; end: Date } {
   // Create a date in the given month/year (month is 1-12)
   const date = new Date(year, month - 1, 1); // Date constructor expects 0-11 for month
 
@@ -62,15 +59,10 @@ export function isCurrentMonth(month: number, year: number): boolean {
 
 export function isFutureMonth(month: number, year: number): boolean {
   const current = getCurrentMonth();
-  return (
-    year > current.year || (year === current.year && month > current.month)
-  );
+  return year > current.year || (year === current.year && month > current.month);
 }
 
-export function getPreviousMonth(
-  month: number,
-  year: number,
-): { month: number; year: number } {
+export function getPreviousMonth(month: number, year: number): { month: number; year: number } {
   if (month === 1) {
     // Previous month is December of previous year
     return { month: 12, year: year - 1 };
@@ -79,10 +71,7 @@ export function getPreviousMonth(
   }
 }
 
-export function getNextMonth(
-  month: number,
-  year: number,
-): { month: number; year: number } {
+export function getNextMonth(month: number, year: number): { month: number; year: number } {
   if (month === 12) {
     // Next month is January of next year
     return { month: 1, year: year + 1 };
@@ -91,11 +80,7 @@ export function getNextMonth(
   }
 }
 
-export function formatWithCount(
-  count: number,
-  word: string,
-  locale = "en-US",
-): string {
+export function formatWithCount(count: number, word: string, locale = "en-US"): string {
   const formattedNumber = count.toLocaleString(locale);
   const pluralizedWord = pluralize(word, count);
   return `${formattedNumber} ${pluralizedWord}`;

@@ -13,10 +13,7 @@ const logger = Logger.forModule();
 
 export async function syncSections(sections: Section[]) {
   // Get existing sections
-  const existingSections = await db
-    .selectFrom("sections")
-    .selectAll()
-    .execute();
+  const existingSections = await db.selectFrom("sections").selectAll().execute();
   const existingSlugs = new Set(existingSections.map((s) => s.slug));
 
   // Upsert sections from config
@@ -49,9 +46,7 @@ export async function syncSections(sections: Section[]) {
 
   // Mark missing sections as inactive
   const configSlugs = new Set(sections.map((s) => s.slug));
-  const missingSections = existingSections.filter(
-    (s) => !configSlugs.has(s.slug),
-  );
+  const missingSections = existingSections.filter((s) => !configSlugs.has(s.slug));
 
   for (const section of missingSections) {
     await db
@@ -61,17 +56,12 @@ export async function syncSections(sections: Section[]) {
       .execute();
   }
 
-  logger.warn(
-    `Processed ${sections.length} sections (${missingSections.length} marked inactive)`,
-  );
+  logger.warn(`Processed ${sections.length} sections (${missingSections.length} marked inactive)`);
 }
 
 export async function syncQuestions(questions: Question[]) {
   // Get existing questions
-  const existingQuestions = await db
-    .selectFrom("questions")
-    .selectAll()
-    .execute();
+  const existingQuestions = await db.selectFrom("questions").selectAll().execute();
   const existingSlugs = new Set(existingQuestions.map((q) => q.slug));
 
   // Upsert questions from config
@@ -110,9 +100,7 @@ export async function syncQuestions(questions: Question[]) {
 
   // Mark missing questions as inactive
   const configSlugs = new Set(questions.map((q) => q.slug));
-  const missingQuestions = existingQuestions.filter(
-    (q) => !configSlugs.has(q.slug),
-  );
+  const missingQuestions = existingQuestions.filter((q) => !configSlugs.has(q.slug));
 
   for (const question of missingQuestions) {
     await db
@@ -133,9 +121,7 @@ export async function syncOptions(questions: Question[]) {
   const existingSlugs = new Set(existingOptions.map((o) => o.slug));
 
   // Collect all options from config
-  const configOptions: Array<
-    Option & { question_slug: string; order: number }
-  > = [];
+  const configOptions: Array<Option & { question_slug: string; order: number }> = [];
   for (const question of questions) {
     if (question.options) {
       for (let i = 0; i < question.options.length; i++) {
@@ -178,12 +164,8 @@ export async function syncOptions(questions: Question[]) {
   }
 
   // Mark missing options as inactive
-  const configSlugs = new Set(
-    configOptions.map((o) => `${o.question_slug}_${o.slug}`),
-  );
-  const missingOptions = existingOptions.filter(
-    (o) => !configSlugs.has(o.slug),
-  );
+  const configSlugs = new Set(configOptions.map((o) => `${o.question_slug}_${o.slug}`));
+  const missingOptions = existingOptions.filter((o) => !configSlugs.has(o.slug));
 
   for (const option of missingOptions) {
     await db

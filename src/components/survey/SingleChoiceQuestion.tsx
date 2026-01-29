@@ -7,11 +7,7 @@ import { Input } from "@/components/ui/input";
 import { QuestionCard } from "./QuestionCard";
 import { MarkdownText } from "@/components/ui/markdown-text";
 import { cn } from "@/lib/utils";
-import {
-  QuestionWithOptions,
-  ResponseData,
-  ClientResponse,
-} from "@/lib/constants";
+import { QuestionWithOptions, ResponseData, ClientResponse } from "@/lib/constants";
 
 interface SingleChoiceQuestionProps {
   question: QuestionWithOptions;
@@ -30,12 +26,8 @@ export function SingleChoiceQuestion({
   const [writeinText, setWriteinText] = useState<string>(
     () => existingResponse?.single_writein_response || "",
   );
-  const [isSkipped, setIsSkipped] = useState<boolean>(
-    () => existingResponse?.skipped || false,
-  );
-  const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment ?? "",
-  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(() => existingResponse?.skipped || false);
+  const [comment, setComment] = useState<string>(() => existingResponse?.comment ?? "");
 
   const handleOptionChange = (value: string) => {
     setSelectedOption(value);
@@ -77,8 +69,7 @@ export function SingleChoiceQuestion({
       setComment(newComment);
       onResponseChange({
         singleOptionSlug: selectedOption,
-        singleWriteinResponse:
-          selectedOption === "other" ? writeinText : undefined,
+        singleWriteinResponse: selectedOption === "other" ? writeinText : undefined,
         skipped: isSkipped,
         comment: newComment,
       });

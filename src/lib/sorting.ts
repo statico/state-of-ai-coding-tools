@@ -60,12 +60,8 @@ export function sortByAwareness(
     for (const level of awarenessOrder) {
       if (level === sortValue) continue;
 
-      const aValue = Math.round(
-        a.awareness.find((aw) => aw.level === level)?.percentage || 0,
-      );
-      const bValue = Math.round(
-        b.awareness.find((aw) => aw.level === level)?.percentage || 0,
-      );
+      const aValue = Math.round(a.awareness.find((aw) => aw.level === level)?.percentage || 0);
+      const bValue = Math.round(b.awareness.find((aw) => aw.level === level)?.percentage || 0);
 
       if (aValue !== bValue) {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
@@ -89,14 +85,8 @@ export function sortBySentiment(
   const sentimentOrder = [1, 0, -1];
 
   return [...options].sort((a, b) => {
-    const aTotalResponses = a.awareness.reduce(
-      (sum, item) => sum + item.count,
-      0,
-    );
-    const bTotalResponses = b.awareness.reduce(
-      (sum, item) => sum + item.count,
-      0,
-    );
+    const aTotalResponses = a.awareness.reduce((sum, item) => sum + item.count, 0);
+    const bTotalResponses = b.awareness.reduce((sum, item) => sum + item.count, 0);
 
     const aPrimaryCount = a.combined
       .filter((item) => item.sentiment === sortValue)
@@ -128,12 +118,8 @@ export function sortBySentiment(
         .filter((item) => item.sentiment === sentiment)
         .reduce((sum, item) => sum + item.count, 0);
 
-      const aValue = Math.round(
-        aTotalResponses > 0 ? (aCount / aTotalResponses) * 100 : 0,
-      );
-      const bValue = Math.round(
-        bTotalResponses > 0 ? (bCount / bTotalResponses) * 100 : 0,
-      );
+      const aValue = Math.round(aTotalResponses > 0 ? (aCount / aTotalResponses) * 100 : 0);
+      const bValue = Math.round(bTotalResponses > 0 ? (bCount / bTotalResponses) * 100 : 0);
 
       if (aValue !== bValue) {
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;

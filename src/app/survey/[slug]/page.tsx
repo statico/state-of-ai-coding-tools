@@ -46,21 +46,14 @@ export default function SurveyPage() {
     trpc.survey.getSections.queryOptions(),
   );
   const { data: questions, isLoading: questionsLoading } = useQuery(
-    trpc.survey.getQuestionsBySection.queryOptions(
-      { sectionSlug: slug },
-      { enabled: !!slug },
-    ),
+    trpc.survey.getQuestionsBySection.queryOptions({ sectionSlug: slug }, { enabled: !!slug }),
   );
-  const { data: responsesData } = useQuery(
-    trpc.survey.getResponses.queryOptions(),
-  );
+  const { data: responsesData } = useQuery(trpc.survey.getResponses.queryOptions());
 
   const { data: sessionData } = useQuery(trpc.survey.getSession.queryOptions());
 
   const responses =
-    responsesData &&
-    typeof responsesData === "object" &&
-    "responses" in responsesData
+    responsesData && typeof responsesData === "object" && "responses" in responsesData
       ? responsesData.responses
       : [];
 
@@ -72,9 +65,7 @@ export default function SurveyPage() {
     }
   }, [sessionData?.sessionId]);
 
-  const saveResponseMutation = useMutation(
-    trpc.survey.saveResponse.mutationOptions(),
-  );
+  const saveResponseMutation = useMutation(trpc.survey.saveResponse.mutationOptions());
 
   const saveExperienceResponsesMutation = useMutation(
     trpc.survey.saveExperienceResponses.mutationOptions(),
@@ -88,8 +79,7 @@ export default function SurveyPage() {
     trpc.survey.fillFromPreviousMonth.mutationOptions(),
   );
 
-  const { currentSection, nextSection, prevSection, currentSectionIndex } =
-    useSectionNavigation();
+  const { currentSection, nextSection, prevSection, currentSectionIndex } = useSectionNavigation();
 
   const handleResponseChange = useCallback(
     async (questionSlug: string, responseData: ResponseData) => {
@@ -125,23 +115,17 @@ export default function SurveyPage() {
         console.error("Failed to save experience responses:", error);
       }
     },
-    [
-      saveExperienceResponsesMutation,
-      queryClient,
-      trpc.survey.getCompletionPercentage,
-    ],
+    [saveExperienceResponsesMutation, queryClient, trpc.survey.getCompletionPercentage],
   );
 
   // Memoize the response change handlers for each question
   const getResponseChangeHandler = useCallback(
-    (questionSlug: string) => (data: any) =>
-      handleResponseChange(questionSlug, data),
+    (questionSlug: string) => (data: any) => handleResponseChange(questionSlug, data),
     [handleResponseChange],
   );
 
   const getExperienceResponseChangeHandler = useCallback(
-    (questionSlug: string) => (data: any[]) =>
-      handleExperienceResponseChange(questionSlug, data),
+    (questionSlug: string) => (data: any[]) => handleExperienceResponseChange(questionSlug, data),
     [handleExperienceResponseChange],
   );
 
@@ -208,8 +192,7 @@ export default function SurveyPage() {
           </CardHeader>
           <CardContent className="pt-6">
             <p className="text-muted-foreground text-center">
-              The section you are looking for does not exist. Maybe it was
-              changed or deleted.
+              The section you are looking for does not exist. Maybe it was changed or deleted.
             </p>
           </CardContent>
         </Card>
@@ -260,9 +243,7 @@ export default function SurveyPage() {
               questions.map((question: any) => {
                 const existingResponse =
                   responses && Array.isArray(responses)
-                    ? responses.find(
-                        (r: any) => r.question_slug === question.slug,
-                      )
+                    ? responses.find((r: any) => r.question_slug === question.slug)
                     : undefined;
 
                 const commonProps = {
@@ -275,59 +256,26 @@ export default function SurveyPage() {
                   question,
                   existingResponses:
                     responses && Array.isArray(responses)
-                      ? responses.filter(
-                          (r: any) => r.question_slug === question.slug,
-                        )
+                      ? responses.filter((r: any) => r.question_slug === question.slug)
                       : [],
-                  onResponseChange: getExperienceResponseChangeHandler(
-                    question.slug,
-                  ),
+                  onResponseChange: getExperienceResponseChangeHandler(question.slug),
                 };
 
                 switch (question.type) {
                   case "single":
-                    return (
-                      <SingleChoiceQuestion
-                        key={question.slug}
-                        {...commonProps}
-                      />
-                    );
+                    return <SingleChoiceQuestion key={question.slug} {...commonProps} />;
                   case "multiple":
-                    return (
-                      <MultipleChoiceQuestion
-                        key={question.slug}
-                        {...commonProps}
-                      />
-                    );
+                    return <MultipleChoiceQuestion key={question.slug} {...commonProps} />;
                   case "experience":
-                    return (
-                      <ExperienceQuestion
-                        key={question.slug}
-                        {...experienceProps}
-                      />
-                    );
+                    return <ExperienceQuestion key={question.slug} {...experienceProps} />;
                   case "numeric":
-                    return (
-                      <NumericQuestion key={question.slug} {...commonProps} />
-                    );
+                    return <NumericQuestion key={question.slug} {...commonProps} />;
                   case "single-freeform":
-                    return (
-                      <SingleFreeformQuestion
-                        key={question.slug}
-                        {...commonProps}
-                      />
-                    );
+                    return <SingleFreeformQuestion key={question.slug} {...commonProps} />;
                   case "multiple-freeform":
-                    return (
-                      <MultipleFreeformQuestion
-                        key={question.slug}
-                        {...commonProps}
-                      />
-                    );
+                    return <MultipleFreeformQuestion key={question.slug} {...commonProps} />;
                   case "freeform":
-                    return (
-                      <FreeformQuestion key={question.slug} {...commonProps} />
-                    );
+                    return <FreeformQuestion key={question.slug} {...commonProps} />;
                   default:
                     return null;
                 }

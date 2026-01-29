@@ -29,20 +29,9 @@ function PieChart({ percentage, size }: { percentage: number; size: number }) {
   }
 
   return (
-    <svg
-      width={size}
-      height={size}
-      className="absolute inset-0"
-      viewBox={`0 0 ${size} ${size}`}
-    >
+    <svg width={size} height={size} className="absolute inset-0" viewBox={`0 0 ${size} ${size}`}>
       {percentage === 100 ? (
-        <circle
-          cx={center}
-          cy={center}
-          r={radius}
-          fill="var(--primary)"
-          opacity="0.50"
-        />
+        <circle cx={center} cy={center} r={radius} fill="var(--primary)" opacity="0.50" />
       ) : (
         <path d={pathData} fill="var(--primary)" opacity="0.50" />
       )}
@@ -56,11 +45,8 @@ export function SurveyHeader() {
   const trpc = useTRPC();
 
   const { data: sections } = useQuery(trpc.survey.getSections.queryOptions());
-  const { data: completionData } = useQuery(
-    trpc.survey.getCompletionPercentage.queryOptions(),
-  );
-  const { prevSection, nextSection, isIntro, isOutro, isSurvey } =
-    useSectionNavigation();
+  const { data: completionData } = useQuery(trpc.survey.getCompletionPercentage.queryOptions());
+  const { prevSection, nextSection, isIntro, isOutro, isSurvey } = useSectionNavigation();
 
   // Get completion percentage from the API
   const progressPercentage = completionData?.overallPercentage ?? 0;
@@ -103,9 +89,7 @@ export function SurveyHeader() {
       router.push(`/survey/${prevSection.slug}`);
     } else if (isOutro) {
       const lastSection =
-        sections && Array.isArray(sections)
-          ? sections[sections.length - 1]
-          : null;
+        sections && Array.isArray(sections) ? sections[sections.length - 1] : null;
       if (lastSection) {
         router.push(`/survey/${lastSection.slug}`);
       } else {
@@ -122,8 +106,7 @@ export function SurveyHeader() {
     if (nextSection) {
       router.push(`/survey/${nextSection.slug}`);
     } else if (isIntro) {
-      const firstSection =
-        sections && Array.isArray(sections) ? sections[0] : null;
+      const firstSection = sections && Array.isArray(sections) ? sections[0] : null;
       if (firstSection) {
         router.push(`/survey/${firstSection.slug}`);
       } else {
@@ -156,9 +139,7 @@ export function SurveyHeader() {
                 className="text-muted-foreground hover:text-foreground flex max-w-[40%] min-w-0 items-center gap-1 text-sm transition-colors"
               >
                 <ChevronLeft className="h-4 w-4 shrink-0" />
-                <span className="truncate">
-                  {prevSection ? prevSection.title : "Start"}
-                </span>
+                <span className="truncate">{prevSection ? prevSection.title : "Start"}</span>
               </button>
             )}
 
@@ -171,9 +152,7 @@ export function SurveyHeader() {
                 onClick={handleNext}
                 className="text-muted-foreground hover:text-foreground flex max-w-[40%] min-w-0 items-center gap-1 text-sm transition-colors"
               >
-                <span className="truncate">
-                  {nextSection ? nextSection.title : "Finish"}
-                </span>
+                <span className="truncate">{nextSection ? nextSection.title : "Finish"}</span>
                 <ChevronRight className="h-4 w-4 shrink-0" />
               </button>
             )}
@@ -200,10 +179,7 @@ export function SurveyHeader() {
             }
 
             return (
-              <div
-                key={item.id}
-                className="group relative flex flex-col items-center"
-              >
+              <div key={item.id} className="group relative flex flex-col items-center">
                 {/* Circle dot */}
                 <button
                   onClick={() => handleNavigation(item.path)}

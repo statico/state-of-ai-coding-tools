@@ -85,9 +85,7 @@ describe("Completion Model", () => {
         skipped: true,
       });
 
-      const result = await getCompletionPercentage(
-        "550e8400-e29b-41d4-a716-446655440000",
-      );
+      const result = await getCompletionPercentage("550e8400-e29b-41d4-a716-446655440000");
 
       // Overall: 3 completed out of 3 total = 100% (skipped questions count as completed)
       expect(result.overallPercentage).toBe(100);
@@ -98,17 +96,13 @@ describe("Completion Model", () => {
       expect(result.sectionCompletion).toHaveLength(2);
 
       // Section 1: 2 completed out of 2 = 100%
-      const section1 = result.sectionCompletion.find(
-        (s) => s.sectionSlug === "section1",
-      );
+      const section1 = result.sectionCompletion.find((s) => s.sectionSlug === "section1");
       expect(section1?.percentage).toBe(100);
       expect(section1?.completedQuestions).toBe(2);
       expect(section1?.totalQuestions).toBe(2);
 
       // Section 2: 1 completed out of 1 = 100% (skipped question counts as completed)
-      const section2 = result.sectionCompletion.find(
-        (s) => s.sectionSlug === "section2",
-      );
+      const section2 = result.sectionCompletion.find((s) => s.sectionSlug === "section2");
       expect(section2?.percentage).toBe(100);
       expect(section2?.completedQuestions).toBe(1);
       expect(section2?.totalQuestions).toBe(1);
@@ -134,9 +128,7 @@ describe("Completion Model", () => {
         active: true,
       });
 
-      const result = await getCompletionPercentage(
-        "550e8400-e29b-41d4-a716-446655440000",
-      );
+      const result = await getCompletionPercentage("550e8400-e29b-41d4-a716-446655440000");
 
       expect(result.overallPercentage).toBe(0);
       expect(result.totalCompletedQuestions).toBe(0);
@@ -155,9 +147,7 @@ describe("Completion Model", () => {
         active: true,
       });
 
-      const result = await getCompletionPercentage(
-        "550e8400-e29b-41d4-a716-446655440000",
-      );
+      const result = await getCompletionPercentage("550e8400-e29b-41d4-a716-446655440000");
 
       expect(result.overallPercentage).toBe(0);
       expect(result.totalCompletedQuestions).toBe(0);
@@ -198,9 +188,7 @@ describe("Completion Model", () => {
         // No actual values provided (no single_option_slug, etc.)
       });
 
-      const result = await getCompletionPercentage(
-        "550e8400-e29b-41d4-a716-446655440000",
-      );
+      const result = await getCompletionPercentage("550e8400-e29b-41d4-a716-446655440000");
 
       // Should not count as completed since no actual values were provided
       expect(result.overallPercentage).toBe(0);
@@ -208,9 +196,7 @@ describe("Completion Model", () => {
       expect(result.totalQuestions).toBe(1);
 
       // Section completion should also be 0%
-      const section = result.sectionCompletion.find(
-        (s) => s.sectionSlug === "test-section",
-      );
+      const section = result.sectionCompletion.find((s) => s.sectionSlug === "test-section");
       expect(section?.percentage).toBe(0);
       expect(section?.completedQuestions).toBe(0);
       expect(section?.totalQuestions).toBe(1);

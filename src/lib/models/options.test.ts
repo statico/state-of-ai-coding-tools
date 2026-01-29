@@ -308,9 +308,7 @@ describe("Options Model", () => {
     });
 
     it("should throw error when updating non-existent option", async () => {
-      await expect(
-        updateOption("non-existent", { label: "Updated" }),
-      ).rejects.toThrow();
+      await expect(updateOption("non-existent", { label: "Updated" })).rejects.toThrow();
     });
   });
 
@@ -504,9 +502,7 @@ describe("Options Model", () => {
 
       // Verify deletion
       const finalOptions = await getAllOptions();
-      expect(
-        finalOptions.find((o) => o.slug === "lifecycle-test"),
-      ).toBeUndefined();
+      expect(finalOptions.find((o) => o.slug === "lifecycle-test")).toBeUndefined();
     });
   });
 });

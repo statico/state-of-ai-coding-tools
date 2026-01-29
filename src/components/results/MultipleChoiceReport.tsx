@@ -5,12 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReportHeader } from "@/components/results/shared/ReportHeader";
 import { ProgressBar } from "@/components/results/shared/ProgressBar";
 import { QuestionTypeIcon } from "@/components/results/shared/QuestionTypeIcon";
@@ -101,10 +96,7 @@ export function MultipleChoiceReport({
                 <div key={option.optionSlug} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Badge
-                        variant="outline"
-                        className="h-6 w-6 rounded-full p-0 text-xs"
-                      >
+                      <Badge variant="outline" className="h-6 w-6 rounded-full p-0 text-xs">
                         {index + 1}
                       </Badge>
                       <TooltipProvider>
@@ -121,12 +113,9 @@ export function MultipleChoiceReport({
                                 <MarkdownText>{option.label}</MarkdownText>
                               </div>
                               <div>
-                                <span className="font-semibold">
-                                  Description:
-                                </span>{" "}
+                                <span className="font-semibold">Description:</span>{" "}
                                 <MarkdownText>
-                                  {option.description ||
-                                    "No description available"}
+                                  {option.description || "No description available"}
                                 </MarkdownText>
                               </div>
                             </div>
@@ -135,9 +124,7 @@ export function MultipleChoiceReport({
                       </TooltipProvider>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-sm font-medium">
-                        {option.percentage.toFixed(1)}%
-                      </span>
+                      <span className="text-sm font-medium">{option.percentage.toFixed(1)}%</span>
                       <div className="text-muted-foreground flex items-center gap-1 text-sm">
                         <User className="h-4 w-4" />
                         {option.count.toLocaleString()}

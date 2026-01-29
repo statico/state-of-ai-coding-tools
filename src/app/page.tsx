@@ -99,8 +99,8 @@ export default function HomePage() {
         <div className="space-y-4 text-center">
           <h1 className="text-4xl font-bold">AI Coding Tools Weekly Survey</h1>
           <p className="text-muted-foreground mx-auto max-w-2xl text-xl text-balance">
-            Track the evolving landscape of AI-powered coding tools through
-            weekly community feedback.
+            Track the evolving landscape of AI-powered coding tools through weekly community
+            feedback.
           </p>
         </div>
 
@@ -125,8 +125,7 @@ export default function HomePage() {
                 {(error || authError) && (
                   <Alert variant="destructive">
                     <AlertDescription>
-                      {error ||
-                        "Failed to verify authentication. Please try again."}
+                      {error || "Failed to verify authentication. Please try again."}
                     </AlertDescription>
                   </Alert>
                 )}

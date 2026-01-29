@@ -39,11 +39,7 @@ export async function getActiveOptionsByQuestion(questionSlug: string) {
 }
 
 export async function getOptionBySlug(slug: string) {
-  return await db
-    .selectFrom("options")
-    .selectAll()
-    .where("slug", "=", slug)
-    .executeTakeFirst();
+  return await db.selectFrom("options").selectAll().where("slug", "=", slug).executeTakeFirst();
 }
 
 export async function createOption(data: InsertableOption) {

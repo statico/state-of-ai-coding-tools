@@ -9,11 +9,7 @@ export type SelectableResponse = Selectable<Responses>;
 export type InsertableResponse = Insertable<Responses>;
 export type UpdateableResponse = Updateable<Responses>;
 
-export async function getResponsesBySession(
-  sessionId: string,
-  month: number,
-  year: number,
-) {
+export async function getResponsesBySession(sessionId: string, month: number, year: number) {
   return await db
     .selectFrom("responses")
     .selectAll()
@@ -114,11 +110,9 @@ export async function upsertResponse(data: InsertableResponse) {
       oc.constraint("responses_pkey").doUpdateSet({
         skipped: (eb) => eb.ref("excluded.skipped"),
         single_option_slug: (eb) => eb.ref("excluded.single_option_slug"),
-        single_writein_response: (eb) =>
-          eb.ref("excluded.single_writein_response"),
+        single_writein_response: (eb) => eb.ref("excluded.single_writein_response"),
         multiple_option_slugs: (eb) => eb.ref("excluded.multiple_option_slugs"),
-        multiple_writein_responses: (eb) =>
-          eb.ref("excluded.multiple_writein_responses"),
+        multiple_writein_responses: (eb) => eb.ref("excluded.multiple_writein_responses"),
         experience_awareness: (eb) => eb.ref("excluded.experience_awareness"),
         experience_sentiment: (eb) => eb.ref("excluded.experience_sentiment"),
         freeform_response: (eb) => eb.ref("excluded.freeform_response"),
@@ -234,9 +228,7 @@ export async function saveExperienceResponses(
   return savedResponses;
 }
 
-export async function canFillFromPreviousMonth(
-  sessionId: string,
-): Promise<boolean> {
+export async function canFillFromPreviousMonth(sessionId: string): Promise<boolean> {
   const current = getCurrentMonth();
   const previous = getPreviousMonth(current.month, current.year);
 
@@ -248,21 +240,13 @@ export async function canFillFromPreviousMonth(
   );
 
   // Check if there are responses for the current month
-  const currentMonthResponses = await getResponsesBySession(
-    sessionId,
-    current.month,
-    current.year,
-  );
+  const currentMonthResponses = await getResponsesBySession(sessionId, current.month, current.year);
 
   // Return true if there are previous month responses but no current month responses
-  return (
-    previousMonthResponses.length > 0 && currentMonthResponses.length === 0
-  );
+  return previousMonthResponses.length > 0 && currentMonthResponses.length === 0;
 }
 
-export async function fillFromPreviousMonth(
-  sessionId: string,
-): Promise<SelectableResponse[]> {
+export async function fillFromPreviousMonth(sessionId: string): Promise<SelectableResponse[]> {
   const current = getCurrentMonth();
   const previous = getPreviousMonth(current.month, current.year);
 
@@ -274,11 +258,7 @@ export async function fillFromPreviousMonth(
   const activeQuestionSlugs = new Set(activeQuestions.map((q) => q.slug));
 
   // Get previous month responses
-  const previousResponses = await getResponsesBySession(
-    sessionId,
-    previous.month,
-    previous.year,
-  );
+  const previousResponses = await getResponsesBySession(sessionId, previous.month, previous.year);
 
   // Filter to only active questions (and their sections must be active)
   const responsesToCopy = previousResponses.filter((response) => {
@@ -288,9 +268,7 @@ export async function fillFromPreviousMonth(
     }
 
     // Find the question to check its section
-    const question = activeQuestions.find(
-      (q) => q.slug === response.question_slug,
-    );
+    const question = activeQuestions.find((q) => q.slug === response.question_slug);
     if (!question) {
       return false;
     }
@@ -310,16 +288,11 @@ export async function fillFromPreviousMonth(
         option_slug: previousResponse.option_slug ?? undefined,
         skipped: previousResponse.skipped ?? false,
         single_option_slug: previousResponse.single_option_slug ?? undefined,
-        single_writein_response:
-          previousResponse.single_writein_response ?? undefined,
-        multiple_option_slugs:
-          previousResponse.multiple_option_slugs ?? undefined,
-        multiple_writein_responses:
-          previousResponse.multiple_writein_responses ?? undefined,
-        experience_awareness:
-          previousResponse.experience_awareness ?? undefined,
-        experience_sentiment:
-          previousResponse.experience_sentiment ?? undefined,
+        single_writein_response: previousResponse.single_writein_response ?? undefined,
+        multiple_option_slugs: previousResponse.multiple_option_slugs ?? undefined,
+        multiple_writein_responses: previousResponse.multiple_writein_responses ?? undefined,
+        experience_awareness: previousResponse.experience_awareness ?? undefined,
+        experience_sentiment: previousResponse.experience_sentiment ?? undefined,
         freeform_response: previousResponse.freeform_response ?? undefined,
         numeric_response: previousResponse.numeric_response ?? undefined,
         comment: previousResponse.comment ?? undefined,

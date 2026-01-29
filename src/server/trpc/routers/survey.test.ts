@@ -134,10 +134,7 @@ describe("Survey Router", () => {
       expect(result).toHaveLength(1);
       expect(result[0].slug).toBe("question1");
       expect(result[0].options).toHaveLength(2);
-      expect(result[0].options.map((o) => o.slug)).toEqual([
-        "option1",
-        "option2",
-      ]);
+      expect(result[0].options.map((o) => o.slug)).toEqual(["option1", "option2"]);
     });
   });
 
@@ -305,10 +302,7 @@ describe("Survey Router", () => {
         skipped: false,
       });
 
-      expect(result.response.multiple_option_slugs).toEqual([
-        "option1",
-        "option2",
-      ]);
+      expect(result.response.multiple_option_slugs).toEqual(["option1", "option2"]);
       expect(result.response.skipped).toBe(false);
     });
 

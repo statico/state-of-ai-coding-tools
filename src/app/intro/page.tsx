@@ -29,16 +29,10 @@ export default function IntroPage() {
     }
   }, [authData, isAuthenticated, router]);
 
-  const { data: firstSection } = useQuery(
-    trpc.survey.getFirstSection.queryOptions(),
-  );
+  const { data: firstSection } = useQuery(trpc.survey.getFirstSection.queryOptions());
 
   const handleStartSurvey = () => {
-    if (
-      firstSection &&
-      typeof firstSection === "object" &&
-      "slug" in firstSection
-    ) {
+    if (firstSection && typeof firstSection === "object" && "slug" in firstSection) {
       router.push(`/survey/${firstSection.slug}`);
     }
   };
@@ -66,19 +60,17 @@ export default function IntroPage() {
       <div className="mx-auto max-w-lg space-y-8 pt-8 pb-20 md:pt-20">
         <h1 className="text-center text-5xl font-bold">Welcome!</h1>
         <p className="text-muted-foreground mx-auto max-w-2xl text-center text-2xl text-balance">
-          Welcome to the AI Coding Tools Weekly Survey! Come back every week to
-          share your thoughts and see how the community's opinions evolve over
-          time.
+          Welcome to the AI Coding Tools Weekly Survey! Come back every week to share your thoughts
+          and see how the community's opinions evolve over time.
         </p>
 
         <Alert>
           <TriangleAlertIcon className="mt-1 size-4" />
           <AlertTitle className="text-lg">Notice</AlertTitle>
           <AlertDescription className="text-base">
-            This survey is intended to be used only by members of the private
-            community in which it was shared. This is an unofficial open-source
-            project, so we're not naming the community, but the rules of the
-            community still apply.
+            This survey is intended to be used only by members of the private community in which it
+            was shared. This is an unofficial open-source project, so we're not naming the
+            community, but the rules of the community still apply.
           </AlertDescription>
         </Alert>
 

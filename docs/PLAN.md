@@ -91,18 +91,18 @@ Admins will access the database directly as there is no need for an extensive ad
 
 Missing sections, questions, and options will be marked as inactive automatically. All questions are required and skippable by default.
 
-- *`sections`* - A list of sections
-  - *`slug`* - The unique slug of the section
-  - *`title`* - The title of the section
-  - *`description`* - The description of the section
-  - *`added`* - The date when the section was added (YYYY-MM-DD format, optional)
+- _`sections`_ - A list of sections
+  - _`slug`_ - The unique slug of the section
+  - _`title`_ - The title of the section
+  - _`description`_ - The description of the section
+  - _`added`_ - The date when the section was added (YYYY-MM-DD format, optional)
 
-- *`questions`* - A list of questions
-  - *`section`* - The slug of the section the question belongs to
-  - *`slug`* - The unique slug of the question
-  - *`title`* - The title of the question
-  - *`description`* - The description of the question
-  - *`type`* - The type of the question
+- _`questions`_ - A list of questions
+  - _`section`_ - The slug of the section the question belongs to
+  - _`slug`_ - The unique slug of the question
+  - _`title`_ - The title of the question
+  - _`description`_ - The description of the question
+  - _`type`_ - The type of the question
     - `single`
     - `multiple`
     - `experience`
@@ -110,64 +110,64 @@ Missing sections, questions, and options will be marked as inactive automaticall
     - `single-freeform`
     - `multiple-freeform`
     - `freeform`
-  - *`options`* - A list of options for single, multiple, single-freeform, and multiple-freeform questions (experience questions use preset UI values). Single and multiple choice questions automatically include an "Other" option for write-in responses.
-    - *`slug`* - The unique slug of the option
-    - *`label`* - The label of the option
-    - *`description`* - The description of the option
-    - *`added`* - The date when the option was added (YYYY-MM-DD format, optional)
-  - *`multiple_max`* - The maximum number of options that can be selected for multiple choice questions (integer, nullable)
-  - *`added`* - The date when the question was added (YYYY-MM-DD format, optional)
-  - *`randomize`* - Whether to randomize the order of options for single/multiple/experience questions (boolean, optional)
+  - _`options`_ - A list of options for single, multiple, single-freeform, and multiple-freeform questions (experience questions use preset UI values). Single and multiple choice questions automatically include an "Other" option for write-in responses.
+    - _`slug`_ - The unique slug of the option
+    - _`label`_ - The label of the option
+    - _`description`_ - The description of the option
+    - _`added`_ - The date when the option was added (YYYY-MM-DD format, optional)
+  - _`multiple_max`_ - The maximum number of options that can be selected for multiple choice questions (integer, nullable)
+  - _`added`_ - The date when the question was added (YYYY-MM-DD format, optional)
+  - _`randomize`_ - Whether to randomize the order of options for single/multiple/experience questions (boolean, optional)
 
 ### SQL Schema
 
-- *`sessions`*
-  - *`id`* - The unique ID of the session (UUID, primary key)
-  - *`created_at`* - The timestamp of the session creation (timestamp with time zone, not null)
-  - *`updated_at`* - The timestamp of the session last update (timestamp with time zone, not null)
+- _`sessions`_
+  - _`id`_ - The unique ID of the session (UUID, primary key)
+  - _`created_at`_ - The timestamp of the session creation (timestamp with time zone, not null)
+  - _`updated_at`_ - The timestamp of the session last update (timestamp with time zone, not null)
 
-- *`sections`*
-  - *`slug`* - The unique slug of the section (text, primary key, not null)
-  - *`title`* - The title of the section (text, not null)
-  - *`description`* - The description of the section (text, nullable)
-  - *`active`* - Whether the section is active (boolean, not null, default true)
-  - *`order`* - The display order of the section (integer, not null)
-  - *`added_at`* - The date when the section was added (date, nullable)
+- _`sections`_
+  - _`slug`_ - The unique slug of the section (text, primary key, not null)
+  - _`title`_ - The title of the section (text, not null)
+  - _`description`_ - The description of the section (text, nullable)
+  - _`active`_ - Whether the section is active (boolean, not null, default true)
+  - _`order`_ - The display order of the section (integer, not null)
+  - _`added_at`_ - The date when the section was added (date, nullable)
 
-- *`questions`*
-  - *`slug`* - The unique slug of the question (text, primary key, not null)
-  - *`section_slug`* - The slug of the section the question belongs to (text, foreign key to sections.slug, not null)
-  - *`title`* - The title of the question (text, not null)
-  - *`description`* - The description of the question (text, nullable)
-  - *`type`* - The type of the question (text, not null)
-  - *`active`* - Whether the question is active (boolean, not null, default true)
-  - *`order`* - The display order of the question within the section (integer, not null)
-  - *`multiple_max`* - The maximum number of options that can be selected for multiple choice questions (integer, nullable)
-  - *`added_at`* - The date when the question was added (date, nullable)
-  - *`randomize`* - Whether to randomize the order of options for single/multiple/experience questions (boolean, not null, default false)
+- _`questions`_
+  - _`slug`_ - The unique slug of the question (text, primary key, not null)
+  - _`section_slug`_ - The slug of the section the question belongs to (text, foreign key to sections.slug, not null)
+  - _`title`_ - The title of the question (text, not null)
+  - _`description`_ - The description of the question (text, nullable)
+  - _`type`_ - The type of the question (text, not null)
+  - _`active`_ - Whether the question is active (boolean, not null, default true)
+  - _`order`_ - The display order of the question within the section (integer, not null)
+  - _`multiple_max`_ - The maximum number of options that can be selected for multiple choice questions (integer, nullable)
+  - _`added_at`_ - The date when the question was added (date, nullable)
+  - _`randomize`_ - Whether to randomize the order of options for single/multiple/experience questions (boolean, not null, default false)
 
-- *`options`*
-  - *`slug`* - The unique slug of the option (text, primary key, not null) - When converting from YAML, this will be stored as `<question_slug>_<option_slug>` to ensure global uniqueness
-  - *`question_slug`* - The slug of the question the option belongs to (text, foreign key to questions.slug, not null, index)
-  - *`label`* - The label of the option (text, not null)
-  - *`description`* - The description of the option (text, nullable)
-  - *`active`* - Whether the option is active (boolean, not null, default true)
-  - *`order`* - The display order of the option within the question (integer, not null)
-  - *`added_at`* - The date when the option was added (date, nullable)
+- _`options`_
+  - _`slug`_ - The unique slug of the option (text, primary key, not null) - When converting from YAML, this will be stored as `<question_slug>_<option_slug>` to ensure global uniqueness
+  - _`question_slug`_ - The slug of the question the option belongs to (text, foreign key to questions.slug, not null, index)
+  - _`label`_ - The label of the option (text, not null)
+  - _`description`_ - The description of the option (text, nullable)
+  - _`active`_ - Whether the option is active (boolean, not null, default true)
+  - _`order`_ - The display order of the option within the question (integer, not null)
+  - _`added_at`_ - The date when the option was added (date, nullable)
 
-- *`responses`*
+- _`responses`_
   - Primary key: `(session_id, month, year, question_slug)` - This ensures that each question can only be answered once per month per session
-  - *`session_id`* - The ID of the session (UUID, foreign key to sessions.id, not null)
-  - *`month`* - The month of the session (integer, 1-12, not null)
-  - *`year`* - The year of the session (integer, not null)
-  - *`question_slug`* - The slug of the question the response belongs to (text, foreign key to questions.slug, not null)
-  - *`skipped`* - Whether the question was explicitly skipped by the user (boolean, not null, default false)
-  - *`single_option_slug`* - The slug of the selected option (text, foreign key to options.slug, nullable)
-  - *`single_writein_response`* - The write-in response for single choice questions when "Other" option is selected (text, nullable)
-  - *`multiple_option_slugs`* - The slugs of the selected options (text[], nullable, foreign key check will be application-level)
-  - *`multiple_writein_responses`* - The write-in responses for multiple choice questions when "Other" option is selected (text[], nullable)
-  - *`experience_awareness`* - The awareness of the experience (integer, nullable, values: `0` (never heard of it), `1` (heard of it), `2` (used it))
-  - *`experience_sentiment`* - The sentiment of the experience (integer, nullable, values: `-1` (negative), `1` (positive)) - `0` or `null` if the user did not answer the question
-  - *`freeform_response`* - Free-form text response (text, nullable)
-  - *`numeric_response`* - Numeric response (numeric, nullable)
-  - *`comment`* - The comment text (text, nullable)
+  - _`session_id`_ - The ID of the session (UUID, foreign key to sessions.id, not null)
+  - _`month`_ - The month of the session (integer, 1-12, not null)
+  - _`year`_ - The year of the session (integer, not null)
+  - _`question_slug`_ - The slug of the question the response belongs to (text, foreign key to questions.slug, not null)
+  - _`skipped`_ - Whether the question was explicitly skipped by the user (boolean, not null, default false)
+  - _`single_option_slug`_ - The slug of the selected option (text, foreign key to options.slug, nullable)
+  - _`single_writein_response`_ - The write-in response for single choice questions when "Other" option is selected (text, nullable)
+  - _`multiple_option_slugs`_ - The slugs of the selected options (text[], nullable, foreign key check will be application-level)
+  - _`multiple_writein_responses`_ - The write-in responses for multiple choice questions when "Other" option is selected (text[], nullable)
+  - _`experience_awareness`_ - The awareness of the experience (integer, nullable, values: `0` (never heard of it), `1` (heard of it), `2` (used it))
+  - _`experience_sentiment`_ - The sentiment of the experience (integer, nullable, values: `-1` (negative), `1` (positive)) - `0` or `null` if the user did not answer the question
+  - _`freeform_response`_ - Free-form text response (text, nullable)
+  - _`numeric_response`_ - Numeric response (numeric, nullable)
+  - _`comment`_ - The comment text (text, nullable)

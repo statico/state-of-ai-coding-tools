@@ -50,11 +50,7 @@ export const resultsRouter = router({
       }),
     )
     .query(async ({ input }) => {
-      return await getQuestionReport(
-        input.questionSlug,
-        input.month,
-        input.year,
-      );
+      return await getQuestionReport(input.questionSlug, input.month, input.year);
     }),
 
   getHistoricalTrends: publicProcedure
@@ -69,11 +65,7 @@ export const resultsRouter = router({
       const trends = [];
 
       for (const month of months) {
-        const report = await getQuestionReport(
-          input.questionSlug,
-          month.month,
-          month.year,
-        );
+        const report = await getQuestionReport(input.questionSlug, month.month, month.year);
         if (report) {
           trends.push({
             month: month.month,

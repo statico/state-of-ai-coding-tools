@@ -13,14 +13,10 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
         components={{
           // Override default styling to match design system
           p: ({ children }) => <span>{children}</span>,
-          strong: ({ children }) => (
-            <strong className="font-semibold">{children}</strong>
-          ),
+          strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
           em: ({ children }) => <em className="italic">{children}</em>,
           code: ({ children }) => (
-            <code className="bg-muted rounded px-1.5 py-0.5 font-mono text-sm">
-              {children}
-            </code>
+            <code className="bg-muted rounded px-1.5 py-0.5 font-mono text-sm">{children}</code>
           ),
         }}
       >

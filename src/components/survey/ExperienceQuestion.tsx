@@ -5,11 +5,7 @@ import { SkipButton } from "./SkipButton";
 import { ExperienceOption } from "./ExperienceOption";
 import { MarkdownText } from "@/components/ui/markdown-text";
 import { useEffect, useState, useCallback, useRef } from "react";
-import {
-  QuestionWithOptions,
-  ResponseData,
-  ClientResponse,
-} from "@/lib/constants";
+import { QuestionWithOptions, ResponseData, ClientResponse } from "@/lib/constants";
 
 interface ExperienceQuestionProps {
   question: QuestionWithOptions;
@@ -28,28 +24,22 @@ export function ExperienceQuestion({
   onResponseChange,
 }: ExperienceQuestionProps) {
   // Initialize state for each option
-  const [optionStates, setOptionStates] = useState<Record<string, OptionState>>(
-    () => {
-      const states: Record<string, OptionState> = {};
-      question.options?.forEach((option) => {
-        const existingResponse = existingResponses.find(
-          (r) => r.option_slug === option.slug,
-        );
-        states[option.slug] = {
-          awareness: existingResponse?.experience_awareness ?? undefined,
-          sentiment: existingResponse?.experience_sentiment ?? undefined,
-        };
-      });
-      return states;
-    },
-  );
+  const [optionStates, setOptionStates] = useState<Record<string, OptionState>>(() => {
+    const states: Record<string, OptionState> = {};
+    question.options?.forEach((option) => {
+      const existingResponse = existingResponses.find((r) => r.option_slug === option.slug);
+      states[option.slug] = {
+        awareness: existingResponse?.experience_awareness ?? undefined,
+        sentiment: existingResponse?.experience_sentiment ?? undefined,
+      };
+    });
+    return states;
+  });
 
   const [isSkipped, setIsSkipped] = useState<boolean>(
     () => existingResponses.some((r) => r.skipped) || false,
   );
-  const [comment, setComment] = useState<string>(
-    () => existingResponses[0]?.comment ?? "",
-  );
+  const [comment, setComment] = useState<string>(() => existingResponses[0]?.comment ?? "");
 
   // Track previous response data to prevent unnecessary calls
   const prevResponseDataRef = useRef<ResponseData[]>([]);
@@ -120,8 +110,7 @@ export function ExperienceQuestion({
     }
 
     // Only call onResponseChange if the data has actually changed
-    const hasChanged =
-      JSON.stringify(responses) !== JSON.stringify(prevResponseDataRef.current);
+    const hasChanged = JSON.stringify(responses) !== JSON.stringify(prevResponseDataRef.current);
     if (hasChanged) {
       prevResponseDataRef.current = responses;
       onResponseChange(responses);
@@ -177,9 +166,7 @@ export function ExperienceQuestion({
           initialComment={comment}
           onCommentChange={handleCommentChange}
           disabled={isSkipped}
-          hasResponse={Object.values(optionStates).some(
-            (state) => state.awareness !== undefined,
-          )}
+          hasResponse={Object.values(optionStates).some((state) => state.awareness !== undefined)}
         />
 
         <div className="flex justify-end">

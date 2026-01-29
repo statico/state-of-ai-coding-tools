@@ -5,11 +5,7 @@ import { QuestionCard } from "./QuestionCard";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import {
-  QuestionWithOptions,
-  ResponseData,
-  ClientResponse,
-} from "@/lib/constants";
+import { QuestionWithOptions, ResponseData, ClientResponse } from "@/lib/constants";
 import { XIcon } from "lucide-react";
 
 interface MultipleFreeformQuestionProps {
@@ -26,12 +22,8 @@ export function MultipleFreeformQuestion({
   const [responses, setResponses] = useState<string[]>(
     () => existingResponse?.multiple_writein_responses || [],
   );
-  const [isSkipped, setIsSkipped] = useState<boolean>(
-    () => existingResponse?.skipped || false,
-  );
-  const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment ?? "",
-  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(() => existingResponse?.skipped || false);
+  const [comment, setComment] = useState<string>(() => existingResponse?.comment ?? "");
 
   const handleResponseChange = (index: number, value: string) => {
     const newResponses = [...responses];
@@ -129,12 +121,7 @@ export function MultipleFreeformQuestion({
           </div>
         ))}
 
-        <Button
-          variant="outline"
-          onClick={addResponse}
-          disabled={isSkipped}
-          className="w-full"
-        >
+        <Button variant="outline" onClick={addResponse} disabled={isSkipped} className="w-full">
           Add Response
         </Button>
       </div>

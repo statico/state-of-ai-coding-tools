@@ -62,18 +62,13 @@ export function useSectionNavigation(): SectionInfo {
 
     if (isSurvey) {
       const currentSectionSlug = pathname.replace("/survey/", "");
-      const currentSectionIndex = sections.findIndex(
-        (s: any) => s.slug === currentSectionSlug,
-      );
+      const currentSectionIndex = sections.findIndex((s: any) => s.slug === currentSectionSlug);
 
       if (currentSectionIndex >= 0) {
         const currentSection = sections[currentSectionIndex];
-        const prevSection =
-          currentSectionIndex > 0 ? sections[currentSectionIndex - 1] : null;
+        const prevSection = currentSectionIndex > 0 ? sections[currentSectionIndex - 1] : null;
         const nextSection =
-          currentSectionIndex < sections.length - 1
-            ? sections[currentSectionIndex + 1]
-            : null;
+          currentSectionIndex < sections.length - 1 ? sections[currentSectionIndex + 1] : null;
         return {
           currentSection,
           prevSection,

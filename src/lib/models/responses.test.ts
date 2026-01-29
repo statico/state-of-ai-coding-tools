@@ -71,18 +71,10 @@ describe("Responses Model", () => {
         single_option_slug: "option-2",
       });
 
-      const responses = await getResponsesBySession(
-        testSessionId,
-        testMonth,
-        testIsoYear,
-      );
+      const responses = await getResponsesBySession(testSessionId, testMonth, testIsoYear);
       expect(responses).toHaveLength(2);
-      expect(
-        responses.find((r) => r.question_slug === "question-1"),
-      ).toBeDefined();
-      expect(
-        responses.find((r) => r.question_slug === "question-2"),
-      ).toBeDefined();
+      expect(responses.find((r) => r.question_slug === "question-1")).toBeDefined();
+      expect(responses.find((r) => r.question_slug === "question-2")).toBeDefined();
     });
   });
 
@@ -214,9 +206,7 @@ describe("Responses Model", () => {
 
       const responses = await getResponsesByQuestionSlug(testQuestionSlug);
       expect(responses).toHaveLength(2);
-      expect(responses.every((r) => r.question_slug === testQuestionSlug)).toBe(
-        true,
-      );
+      expect(responses.every((r) => r.question_slug === testQuestionSlug)).toBe(true);
     });
   });
 
@@ -594,16 +584,10 @@ describe("Responses Model", () => {
       expect(deletedResponse.question_slug).toBe(testQuestionSlug);
 
       // Verify response is actually deleted
-      const responses = await getResponsesBySession(
-        testSessionId,
-        testMonth,
-        testIsoYear,
-      );
+      const responses = await getResponsesBySession(testSessionId, testMonth, testIsoYear);
       expect(
         responses.find(
-          (r) =>
-            r.session_id === testSessionId &&
-            r.question_slug === testQuestionSlug,
+          (r) => r.session_id === testSessionId && r.question_slug === testQuestionSlug,
         ),
       ).toBeUndefined();
     });
@@ -649,16 +633,10 @@ describe("Responses Model", () => {
       expect(response.skipped).toBe(false);
 
       // Read
-      const responses = await getResponsesBySession(
-        testSessionId,
-        testMonth,
-        testIsoYear,
-      );
+      const responses = await getResponsesBySession(testSessionId, testMonth, testIsoYear);
       expect(
         responses.find(
-          (r) =>
-            r.session_id === testSessionId &&
-            r.question_slug === testQuestionSlug,
+          (r) => r.session_id === testSessionId && r.question_slug === testQuestionSlug,
         ),
       ).toBeDefined();
 
@@ -687,16 +665,10 @@ describe("Responses Model", () => {
       expect(deletedResponse.session_id).toBe(testSessionId);
 
       // Verify deletion
-      const finalResponses = await getResponsesBySession(
-        testSessionId,
-        testMonth,
-        testIsoYear,
-      );
+      const finalResponses = await getResponsesBySession(testSessionId, testMonth, testIsoYear);
       expect(
         finalResponses.find(
-          (r) =>
-            r.session_id === testSessionId &&
-            r.question_slug === testQuestionSlug,
+          (r) => r.session_id === testSessionId && r.question_slug === testQuestionSlug,
         ),
       ).toBeUndefined();
     });
@@ -950,23 +922,16 @@ describe("Responses Model", () => {
       expect(copiedResponses).toHaveLength(2);
 
       // Verify responses were copied to current month (February 2024)
-      const currentMonthResponses = await getResponsesBySession(
-        testSessionId,
-        2,
-        2024,
-      );
+      const currentMonthResponses = await getResponsesBySession(testSessionId, 2, 2024);
       expect(currentMonthResponses).toHaveLength(2);
       expect(
-        currentMonthResponses.find((r) => r.question_slug === "question-1")
-          ?.single_option_slug,
+        currentMonthResponses.find((r) => r.question_slug === "question-1")?.single_option_slug,
       ).toBe("option-1");
+      expect(currentMonthResponses.find((r) => r.question_slug === "question-1")?.comment).toBe(
+        "Previous comment",
+      );
       expect(
-        currentMonthResponses.find((r) => r.question_slug === "question-1")
-          ?.comment,
-      ).toBe("Previous comment");
-      expect(
-        currentMonthResponses.find((r) => r.question_slug === "question-2")
-          ?.multiple_option_slugs,
+        currentMonthResponses.find((r) => r.question_slug === "question-2")?.multiple_option_slugs,
       ).toEqual(["option-a", "option-b"]);
     });
 
@@ -1017,11 +982,7 @@ describe("Responses Model", () => {
       expect(copiedResponses[0].question_slug).toBe("question-active");
 
       // Verify only active question was copied
-      const currentMonthResponses = await getResponsesBySession(
-        testSessionId,
-        2,
-        2024,
-      );
+      const currentMonthResponses = await getResponsesBySession(testSessionId, 2, 2024);
       expect(currentMonthResponses).toHaveLength(1);
       expect(currentMonthResponses[0].question_slug).toBe("question-active");
     });
@@ -1079,11 +1040,7 @@ describe("Responses Model", () => {
       expect(copiedResponses[0].question_slug).toBe("question-1");
 
       // Verify only question from active section was copied
-      const currentMonthResponses = await getResponsesBySession(
-        testSessionId,
-        2,
-        2024,
-      );
+      const currentMonthResponses = await getResponsesBySession(testSessionId, 2, 2024);
       expect(currentMonthResponses).toHaveLength(1);
       expect(currentMonthResponses[0].question_slug).toBe("question-1");
     });
@@ -1169,11 +1126,7 @@ describe("Responses Model", () => {
       expect(copiedResponses).toHaveLength(1);
 
       // Verify response was copied to current month (January 2024)
-      const currentMonthResponses = await getResponsesBySession(
-        testSessionId,
-        1,
-        2024,
-      );
+      const currentMonthResponses = await getResponsesBySession(testSessionId, 1, 2024);
       expect(currentMonthResponses).toHaveLength(1);
       expect(currentMonthResponses[0].month).toBe(1);
       expect(currentMonthResponses[0].year).toBe(2024);
@@ -1222,15 +1175,9 @@ describe("Responses Model", () => {
       expect(copiedResponses).toHaveLength(2);
 
       // Verify experience responses were copied
-      const currentMonthResponses = await getResponsesBySession(
-        testSessionId,
-        2,
-        2024,
-      );
+      const currentMonthResponses = await getResponsesBySession(testSessionId, 2, 2024);
       expect(currentMonthResponses).toHaveLength(2);
-      const option1Response = currentMonthResponses.find(
-        (r) => r.option_slug === "option-1",
-      );
+      const option1Response = currentMonthResponses.find((r) => r.option_slug === "option-1");
       expect(option1Response?.experience_awareness).toBe(2);
       expect(option1Response?.experience_sentiment).toBe(1);
       expect(option1Response?.comment).toBe("experience comment");

@@ -2,12 +2,7 @@ import { db } from "@/server/db/index.js";
 import { migrate } from "@/server/db/migrate.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Question, Section } from "./config.js";
-import {
-  syncConfig,
-  syncOptions,
-  syncQuestions,
-  syncSections,
-} from "./sync.js";
+import { syncConfig, syncOptions, syncQuestions, syncSections } from "./sync.js";
 
 describe("Sync Functions", () => {
   beforeEach(async () => {
@@ -180,9 +175,7 @@ describe("Sync Functions", () => {
 
   it("should handle validation errors", async () => {
     // Test with a non-existent config file
-    await expect(syncConfig("non-existent-config.yml")).rejects.toThrow(
-      "Config file not found",
-    );
+    await expect(syncConfig("non-existent-config.yml")).rejects.toThrow("Config file not found");
   });
 
   it("should export sync functions", async () => {
@@ -385,9 +378,7 @@ describe("Sync Functions", () => {
       expect(result).toHaveLength(2);
 
       const activeQuestion = result.find((q) => q.slug === "active-question");
-      const inactiveQuestion = result.find(
-        (q) => q.slug === "inactive-question",
-      );
+      const inactiveQuestion = result.find((q) => q.slug === "inactive-question");
 
       expect(activeQuestion?.active).toBe(true);
       expect(inactiveQuestion?.active).toBe(false);

@@ -61,12 +61,7 @@ export function ThemeToggle() {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={cycleTheme}
-      title={getTooltip()}
-    >
+    <Button variant="ghost" size="icon" onClick={cycleTheme} title={getTooltip()}>
       {getIcon()}
       <span className="sr-only">{getTooltip()}</span>
     </Button>

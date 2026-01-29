@@ -108,9 +108,7 @@ export interface FreeformData {
 /**
  * Get all months that have response data
  */
-export async function getAvailableMonths(): Promise<
-  Array<{ month: number; year: number }>
-> {
+export async function getAvailableMonths(): Promise<Array<{ month: number; year: number }>> {
   const months = await db
     .selectFrom("responses")
     .select(["month", "year"])
@@ -143,9 +141,7 @@ export async function getFirstResponseMonth(): Promise<{
 /**
  * Get all months from first response to current month
  */
-export async function getAllMonthsSinceStart(): Promise<
-  Array<{ month: number; year: number }>
-> {
+export async function getAllMonthsSinceStart(): Promise<Array<{ month: number; year: number }>> {
   const firstMonth = await getFirstResponseMonth();
   if (!firstMonth) return [];
 
@@ -176,10 +172,7 @@ export async function getAllMonthsSinceStart(): Promise<
 /**
  * Get aggregated data for a specific month
  */
-export async function getMonthSummary(
-  month: number,
-  year: number,
-): Promise<MonthSummary> {
+export async function getMonthSummary(month: number, year: number): Promise<MonthSummary> {
   // Get total responses and unique sessions for the month
   const responseStats = await db
     .selectFrom("responses")
@@ -271,9 +264,7 @@ export async function getQuestionReport(
   if (question.type === "experience") {
     const uniqueSessions = new Set(responses.map((r) => r.session_id));
     totalResponses = uniqueSessions.size;
-    const skippedSessions = new Set(
-      responses.filter((r) => r.skipped).map((r) => r.session_id),
-    );
+    const skippedSessions = new Set(responses.filter((r) => r.skipped).map((r) => r.session_id));
     skippedResponses = skippedSessions.size;
   } else {
     totalResponses = responses.length;
@@ -362,18 +353,14 @@ async function aggregateSingleChoiceQuestion(
     description: option.description || undefined,
     count: optionCounts.get(option.slug) || 0,
     percentage:
-      totalResponses > 0
-        ? ((optionCounts.get(option.slug) || 0) / totalResponses) * 100
-        : 0,
+      totalResponses > 0 ? ((optionCounts.get(option.slug) || 0) / totalResponses) * 100 : 0,
     order: option.order,
   }));
 
-  const writeInsData = Array.from(writeInCounts.entries()).map(
-    ([response, count]) => ({
-      response,
-      count,
-    }),
-  );
+  const writeInsData = Array.from(writeInCounts.entries()).map(([response, count]) => ({
+    response,
+    count,
+  }));
 
   return {
     options: optionsData,
@@ -423,28 +410,21 @@ async function aggregateMultipleChoiceQuestion(
     }
   }
 
-  const totalSelections = Array.from(optionCounts.values()).reduce(
-    (sum, count) => sum + count,
-    0,
-  );
+  const totalSelections = Array.from(optionCounts.values()).reduce((sum, count) => sum + count, 0);
   const optionsData = options.map((option) => ({
     optionSlug: option.slug,
     label: option.label,
     description: option.description || undefined,
     count: optionCounts.get(option.slug) || 0,
     percentage:
-      totalSelections > 0
-        ? ((optionCounts.get(option.slug) || 0) / totalSelections) * 100
-        : 0,
+      totalSelections > 0 ? ((optionCounts.get(option.slug) || 0) / totalSelections) * 100 : 0,
     order: option.order,
   }));
 
-  const writeInsData = Array.from(writeInCounts.entries()).map(
-    ([response, count]) => ({
-      response,
-      count,
-    }),
-  );
+  const writeInsData = Array.from(writeInCounts.entries()).map(([response, count]) => ({
+    response,
+    count,
+  }));
 
   return {
     options: optionsData,
@@ -479,21 +459,15 @@ async function aggregateExperienceQuestion(
     .execute();
 
   // Valid awareness values: 0, 1, 2, 3 (Never heard, Heard of it, Used it in the past, Actively using it)
-  const validAwarenessValues = AWARENESS_OPTIONS.map(
-    (option) => option.value,
-  ) as number[];
+  const validAwarenessValues = AWARENESS_OPTIONS.map((option) => option.value) as number[];
   // Valid sentiment values: -1, 1
-  const validSentimentValues = SENTIMENT_OPTIONS.map(
-    (option) => option.value,
-  ) as number[];
+  const validSentimentValues = SENTIMENT_OPTIONS.map((option) => option.value) as number[];
 
   const optionsData = [];
 
   for (const option of options) {
     // Filter responses for this specific option
-    const optionResponses = responses.filter(
-      (response) => response.option_slug === option.slug,
-    );
+    const optionResponses = responses.filter((response) => response.option_slug === option.slug);
 
     const awarenessCounts = new Map<number, number>();
     const sentimentCounts = new Map<number, number>();
@@ -507,10 +481,7 @@ async function aggregateExperienceQuestion(
           ? response.experience_awareness
           : 0; // Default to "Never heard of it" for null/invalid values
 
-      awarenessCounts.set(
-        awarenessLevel,
-        (awarenessCounts.get(awarenessLevel) || 0) + 1,
-      );
+      awarenessCounts.set(awarenessLevel, (awarenessCounts.get(awarenessLevel) || 0) + 1);
 
       // Only count valid sentiment values
       if (
@@ -537,44 +508,34 @@ async function aggregateExperienceQuestion(
 
     const totalResponses = optionResponses.length;
 
-    const awarenessData = Array.from(awarenessCounts.entries()).map(
-      ([level, count]) => {
-        const awarenessOption = AWARENESS_OPTIONS.find(
-          (opt) => opt.value === level,
-        );
-        return {
-          level,
-          label: awarenessOption?.label || `Level ${level}`,
-          count,
-          percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
-        };
-      },
-    );
+    const awarenessData = Array.from(awarenessCounts.entries()).map(([level, count]) => {
+      const awarenessOption = AWARENESS_OPTIONS.find((opt) => opt.value === level);
+      return {
+        level,
+        label: awarenessOption?.label || `Level ${level}`,
+        count,
+        percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
+      };
+    });
 
-    const sentimentData = Array.from(sentimentCounts.entries()).map(
-      ([level, count]) => {
-        const sentimentOption = SENTIMENT_OPTIONS.find(
-          (opt) => opt.value === level,
-        );
-        return {
-          level,
-          label: sentimentOption?.label || `Level ${level}`,
-          count,
-          percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
-        };
-      },
-    );
+    const sentimentData = Array.from(sentimentCounts.entries()).map(([level, count]) => {
+      const sentimentOption = SENTIMENT_OPTIONS.find((opt) => opt.value === level);
+      return {
+        level,
+        label: sentimentOption?.label || `Level ${level}`,
+        count,
+        percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
+      };
+    });
 
-    const combinedData = Array.from(combinedCounts.entries()).map(
-      ([key, count]) => {
-        const [awareness, sentiment] = key.split("|").map(Number);
-        return {
-          awareness,
-          sentiment,
-          count,
-        };
-      },
-    );
+    const combinedData = Array.from(combinedCounts.entries()).map(([key, count]) => {
+      const [awareness, sentiment] = key.split("|").map(Number);
+      return {
+        awareness,
+        sentiment,
+        count,
+      };
+    });
 
     optionsData.push({
       optionSlug: option.slug,
@@ -674,10 +635,7 @@ async function aggregateFreeformQuestion(
     .execute();
 
   // Map: normalized key -> { original response, count }
-  const responseCounts = new Map<
-    string,
-    { originalResponse: string; count: number }
-  >();
+  const responseCounts = new Map<string, { originalResponse: string; count: number }>();
 
   for (const response of responses) {
     if (response.freeform_response) {

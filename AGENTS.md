@@ -62,9 +62,7 @@ import { useTRPC } from "@/lib/trpc/client";
 function SurveyPage() {
   const trpc = useTRPC();
   const { data: sections } = useQuery(trpc.survey.getSections.queryOptions());
-  const { data: firstSection } = useQuery(
-    trpc.survey.getFirstSection.queryOptions(),
-  );
+  const { data: firstSection } = useQuery(trpc.survey.getFirstSection.queryOptions());
   // sections.data === array of survey sections
   // firstSection.data === first section object
 }

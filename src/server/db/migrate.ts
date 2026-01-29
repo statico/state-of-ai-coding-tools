@@ -31,8 +31,7 @@ export const migrate = async () => {
       if (
         errorMessage.includes("already exists") ||
         errorMessage.includes("duplicate key value") ||
-        (errorMessage.includes("constraint") &&
-          errorMessage.includes("already exists"))
+        (errorMessage.includes("constraint") && errorMessage.includes("already exists"))
       ) {
         // Silently continue for existing objects - this is expected in test environments
         // where migrations may run multiple times

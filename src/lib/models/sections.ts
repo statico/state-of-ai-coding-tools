@@ -20,11 +20,7 @@ export async function getActiveSections() {
 }
 
 export async function getSectionBySlug(slug: string) {
-  return await db
-    .selectFrom("sections")
-    .selectAll()
-    .where("slug", "=", slug)
-    .executeTakeFirst();
+  return await db.selectFrom("sections").selectAll().where("slug", "=", slug).executeTakeFirst();
 }
 
 export async function createSection(data: InsertableSection) {

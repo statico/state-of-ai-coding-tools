@@ -65,9 +65,7 @@ describe("sessions", () => {
     });
 
     it("should return undefined if session does not exist", async () => {
-      const session = await getSessionById(
-        "550e8400-e29b-41d4-a716-446655440001",
-      );
+      const session = await getSessionById("550e8400-e29b-41d4-a716-446655440001");
 
       expect(session).toBeUndefined();
     });

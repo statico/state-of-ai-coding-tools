@@ -44,11 +44,7 @@ export function CommentSection({
         variant="ghost"
         size="sm"
         disabled={disabled}
-        title={
-          isExpanded
-            ? "Hide the comment section"
-            : "Add a comment to this question"
-        }
+        title={isExpanded ? "Hide the comment section" : "Add a comment to this question"}
         className="text-muted-foreground hover:text-foreground -ml-2 h-8 px-2"
       >
         <MessageCircle className="size-5" />

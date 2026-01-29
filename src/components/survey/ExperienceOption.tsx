@@ -7,11 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { MarkdownText } from "@/components/ui/markdown-text";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import {
-  AWARENESS_OPTIONS,
-  SENTIMENT_OPTIONS,
-  INTEREST_OPTIONS,
-} from "@/lib/constants";
+import { AWARENESS_OPTIONS, SENTIMENT_OPTIONS, INTEREST_OPTIONS } from "@/lib/constants";
 
 interface OptionState {
   awareness: number | undefined;
@@ -36,9 +32,7 @@ export function ExperienceOption({
   onAwarenessChange,
   onSentimentChange,
 }: ExperienceOptionProps) {
-  const [hoveredAwarenessLevel, setHoveredAwarenessLevel] = useState<
-    number | null
-  >(null);
+  const [hoveredAwarenessLevel, setHoveredAwarenessLevel] = useState<number | null>(null);
 
   const getSentimentOptions = (awarenessLevel?: number) => {
     if (awarenessLevel === 0 || awarenessLevel === 1) {
@@ -74,9 +68,7 @@ export function ExperienceOption({
                 const showBadges =
                   state.awareness === awarenessOption.value ||
                   hoveredAwarenessLevel === awarenessOption.value;
-                const sentimentOptions = getSentimentOptions(
-                  awarenessOption.value,
-                );
+                const sentimentOptions = getSentimentOptions(awarenessOption.value);
 
                 return (
                   <div
@@ -85,26 +77,18 @@ export function ExperienceOption({
                       "hover:bg-muted/50 flex cursor-pointer items-center space-x-4 rounded-md p-3 transition-colors",
                       index % 2 === 1 && "bg-muted/20",
                     )}
-                    onMouseEnter={() =>
-                      setHoveredAwarenessLevel(awarenessOption.value)
-                    }
+                    onMouseEnter={() => setHoveredAwarenessLevel(awarenessOption.value)}
                     onClick={(e) => {
                       // Don't trigger if clicking on the radio button or label
                       if (
-                        e.target ===
-                          e.currentTarget.querySelector(
-                            'input[type="radio"]',
-                          ) ||
+                        e.target === e.currentTarget.querySelector('input[type="radio"]') ||
                         e.target === e.currentTarget.querySelector("label")
                       ) {
                         return;
                       }
 
                       if (!isSkipped) {
-                        onAwarenessChange(
-                          option.slug,
-                          awarenessOption.value.toString(),
-                        );
+                        onAwarenessChange(option.slug, awarenessOption.value.toString());
                       }
                     }}
                   >
@@ -125,8 +109,7 @@ export function ExperienceOption({
                           <div
                             className={cn(
                               "ml-0 flex gap-4 sm:ml-0",
-                              state.awareness !== awarenessOption.value &&
-                                "opacity-80",
+                              state.awareness !== awarenessOption.value && "opacity-80",
                             )}
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -141,19 +124,14 @@ export function ExperienceOption({
                                 }
                                 onClick={() => {
                                   // First select the awareness level if it's not already selected
-                                  if (
-                                    state.awareness !== awarenessOption.value
-                                  ) {
+                                  if (state.awareness !== awarenessOption.value) {
                                     onAwarenessChange(
                                       option.slug,
                                       awarenessOption.value.toString(),
                                     );
                                   }
                                   // Then set the sentiment
-                                  onSentimentChange(
-                                    option.slug,
-                                    sentimentOption.value.toString(),
-                                  );
+                                  onSentimentChange(option.slug, sentimentOption.value.toString());
                                 }}
                               />
                             ))}

@@ -1,24 +1,12 @@
 import type { Kysely } from "kysely";
 import { sql } from "kysely";
-import {
-  startOfISOWeek,
-  getISOWeek,
-  getISOWeekYear,
-  getMonth,
-  getYear,
-} from "date-fns";
+import { startOfISOWeek, getISOWeek, getISOWeekYear, getMonth, getYear } from "date-fns";
 
 export async function up(db: Kysely<any>): Promise<void> {
   // Step 1: Add new month and year columns
-  await db.schema
-    .alterTable("responses")
-    .addColumn("month", "integer")
-    .execute();
+  await db.schema.alterTable("responses").addColumn("month", "integer").execute();
 
-  await db.schema
-    .alterTable("responses")
-    .addColumn("year", "integer")
-    .execute();
+  await db.schema.alterTable("responses").addColumn("year", "integer").execute();
 
   // Step 2: Migrate data from iso_week/iso_year to month/year
   // Get all unique iso_week/iso_year combinations
@@ -53,10 +41,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   }
 
   // Step 3: Drop the old primary key constraint
-  await db.schema
-    .alterTable("responses")
-    .dropConstraint("responses_pkey")
-    .execute();
+  await db.schema.alterTable("responses").dropConstraint("responses_pkey").execute();
 
   // Step 4: Drop the old index
   await sql`DROP INDEX IF EXISTS responses_session_week_year_idx`.execute(db);
@@ -111,24 +96,15 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
   // Step 1: Drop new primary key constraint
-  await db.schema
-    .alterTable("responses")
-    .dropConstraint("responses_pkey")
-    .execute();
+  await db.schema.alterTable("responses").dropConstraint("responses_pkey").execute();
 
   // Step 2: Drop new index
   await sql`DROP INDEX IF EXISTS responses_session_month_year_idx`.execute(db);
 
   // Step 3: Add back iso_week and iso_year columns
-  await db.schema
-    .alterTable("responses")
-    .addColumn("iso_week", "integer")
-    .execute();
+  await db.schema.alterTable("responses").addColumn("iso_week", "integer").execute();
 
-  await db.schema
-    .alterTable("responses")
-    .addColumn("iso_year", "integer")
-    .execute();
+  await db.schema.alterTable("responses").addColumn("iso_year", "integer").execute();
 
   // Step 4: Migrate data back from month/year to iso_week/iso_year
   // Get all unique month/year combinations
@@ -169,10 +145,7 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.alterTable("responses").dropColumn("month").execute();
 
   // Step 7: Rename year back to iso_year
-  await db.schema
-    .alterTable("responses")
-    .renameColumn("year", "iso_year")
-    .execute();
+  await db.schema.alterTable("responses").renameColumn("year", "iso_year").execute();
 
   // Step 8: Create old primary key constraint
   await db.schema

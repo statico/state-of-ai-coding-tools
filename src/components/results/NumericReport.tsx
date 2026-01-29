@@ -74,25 +74,16 @@ export function NumericReport({
               <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Badge
-                      variant="outline"
-                      className="h-6 w-6 rounded-full p-0 text-xs"
-                    >
+                    <Badge variant="outline" className="h-6 w-6 rounded-full p-0 text-xs">
                       {index + 1}
                     </Badge>
-                    <span className="text-sm font-medium">
-                      {quartile.label}
-                    </span>
+                    <span className="text-sm font-medium">{quartile.label}</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium">
-                      {quartile.percentage}%
-                    </span>
+                    <span className="text-sm font-medium">{quartile.percentage}%</span>
                     <div className="text-muted-foreground flex items-center gap-1 text-sm">
                       <User className="h-4 w-4" />
-                      {Math.round(
-                        (totalResponses * quartile.percentage) / 100,
-                      ).toLocaleString()}
+                      {Math.round((totalResponses * quartile.percentage) / 100).toLocaleString()}
                     </div>
                   </div>
                 </div>

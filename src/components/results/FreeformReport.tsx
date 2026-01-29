@@ -63,23 +63,17 @@ export function FreeformReport({
           <div className="space-y-4">
             {/* Response Count */}
             <div className="text-muted-foreground text-sm">
-              {data.responses.length}{" "}
-              {data.responses.length === 1 ? "response" : "responses"}
+              {data.responses.length} {data.responses.length === 1 ? "response" : "responses"}
             </div>
 
             {/* Freeform Responses in ScrollArea */}
             <ScrollArea className="h-[400px] rounded-md border">
               <div className="space-y-3 p-4">
                 {data.responses.map((item, index) => (
-                  <div
-                    key={index}
-                    className="bg-muted/30 rounded-lg border p-3"
-                  >
+                  <div key={index} className="bg-muted/30 rounded-lg border p-3">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <p className="text-sm leading-relaxed">
-                          {item.response}
-                        </p>
+                        <p className="text-sm leading-relaxed">{item.response}</p>
                       </div>
                       <Badge variant="outline" className="shrink-0 text-xs">
                         {item.count} {item.count === 1 ? "time" : "times"}

@@ -264,9 +264,7 @@ describe("Questions Model", () => {
     });
 
     it("should throw error when updating non-existent question", async () => {
-      await expect(
-        updateQuestion("non-existent", { title: "Updated" }),
-      ).rejects.toThrow();
+      await expect(updateQuestion("non-existent", { title: "Updated" })).rejects.toThrow();
     });
   });
 
@@ -438,9 +436,7 @@ describe("Questions Model", () => {
 
       // Verify deletion
       const finalQuestions = await getAllQuestions();
-      expect(
-        finalQuestions.find((q) => q.slug === "lifecycle-test"),
-      ).toBeUndefined();
+      expect(finalQuestions.find((q) => q.slug === "lifecycle-test")).toBeUndefined();
     });
   });
 });

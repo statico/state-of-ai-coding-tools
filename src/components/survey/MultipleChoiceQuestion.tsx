@@ -8,11 +8,7 @@ import { Button } from "@/components/ui/button";
 import { QuestionCard } from "./QuestionCard";
 import { MarkdownText } from "@/components/ui/markdown-text";
 import { cn } from "@/lib/utils";
-import {
-  QuestionWithOptions,
-  ResponseData,
-  ClientResponse,
-} from "@/lib/constants";
+import { QuestionWithOptions, ResponseData, ClientResponse } from "@/lib/constants";
 
 interface MultipleChoiceQuestionProps {
   question: QuestionWithOptions;
@@ -31,27 +27,18 @@ export function MultipleChoiceQuestion({
   const [writeinTexts, setWriteinTexts] = useState<string[]>(
     () => existingResponse?.multiple_writein_responses || [],
   );
-  const [isSkipped, setIsSkipped] = useState<boolean>(
-    () => existingResponse?.skipped || false,
-  );
-  const [comment, setComment] = useState<string>(
-    () => existingResponse?.comment ?? "",
-  );
+  const [isSkipped, setIsSkipped] = useState<boolean>(() => existingResponse?.skipped || false);
+  const [comment, setComment] = useState<string>(() => existingResponse?.comment ?? "");
 
   const handleOptionChange = (optionSlug: string, checked: boolean) => {
     let newSelectedOptions;
     if (checked) {
-      if (
-        question.multiple_max &&
-        selectedOptions.length >= question.multiple_max
-      ) {
+      if (question.multiple_max && selectedOptions.length >= question.multiple_max) {
         return; // Don't add if at max
       }
       newSelectedOptions = [...selectedOptions, optionSlug];
     } else {
-      newSelectedOptions = selectedOptions.filter(
-        (slug) => slug !== optionSlug,
-      );
+      newSelectedOptions = selectedOptions.filter((slug) => slug !== optionSlug);
     }
 
     setSelectedOptions(newSelectedOptions);
@@ -119,11 +106,7 @@ export function MultipleChoiceQuestion({
     <QuestionCard
       title={question.title}
       description={question.description ?? undefined}
-      additionalInfo={
-        question.multiple_max
-          ? `Select up to ${question.multiple_max}`
-          : undefined
-      }
+      additionalInfo={question.multiple_max ? `Select up to ${question.multiple_max}` : undefined}
       isSkipped={isSkipped}
       comment={comment}
       hasResponse={selectedOptions.length > 0}
@@ -140,10 +123,7 @@ export function MultipleChoiceQuestion({
             )}
             onClick={(e) => {
               // Don't trigger if clicking directly on the checkbox (it has its own handler)
-              if (
-                e.target ===
-                e.currentTarget.querySelector('input[type="checkbox"]')
-              ) {
+              if (e.target === e.currentTarget.querySelector('input[type="checkbox"]')) {
                 return;
               }
 
@@ -151,9 +131,7 @@ export function MultipleChoiceQuestion({
               e.preventDefault();
 
               if (!isSkipped) {
-                const isCurrentlySelected = selectedOptions.includes(
-                  option.slug,
-                );
+                const isCurrentlySelected = selectedOptions.includes(option.slug);
                 const canToggle = isCurrentlySelected || canSelectMore;
                 if (canToggle) {
                   handleOptionChange(option.slug, !isCurrentlySelected);
@@ -164,13 +142,8 @@ export function MultipleChoiceQuestion({
             <Checkbox
               id={option.slug}
               checked={selectedOptions.includes(option.slug)}
-              onCheckedChange={(checked) =>
-                handleOptionChange(option.slug, checked as boolean)
-              }
-              disabled={
-                isSkipped ||
-                (!selectedOptions.includes(option.slug) && !canSelectMore)
-              }
+              onCheckedChange={(checked) => handleOptionChange(option.slug, checked as boolean)}
+              disabled={isSkipped || (!selectedOptions.includes(option.slug) && !canSelectMore)}
             />
             <Label
               htmlFor={option.slug}
